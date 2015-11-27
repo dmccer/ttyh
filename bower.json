@@ -1,0 +1,26 @@
+{
+  "name": "ttyh",
+  "description": "天天有货-微信公众号-前端项目",
+  "main": "index.js",
+  "authors": [
+    "Kane"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "天天有货"
+  ],
+  "homepage": "https://github.com/dmccer/ttyh",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "zepto": "~1.1.6",
+    "normalize-css": "normalize.css#~3.0.3"
+  }
+}
