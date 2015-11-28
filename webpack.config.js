@@ -3,7 +3,8 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    index: './src/asset/js/index.js',
+    bbs: './src/asset/js/bbs/index.js',
+    'bbs-detail': './src/asset/js/bbs/detail.js',
     vendor: ['./bower_components/zepto/zepto.js']
   },
   output: {
