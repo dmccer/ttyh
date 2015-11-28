@@ -1,0 +1,47 @@
+@import '../../../less/global/site.variable';
+
+.tag {
+  display: inline-block;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 3px 3px;
+
+  &.purple {
+    background-color: @purple;
+    color: @white;
+  }
+}
+
+.notice-board {
+  @space: 10px;
+  background-color: @white;
+  overflow: hidden;
+
+  > * {
+    padding-top: @space;
+    padding-bottom: @space;
+  }
+
+  .nb-tag {
+    float: left;
+  }
+
+  .nb-time {
+    float: right;
+  }
+
+  .nb-tag, .nb-time {
+    padding-left: @space;
+    padding-right: @space;
+  }
+
+  .nb-content {
+    position: relative;
+    overflow: hidden;
+
+    p {
+      height: 1.2em;
+      overflow: hidden;
+    }
+  }
+}

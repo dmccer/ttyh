@@ -1,0 +1,29 @@
+@import '../../../less/global/site.variable';
+
+.active-users {
+  @padding: 10px;
+
+  background-color: @white;
+
+  .avatar {
+    padding-top: @padding;
+    padding-bottom: @padding;
+
+    a {
+      display: block;
+      width: 42px;
+      height: 42px;
+      border-radius: 42px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+      background-color: lighten(@black, 80%);
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+  }
+}

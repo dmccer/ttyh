@@ -1,0 +1,109 @@
+@import '../../../less/global/site.variable';
+
+@borderColor: lighten(@black, 85%);
+@padding: 10px;
+@profileColor: lighten(@black, 50%);
+
+.comment {
+  border-top: 1px solid @borderColor;
+  background-color: @white;
+  padding: @padding;
+
+  header {
+    margin-bottom: @padding;
+  }
+
+  .profile {
+    vertical-align: middle;
+    overflow: hidden;
+
+    .avatar {
+      float: left;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      background-color: lighten(@black, 80%);
+      margin-right: @padding;
+    }
+
+    .poster {
+      font-weight: bolder;
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .post-meta {
+      color: @profileColor;
+      font-size: 0.8em;
+
+      .floor {
+        color: @teal;
+        padding-right: @padding;
+      }
+    }
+  }
+
+  .post-body {
+    padding-left: 40px + @padding;
+  }
+}
+
+// 详情版 post
+.comment {
+  &:first-child {
+    border-top: none;
+  }
+  .poster {
+    .flag {
+      margin-left: 5px;
+      vertical-align: bottom;
+    }
+  }
+
+  .post-feedback {
+    vertical-align: middle;
+    width: 6em;
+    text-align: right;
+
+    > span {
+      padding-right: @padding;
+      color: @profileColor;
+    }
+  }
+
+  .photo {
+    width: 100%;
+
+    a {
+      display: block;
+      width: 100%;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  .replied {
+    margin-top: @padding;
+    overflow: hidden;
+    border-left: 1px solid lighten(@black, 80%);;
+
+    > i {
+      float: left;
+      margin-right: 10px;
+      padding-left: 5px;
+    }
+
+    .replied-content {
+      overflow: hidden;
+      color: lighten(@black, 40%);;
+      font-size: 0.8em;
+
+      .head b {
+        color: @yellow;
+        font-weight: normal;
+      }
+    }
+  }
+}

@@ -1,0 +1,175 @@
+@import '../../../less/global/site.variable';
+
+@borderColor: lighten(@black, 85%);
+@padding: 10px;
+@profileColor: lighten(@black, 50%);
+
+.flag {
+  display: inline-block;
+  border: 1px solid @teal;
+  border-radius: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: @teal;
+  font-size: 0.8em;
+  vertical-align: middle;
+}
+
+.post-item {
+  border-top: 1px solid @borderColor;
+  background-color: @white;
+  padding: @padding;
+
+  header {
+    margin-bottom: @padding;
+  }
+
+  .profile {
+    vertical-align: middle;
+    overflow: hidden;
+
+    .avatar {
+      float: left;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      background-color: lighten(@black, 80%);
+      margin-right: @padding;
+    }
+
+    .poster {
+      font-weight: bolder;
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .post-time {
+      color: @profileColor;
+      font-size: 0.8em;
+    }
+  }
+
+  .post-body {
+    h2 {
+      font-size: 1.3em;
+      margin-bottom: @padding;
+    }
+
+    .post-text {
+      b {
+        color: @orange;
+        padding-right: @padding;
+      }
+    }
+  }
+}
+
+// 简洁版 post
+.post-item {
+  .post-feedback {
+    vertical-align: middle;
+    width: 6em;
+    text-align: right;
+
+    > span {
+      padding-right: @padding;
+      color: @profileColor;
+    }
+  }
+
+  .post-photos {
+    li {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      display: inline-block;
+      margin-right: @padding;
+      border-radius: 5px;
+      background-color: @borderColor;
+      overflow: hidden;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      a {
+        display: block;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .photo-tip {
+        background-color: rgba(0, 0, 0, 0.6);
+        color: @white;
+        border-radius: 5px;
+        padding: 3px 5px;
+        font-size: 12px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+    }
+  }
+}
+
+// 详情版 post
+.post-item {
+  .poster {
+    .flag {
+      margin-left: 5px;
+      vertical-align: bottom;
+    }
+  }
+  .poster-actions {
+    width: 4em;
+    vertical-align: middle;
+    font-size: 1.3em;
+    text-align: center;
+
+    .follow, .del {
+      color: @orange;
+    }
+
+    .followed {
+      color: @grey;
+    }
+  }
+  .post-title {
+    position: relative;
+
+    .browse-count {
+      display: block;
+      position: absolute;
+      color: lighten(@black, 60%);
+      top: 50%;
+      right: 0;
+      transform: translate(0, -50%);
+
+      b {
+        color: @black;
+        font-weight: normal;
+      }
+    }
+  }
+  .photo {
+    width: 100%;
+
+    a {
+      display: block;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+  .address {
+    text-align: right;
+    color: lighten(@black, 60%);
+
+    padding-top: 3 * @padding;
+    padding-bottom: @padding;
+  }
+}

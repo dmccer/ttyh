@@ -1,0 +1,32 @@
+@import '../../../less/global/site.variable';
+
+.icon {
+  display: inline-block;
+}
+
+.head-bar {
+  @space: 10px;
+  @margin: 10px;
+  background-color: @white;
+  margin-bottom: @margin;
+
+  & > * {
+    vertical-align: middle;
+    margin-bottom: @space;
+    margin-top: @space;
+  }
+
+  .notice, .post {
+    width: 4em;
+    padding-left: @space;
+    padding-right: @space;
+  }
+
+  .notice {
+    text-align: left;
+  }
+
+  .post {
+    text-align: right;
+  }
+}
