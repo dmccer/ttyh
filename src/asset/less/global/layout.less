@@ -1,0 +1,23 @@
+@import './site.variable';
+
+.row {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  & > * {
+    display: table-cell;
+    vertical-align: top;
+  }
+}
+
+.grid {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+
+ > * {
+   flex: 1;
+ }
+}

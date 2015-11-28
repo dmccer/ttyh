@@ -1,0 +1,42 @@
+@import '../../global/site.variable';
+
+.tabs {
+  @radius: 5px;
+  @border: 1px;
+  @padding: 5px;
+
+  width: 100%;
+  text-align: center;
+
+  .tab {
+    background-color: @white;
+    border: @border solid @teal;
+    padding-top: @padding;
+    padding-bottom: @padding;
+
+    a {
+      color: @teal;
+      font-weight: bold;
+    }
+
+    &:first-child {
+      border-right: none;
+      border-top-left-radius: @radius;
+      border-bottom-left-radius: @radius;
+    }
+
+    &:last-child {
+      border-left: none;
+      border-top-right-radius: @radius;
+      border-bottom-right-radius: @radius;
+    }
+
+    &.active {
+      background-color: @teal;
+
+      a {
+        color: @white;
+      }
+    }
+  }
+}
