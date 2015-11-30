@@ -3,6 +3,7 @@ import './index.less';
 import React from 'react';
 import CommentList from './comment/';
 import PraiseList from './praise/';
+import ActionBar from './action-bar/';
 
 export default class Feedback extends React.Component {
   constructor() {
@@ -18,6 +19,7 @@ export default class Feedback extends React.Component {
         </ul>
         <CommentList />
         <PraiseList />
+        <ActionBar />
       </section>
     )
   }
