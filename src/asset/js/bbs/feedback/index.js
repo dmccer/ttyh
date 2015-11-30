@@ -1,7 +1,8 @@
 import './index.less';
 
 import React from 'react';
-import CommentList from './comment-list'
+import CommentList from './comment/';
+import PraiseList from './praise/';
 
 export default class Feedback extends React.Component {
   constructor() {
@@ -16,6 +17,7 @@ export default class Feedback extends React.Component {
           <li><a href="#">赞</a></li>
         </ul>
         <CommentList />
+        <PraiseList />
       </section>
     )
   }

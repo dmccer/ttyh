@@ -1,4 +1,4 @@
-import './comment.less';
+import './item.less';
 
 import React from 'react';
 
