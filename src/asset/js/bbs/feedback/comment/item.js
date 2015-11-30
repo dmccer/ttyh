@@ -9,7 +9,7 @@ export default class Comment extends React.Component {
 
   render() {
     return (
-      <li className="comment">
+      <li className="comment-item">
         <header className="row">
           <div className="profile">
             <i className="avatar"></i>
