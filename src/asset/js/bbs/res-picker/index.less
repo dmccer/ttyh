@@ -1,0 +1,73 @@
+@import '../../../less/global/site.variable';
+
+.round {
+  @size: 28px;
+
+  display: inline-block;
+  width: @size;
+  height: @size;
+  line-height: @size;
+  border-radius: @size;
+  color: @white;
+  text-align: center;
+  font-weight: bolder;
+
+  &.orange {
+    background-color: @orange;
+  }
+
+  &.yellow {
+    background-color: @yellow;
+  }
+
+  &.teal {
+    background-color: @teal;
+  }
+}
+
+.action-tag {
+  display: inline-block;
+  border-radius: 20px;
+  border: 1px solid lighten(@black, 80%);
+  background-color: @white;
+  padding: 5px 5px 5px 15px;
+
+  .action-icon {
+    margin-left: 20px;
+  }
+}
+
+.res-picker {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+
+  .res-menus {
+    text-align: right;
+    background-color: @white;
+
+    > li {
+      display: inline-block;
+      padding: 10px 15px;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      a {
+        display: block;
+        color: lighten(@black, 50%);;
+      }
+    }
+  }
+
+  .picked-tag {
+    margin-bottom: 10px;
+
+    > li {
+      text-align: center;
+    }
+  }
+}

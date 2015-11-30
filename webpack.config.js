@@ -3,8 +3,9 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    comment: './src/asset/js/bbs/feedback/comment/add.js',
     bbs: './src/asset/js/bbs/index.js',
+    'bbs-comment': './src/asset/js/bbs/feedback/comment/add.js',
+    'bbs-post': './src/asset/js/bbs/post/add.js',
     'bbs-detail': './src/asset/js/bbs/detail.js',
     vendor: ['./bower_components/zepto/zepto.js']
   },

@@ -1,0 +1,46 @@
+@import './site.variable';
+
+.form {
+  .control {
+    @padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+
+    textarea {
+      width: 100%;
+      padding: @padding;
+      border-color: lighten(@black, 80%);
+      border-radius: 5px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid lighten(@black, 80%);
+      border-radius: 3px;
+      padding: @padding;
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: @padding;
+      right: @padding;
+      color: lighten(@black, 70%);
+    }
+  }
+}
+
+.btn {
+  @padding: 5px 15px;
+  @borderRadius: 3px;
+
+  display: inline-block;
+  padding: @padding;
+  border-radius: @borderRadius;
+  background-color: none;
+  border: none;
+
+  &.teal {
+    background-color: @teal;
+    color: @white;
+  }
+}
