@@ -1,18 +1,20 @@
 @import '../../../less/global/site.variable';
 
 .subtitle {
-  font-size: 12px;
-  color: lighten(@black, 10%);
+  font-size: 1rem;
+  color: @c_black;
   margin-bottom: 0;
   padding-top: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
   padding-left: 10px;
+  font-weight: normal;
 }
 
 .topic-list {
   .topic-group {
-    @padding: 10px;
-    @borderColor: lighten(@black, 80%);
+    @padding: 5px;
+    @borderColor: @c_lightGrey;
+
     background-color: @white;
     overflow: hidden;
 
@@ -26,11 +28,11 @@
 
       a {
         display: block;
-        color: lighten(@black, 30%);
+        color: @c_lightBlack;
         text-align: center;
-        font-size: 1.2em;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        font-size: 1.3rem;
+        padding-top: 8.5px;
+        padding-bottom: 8.5px;
       }
 
       &:first-child a {

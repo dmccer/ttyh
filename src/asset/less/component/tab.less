@@ -3,19 +3,20 @@
 .tabs {
   @radius: 5px;
   @border: 1px;
-  @padding: 3px;
+  @padding: 5px;
 
   width: 100%;
   text-align: center;
 
   .tab {
     background-color: @white;
-    border: @border solid @teal;
+    border: @border solid @c_teal;
     padding-top: @padding;
     padding-bottom: @padding;
 
-    a {
-      color: @teal;
+    > a {
+      display: block;
+      color: @c_teal;
       font-weight: bold;
     }
 
@@ -32,7 +33,7 @@
     }
 
     &.active {
-      background-color: @teal;
+      background-color: @c_teal;
 
       a {
         color: @white;

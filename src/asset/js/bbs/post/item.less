@@ -1,16 +1,16 @@
 @import '../../../less/global/site.variable';
 
-@borderColor: lighten(@black, 85%);
+@borderColor: @c_lightGrey;
 @padding: 10px;
-@profileColor: lighten(@black, 50%);
+@profileColor: @c_lightBlack;
 
 .flag {
   display: inline-block;
-  border: 1px solid @teal;
+  border: 1px solid @c_teal;
   border-radius: 2px;
   padding-left: 5px;
   padding-right: 5px;
-  color: @teal;
+  color: @c_teal;
   font-size: 0.8em;
   vertical-align: middle;
 }
@@ -39,24 +39,29 @@
 
     .poster {
       font-weight: bolder;
+      color: @c_black;
       padding-top: 3px;
       padding-bottom: 3px;
     }
     .post-time {
       color: @profileColor;
-      font-size: 0.8em;
     }
   }
 
   .post-body {
     h2 {
-      font-size: 1.3em;
+      font-size: 1.5rem;
+      color: @c_black;
       margin-bottom: @padding;
     }
 
     .post-text {
+      font-size: 1.3rem;
+      margin-bottom: @padding;
+      color: @c_lightBlack;
+
       b {
-        color: @orange;
+        color: @c_orange;
         padding-right: @padding;
       }
     }
@@ -79,8 +84,8 @@
   .post-photos {
     li {
       position: relative;
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       display: inline-block;
       margin-right: @padding;
       border-radius: 5px;
