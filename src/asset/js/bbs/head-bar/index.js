@@ -1,4 +1,5 @@
 import './index.less';
+import '../../../less/component/tab.less';
 
 import React from 'react';
 

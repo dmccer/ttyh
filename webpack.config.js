@@ -1,5 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
+var LessPluginCleanCSS = require('less-plugin-clean-css');
+var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 
 module.exports = {
   entry: {
@@ -29,8 +31,7 @@ module.exports = {
       loaders: [
         'style',
         'css',
-        'less',
-        'autoprefixer?browsers=last 3 versions'
+        'less'
       ]
     }, {
       test: /\.css$/,
@@ -58,5 +59,11 @@ module.exports = {
         'babel?presets[]=react,presets[]=es2015'
       ]
     }]
+  },
+  lessLoader: {
+    lessPlugins: [
+      new LessPluginCleanCSS({advanced: true, keepSpecialComments: false}),
+      new LessPluginAutoPrefix({ browsers: ['last 3 versions', 'Android 4'] })
+    ]
   }
 };

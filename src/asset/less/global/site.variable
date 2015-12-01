@@ -10,8 +10,8 @@
       Base Sizes
 --------------------*/
 
-@emSize   : 14px;
-@fontSize : 14px;
+@emSize   : 11px;
+@fontSize : 11px;
 
 /*--------------
   Page Heading
@@ -70,6 +70,19 @@
 @darkWhite        : #F0F0F0;
 @white            : #FFFFFF;
 
+
+/*--- Custom Colors ---*/
+@c_teal             : #17BB92;
+@c_orange           : #EEA931;
+@c_purple           : #9D7CB3;
+@c_lightGreen       : #B2EBDD;
+@c_black            : #505050;
+@c_lightBlack       : #969696;
+@c_grey             : #C8C8C8;
+@c_lightGrey        : #E6E6E6;
+/* darkWhite */
+
+
 /*-------------------
         Sizes
 --------------------*/
@@ -93,7 +106,7 @@
         Page
 --------------------*/
 
-@pageBackground      : #F7F7F7;
+@pageBackground      : #e6e6e6;
 @pageOverflowX       : hidden;
 
 @lineHeight          : 1.33;
