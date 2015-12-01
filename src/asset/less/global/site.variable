@@ -10,8 +10,8 @@
       Base Sizes
 --------------------*/
 
-@emSize   : 11px;
-@fontSize : 11px;
+@emSize   : 12px;
+@fontSize : 12px;
 
 /*--------------
   Page Heading

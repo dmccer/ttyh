@@ -1,8 +1,8 @@
 @import '../../../../less/global/site.variable';
 
-@borderColor: lighten(@black, 85%);
+@borderColor: @c_lightGrey;
 @padding: 10px;
-@profileColor: lighten(@black, 50%);
+@profileColor: @c_lightBlack;
 
 .praise-item {
   border-top: 1px solid @borderColor;
@@ -21,15 +21,14 @@
       background-color: lighten(@black, 80%);
       margin-right: @padding;
     }
-
     .poster {
       font-weight: bolder;
       padding-top: 3px;
       padding-bottom: 3px;
+      font-size: 1.2rem;
     }
     .post-meta {
-      color: @profileColor;
-      font-size: 0.8em;
+      color: @c_grey;
 
       .floor {
         color: @c_lightBlack;
