@@ -8,7 +8,7 @@ export default class PostDetailItem extends React.Component {
 
   render() {
     return (
-      <section className="post-item">
+      <section className="post-item post-detail">
         <header className="row">
           <div className="profile">
             <i className="avatar"></i>

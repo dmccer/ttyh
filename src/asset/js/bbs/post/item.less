@@ -6,11 +6,11 @@
 
 .flag {
   display: inline-block;
-  border: 1px solid @c_teal;
+  border: 1px solid @c_purple;
   border-radius: 2px;
   padding-left: 5px;
   padding-right: 5px;
-  color: @c_teal;
+  color: @c_purple;
   font-size: 0.8em;
   vertical-align: middle;
 }
@@ -120,7 +120,7 @@
 }
 
 // 详情版 post
-.post-item {
+.post-detail {
   .poster {
     .flag {
       margin-left: 5px;
@@ -130,15 +130,15 @@
   .poster-actions {
     width: 4em;
     vertical-align: middle;
-    font-size: 1.3em;
+    font-size: 1.5rem;
     text-align: center;
 
     .follow, .del {
-      color: @orange;
+      color: @c_orange;
     }
 
     .followed {
-      color: @grey;
+      color: @c_lightBlack;
     }
   }
   .post-title {
@@ -147,15 +147,21 @@
     .browse-count {
       display: block;
       position: absolute;
-      color: lighten(@black, 60%);
+      color: @c_lightBlack;
       top: 50%;
       right: 0;
       transform: translate(0, -50%);
 
       b {
-        color: @black;
+        color: @c_black;
         font-weight: normal;
       }
+    }
+  }
+  .post-body {
+    .post-text {
+      font-size: 1.4rem;
+      color: @c_black;
     }
   }
   .photo {
@@ -172,9 +178,9 @@
   }
   .address {
     text-align: right;
-    color: lighten(@black, 60%);
+    color: @c_lightBlack;
 
-    padding-top: 3 * @padding;
+    padding-top: 25px;
     padding-bottom: @padding;
   }
 }

@@ -1,8 +1,8 @@
 @import '../../../../less/global/site.variable';
 
-@borderColor: lighten(@black, 85%);
+@borderColor: @c_lightGrey;
 @padding: 10px;
-@profileColor: lighten(@black, 50%);
+@profileColor: @c_lightBlack;
 
 .comment-item {
   border-top: 1px solid @borderColor;
@@ -28,15 +28,16 @@
 
     .poster {
       font-weight: bolder;
+      color: @c_black;
       padding-top: 3px;
       padding-bottom: 3px;
     }
     .post-meta {
-      color: @profileColor;
+      color: @c_grey;
       font-size: 0.8em;
 
       .floor {
-        color: @teal;
+        color: @c_lightBlack;
         padding-right: @padding;
       }
     }
@@ -65,8 +66,9 @@
     text-align: right;
 
     > span {
-      padding-right: @padding;
-      color: @profileColor;
+      padding-right: 15px;
+      color: @c_grey;
+      font-size:1.5rem;
     }
   }
 
@@ -76,10 +78,12 @@
     a {
       display: block;
       width: 100%;
+      overflow: hidden;
 
       img {
         width: 100%;
         height: auto;
+        float: left;
       }
     }
   }
@@ -97,11 +101,10 @@
 
     .replied-content {
       overflow: hidden;
-      color: lighten(@black, 40%);;
-      font-size: 0.8em;
+      color: @c_lightBlack;
+      font-size: 1rem;
 
       .head b {
-        color: @yellow;
         font-weight: normal;
       }
     }
