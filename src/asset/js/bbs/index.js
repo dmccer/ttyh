@@ -22,7 +22,7 @@ export default class BBS extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/bbs',
+      url: '/posts',
       type: 'GET',
       success: (data) => {
         this.setState({

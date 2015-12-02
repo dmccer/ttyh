@@ -6,6 +6,10 @@ export default class PostItem extends React.Component {
     super()
   }
 
+  handleClickItem(post) {
+    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?id=' + post.id);
+  }
+
   render() {
     var imgs = this.props.item.imgs.map((item, index) => {
       if (index === 2) {
@@ -21,7 +25,7 @@ export default class PostItem extends React.Component {
     }
 
     return (
-      <li className="post-item">
+      <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
             <img className="avatar" src={this.props.item.user.avatar} />

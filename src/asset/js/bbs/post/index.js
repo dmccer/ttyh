@@ -8,7 +8,7 @@ export default class Post extends React.Component {
   constructor() {
     super()
   }
-
+  
   render() {
     var list = this.props.items.map((post, index) => {
       return <PostItem key={'post_' + index} item={post} />

@@ -17,7 +17,10 @@ export default class HeadBar extends React.Component {
 
   }
 
-  switchTab(tab: string) {
+  switchTab(tab: string, e: Object) {
+    e.preventDefault();
+    e.stopPropagation();
+    
     this.props.onSwitch(tab);
   }
 
@@ -39,7 +42,7 @@ export default class HeadBar extends React.Component {
             <a href="#"><i className="icon icon-hot"></i>热门</a>
           </li>
         </ul>
-        <div className="post">发帖<i className="icon icon-edit"></i></div>
+        <div className="post"><a href="./bbs-post.html">发帖<i className="icon icon-edit"></i></a></div>
       </section>
     );
   }
