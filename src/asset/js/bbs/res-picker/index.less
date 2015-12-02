@@ -13,7 +13,7 @@
   font-weight: bolder;
 
   &.orange {
-    background-color: @orange;
+    background-color: @c_orange;
   }
 
   &.yellow {
@@ -21,16 +21,18 @@
   }
 
   &.teal {
-    background-color: @teal;
+    background-color: @c_teal;
   }
 }
 
 .action-tag {
   display: inline-block;
   border-radius: 20px;
-  border: 1px solid lighten(@black, 80%);
+  border: 1px solid @c_lightGrey;
   background-color: @white;
   padding: 5px 5px 5px 15px;
+  color: @c_lightBlack;
+  font-size: 1.2rem;
 
   .action-icon {
     margin-left: 20px;

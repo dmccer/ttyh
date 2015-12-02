@@ -1,7 +1,50 @@
 @import '../../../less/global/site.variable';
 
+body {
+  background-color: @offWhite;
+}
+
+.input_placeholder(@color) {
+  ::-webkit-input-placeholder {
+     color: @color;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+     color: @color;
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+     color: @color;
+  }
+
+  :-ms-input-placeholder {
+     color: @color;
+  }
+}
+
+.textarea_placeholder(@color) {
+  ::-webkit-textarea-placeholder {
+     color: @color;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+     color: @color;
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+     color: @color;
+  }
+
+  :-ms-textarea-placeholder {
+     color: @color;
+  }
+}
+
 .post-add {
   padding-top: 10px;
+
+  .input_placeholder(@c_grey);
+  .textarea_placeholder(@c_grey);
 
   .post-title {
     input {
@@ -12,6 +55,7 @@
       padding-left: 20px;
       padding-right: 20px;
       background: transparent;
+      font-size: 1.5rem;
     }
   }
 
@@ -21,6 +65,7 @@
 
     .post-text {
       height: 6em;
+      font-size: 1.5em;
     }
 
     .publish {

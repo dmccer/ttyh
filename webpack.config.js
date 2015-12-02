@@ -9,6 +9,7 @@ module.exports = {
     'bbs-comment': './src/asset/js/bbs/feedback/comment/add.js',
     'bbs-post': './src/asset/js/bbs/post/add.js',
     'bbs-detail': './src/asset/js/bbs/detail.js',
+    'about-me': './src/asset/js/bbs/about-me/index.js',
     vendor: ['./bower_components/zepto/zepto.js']
   },
   output: {

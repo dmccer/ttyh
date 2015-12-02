@@ -1,0 +1,23 @@
+@import '../../../../less/global/site.variable';
+
+.about-me-head-bar {
+  @padding: 10px;
+  padding: @padding;
+  background-color: @white;
+  margin-bottom: @padding;
+
+  .tab {
+    a {
+      font-size: 1.2rem;
+      font-weight: normal;
+    }
+
+    .icon-dot {
+      margin-left: 10px;
+    }
+  }
+
+  .active .icon-dot {
+    border: 1px solid @white;
+  }
+}

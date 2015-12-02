@@ -9,13 +9,13 @@
     textarea {
       width: 100%;
       padding: @padding;
-      border-color: lighten(@black, 80%);
+      border-color: @c_lightGrey;
       border-radius: 5px;
     }
 
     input {
       width: 100%;
-      border: 1px solid lighten(@black, 80%);
+      border: 1px solid @c_lightGrey;
       border-radius: 3px;
       padding: @padding;
     }
@@ -24,7 +24,7 @@
       position: absolute;
       bottom: @padding;
       right: @padding;
-      color: lighten(@black, 70%);
+      color: @c_grey;
     }
   }
 }
@@ -38,9 +38,10 @@
   border-radius: @borderRadius;
   background-color: none;
   border: none;
+  font-size: 1.3rem;
 
   &.teal {
-    background-color: @teal;
+    background-color: @c_teal;
     color: @white;
   }
 }

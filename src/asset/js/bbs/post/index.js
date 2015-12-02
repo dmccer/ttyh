@@ -10,13 +10,14 @@ export default class Post extends React.Component {
   }
 
   render() {
+    var list = this.props.items.map((post, index) => {
+      return <PostItem key={'post_' + index} item={post} />
+    });
+
     return (
       <section className="post">
         <ul className="posts scroll-list">
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
+          {list}
         </ul>
       </section>
     );

@@ -1,0 +1,17 @@
+@import '../global/site.variable';
+
+.dot(@size: 15px, @color: @c_orange) {
+  width: @size;
+  height: @size;
+  border-radius: @size;
+  background-color: @color;
+}
+
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+
+  &.icon-dot {
+    .dot(10px, @c_orange);
+  }
+}

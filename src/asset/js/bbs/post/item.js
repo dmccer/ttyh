@@ -7,27 +7,38 @@ export default class PostItem extends React.Component {
   }
 
   render() {
+    var imgs = this.props.item.imgs.map((item, index) => {
+      if (index === 2) {
+        let imgCount = <span className="photo-tip">共{this.props.item.imgs.length}张</span>;
+        return <li key={'img_' + index}><a href={item.large}><img src={item.thumbnail} /></a>{imgCount}</li>;
+      }
+
+      return <li key={'img_' + index}><a href={item.large}><img src={item.thumbnail} /></a></li>;
+    });
+
+    if (imgs.length > 3) {
+      imgs.splice(3, this.props.item.imgs.length - 3);
+    }
+
     return (
       <li className="post-item">
         <header className="row">
           <div className="profile">
-            <i className="avatar"></i>
-            <div className="poster">用户名</div>
-            <div className="post-time"><i className="icon icon-clock"></i>刚刚</div>
+            <img className="avatar" src={this.props.item.user.avatar} />
+            <div className="poster">{this.props.item.user.nickname}</div>
+            <div className="post-time"><i className="icon icon-clock"></i>{this.props.item.time}</div>
           </div>
           <div className="post-feedback">
-            <span><i className="icon icon-edit"></i>30</span>
-            <span><i className="icon icon-praise"></i>11</span>
+            <span><i className="icon icon-edit"></i>{this.props.item.comment_count}</span>
+            <span><i className="icon icon-praise"></i>{this.props.item.praise_count}</span>
           </div>
         </header>
         <article className="post-body">
-          <h2>我的名字叫标题</h2>
+          <h2>{this.props.item.title}</h2>
           <section className="post-content">
-            <p className="post-text"><b>#我的名字叫标题#</b>这里是正文，长长的正文，好吧，加油吧，快点吧，gogogo~，no, 再长点吧，来，再长点</p>
+            <p className="post-text"><b>#{this.props.item.title}#</b>{this.props.item.text}</p>
             <ul className="post-photos">
-              <li><a href="#"><img src="" /></a></li>
-              <li><a href="#"><img src="" /></a></li>
-              <li><a href="#"><img src="" /></a><span className="photo-tip">共4张</span></li>
+              {imgs}
             </ul>
           </section>
         </article>

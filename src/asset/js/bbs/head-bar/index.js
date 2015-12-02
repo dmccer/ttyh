@@ -2,10 +2,23 @@ import './index.less';
 import '../../../less/component/tab.less';
 
 import React from 'react';
+import classNames from 'classnames';
 
 export default class HeadBar extends React.Component {
   constructor() {
-    super()
+    super();
+
+    this.state = {
+      tabVals: ['all', 'focus', 'hot']
+    };
+  }
+
+  componentDidMount() {
+
+  }
+
+  switchTab(tab: string) {
+    this.props.onSwitch(tab);
   }
 
   render() {
@@ -15,14 +28,14 @@ export default class HeadBar extends React.Component {
           <i className="icon icon-bell"></i>提醒
         </div>
         <ul className="tabs grid">
-          <li className="tab active">
+          <li value={this.state.tabVals[0]} className={classNames('tab', ['all', 'focus'].indexOf(this.props.on) !== -1 ? 'active' : '')} onClick={this.switchTab.bind(this, 'all')}>
             <a href="#">所有<i className="icon-spread"></i></a>
             <ul className="spread-list hide">
               <li>所有</li>
               <li>关注</li>
             </ul>
           </li>
-          <li className="tab">
+          <li value={this.state.tabVals[2]} className={classNames('tab', this.props.on === 'hot' ? 'active' : '')} onClick={this.switchTab.bind(this, 'hot')}>
             <a href="#"><i className="icon icon-hot"></i>热门</a>
           </li>
         </ul>
