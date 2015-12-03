@@ -14,10 +14,18 @@ export default class ResPicker extends React.Component {
       <div className="res-picker">
         <ul className="grid picked-tag">
           <li className="topic-tag">
-            <span className="action-tag"><i className="icon icon-card"></i>话题标题<i className="icon icon-minus round yellow action-icon"></i></span>
+            <div className="action-tag">
+              <i className="icon icon-card"></i>
+              <span>话题标题</span>
+              <i className="icon icon-minus round yellow action-icon"></i>
+            </div>
           </li>
           <li className="location-tag">
-            <span className="action-tag"><i className="icon icon-address"></i>显示位置<i className="icon icon-plus round teal action-icon"></i></span>
+            <div className="action-tag">
+              <i className="icon icon-address"></i>
+              <span>显示位置</span>
+              <i className="icon icon-plus round teal action-icon"></i>
+            </div>
           </li>
         </ul>
         <ul className="res-menus">
