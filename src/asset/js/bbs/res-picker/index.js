@@ -24,10 +24,7 @@ export default class ResPicker extends React.Component {
           <li><a href="#emoj">表情</a></li>
           <li><a href="#photo">图片</a></li>
         </ul>
-        <ul className="res-list hide">
-          <li className="emoj"></li>
-          <li className="photo"></li>
-        </ul>
+        
       </div>
     )
   }
