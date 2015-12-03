@@ -31,4 +31,18 @@
   &.icon-minus {
     .minus();
   }
+
+  &.icon-spread {
+    display: inline-block;
+    vertical-align: middle;
+    .arrow(8px, -135deg, @c_grey);
+
+    &.white {
+      .arrow(8px, -135deg, @white);
+    }
+
+    &.teal {
+      .arrow(8px, -135deg, @c_teal);
+    }
+  }
 }

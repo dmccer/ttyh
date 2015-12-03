@@ -22,14 +22,14 @@ export default class BBS extends React.Component {
   }
 
   componentDidMount() {
-    this.query();
+    this.query(this.state.tab);
   }
 
-  query() {
+  query(q) {
     $.ajax({
       url: '/posts',
       data: {
-        q: this.state.tab
+        q: q
       },
       type: 'GET',
       success: (data) => {
@@ -45,7 +45,7 @@ export default class BBS extends React.Component {
       tab: tab
     });
 
-    this.query();
+    this.query(tab);
   }
 
   render() {

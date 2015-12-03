@@ -12,7 +12,7 @@
   margin-bottom: @margin;
   font-size: 1.5em;
   font-weight: bolder;
-  color: @c_lightGrey;
+  color: @c_grey;
 
   & > * {
     vertical-align: middle;
@@ -33,7 +33,56 @@
   .post {
     text-align: right;
     a {
-      color: @c_lightGrey;
+      color: @c_grey;
     }
   }
+
+  .tab-text {
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon-spread {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      margin-left: 8px;
+    }
+  }
+
+  .spread-list {
+    position: absolute;
+    background-color: @c_black;
+    color: @white;
+    width: 100%;
+    top: 135%;
+    z-index: 1;
+    border-radius: 5px;
+
+    &:before {
+      position: absolute;
+      display: block;
+      content: '';
+      top: -6px;
+      right: 15px;
+      border-bottom: 6px solid @c_black;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+    }
+
+    > li {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 15px;
+      text-align: left;
+      border-bottom: 1px solid @c_lightBlack;
+      font-weight: normal;
+      font-size: 1.2rem;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
 }

@@ -14,6 +14,18 @@
   content: @content;
 }
 
+.arrow(@size: 5px, @rotate: -45deg, @color: @c_grey) {
+  &:before {
+    display: block;
+    content: '';
+    width: @size;
+    height: @size;
+    border-top: 2px solid @color;
+    border-left: 2px solid @color;
+    transform: rotate(@rotate);
+  }
+}
+
 .before_text(@text) {
   &:before {
     .text(@text);
