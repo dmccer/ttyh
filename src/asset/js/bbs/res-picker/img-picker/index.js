@@ -1,3 +1,4 @@
+import '../../../../less/component/icon.less';
 import './index.less';
 
 import React from 'react';
@@ -15,6 +16,11 @@ export default class ImgPicker extends React.Component {
         <ImgItem4Picker />
         <ImgItem4Picker />
         <ImgItem4Picker />
+
+        <div className="img-item4picker add-img-item">
+          <div className="img-item-inner">
+          </div>
+        </div>
       </section>
     )
   }

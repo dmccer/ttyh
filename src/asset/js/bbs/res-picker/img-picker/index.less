@@ -1,0 +1,60 @@
+@import '../../../../less/global/site.variable';
+@import '../../../../less/global/util.less';
+@import '../../../../less/component/icon-util.less';
+
+.img-picker {
+  .clearfix();
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.img-item4picker {
+  @margin: 10px;
+
+  display: inline-block;
+  float: left;
+  width: 33.3%;
+  height: 90px;
+  box-sizing: border-box;
+  padding-right: 10px;
+  margin-bottom: 10px;
+
+  &:nth-child(3n) {
+    padding-right: 0;
+  }
+
+  .img-item-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: @c_lightGrey;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .img-operation {
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translate(50%, -50%);
+    }
+  }
+
+  &.add-img-item {
+    .img-item-inner {
+      border: 2px dashed @c_grey;
+      border-radius: 3px;
+      text-align: center;
+      background-color: @white;
+
+      .plus();
+      font-size: 5rem;
+      color: @c_grey;
+      font-weight: bolder;
+    }
+  }
+}

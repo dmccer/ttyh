@@ -1,11 +1,5 @@
 @import '../global/site.variable';
-
-.dot(@size: 15px, @color: @c_orange) {
-  width: @size;
-  height: @size;
-  border-radius: @size;
-  background-color: @color;
-}
+@import './icon-util.less';
 
 .icon {
   display: inline-block;
@@ -13,5 +7,28 @@
 
   &.icon-dot {
     .dot(10px, @c_orange);
+  }
+
+  &.icon-del-dot {
+    .dot(18px, @c_orange);
+    border: 1px solid @white;
+    text-align: center;
+
+    &:before {
+      display: inline-block;
+      vertical-align: middle;
+      content: '';
+      width: 6px;
+      height: 2px;
+      background-color: @white;
+    }
+  }
+
+  &.icon-plus {
+    .plus();
+  }
+
+  &.icon-minus {
+    .minus();
   }
 }
