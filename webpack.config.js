@@ -19,7 +19,12 @@ module.exports = {
     chunkFilename: "[id].chunk.js"
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js'),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    })
   ],
   module: {
     preLoaders: [{
