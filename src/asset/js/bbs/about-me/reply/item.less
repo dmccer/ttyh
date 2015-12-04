@@ -1,0 +1,67 @@
+@import '../../../../less/global/site.variable';
+
+@borderColor: @c_lightGrey;
+@padding: 10px;
+@profileColor: @c_lightBlack;
+
+.reply-item {
+  border-top: 1px solid @borderColor;
+  background-color: @white;
+  padding: @padding;
+
+  header {
+    margin-bottom: @padding;
+  }
+
+  .profile {
+    vertical-align: middle;
+    overflow: hidden;
+
+    .avatar {
+      float: left;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      background-color: lighten(@black, 80%);
+      margin-right: @padding;
+    }
+
+    .poster {
+      font-weight: bolder;
+      color: @c_black;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      font-size: 1.2rem;
+    }
+    .post-meta {
+      color: @c_grey;
+    }
+  }
+
+  .post-body {
+    .post-text {
+      font-size: 1.2rem;
+      color: @c_lightBlack;
+    }
+  }
+
+  .post-feedback {
+    .post-feedback-inner {
+      float: right;
+
+      > p {
+        display: block;
+        color: @c_lightBlack;
+        text-align: right;
+        margin-bottom: 3px;
+      }
+
+      .reply-count {
+        background-color: @c_orange;
+        color: @white;
+        padding: 2px 8px;
+        border-radius: 10px;
+      }
+    }
+  }
+}
