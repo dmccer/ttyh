@@ -67,7 +67,7 @@ export default class HeadBar extends React.Component {
     return (
       <section className="row head-bar">
         <div className="notice">
-          <i className="icon icon-bell"></i>提醒
+          <a href="./bbs-about-me.html"><i className="icon icon-bell"></i>提醒</a>
         </div>
         <ul className="tabs grid">
           <li
