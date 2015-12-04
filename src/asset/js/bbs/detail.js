@@ -11,12 +11,7 @@ export default class BBSDetail extends React.Component {
   constructor() {
     super();
 
-
-    this.state = querystring.parse(location.search);
-  }
-
-  componentDidMount() {
-
+    this.state = querystring.parse(location.search.substring(1));
   }
 
   render() {

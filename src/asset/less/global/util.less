@@ -36,3 +36,39 @@
     @-webkit-keyframes ~'@{name}' { 0% { @fromRules(); } 100% { @toRules(); } }
             @keyframes ~'@{name}' { 0% { @fromRules(); } 100% { @toRules(); } }
 }
+
+.input_placeholder(@color) {
+  ::-webkit-input-placeholder {
+     color: @color;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+     color: @color;
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+     color: @color;
+  }
+
+  :-ms-input-placeholder {
+     color: @color;
+  }
+}
+
+.textarea_placeholder(@color) {
+  ::-webkit-textarea-placeholder {
+     color: @color;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+     color: @color;
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+     color: @color;
+  }
+
+  :-ms-textarea-placeholder {
+     color: @color;
+  }
+}
