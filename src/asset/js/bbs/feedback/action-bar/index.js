@@ -11,8 +11,12 @@ export default class ActionBar extends React.Component {
     return (
       <div className="fb-action-bar">
         <ul className="grid">
-          <li><i className="icon icon-edit"></i>评论</li>
-          <li><i className="icon icon-praise"></i>赞</li>
+          <li>
+            <a href={'./bbs-comment.html?id=' + this.props.postId}>
+              <i className="icon icon-edit"></i>评论
+            </a>
+          </li>
+          <li onClick={this.props.onPraise}><i className="icon icon-praise"></i>赞</li>
         </ul>
       </div>
     )

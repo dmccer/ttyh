@@ -12,6 +12,8 @@ export default class Feedback extends React.Component {
 
     this.state = {
       tab: 'comment', // comment, praise
+      comments: [],
+      praises: []
     }
   }
 
@@ -22,6 +24,54 @@ export default class Feedback extends React.Component {
     this.setState({
       tab: tab
     });
+
+    this.queryFeedback(tab);
+  }
+
+  componentDidMount() {
+    this.queryFeedback(this.state.tab);
+  }
+
+  queryFeedback(tab) {
+    switch (tab) {
+      case 'comment':
+        return this.queryCommentList();
+      case 'praise':
+        return this.queryPraiseList();
+    }
+  }
+  queryCommentList() {
+    $.ajax({
+      url: '/posts/' + this.props.postId + '/comments',
+      type: 'GET',
+      success: (data) => {
+        this.setState({
+          comments: data.list
+        })
+      }
+    })
+  }
+
+  queryPraiseList() {
+    $.ajax({
+      url: '/posts/' + this.props.postId + '/praises',
+      type: 'GET',
+      success: (data) => {
+        this.setState({
+          praises: data.list
+        })
+      }
+    })
+  }
+
+  praise() {
+    $.ajax({
+      url: '/posts/' + this.props.postId + '/praise',
+      type: 'POST',
+      success: (data) => {
+        this.queryPraiseList();
+      }
+    })
   }
 
   render() {
@@ -35,15 +85,16 @@ export default class Feedback extends React.Component {
           (() => {
             switch(this.state.tab) {
               case 'comment':
-                return <CommentList postId={this.props.postId}/>;
+                return <CommentList items={this.state.comments} />;
               case 'praise':
-                return <PraiseList postId={this.props.postId} />;
-              default:
-                return <CommentList postId={this.props.postId} />
+                return <PraiseList items={this.state.praises} />;
             }
           })()
         }
-        <ActionBar />
+        <ActionBar
+          postId={this.props.postId}
+          onPraise={this.praise.bind(this)}
+        />
       </section>
     )
   }

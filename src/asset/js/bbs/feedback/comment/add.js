@@ -8,16 +8,33 @@ import ResPicker from './../../res-picker/';
 
 export default class CommentAdd extends React.Component {
   constructor() {
-    super()
+    super();
+
+    this.state = {
+      text: ''
+    }
+  }
+
+  submit() {
+    $.ajax({
+      url: '/posts/' + postId + '/comment',
+      type: 'POST',
+      success: (data) => {
+
+      },
+      error: () => {
+
+      }
+    })
   }
 
   render() {
     return (
       <section className="comment-add">
-        <form className="form">
+        <form className="form" onSubmit={this.submit.bind(this)}>
           <div className="control">
-            <textarea refs="textarea" className="comment-text" placeholder="这里输入评论"></textarea>
-            <span className="char-count">0/2000</span>
+            <textarea value={this.state.text} className="comment-text" placeholder="这里输入评论"></textarea>
+            <span className="char-count">{this.state.text.length}/2000</span>
           </div>
           <div className="control publish">
             <button className="btn teal">发布</button>

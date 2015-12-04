@@ -1,9 +1,12 @@
 @import '../../../../less/global/site.variable';
+@import '../../../../less/global/util.less';
 
 .comment-add {
   padding: 10px;
 
   .comment-text {
+    .textarea_placeholder(@c_grey);
+    font-size: 1.5rem;
     height: 8em;
   }
 

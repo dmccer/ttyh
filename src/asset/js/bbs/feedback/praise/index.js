@@ -8,13 +8,12 @@ export default class PraiseList extends React.Component {
   }
 
   render() {
+    let praiseList = this.props.items.map((item, index) => {
+      return <Praise key={'praise_' + index} item={item} />
+    })
     return (
       <ul className="praise-list">
-        <Praise />
-        <Praise />
-        <Praise />
-        <Praise />
-        <Praise />
+        {praiseList}
       </ul>
     )
   }
