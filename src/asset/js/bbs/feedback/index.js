@@ -66,7 +66,7 @@ export default class Feedback extends React.Component {
 
   praise() {
     $.ajax({
-      url: '/posts/' + this.props.postId + '/praise',
+      url: '/posts/' + this.props.postId + '/praises',
       type: 'POST',
       success: (data) => {
         this.queryPraiseList();
