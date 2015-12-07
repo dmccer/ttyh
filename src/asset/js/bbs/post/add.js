@@ -40,7 +40,10 @@ export default class PostAdd extends React.Component {
       type: 'POST',
       data: {
         title: this.state.title,
-        text: this.state.text
+        text: this.state.text,
+        show_location: this.state.showAddress,
+        topic: this.state.topic.id,
+        photos: this.state.photo
       },
       success: (data) => {
         this.setState({
