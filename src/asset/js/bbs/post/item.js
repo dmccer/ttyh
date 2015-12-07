@@ -1,28 +1,69 @@
 import './item.less';
 import React from 'react';
 
+import FullscreenImg from '../../fullscreen-img/';
+
 export default class PostItem extends React.Component {
   constructor() {
-    super()
+    super();
+
+    this.state = {}
   }
 
   handleClickItem(post) {
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?id=' + post.id);
   }
 
+  handleShowPic(img: Object, e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    let largeImgs = this.props.item.imgs.map((item) => {
+      return img.large;
+    });
+
+    this.setState({
+      currentFullscreenImg: img.large,
+      fullscreeImgs: largeImgs
+    });
+  }
+
   render() {
-    var imgs = this.props.item.imgs.map((item, index) => {
+    let imgs = this.props.item.imgs.map((item, index) => {
       if (index === 2) {
         let imgCount = <span className="photo-tip">共{this.props.item.imgs.length}张</span>;
-        return <li key={'img_' + index}><a href={item.large}><img src={item.thumbnail} /></a>{imgCount}</li>;
+        return (
+          <li
+            key={'img_' + index}
+            onClick={this.handleShowPic.bind(this, item)}>
+            <a href={item.large}>
+              <img src={item.thumbnail} />
+            </a>
+            {imgCount}
+          </li>
+        );
       }
 
-      return <li key={'img_' + index}><a href={item.large}><img src={item.thumbnail} /></a></li>;
+      return (
+        <li
+          key={'img_' + index}
+          onClick={this.handleShowPic.bind(this, item)}>
+          <a href={item.large}>
+            <img src={item.thumbnail} />
+          </a>
+        </li>
+      );
     });
 
     if (imgs.length > 3) {
       imgs.splice(3, this.props.item.imgs.length - 3);
     }
+
+    let fullscreeImgs = this.state.fullscreeImgs && this.state.fullscreeImgs.length
+      ? <FullscreenImg
+        images={this.state.fullscreeImgs}
+        on={this.state.currentFullscreenImg} />
+      : null;
 
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
@@ -44,6 +85,7 @@ export default class PostItem extends React.Component {
             <ul className="post-photos">
               {imgs}
             </ul>
+            {fullscreeImgs}
           </section>
         </article>
       </li>

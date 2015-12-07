@@ -1,0 +1,40 @@
+@import '../../less/global/site.variable';
+
+.fullscreen-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: @black;
+
+  .img-count {
+    background-color: rgba(0, 0, 0, .3);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+    color: @white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .img-list {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .img-item {
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: auto;
+        height: 100%;
+      }
+    }
+  }
+}

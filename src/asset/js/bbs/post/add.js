@@ -42,7 +42,7 @@ export default class PostAdd extends React.Component {
         title: this.state.title,
         text: this.state.text,
         show_location: this.state.showAddress,
-        topic: this.state.topic.id,
+        topic: this.state.topic && this.state.topic.id || null,
         photos: this.state.photo
       },
       success: (data) => {
