@@ -67,8 +67,11 @@ export default class EmojPicker extends React.Component {
     }
   }
 
-  pick(emoj: Object) {
+  pick(emoj: Object, e: Object) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    this.props.onPick(emoj);
   }
 
   render() {

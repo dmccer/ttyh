@@ -4,6 +4,7 @@ import './add.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import classNames from 'classnames';
 import ResPicker from '../res-picker/';
 import TipBox from '../tipbox/';
 
@@ -16,8 +17,19 @@ export default class PostAdd extends React.Component {
       text: '',
       maxTitleLen: 20,
       maxTextLen: 2000,
-      submited: false
+      submited: false,
+      address: {}
     }
+  }
+
+  componentDidMount() {
+    // 获取位置
+    this.setState({
+      address: {
+        city: '上海',
+        area: '浦东新区'
+      }
+    });
   }
 
   submit(e) {
@@ -83,7 +95,38 @@ export default class PostAdd extends React.Component {
     });
   }
 
+  handlePickRes(res) {
+    this.setState(res);
+  }
+
+  delTopic() {
+    this.setState({
+      topic: null
+    });
+  }
+
+  toggleAddress() {
+    this.setState({
+      showAddress: !this.state.showAddress
+    });
+  }
+
   render() {
+    let topic;
+
+    topic = this.state.topic
+      ? (
+        <div className="action-tag" onClick={this.delTopic.bind(this)}>
+          <i className="icon icon-card"></i>
+          <span>{this.state.topic.text}</span>
+          <i className="icon icon-minus round yellow action-icon"></i>
+        </div>
+      )
+      : '';
+
+    let addressDescription = this.state.showAddress ? (this.state.address.city + ' ' + this.state.address.area) : '显示位置';
+    let addressActionIconClasses = classNames('icon round action-icon', this.state.showAddress ? 'icon-minus yellow' : 'icon-plus teal');
+
     return (
       <section className="post-add">
         <form className="form" onSubmit={this.submit.bind(this)}>
@@ -110,7 +153,21 @@ export default class PostAdd extends React.Component {
               <button className="btn teal">发布</button>
             </div>
           </div>
-          <ResPicker />
+          <section className="footer fixed">
+            <ul className="grid picked-tag">
+              <li className="topic-tag">
+              {topic}
+              </li>
+              <li className="location-tag">
+                <div className="action-tag" onClick={this.toggleAddress.bind(this)}>
+                  <i className="icon icon-address"></i>
+                  <span>{addressDescription}</span>
+                  <i className={addressActionIconClasses}></i>
+                </div>
+              </li>
+            </ul>
+            <ResPicker menus={['topic', 'emoj', 'photo']} onPick={this.handlePickRes.bind(this)} />
+          </section>
         </form>
         {
           (() => {

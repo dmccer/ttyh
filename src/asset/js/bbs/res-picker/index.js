@@ -8,26 +8,49 @@ import TopicPicker from './topic-picker/';
 import EmojPicker from './emoj-picker/';
 
 export default class ResPicker extends React.Component {
+  static menus(): Array<Object> {
+    return [{
+      id: 'topic',
+      text: '话题'
+    }, {
+      id: 'emoj',
+      text: '表情'
+    }, {
+      id: 'photo',
+      text: '图片'
+    }];
+  }
+
   constructor() {
     super();
 
     this.state = {
-      menus: [{
-        id: 'topic',
-        text: '话题'
-      }, {
-        id: 'emoj',
-        text: '表情'
-      }, {
-        id: 'photo',
-        text: '图片'
-      }]
+      menus: []
     };
+  }
+
+  componentDidMount() {
+    let customMenus = this.props.menus || [];
+
+    let menus = ResPicker.menus().filter((menu) => {
+      return customMenus.indexOf(menu.id) !== -1;
+    });
+
+    this.setState({
+      menus: menus
+    })
   }
 
   switchMenu(menu: Object, e: Object) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (menu.id === this.state.on) {
+      this.setState({
+        on: null
+      });
+      return;
+    }
 
     this.setState({
       on: menu.id
@@ -35,18 +58,22 @@ export default class ResPicker extends React.Component {
   }
 
   pickTopic(topic: Object) {
-    this.setState({
+    this.props.onPick({
       topic: topic
     });
   }
 
   pickEmoj(emoj: Object) {
-    this.setState({
+    this.props.onPick({
       emoj: emoj
-    })
+    });
   }
 
-  pick() {}
+  handleImgsChange(photo: Array<Object>) {
+    this.props.onPick({
+      photo: photo
+    });
+  }
 
   render() {
     let picker;
@@ -59,7 +86,7 @@ export default class ResPicker extends React.Component {
         picker = <EmojPicker onPick={this.pickEmoj.bind(this)} />
         break;
       case 'photo':
-        picker = <ImgPicker onPick={this.pick.bind(this)} />
+        picker = <ImgPicker onImgsChange={this.handleImgsChange.bind(this)} />
         break;
     }
 
@@ -76,22 +103,6 @@ export default class ResPicker extends React.Component {
 
     return (
       <div className="res-picker">
-        <ul className="grid picked-tag">
-          <li className="topic-tag">
-            <div className="action-tag">
-              <i className="icon icon-card"></i>
-              <span>话题标题</span>
-              <i className="icon icon-minus round yellow action-icon"></i>
-            </div>
-          </li>
-          <li className="location-tag">
-            <div className="action-tag">
-              <i className="icon icon-address"></i>
-              <span>显示位置</span>
-              <i className="icon icon-plus round teal action-icon"></i>
-            </div>
-          </li>
-        </ul>
         <div className="res-menus-wrapper">
           <ul className="res-menus">
             {menuList}

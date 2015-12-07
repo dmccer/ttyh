@@ -7,19 +7,68 @@ import ImgItem4Picker from './item';
 export default class ImgPicker extends React.Component {
   constructor() {
     super();
+
+    this.state = {
+      imgs: [
+        {
+          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
+          name: '美女1'
+        }, {
+          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
+          name: '美女2'
+        }, {
+          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
+          name: '美女3'
+        }, {
+          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
+          name: '美女4'
+        }
+      ]
+    }
+  }
+
+  // 选择某一张照片
+  pick(img: Object, e: Object) {
+    // 显示大图
+  }
+
+  // 从相册中选择照片或者拍照
+  selectImg(e: Object) {
+    e.stopPropagation();
+
+    // imgs 发生改变
+    this.props.onImgsChange(this.state.imgs);
+  }
+
+  // 删除照片
+  del(imgItem: Object) {
+    let index = this.state.imgs.findIndex((img) => {
+      return imgItem.url === img.url
+    });
+
+    this.state.imgs.splice(index, 1);
+    this.forceUpdate()
+
+    // imgs 发生改变
+    this.props.onImgsChange(this.state.imgs);
   }
 
   render() {
+    let imgItemList = this.state.imgs.map((img, index) => {
+      return <ImgItem4Picker
+        key={'img-item-4picker_' + index}
+        item={img}
+        onPick={this.pick.bind(this)}
+        onDel={this.del.bind(this)} />
+    });
+
     return (
       <section className="img-picker">
-        <ImgItem4Picker />
-        <ImgItem4Picker />
-        <ImgItem4Picker />
-        <ImgItem4Picker />
-
-        <div className="img-item4picker add-img-item">
-          <div className="img-item-inner">
-          </div>
+        {imgItemList}
+        <div
+          className="img-item4picker add-img-item"
+          onClick={this.selectImg.bind(this)}>
+          <div className="img-item-inner"></div>
         </div>
       </section>
     )
