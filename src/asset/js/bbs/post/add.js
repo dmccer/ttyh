@@ -96,7 +96,13 @@ export default class PostAdd extends React.Component {
   }
 
   handlePickRes(res) {
-    this.setState(res);
+    if (!res.emoj) {
+      return this.setState(res);
+    }
+
+    this.setState({
+      text: this.state.text + res.emoj.id
+    })
   }
 
   delTopic() {
