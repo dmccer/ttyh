@@ -14,14 +14,14 @@
   content: @content;
 }
 
-.arrow(@size: 5px, @rotate: -45deg, @color: @c_grey) {
+.arrow(@size: 5px, @ply: 2px, @rotate: -45deg, @color: @c_grey) {
   &:before {
     display: block;
     content: '';
     width: @size;
     height: @size;
-    border-top: 2px solid @color;
-    border-left: 2px solid @color;
+    border-top: @ply solid @color;
+    border-left: @ply solid @color;
     transform: rotate(@rotate);
   }
 }

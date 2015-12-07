@@ -1,4 +1,6 @@
 @import '../../../less/global/site.variable';
+@import '../../../less/global/util.less';
+@import '../../../less/component/icon-util.less';
 
 .round {
   @size: 28px;
@@ -56,24 +58,47 @@
   bottom: 0;
   left: 0;
 
-  .res-menus {
-    text-align: right;
+  .res-menus-wrapper {
     background-color: @white;
     border-top: 1px solid @c_lightGrey;
+    border-bottom: 1px solid @c_lightGrey;
+    .clearfix();
+  }
+
+  .res-menus {
+    float: right;
 
     > li {
-      display: inline-block;
-      padding: 10px 15px;
+      position: relative;
+      float: left;
       margin-right: 10px;
 
       &:last-child {
         margin-right: 0;
       }
 
+      &.on {
+        a {
+          color: @c_black;
+
+          .arrow(10px, 1px, 45deg, @c_lightGrey);
+
+          &:before {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            margin-left: -5px;
+            background-color: @offWhite;
+          }
+        }
+      }
+
       a {
         display: block;
         color: @c_lightBlack;
         font-size: 1.2rem;
+        padding: 10px 15px;
+        overflow: hidden;
       }
     }
   }
@@ -87,9 +112,6 @@
   }
 
   .res-picker-panel {
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-top: 1px solid @c_lightGrey;
+    background-color: @offWhite;
   }
 }

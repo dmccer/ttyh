@@ -1,0 +1,25 @@
+@import '../../../../less/global/site.variable';
+@import '../../../../less/global/util.less';
+
+.topic-list {
+  .clearfix();
+
+  > a {
+    display: block;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid @darkWhite;
+    color: @c_lightBlack;
+    font-size: 1.2rem;
+
+    &:nth-child(2n+1) {
+      border-right: 1px solid @darkWhite;
+    }
+  }
+
+  > * {
+    float: left;
+  }
+}
