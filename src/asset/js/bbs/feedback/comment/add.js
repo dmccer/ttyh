@@ -1,7 +1,6 @@
 import '../../../../less/global/form.less';
 import './add.less';
 
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
@@ -27,6 +26,10 @@ export default class CommentAdd extends React.Component {
     $.ajax({
       url: '/posts/' + this.state.postId + '/comments',
       type: 'POST',
+      data: {
+        text: this.state.text,
+        photos: this.state.photo
+      },
       success: (data) => {
 
       },
@@ -48,6 +51,16 @@ export default class CommentAdd extends React.Component {
     });
   }
 
+  handlePickRes(res: Object) {
+    if (!res.emoj) {
+      return this.setState(res);
+    }
+
+    this.setState({
+      text: this.state.text + res.emoj.id
+    })
+  }
+
   render() {
     return (
       <section className="comment-add">
@@ -64,7 +77,9 @@ export default class CommentAdd extends React.Component {
           <div className="control publish">
             <button className="btn teal">发布</button>
           </div>
-          <ResPicker />
+          <div className="footer fixed">
+            <ResPicker menus={['emoj', 'photo']} onPick={this.handlePickRes.bind(this)} />
+          </div>
         </form>
       </section>
     )
