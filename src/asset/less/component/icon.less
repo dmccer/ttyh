@@ -35,7 +35,7 @@
   &.icon-spread {
     display: inline-block;
     vertical-align: middle;
-    
+
     .arrow(8px, 2px, -135deg, @c_grey);
 
     &.white {
@@ -44,6 +44,24 @@
 
     &.teal {
       .arrow(8px, 2px, -135deg, @c_teal);
+    }
+  }
+
+  &.icon-close {
+    display: inline-block;
+
+    &:before {
+      width: 40px;
+      height: 40px;
+      line-height: 35px;
+      border-radius: 40px;
+      text-align: center;
+      display: inline-block;
+      vertical-align: middle;
+      border: 2px solid @white;
+      content: 'x';
+      font-size: 1.8rem;
+      color: @white;
     }
   }
 }

@@ -7,11 +7,23 @@ export default class FullscreenImg extends React.Component {
     super();
   }
 
+  handleClick(e: Object) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  close() {
+    this.props.onClose();
+  }
+
   render() {
     return (
-      <section className="fullscreen-img">
+      <section className="fullscreen-img" onClick={this.handleClick.bind(this)}>
         <div className="img-count">
           <span>1 / 9</span>
+        </div>
+        <div className="img-action">
+          <span className="icon icon-close" onClick={this.close.bind(this)}>x</span>
         </div>
         <div className="img-list">
           <div className="img-item"><img src="http://img0.ph.126.net/jLvpNC-xm4qD2VrPwzSmWg==/6631427306003511693.jpg" /></div>

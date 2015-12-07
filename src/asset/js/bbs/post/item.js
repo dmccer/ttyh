@@ -17,7 +17,7 @@ export default class PostItem extends React.Component {
   handleShowPic(img: Object, e) {
     e.preventDefault();
     e.stopPropagation();
-    
+
     let largeImgs = this.props.item.imgs.map((item) => {
       return img.large;
     });
@@ -25,6 +25,13 @@ export default class PostItem extends React.Component {
     this.setState({
       currentFullscreenImg: img.large,
       fullscreeImgs: largeImgs
+    });
+  }
+
+  closeFullscrrenImg() {
+    this.setState({
+      fullscreeImgs: null,
+      currentFullscreenImg: null
     });
   }
 
@@ -62,7 +69,8 @@ export default class PostItem extends React.Component {
     let fullscreeImgs = this.state.fullscreeImgs && this.state.fullscreeImgs.length
       ? <FullscreenImg
         images={this.state.fullscreeImgs}
-        on={this.state.currentFullscreenImg} />
+        on={this.state.currentFullscreenImg}
+        onClose={this.closeFullscrrenImg.bind(this)} />
       : null;
 
     return (
