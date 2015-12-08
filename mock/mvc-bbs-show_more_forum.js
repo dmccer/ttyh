@@ -8,8 +8,9 @@ exports.get = function(req, res) {
           avatar: 'http://img0.ph.126.net/Qp9eiBSvEA9wSwxfvulzZw==/6619399748304939789.jpg'
         },
         time: '1分钟前',
+        comment_count: 12,
         praise_count: 20,
-        reply_count: 3,
+        title: '饼脸MG',
         text: '你眼中的秋末，是什么样子的？一件温暖的毛衣，一个咖啡馆里的下午，还是一个爱你的人？',
         imgs: [
           {
@@ -36,8 +37,7 @@ exports.get = function(req, res) {
           avatar: 'http://img1.ph.126.net/YVhlXvqwYBnDKAWPtLRCog==/6630642254699504296.jpg'
         },
         time: '3分钟前',
-        praise_count: 10,
-        reply_count: 5,
+        title: '带你越过山与海',
         text: '时光会老 旅行未完待续  你是唯一。我拿起相机，你推开门窗，山川与大海，风景不过你。',
         imgs: [
           {
@@ -63,11 +63,5 @@ exports.get = function(req, res) {
         ]
       }
     ]
-  })
-}
-
-exports.post = function(req, res) {
-  res.json({
-    msg: '发布评论成功'
   })
 }

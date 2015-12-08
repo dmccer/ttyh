@@ -52,8 +52,12 @@ export default class AboutMe extends React.Component {
 
   queryMyPosts() {
     $.ajax({
-      url: '/posts/my',
+      url: '/mvc/bbs/show_my_forum',
       type: 'GET',
+      data: {
+        uid: null,
+        t: 20
+      },
       success: (data) => {
         this.setState({
           posts: data.list
@@ -64,8 +68,12 @@ export default class AboutMe extends React.Component {
 
   queryMyReplies() {
     $.ajax({
-      url: '/posts/replies/my',
+      url: '/mvc/bbs/show_my_commend',
       type: 'GET',
+      data: {
+        uid: null,
+        t: 20
+      },
       success: (data) => {
         this.setState({
           replies: data.list

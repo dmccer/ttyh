@@ -24,11 +24,13 @@ export default class CommentAdd extends React.Component {
     e.stopPropagation();
 
     $.ajax({
-      url: '/posts/' + this.state.postId + '/comments',
+      url: '/mvc/bbs/comment',
       type: 'POST',
       data: {
-        text: this.state.text,
-        photos: this.state.photo
+        uid: null,
+        pid: this.state.postId,
+        content: this.state.text
+        // photos: this.state.photo
       },
       success: (data) => {
 

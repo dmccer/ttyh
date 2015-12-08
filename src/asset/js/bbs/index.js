@@ -26,12 +26,26 @@ export default class BBS extends React.Component {
   }
 
   query(q) {
+    let url;
+
+    switch(q) {
+      case 'all':
+        url = '/mvc/bbs/show_all';
+        break;
+      case 'focus':
+        url = '/mvc/bbs/show_more_forum';
+        break;
+      case 'hot':
+        url = '/mvc/bbs/hot_forum';
+        break;
+    }
+
     $.ajax({
-      url: '/posts',
-      data: {
-        q: q
-      },
+      url: url,
       type: 'GET',
+      data: {
+        t: 20
+      },
       success: (data) => {
         this.setState({
           posts: data.list

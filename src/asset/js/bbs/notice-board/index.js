@@ -14,7 +14,7 @@ export default class NoticeBoard extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/notice',
+      url: '/mvc/bbs/all_public',
       type: 'GET',
       success: (data) => {
         this.setState(data)

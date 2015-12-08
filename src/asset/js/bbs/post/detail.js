@@ -13,8 +13,12 @@ export default class PostDetailItem extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/posts/' + this.props.id,
+      url: '/mvc/bbs/show_forum',
       type: 'GET',
+      data: {
+        id: this.props.id,
+        uid: null
+      },
       success: (data) => {
         this.setState(data);
       }

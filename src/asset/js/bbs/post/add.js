@@ -36,14 +36,15 @@ export default class PostAdd extends React.Component {
     e.preventDefault();
 
     $.ajax({
-      url: '/posts',
+      url: '/mvc/bbs/post',
       type: 'POST',
       data: {
+        uid: null,
         title: this.state.title,
-        text: this.state.text,
-        show_location: this.state.showAddress,
-        topic: this.state.topic && this.state.topic.id || null,
-        photos: this.state.photo
+        content: this.state.text,
+        addr: this.state.showAddress,
+        tid: this.state.topic && this.state.topic.id || null,
+        imgs_url: this.state.photo
       },
       success: (data) => {
         this.setState({

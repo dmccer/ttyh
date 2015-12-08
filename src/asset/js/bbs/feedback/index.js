@@ -42,8 +42,13 @@ export default class Feedback extends React.Component {
   }
   queryCommentList() {
     $.ajax({
-      url: '/posts/' + this.props.postId + '/comments',
+      url: '/mvc/bbs/show_commend',
       type: 'GET',
+      data: {
+        id: this.props.postId,
+        uid: null,
+        t: 20
+      },
       success: (data) => {
         this.setState({
           comments: data.list
@@ -54,8 +59,13 @@ export default class Feedback extends React.Component {
 
   queryPraiseList() {
     $.ajax({
-      url: '/posts/' + this.props.postId + '/praises',
+      url: '/mvc/bbs/show_praise',
       type: 'GET',
+      data: {
+        id: this.props.postId,
+        uid: null,
+        t: 20
+      },
       success: (data) => {
         this.setState({
           praises: data.list
@@ -66,8 +76,12 @@ export default class Feedback extends React.Component {
 
   praise() {
     $.ajax({
-      url: '/posts/' + this.props.postId + '/praises',
+      url: '/mvc/bbs/praise',
       type: 'POST',
+      data: {
+        uid: null,
+        fid: this.props.postId
+      },
       success: (data) => {
         this.queryPraiseList();
       }
