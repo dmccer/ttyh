@@ -46,7 +46,7 @@ module.exports = {
         'css'
       ]
     }, {
-      test: /\.(png|jpg|svg|ttf)(#[a-zA-Z]*)$/,
+      test: /\.(png|jpg|gif|svg|ttf)(#[a-zA-Z])*$/,
       loaders: [
         'url?limit=8192',
         'img'
@@ -55,7 +55,7 @@ module.exports = {
       test: /\.(html|htm)$/,
       loader: 'html-loader'
     }, {
-      test: /\.(woff|eot)(#[a-zA-Z]*)$/,
+      test: /\.(woff|eot)(#[a-zA-Z])*$/,
       loader: 'file-loader'
     }, {
       test: /\.jsx?$/,

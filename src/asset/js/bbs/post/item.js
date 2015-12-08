@@ -19,11 +19,11 @@ export default class PostItem extends React.Component {
     e.stopPropagation();
 
     let largeImgs = this.props.item.imgs.map((item) => {
-      return img.large;
+      return item.large;
     });
 
     this.setState({
-      currentFullscreenImg: img.large,
+      currentFullscreenImg: largeImgs.indexOf(img.large),
       fullscreeImgs: largeImgs
     });
   }
