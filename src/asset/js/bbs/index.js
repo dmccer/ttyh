@@ -47,11 +47,11 @@ export default class BBS extends React.Component {
         t: 20
       },
       success: (data) => {
-        data.bbsForumList.forEach((item) => {
-          item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
-        });
+        // data.bbsForumList.forEach((item) => {
+        //   item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
+        // });
         this.setState({
-          posts: data.bbsForumList
+          posts: data.list
         });
       }
     });

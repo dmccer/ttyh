@@ -3,7 +3,7 @@ var path = require('path');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-
+// 'webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server',
 module.exports = {
   entry: {
     bbs: './src/asset/js/bbs/index.js',
@@ -79,9 +79,10 @@ module.exports = {
     inline: true,
     proxy: {
       '/mvc/bbs*': {
-          target: 'http://api.ttyhuo.com:81',
+          // target: 'http://api.ttyhuo.com:81',
+          target: 'http://o.dp:3000',
           secure: false
       }
     }
-  },
+  }
 };

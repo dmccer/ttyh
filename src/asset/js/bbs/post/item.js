@@ -93,7 +93,7 @@ export default class PostItem extends React.Component {
         <article className="post-body">
           <h2>{this.props.item.title}</h2>
           <section className="post-content">
-            <p className="post-text"><b>#{this.props.item.title}#</b>{this.props.item.content}</p>
+            <p className="post-text"><b>#{this.props.item.title}#</b>{this.props.item.text}</p>
             <ul className="post-photos">
               {imgs}
             </ul>
