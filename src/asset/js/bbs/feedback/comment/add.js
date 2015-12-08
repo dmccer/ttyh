@@ -61,6 +61,24 @@ export default class CommentAdd extends React.Component {
     })
   }
 
+  switchResMenu(menu: string) {
+    if (menu === this.state.resMenu) {
+      this.setState({
+        resMenu: null
+      });
+
+      return;
+    }
+
+    this.setState({
+      resMenu: menu
+    });
+  }
+
+  closeResPicker() {
+    this.switchResMenu(this.state.resMenu);
+  }
+
   render() {
     return (
       <section className="comment-add">
@@ -71,6 +89,7 @@ export default class CommentAdd extends React.Component {
               placeholder="这里输入评论"
               value={this.state.text}
               onChange={this.handleCommentChange.bind(this)}
+              onFocus={this.closeResPicker.bind(this)}
               ></textarea>
             <span className="char-count">{this.state.text.length}/{this.state.maxCommentLen}</span>
           </div>
@@ -78,7 +97,12 @@ export default class CommentAdd extends React.Component {
             <button className="btn teal">发布</button>
           </div>
           <div className="footer fixed">
-            <ResPicker menus={['emoj', 'photo']} onPick={this.handlePickRes.bind(this)} />
+            <ResPicker
+              menus={['emoj', 'photo']}
+              onPick={this.handlePickRes.bind(this)}
+              on={this.state.resMenu}
+              onSwitch={this.switchResMenu.bind(this)}
+            />
           </div>
         </form>
       </section>

@@ -45,16 +45,7 @@ export default class ResPicker extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    if (menu.id === this.state.on) {
-      this.setState({
-        on: null
-      });
-      return;
-    }
-
-    this.setState({
-      on: menu.id
-    });
+    this.props.onSwitch(menu.id);
   }
 
   pickTopic(topic: Object) {
@@ -78,7 +69,7 @@ export default class ResPicker extends React.Component {
   render() {
     let picker;
 
-    switch (this.state.on) {
+    switch (this.props.on) {
       case 'topic':
         picker = <TopicPicker onPick={this.pickTopic.bind(this)} />
         break;
@@ -95,7 +86,7 @@ export default class ResPicker extends React.Component {
         <li
           key={'picker-menu_' + index}
           onClick={this.switchMenu.bind(this, menu)}
-          className={classNames(this.state.on === menu.id ? 'on': '')}>
+          className={classNames(this.props.on === menu.id ? 'on': '')}>
           <a href="#">{menu.text}</a>
         </li>
       )

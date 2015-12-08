@@ -108,6 +108,10 @@ export default class PostAdd extends React.Component {
     })
   }
 
+  closeResPicker() {
+    this.switchResMenu(this.state.resMenu);
+  }
+
   delTopic() {
     this.setState({
       topic: null
@@ -117,6 +121,20 @@ export default class PostAdd extends React.Component {
   toggleAddress() {
     this.setState({
       showAddress: !this.state.showAddress
+    });
+  }
+
+  switchResMenu(menu: string) {
+    if (menu === this.state.resMenu) {
+      this.setState({
+        resMenu: null
+      });
+
+      return;
+    }
+
+    this.setState({
+      resMenu: menu
     });
   }
 
@@ -145,6 +163,7 @@ export default class PostAdd extends React.Component {
               placeholder="标题"
               value={this.state.title}
               onChange={this.handleTitleChange.bind(this)}
+              onFocus={this.closeResPicker.bind(this)}
             />
             <span className="char-count">{this.state.title.length}/20</span>
           </div>
@@ -155,6 +174,7 @@ export default class PostAdd extends React.Component {
                 placeholder="正文"
                 value={this.state.text}
                 onChange={this.handleTextChange.bind(this)}
+                onFocus={this.closeResPicker.bind(this)}
               ></textarea>
               <span className="char-count">{this.state.text.length}/2000</span>
             </div>
@@ -175,7 +195,12 @@ export default class PostAdd extends React.Component {
                 </div>
               </li>
             </ul>
-            <ResPicker menus={['topic', 'emoj', 'photo']} onPick={this.handlePickRes.bind(this)} />
+            <ResPicker
+              menus={['topic', 'emoj', 'photo']}
+              onPick={this.handlePickRes.bind(this)}
+              on={this.state.resMenu}
+              onSwitch={this.switchResMenu.bind(this)}
+            />
           </section>
         </form>
         {
