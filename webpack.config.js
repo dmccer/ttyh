@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix')
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -10,7 +11,7 @@ module.exports = {
     'bbs-post': './src/asset/js/bbs/post/add.js',
     'bbs-detail': './src/asset/js/bbs/detail.js',
     'about-me': './src/asset/js/bbs/about-me/index.js',
-    vendor: ['./bower_components/zepto/zepto.js']
+    vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './bower_components/zepto/zepto.js']
   },
   output: {
     path: path.join(__dirname, 'dist', 'js'),
@@ -71,5 +72,16 @@ module.exports = {
       new LessPluginCleanCSS({advanced: true, keepSpecialComments: false}),
       new LessPluginAutoPrefix({ browsers: ['last 3 versions', 'Android 4'] })
     ]
-  }
+  },
+  devtool: 'eval-source-map',
+  devServer: {
+    hot: true,
+    inline: true,
+    proxy: {
+      '/mvc/bbs*': {
+          target: 'http://api.ttyhuo.com:81',
+          secure: false
+      }
+    }
+  },
 };

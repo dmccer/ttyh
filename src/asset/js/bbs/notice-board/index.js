@@ -17,7 +17,10 @@ export default class NoticeBoard extends React.Component {
       url: '/mvc/bbs/all_public',
       type: 'GET',
       success: (data) => {
-        this.setState(data)
+        this.setState({
+          time: new Date(data.bbsForumList[0].create_time).toLocaleDateString().substring(5).replace('/', '-'),
+          text: data.bbsForumList[0].content
+        })
       }
     })
   }

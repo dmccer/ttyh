@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha test",
     "prestart": "npm install;./node_modules/.bin/bower --allow-root install;",
-    "start": "./node_modules/.bin/gulp watch & ./node_modules/.bin/webpack --watch & ./node_modules/.bin/imock -j mock -w dist -p 3000"
+    "start": "./node_modules/.bin/gulp watch & ./node_modules/.bin/webpack --watch & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "build": "dist",
   "repository": {
@@ -42,6 +42,7 @@
     "gulp-less": "^3.0.5",
     "gulp-minify-css": "^1.2.1",
     "html-loader": "^0.4.0",
+    "html-webpack-plugin": "^1.7.0",
     "img-loader": "^1.2.0",
     "imock": "^3.2.1",
     "jade": "^1.11.0",
@@ -53,6 +54,7 @@
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^1.12.9"
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
   }
 }
