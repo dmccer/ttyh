@@ -111,6 +111,8 @@ export default class Feedback extends React.Component {
         <div className="action-bar-holder"></div>
         <ActionBar
           postId={this.props.postId}
+          tid={this.props.topicId}
+          uid={this.state.uid}
           onPraise={this.praise.bind(this)}
         />
       </section>

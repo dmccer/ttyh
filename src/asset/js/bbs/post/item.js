@@ -2,6 +2,7 @@ import './item.less';
 import React from 'react';
 
 import FullscreenImg from '../../fullscreen-img/';
+import querystring from 'querystring';
 
 export default class PostItem extends React.Component {
   constructor() {
@@ -11,7 +12,7 @@ export default class PostItem extends React.Component {
   }
 
   handleClickItem(post) {
-    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?id=' + post.id);
+    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + querystring.stringify({ id: post.id, tid: post.tid }));
   }
 
   handleShowPic(img: string, e) {

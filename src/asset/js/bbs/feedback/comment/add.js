@@ -15,7 +15,9 @@ export default class CommentAdd extends React.Component {
     this.state = {
       text: '',
       maxCommentLen: 2000,
-      postId: query.postId
+      pid: query.id,
+      tid: query.tid,
+      uid: query.uidid
     }
   }
 
@@ -27,13 +29,13 @@ export default class CommentAdd extends React.Component {
       url: '/mvc/bbs/comment',
       type: 'POST',
       data: {
-        uid: null,
-        pid: this.state.postId,
-        content: this.state.text
+        uid: this.state.uid,
+        pid: this.state.pid,
+        content: this.state.text,
+        tid: this.state.tid,
         // photos: this.state.photo
       },
       success: (data) => {
-
       },
       error: () => {
 
