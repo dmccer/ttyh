@@ -5,15 +5,19 @@ import classNames from 'classnames';
 import CommentList from './comment/';
 import PraiseList from './praise/';
 import ActionBar from './action-bar/';
+import querystring from 'querystring';
 
 export default class Feedback extends React.Component {
   constructor() {
     super();
 
+    let query = querystring.parse(location.search.substring(1))
+
     this.state = {
       tab: 'comment', // comment, praise
       comments: [],
-      praises: []
+      praises: [],
+      uid: query.uid
     }
   }
 
@@ -63,7 +67,6 @@ export default class Feedback extends React.Component {
       type: 'GET',
       data: {
         id: this.props.postId,
-        uid: null,
         t: 20
       },
       success: (data) => {
@@ -79,7 +82,7 @@ export default class Feedback extends React.Component {
       url: '/mvc/bbs/praise',
       type: 'POST',
       data: {
-        uid: null,
+        uid: this.state.uid,
         fid: this.props.postId
       },
       success: (data) => {

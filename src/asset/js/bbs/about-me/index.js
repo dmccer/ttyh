@@ -4,12 +4,15 @@ import ReactDOM from 'react-dom';
 import AboutMeHeadBar from './head-bar/';
 import Post from '../post/';
 import ReplyList from './reply/';
+import querystring from 'querystring';
 
 export default class AboutMe extends React.Component {
   constructor() {
     super();
 
+    let query = querystring.parse(location.search.substring(1));
     this.state = {
+      uid: query.uid,
       tab: 'post', // post, reply
       posts: [],
       replies: [],
@@ -39,15 +42,21 @@ export default class AboutMe extends React.Component {
   }
 
   checkHasNewPostsOrReplies() {
-    $.ajax({
-      url: '/notice/aboutme',
-      type: 'GET',
-      success: (data) => {
-        this.state.tabs.forEach((tab) => {
-          tab.has = data[tab.key];
-        });
-      }
-    })
+    // $.ajax({
+    //   url: '/notice/aboutme',
+    //   type: 'GET',
+    //   success: (data) => {
+    //     this.state.tabs.forEach((tab) => {
+    //       tab.has = data[tab.key];
+    //     });
+    //   }
+    // })
+  }
+
+  format(list: Object) {
+    list.forEach((item) => {
+      item.imgs = item.imgs_url && item.imgs_url.split(';') || [];
+    });
   }
 
   queryMyPosts() {
@@ -55,13 +64,17 @@ export default class AboutMe extends React.Component {
       url: '/mvc/bbs/show_my_forum',
       type: 'GET',
       data: {
-        uid: null,
+        uid: this.state.uid,
         t: 20
       },
       success: (data) => {
-        this.setState({
-          posts: data.list
-        });
+        if (data && data.bbsForumList && data.bbsForumList.length) {
+          this.format(data.bbsForumList);
+
+          this.setState({
+            posts: data.bbsForumList
+          });
+        }
       }
     });
   }
@@ -71,13 +84,17 @@ export default class AboutMe extends React.Component {
       url: '/mvc/bbs/show_my_commend',
       type: 'GET',
       data: {
-        uid: null,
+        uid: this.state.uid,
         t: 20
       },
       success: (data) => {
-        this.setState({
-          replies: data.list
-        });
+        if (data && data.bbsForumList && data.bbsForumList.length) {
+          this.format(data.bbsForumList);
+
+          this.setState({
+            replies: data.bbsForumList
+          });
+        }
       }
     })
   }
