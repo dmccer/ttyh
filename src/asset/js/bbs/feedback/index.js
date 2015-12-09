@@ -51,7 +51,7 @@ export default class Feedback extends React.Component {
       },
       success: (data) => {
         this.setState({
-          comments: data.list
+          comments: data.bbsForumList
         })
       }
     })
@@ -68,7 +68,7 @@ export default class Feedback extends React.Component {
       },
       success: (data) => {
         this.setState({
-          praises: data.list
+          praises: data.bbsPraiseList
         })
       }
     })
@@ -105,6 +105,7 @@ export default class Feedback extends React.Component {
             }
           })()
         }
+        <div className="action-bar-holder"></div>
         <ActionBar
           postId={this.props.postId}
           onPraise={this.praise.bind(this)}

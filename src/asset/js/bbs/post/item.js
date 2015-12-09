@@ -14,17 +14,13 @@ export default class PostItem extends React.Component {
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?id=' + post.id);
   }
 
-  handleShowPic(img: Object, e) {
+  handleShowPic(img: string, e) {
     e.preventDefault();
     e.stopPropagation();
 
-    let largeImgs = this.props.item.imgs.map((item) => {
-      return item.large;
-    });
-
     this.setState({
-      currentFullscreenImg: largeImgs.indexOf(img.large),
-      fullscreeImgs: largeImgs
+      currentFullscreenImg: this.props.item.imgs.indexOf(img),
+      fullscreeImgs: this.props.item.imgs
     });
   }
 
@@ -46,8 +42,8 @@ export default class PostItem extends React.Component {
             <li
               key={'img_' + index}
               onClick={this.handleShowPic.bind(this, item)}>
-              <a href={item.large}>
-                <img src={item.thumbnail} />
+              <a href={item}>
+                <img src={item} />
               </a>
               {imgCount}
             </li>
@@ -58,15 +54,15 @@ export default class PostItem extends React.Component {
           <li
             key={'img_' + index}
             onClick={this.handleShowPic.bind(this, item)}>
-            <a href={item.large}>
-              <img src={item.thumbnail} />
+            <a href={item}>
+              <img src={item} />
             </a>
           </li>
         );
       });
     }
 
-    if (imgs.length > 3) {
+    if (imgs && imgs.length > 3) {
       imgs.splice(3, this.props.item.imgs.length - 3);
     }
 
@@ -77,12 +73,13 @@ export default class PostItem extends React.Component {
         onClose={this.closeFullscrrenImg.bind(this)} />
       : null;
 
+    // <img className="avatar" src={this.props.item.user.avatar} />
+    // <div className="poster">{this.props.item.user.nickname}</div>
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
-            <img className="avatar" src={this.props.item.user.avatar} />
-            <div className="poster">{this.props.item.user.nickname}</div>
+
             <div className="post-time"><i className="icon icon-clock"></i>{new Date(this.props.item.create_time).toLocaleDateString().substring(5).replace('/', '-')}</div>
           </div>
           <div className="post-feedback">
@@ -93,7 +90,7 @@ export default class PostItem extends React.Component {
         <article className="post-body">
           <h2>{this.props.item.title}</h2>
           <section className="post-content">
-            <p className="post-text"><b>#{this.props.item.title}#</b>{this.props.item.text}</p>
+            <p className="post-text"><b>#{this.props.item.title}#</b>{this.props.item.content}</p>
             <ul className="post-photos">
               {imgs}
             </ul>

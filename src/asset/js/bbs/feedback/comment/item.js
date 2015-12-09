@@ -8,12 +8,17 @@ export default class Comment extends React.Component {
   }
 
   render() {
+    // <img className="avatar" src={this.props.item.user.avatar} />
+    // <div className="poster">{this.props.item.user.nickname}</div>
+
+    // <div className="photo">
+    //   <a href="#"><img src="http://img1.ph.126.net/YoeTcZOUqh9cX7nrFLk09A==/6631415211375428308.jpg" /></a>
+    // </div>
     return (
       <li className="comment-item">
         <header className="row">
           <div className="profile">
-            <img className="avatar" src={this.props.item.user.avatar} />
-            <div className="poster">{this.props.item.user.nickname}</div>
+
             <div className="post-meta">
               {
                 (() => {
@@ -22,20 +27,17 @@ export default class Comment extends React.Component {
                   }
                 })()
               }
-              <i className="icon icon-clock"></i>{this.props.item.time}
+              <i className="icon icon-clock"></i>{new Date(this.props.item.create_time).toLocaleDateString().substring(5).replace('/', '-')}
             </div>
           </div>
           <div className="post-feedback">
-            <span><i className="icon icon-praise"></i>{this.props.item.praise_count}</span>
-            <span><i className="icon icon-edit"></i>{this.props.item.comment_count}</span>
+            <span><i className="icon icon-praise"></i>{this.props.item.pcount}</span>
+            <span><i className="icon icon-edit"></i>{this.props.item.rcount}</span>
           </div>
         </header>
         <article className="post-body">
           <section className="post-content">
-            <p className="post-text">{this.props.item.text}</p>
-            <div className="photo">
-              <a href="#"><img src="http://img1.ph.126.net/YoeTcZOUqh9cX7nrFLk09A==/6631415211375428308.jpg" /></a>
-            </div>
+            <p className="post-text">{this.props.item.content}</p>
             {
               (() => {
                 if (this.props.item.replied) {

@@ -1,39 +1,26 @@
 @import '../../../less/global/site.variable';
+@import '../../../less/global/util.less';
 
 .topic-list {
-  .topic-group {
-    @padding: 5px;
-    @borderColor: @c_lightGrey;
+  .clearfix();
+  background-color: @white;
 
-    background-color: @white;
-    overflow: hidden;
+  > a {
+    display: block;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid @darkWhite;
+    color: @c_lightBlack;
+    font-size: 1.2rem;
 
-    > div {
-      float: left;
-      width: 50%;
-      box-sizing: border-box;
-      border-bottom: 1px solid @borderColor;
-      padding-top: @padding;
-      padding-bottom: @padding;
-
-      a {
-        display: block;
-        color: @c_lightBlack;
-        text-align: center;
-        font-size: 1.3rem;
-        padding-top: 8.5px;
-        padding-bottom: 8.5px;
-      }
-
-      &:first-child a {
-        border-right: 1px solid @borderColor;
-      }
+    &:nth-child(2n+1) {
+      border-right: 1px solid @darkWhite;
     }
+  }
 
-    &:last-child {
-      > div {
-        border-bottom: none;
-      }
-    }
+  > * {
+    float: left;
   }
 }

@@ -13,7 +13,11 @@ export default class Praise extends React.Component {
         <div className="profile">
           <i className="avatar"></i>
           <div className="poster">用户名</div>
-          <div className="post-meta"><span className="floor">1楼</span><i className="icon icon-clock"></i>刚刚</div>
+          <div className="post-meta">
+            <span className="floor">{this.props.item.floor}楼</span>
+            <i className="icon icon-clock"></i>
+            {new Date(this.props.item.do_time).toLocaleDateString().substring(5).replace('/', '-')}
+          </div>
         </div>
       </li>
     )
