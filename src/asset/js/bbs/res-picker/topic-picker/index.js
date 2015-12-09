@@ -7,22 +7,20 @@ export default class TopicPicker extends React.Component {
     super();
 
     this.state = {
-      topics: [
-        {
-          id: 'jyfx',
-          text: '经验分享'
-        }, {
-          id: 'sslk',
-          text: '实时路况'
-        }, {
-          id: 'qsyk',
-          text: '轻松一刻'
-        }, {
-          id: 'wxwx',
-          text: '我型我秀'
-        }
-      ]
+      topics: []
     };
+  }
+
+  componentDidMount() {
+    $.ajax({
+      url: '/mvc/bbs/all_topic',
+      type: 'GET',
+      success: (data) => {
+        this.setState({
+          topics: data.bbsTopicList
+        });
+      }
+    })
   }
 
   pick(topic: Object, e: Object) {
@@ -38,7 +36,7 @@ export default class TopicPicker extends React.Component {
         <a
           href="#"
           key={'topic-item_' + index}
-          onClick={this.pick.bind(this, topic)}>{topic.text}</a>
+          onClick={this.pick.bind(this, topic)}>{topic.name}</a>
       )
     });
 

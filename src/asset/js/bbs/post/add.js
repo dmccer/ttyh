@@ -7,10 +7,22 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import ResPicker from '../res-picker/';
 import TipBox from '../tipbox/';
+import querystring from 'querystring';
+
+const SUBMIT_CODE_MSG_MAP = {
+  0: '成功',
+  1: '参数有误',
+  3: 'title 为空',
+  5: 'content 为空',
+  7: 'uid 有误',
+  9: '添加失败'
+}
 
 export default class PostAdd extends React.Component {
   constructor() {
     super();
+
+    let query = querystring.parse(location.search.substring(1));
 
     this.state = {
       title: '',
@@ -18,7 +30,8 @@ export default class PostAdd extends React.Component {
       maxTitleLen: 20,
       maxTextLen: 2000,
       submited: false,
-      address: {}
+      address: {},
+      uid: query.uid
     }
   }
 
@@ -39,7 +52,7 @@ export default class PostAdd extends React.Component {
       url: '/mvc/bbs/post',
       type: 'POST',
       data: {
-        uid: null,
+        uid: this.state.uid,
         title: this.state.title,
         content: this.state.text,
         addr: this.state.showAddress,
@@ -47,11 +60,19 @@ export default class PostAdd extends React.Component {
         imgs_url: this.state.photo
       },
       success: (data) => {
-        this.setState({
-          submited: true,
-          submitOk: true,
-          submitMsg: '发布成功'
-        });
+        if (data === 0) {
+          this.setState({
+            submited: true,
+            submitOk: true,
+            submitMsg: '发布成功'
+          });
+        } else {
+          this.setState({
+            submited: true,
+            submitOk: false,
+            submitMsg: SUBMIT_CODE_MSG_MAP[data]
+          });
+        }
       },
       error: () => {
         this.setState({
@@ -146,7 +167,7 @@ export default class PostAdd extends React.Component {
       ? (
         <div className="action-tag" onClick={this.delTopic.bind(this)}>
           <i className="icon icon-card"></i>
-          <span>{this.state.topic.text}</span>
+          <span>{this.state.topic.name}</span>
           <i className="icon icon-minus round yellow action-icon"></i>
         </div>
       )

@@ -10,6 +10,7 @@ import Post from './post/';
 import HotPost from './post/hot';
 import Topic from './topic/';
 import ActiveUser from './active-user/';
+import Loading from  '../loading/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -40,6 +41,8 @@ export default class BBS extends React.Component {
         break;
     }
 
+    this.refs.loading.show('加载中...');
+
     $.ajax({
       url: url,
       type: 'GET',
@@ -54,6 +57,8 @@ export default class BBS extends React.Component {
         this.setState({
           posts: data.bbsForumList
         });
+
+        this.refs.loading.close();
       }
     });
   }
@@ -92,6 +97,7 @@ export default class BBS extends React.Component {
             }
           })()
         }
+        <Loading ref='loading' />
       </div>
     );
   }

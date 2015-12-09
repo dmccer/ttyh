@@ -1,6 +1,16 @@
 @import '../global/site.variable';
 @import './icon-util.less';
 
+@keyframes loading {
+  from {
+    transform: rotateZ(0deg);
+  }
+
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
 .icon {
   display: inline-block;
   vertical-align: middle;
@@ -63,5 +73,21 @@
       font-size: 1.8rem;
       color: @white;
     }
+  }
+
+  &.icon-loading {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-left: 2px solid @c_teal;
+    border-top: 2px solid @c_lightGrey;
+    border-bottom: 2px solid @c_lightGrey;
+    border-right: 2px solid @c_lightGrey;
+    border-radius: 40px;
+    animation-duration: .8s;
+    animation-name: loading;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-delay: 0;
   }
 }
