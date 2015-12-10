@@ -1,0 +1,94 @@
+@import '../../less/global/site.variable';
+
+body {
+  background-color: @white;
+}
+
+.login {
+  .logo {
+    height: 45px;
+    background-color: @white;
+  }
+
+  .form .control {
+    margin-bottom: 0;
+  }
+
+  .form {
+    border-top: 10px solid @c_lightGrey;
+  }
+
+  .field {
+    height: 50px;
+    box-sizing: border-box;
+    background-color: @white;
+
+    > label {
+      display: block;
+      float: left;
+      width: 20px;
+      height: 30px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    &:first-child {
+      border-top: 1px solid @c_lightGrey;
+    }
+
+    &:last-child {
+      border-bottom: 1px solid @c_lightGrey;
+
+      .control input {
+        border-bottom: none;
+      }
+    }
+
+    .control {
+      height: 100%;
+      overflow: hidden;
+
+      input {
+        height: 100%;
+        font-size: 1.5rem;
+        border-radius: 0;
+        border-right: none;
+        border-left: none;
+        border-top: none;
+        border-bottom: 1px solid @c_lightGrey;
+      }
+    }
+  }
+
+  .forget {
+    text-align: right;
+    padding: 15px;
+
+    a {
+      color: @c_teal;
+      font-size: 1.2rem;
+    }
+  }
+
+  .actions {
+    padding-left: 15px;
+    padding-right: 15px;
+
+    .btn {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      height: 35px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &.teal-line {
+        background-color: @white;
+        border: 1px solid @c_teal;
+        color: @c_teal;
+        text-align: center;
+      }
+    }
+  }
+}

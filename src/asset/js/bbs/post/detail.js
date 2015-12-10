@@ -1,6 +1,7 @@
 import './item.less';
 import React from 'react';
 import classNames from 'classnames';
+import Loading from '../../loading/';
 
 export default class PostDetailItem extends React.Component {
   constructor() {
@@ -12,6 +13,8 @@ export default class PostDetailItem extends React.Component {
   }
 
   componentDidMount() {
+    this.refs.loading.show('加载中...');
+
     $.ajax({
       url: '/mvc/bbs/show_forum',
       type: 'GET',
@@ -25,6 +28,8 @@ export default class PostDetailItem extends React.Component {
 
           this.setState(data.bbsForumList[0]);
         }
+
+        this.refs.loading.close();
       }
     })
   }
@@ -73,6 +78,7 @@ export default class PostDetailItem extends React.Component {
           </section>
           <div className="address"><i className="icon icon-address"></i>{this.state.addr}</div>
         </article>
+        <Loading ref='loading' />
       </section>
     );
   }
