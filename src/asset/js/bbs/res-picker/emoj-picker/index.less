@@ -1,19 +1,26 @@
 @import '../../../../less/global/site.variable';
 @import '../../../../less/global/util.less';
 
-.emoj-list {
+.emoj-list-wrapper {
+
+}
+.emoj-list-group, .slick-cloned {
   .clearfix();
 
-  > a {
+  .emoj {
     display: block;
+    float: left;
     border-bottom: 1px solid @darkWhite;
     border-right: 1px solid @darkWhite;
-    width: 12.5%;
+    width: 16.6%;
     box-sizing: border-box;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    float: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
     text-align: center;
+
+    img {
+      display: inline-block;
+    }
 
     &:nth-child(8n) {
       border-right: none;
