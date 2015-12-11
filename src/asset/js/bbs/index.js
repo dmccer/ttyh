@@ -11,6 +11,7 @@ import HotPost from './post/hot';
 import Topic from './topic/';
 import ActiveUser from './active-user/';
 import Loading from  '../loading/';
+import Poptip from  '../poptip/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -34,8 +35,7 @@ export default class BBS extends React.Component {
         url = '/mvc/bbs/show_all';
         break;
       case 'focus':
-        url = '/mvc/bbs/show_more_forum';
-        break;
+        return this.queryFocusForum();
       case 'hot':
         url = '/mvc/bbs/hot_forum';
         break;
@@ -50,14 +50,90 @@ export default class BBS extends React.Component {
         t: 20
       },
       success: (data) => {
-        data.bbsForumList.forEach((item) => {
-          item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
+        this.formatForums(data.bbsForumList)
+
+        let uids = data.bbsForumList.map((item) => {
+          return item.uid;
         });
 
-        this.setState({
-          posts: data.bbsForumList
+        this.queryUserInfo(uids, (users) => {
+          data.bbsForumList.forEach((forum) => {
+            let user = users.find((user) => {
+              return user.userWithLatLng.userID === forum.uid;
+            });
+
+            forum.user = {
+              name: user.userWithLatLng.userName,
+              avatar: user.userWithLatLng.faceImgUrl
+            };
+          });
+
+          this.setState({
+            posts: list
+          });
+
+          this.refs.loading.close();
+        });
+      },
+      error: () => {
+        this.refs.loading.close();
+      }
+    });
+  }
+
+  formatForums(list: Array<Object>) {
+    list.forEach((item) => {
+      item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
+    });
+  }
+
+  queryFocusedUsers(cb) {
+    $.ajax({
+      url: '/mvc/mineFellowUserForRc',
+      type: 'GET',
+      data: {
+        pageSize: 1000
+      },
+      success: (users) => {
+        let uids = users.map((user) => {
+          return user.userID;
         });
 
+        cb(uids);
+      },
+      error: () => {
+
+      }
+    })
+  }
+
+  queryFocusForum() {
+    this.queryFocusedUsers((uids) => {
+      $.ajax({
+        url: '/mvc/bbs/show_more_forum',
+        type: 'GET',
+        data: {
+          userIDs: uids.join()
+        },
+        success: (data) => {
+          this.formatForums(data.bbsForumList);
+          this.queryUserInfo(data.bbsForumList);
+        }
+      });
+    })
+
+  }
+
+  queryUserInfo(uids: Array<Number>, cb: Function) {
+    $.ajax({
+      url: '/mvc/searchUsersEncrypt',
+      type: 'GET',
+      data: {
+        userIDs: uids.join()
+      },
+      success: cb,
+      error: () => {
+        this.refs.poptip.error('获取用户头像失败');
         this.refs.loading.close();
       }
     });
@@ -98,6 +174,7 @@ export default class BBS extends React.Component {
           })()
         }
         <Loading ref='loading' />
+        <Poptip ref='poptip' />
       </div>
     );
   }

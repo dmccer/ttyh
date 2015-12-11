@@ -36,6 +36,27 @@ export default class PostAdd extends React.Component {
   }
 
   componentDidMount() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        $.ajax({
+          url: 'http://api.map.baidu.com/geocoder/v2/',
+          type: 'GET',
+          data: {
+            ak: 'SescICw4rm91UukwhLi54g0E',
+            location: `${pos.coords.latitude},${pos.coords.longitude}`,
+            output: 'json'
+          },
+          dataType: 'jsonp',
+          success: (data) => {
+            // data.result.addressComponent.city
+            // data.result.addressComponent.district
+            console.log(data);
+          },
+          error: () => {}
+        })
+      });
+    }
+
     // 获取位置
     this.setState({
       address: {
