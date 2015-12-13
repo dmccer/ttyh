@@ -5,6 +5,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import ResPicker from './../../res-picker/';
+import Loading from  '../../../loading/';
+import Poptip from  '../../../poptip/';
+
+const COMMENT_ERR = {
+  1: '参数有误',
+  3: '话题ID有误',
+  4: '帖子ID有误' ,
+  5: '发布内容不能为空',
+  7: '用户ID有误或被评论帖子不存在',
+  8: '发布评论失败',
+  9: '发布评论失败'
+}
 
 export default class CommentAdd extends React.Component {
   constructor() {
@@ -25,6 +37,13 @@ export default class CommentAdd extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    if (this.state.content == null) {
+      this.refs.poptip.warn(COMMENT_ERR[5]);
+      return;
+    }
+
+    this.refs.loading.show('发布中...');
+
     $.ajax({
       url: '/mvc/bbs/comment',
       type: 'POST',
@@ -36,6 +55,19 @@ export default class CommentAdd extends React.Component {
         // photos: this.state.photo
       },
       success: (data) => {
+        this.refs.loading.close();
+
+        if (data !== 0) {
+          this.refs.poptip.warn(COMMENT_ERR[data] || '发布评论失败');
+
+          return;
+        }
+
+        this.refs.poptip.success('发布成功');
+
+        setTimeout(() => {
+          history.back();
+        }, 3000)
       },
       error: () => {
 
@@ -61,8 +93,29 @@ export default class CommentAdd extends React.Component {
     }
 
     this.setState({
-      text: this.state.text + res.emoj.id
+      lastEmoj: res.emoj,
+      text: this.state.text + res.emoj
     })
+  }
+
+  delEmoj() {
+    let text = this.state.text;
+    let lastEmoj = this.state.lastEmoj;
+
+    // 最后不是表情
+    if (!lastEmoj) {
+      return;
+    }
+
+    let len = lastEmoj.length;
+    let newText = text.substr(0, text.length - len);
+    let m = newText.match(/\[\/f[0-9]+\]$/);
+    lastEmoj = m && m.length ? m[0] : null;
+
+    this.setState({
+      lastEmoj: lastEmoj,
+      text: newText
+    });
   }
 
   switchResMenu(menu: string) {
@@ -105,10 +158,13 @@ export default class CommentAdd extends React.Component {
               menus={['emoj', 'photo']}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
+              onDelEmoj={this.delEmoj.bind(this)}
               onSwitch={this.switchResMenu.bind(this)}
             />
           </div>
         </form>
+        <Loading ref='loading' />
+        <Poptip ref='poptip' />
       </section>
     )
   }

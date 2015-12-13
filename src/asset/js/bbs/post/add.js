@@ -147,8 +147,29 @@ export default class PostAdd extends React.Component {
     }
 
     this.setState({
-      text: this.state.text + res.emoj.id
+      lastEmoj: res.emoj,
+      text: this.state.text + res.emoj
     })
+  }
+
+  delEmoj() {
+    let text = this.state.text;
+    let lastEmoj = this.state.lastEmoj;
+
+    // 最后不是表情
+    if (!lastEmoj) {
+      return;
+    }
+
+    let len = lastEmoj.length;
+    let newText = text.substr(0, text.length - len);
+    let m = newText.match(/\[\/f[0-9]+\]$/);
+    lastEmoj = m && m.length ? m[0] : null;
+
+    this.setState({
+      lastEmoj: lastEmoj,
+      text: newText
+    });
   }
 
   closeResPicker() {
@@ -242,6 +263,7 @@ export default class PostAdd extends React.Component {
               menus={['topic', 'emoj', 'photo']}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
+              onDelEmoj={this.delEmoj.bind(this)}
               onSwitch={this.switchResMenu.bind(this)}
             />
           </section>

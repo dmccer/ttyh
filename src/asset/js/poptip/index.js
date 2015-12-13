@@ -19,6 +19,7 @@ export default class Poptip extends React.Component {
     };
 
     this.state.tips.push(tip);
+    this.forceUpdate();
 
     setTimeout(() => {
       const index = this.state.tips.indexOf(tip);
@@ -45,8 +46,14 @@ export default class Poptip extends React.Component {
   }
 
   render() {
-    let tipList = this.state.tips.map((tip) => {
-      return <div className="poptip-cnt"><i className={classNames('icon', 'icon-' + tip.type)}></i>{tip.msg}</div>
+    let tipList = this.state.tips.map((tip, index) => {
+      return (
+        <div
+          className="poptip-cnt"
+          key={'poptip_' + index}>
+          <i className={classNames('icon', 'icon-' + tip.type)}></i>{tip.msg}
+        </div>
+      )
     });
 
     return (

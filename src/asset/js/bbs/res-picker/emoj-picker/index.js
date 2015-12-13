@@ -21,6 +21,10 @@ export default class EmojPicker extends React.Component {
     this.props.onPick(emoj);
   }
 
+  del() {
+    this.props.onDel();
+  }
+
   buildEmojList(page: Number): Array<Object> {
     let list = [];
     let i = 0;
@@ -38,10 +42,22 @@ export default class EmojPicker extends React.Component {
           className="emoj"
           href="#"
           key={key}
-          onClick={this.pick.bind(this, code)}>
+          onClick={this.pick.bind(this, `[/f${code}]`)}>
           <img src={`./img/qq/f${code}.png`} />
         </a>
       );
+
+      if (i === 22) {
+        list.push(
+          <a
+            className="emoj"
+            href="#"
+            key={'emoj-item_clear'}
+            onClick={this.del.bind(this)}>
+            <img src="./img/qq/del.png" />
+          </a>
+        )
+      }
 
       i++;
     }

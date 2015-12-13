@@ -74,13 +74,13 @@ export default class PostItem extends React.Component {
         onClose={this.closeFullscrrenImg.bind(this)} />
       : null;
 
-    // <img className="avatar" src={this.props.item.user.avatar} />
-    // <div className="poster">{this.props.item.user.nickname}</div>
+
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
-
+            <img className="avatar" src={this.props.item.imgUrl} />
+            <div className="poster">{this.props.item.userName}</div>
             <div className="post-time"><i className="icon icon-clock"></i>{new Date(this.props.item.create_time).toLocaleDateString().substring(5).replace('/', '-')}</div>
           </div>
           <div className="post-feedback">

@@ -6,6 +6,17 @@ import CommentList from './comment/';
 import PraiseList from './praise/';
 import ActionBar from './action-bar/';
 import querystring from 'querystring';
+import Loading from '../../loading/';
+import Poptip from '../../poptip/';
+
+const PRAISE_ERR = {
+  1: '参数有误',
+  2: '用户ID有误',
+  3: '帖子ID有误',
+  5: '帖子不存在',
+  7: '重复点赞',
+  9: '点赞提交失败'
+}
 
 export default class Feedback extends React.Component {
   constructor() {
@@ -78,6 +89,8 @@ export default class Feedback extends React.Component {
   }
 
   praise() {
+    this.refs.loading.show('请求中...');
+
     $.ajax({
       url: '/mvc/bbs/praise',
       type: 'POST',
@@ -86,6 +99,15 @@ export default class Feedback extends React.Component {
         fid: this.props.postId
       },
       success: (data) => {
+        this.refs.loading.close();
+
+        if (data !== 0) {
+          this.refs.poptip.warn(PRAISE_ERR[data] || '点赞失败, 请重试');
+
+          return;
+        }
+
+        this.refs.poptip.success('点赞成功');
         this.queryPraiseList();
       }
     })
@@ -115,6 +137,8 @@ export default class Feedback extends React.Component {
           uid={this.state.uid}
           onPraise={this.praise.bind(this)}
         />
+        <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </section>
     )
   }

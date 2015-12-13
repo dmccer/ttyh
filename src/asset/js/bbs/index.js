@@ -32,12 +32,12 @@ export default class BBS extends React.Component {
 
     switch(q) {
       case 'all':
-        url = '/mvc/bbs/show_all';
+        url = '/mvc/bbs_v2/show_all';
         break;
       case 'focus':
         return this.queryFocusForum();
       case 'hot':
-        url = '/mvc/bbs/hot_forum';
+        url = '/mvc/bbs_v2/hot_forum';
         break;
     }
 
@@ -52,28 +52,11 @@ export default class BBS extends React.Component {
       success: (data) => {
         this.formatForums(data.bbsForumList)
 
-        let uids = data.bbsForumList.map((item) => {
-          return item.uid;
+        this.setState({
+          posts: data.bbsForumList
         });
 
-        this.queryUserInfo(uids, (users) => {
-          data.bbsForumList.forEach((forum) => {
-            let user = users.find((user) => {
-              return user.userWithLatLng.userID === forum.uid;
-            });
-
-            forum.user = {
-              name: user.userWithLatLng.userName,
-              avatar: user.userWithLatLng.faceImgUrl
-            };
-          });
-
-          this.setState({
-            posts: list
-          });
-
-          this.refs.loading.close();
-        });
+        this.refs.loading.close();
       },
       error: () => {
         this.refs.loading.close();
@@ -110,7 +93,7 @@ export default class BBS extends React.Component {
   queryFocusForum() {
     this.queryFocusedUsers((uids) => {
       $.ajax({
-        url: '/mvc/bbs/show_more_forum',
+        url: '/mvc/bbs_v2/show_more_forum',
         type: 'GET',
         data: {
           userIDs: uids.join()
@@ -121,7 +104,6 @@ export default class BBS extends React.Component {
         }
       });
     })
-
   }
 
   queryUserInfo(uids: Array<Number>, cb: Function) {

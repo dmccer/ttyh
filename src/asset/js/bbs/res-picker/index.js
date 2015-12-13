@@ -60,6 +60,10 @@ export default class ResPicker extends React.Component {
     });
   }
 
+  delEmoj() {
+    this.props.onDelEmoj();
+  }
+
   handleImgsChange(photo: Array<Object>) {
     this.props.onPick({
       photo: photo
@@ -74,7 +78,7 @@ export default class ResPicker extends React.Component {
         picker = <TopicPicker onPick={this.pickTopic.bind(this)} />
         break;
       case 'emoj':
-        picker = <EmojPicker onPick={this.pickEmoj.bind(this)} />
+        picker = <EmojPicker onPick={this.pickEmoj.bind(this)} onDel={this.delEmoj.bind(this)} />
         break;
       case 'photo':
         picker = <ImgPicker onImgsChange={this.handleImgsChange.bind(this)} />
