@@ -10,9 +10,8 @@ export default class AboutMe extends React.Component {
   constructor() {
     super();
 
-    let query = querystring.parse(location.search.substring(1));
     this.state = {
-      uid: query.uid,
+      qs: querystring.parse(location.search.substring(1)),
       tab: 'post', // post, reply
       posts: [],
       replies: [],
@@ -61,10 +60,11 @@ export default class AboutMe extends React.Component {
 
   queryMyPosts() {
     $.ajax({
-      url: '/mvc/bbs/show_my_forum',
+      url: '/mvc/bbs_v2/show_my_forum',
       type: 'GET',
       data: {
-        uid: this.state.uid,
+        uid: this.state.qs.uid,
+        token: this.state.qs.token,
         t: 20
       },
       success: (data) => {
@@ -81,10 +81,11 @@ export default class AboutMe extends React.Component {
 
   queryMyReplies() {
     $.ajax({
-      url: '/mvc/bbs/show_my_commend',
+      url: '/mvc/bbs_v2/show_my_commend',
       type: 'GET',
       data: {
-        uid: this.state.uid,
+        uid: this.state.qs.uid,
+        token: this.state.qs.token,
         t: 20
       },
       success: (data) => {

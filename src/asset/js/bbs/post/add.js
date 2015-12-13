@@ -42,28 +42,23 @@ export default class PostAdd extends React.Component {
           url: 'http://api.map.baidu.com/geocoder/v2/',
           type: 'GET',
           data: {
-            ak: 'SescICw4rm91UukwhLi54g0E',
+            ak: '50b9214f70f98c0315913018ba25b420',
             location: `${pos.coords.latitude},${pos.coords.longitude}`,
             output: 'json'
           },
           dataType: 'jsonp',
           success: (data) => {
-            // data.result.addressComponent.city
-            // data.result.addressComponent.district
-            console.log(data);
+            this.setState({
+              address: {
+                city: data.result.addressComponent.city,
+                area: data.result.addressComponent.district
+              }
+            })
           },
           error: () => {}
         })
       });
     }
-
-    // 获取位置
-    this.setState({
-      address: {
-        city: '上海',
-        area: '浦东新区'
-      }
-    });
   }
 
   submit(e) {
@@ -76,7 +71,7 @@ export default class PostAdd extends React.Component {
         uid: this.state.uid,
         title: this.state.title,
         content: this.state.text,
-        addr: this.state.showAddress,
+        addr: this.state.address,
         tid: this.state.topic && this.state.topic.id || null,
         imgs_url: this.state.photo
       },

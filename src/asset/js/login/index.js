@@ -79,6 +79,8 @@ export default class Login extends React.Component {
           return;
         }
 
+        let msg;
+
         switch(res.viewName) {
           case 'user/login':
             msg = '手机号格式不正确';

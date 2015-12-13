@@ -4,12 +4,14 @@ import '../../../less/component/tab.less';
 
 import React from 'react';
 import classNames from 'classnames';
+import querystring from 'querystring';
 
 export default class HeadBar extends React.Component {
   constructor() {
     super();
 
     this.state = {
+      qs: querystring.parse(location.search.substring(1)),
       showSpreadList: false,
       tabVals: ['all', 'focus', 'hot'],
       tabItems: [
@@ -63,11 +65,12 @@ export default class HeadBar extends React.Component {
 
   render() {
     const isAllTabActive = ['all', 'focus'].indexOf(this.props.on) !== -1;
+    const aboutMeUrl = './bbs-about-me.html?' + querystring.stringify(this.state.qs);
 
     return (
       <section className="row head-bar">
         <div className="notice">
-          <a href="./bbs-about-me.html"><i className="icon icon-bell"></i>提醒</a>
+          <a href={aboutMeUrl}><i className="icon icon-bell"></i>提醒</a>
         </div>
         <ul className="tabs grid">
           <li
