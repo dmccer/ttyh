@@ -22,7 +22,7 @@ export default class PostDetailItem extends React.Component {
       type: 'GET',
       data: {
         id: this.props.fid,
-        uid: null
+        uid: this.state.qs.uid
       },
       success: (data) => {
         if (data && data.bbsForumList && data.bbsForumList.length) {
@@ -59,6 +59,33 @@ export default class PostDetailItem extends React.Component {
     });
   }
 
+  render_follow() {
+    if (this.state.uid !== this.state.qs.uid) {
+      if (this.state.follow === 1) {
+        return (
+          <span
+            className="followed">
+            <i className="icon icon-correct"></i>
+            <b>已关注</b>
+          </span>
+        )
+      }
+
+      return (
+        <span
+          className="follow"
+          onClick={this.follow.bind(this)}>
+          <i className="icon icon-plus"></i>
+          <b>关注</b>
+        </span>
+      );
+    } else {
+      return (
+        <span className="del"><i className="icon icon-del"></i>删除</span>
+      );
+    }
+  }
+
   render() {
     let imgs = this.state.imgs
       ? <a href={this.state.imgs[0]}><img src={this.state.imgs[0]} /></a>
@@ -73,34 +100,7 @@ export default class PostDetailItem extends React.Component {
             <div className="post-time"><i className="icon icon-clock"></i>{new Date(this.state.create_time).toLocaleDateString().substring(5).replace('/', '-')}</div>
           </div>
           <div className="poster-actions">
-            {
-              (() => {
-                if (this.state.uid !== this.state.qs.uid) {
-                  if (this.state.follow === 1) {
-                    return (
-                      <span
-                        className={classNames('followed', this.state.followed ? '' : 'hide')}>
-                        <i className="icon icon-correct"></i>
-                        <b>已关注</b>
-                      </span>
-                    )
-                  }
-
-                  return (
-                    <span
-                      className={classNames('follow', this.state.followed ? 'hide' : '')}
-                      onClick={this.follow.bind(this)}>
-                      <i className="icon icon-plus"></i>
-                      <b>关注</b>
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span className="del"><i className="icon icon-del"></i>删除</span>
-                  );
-                }
-              })()
-            }
+            {this.render_follow()}
           </div>
         </header>
         <article className="post-body">
