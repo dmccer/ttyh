@@ -2,13 +2,15 @@ import './item.less';
 import React from 'react';
 import classNames from 'classnames';
 import Loading from '../../loading/';
+import Poptip from '../../poptip/';
+import querystring from 'querystring';
 
 export default class PostDetailItem extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      user: {}
+      qs: querystring.parse(location.search.substring(1))
     };
   }
 
@@ -32,8 +34,29 @@ export default class PostDetailItem extends React.Component {
         }
 
         this.refs.loading.close();
+      },
+      error: () => {
+        this.refs.loading.close();
       }
     })
+  }
+
+  follow() {
+    this.refs.loading.show('加载中...');
+
+    $.ajax({
+      url: '/mvc/follow_' + this.state.uid,
+      type: 'GET',
+      success: (data) => {
+        this.refs.loading.close();
+
+        this.refs.poptip.success('关注成功');
+      },
+      error: () => {
+        this.refs.loading.close();
+        this.refs.poptip.success('关注失败');
+      }
+    });
   }
 
   render() {
@@ -52,14 +75,29 @@ export default class PostDetailItem extends React.Component {
           <div className="poster-actions">
             {
               (() => {
-                if (!this.state.user.mine) {
-                  if (this.state.followed) {
-                    return <span className={classNames('followed', this.state.followed ? '' : 'hide')}><i className="icon icon-correct"></i>已关注</span>;
+                if (this.state.uid !== this.state.qs.uid) {
+                  if (this.state.follow === 1) {
+                    return (
+                      <span
+                        className={classNames('followed', this.state.followed ? '' : 'hide')}>
+                        <i className="icon icon-correct"></i>
+                        <b>已关注</b>
+                      </span>
+                    )
                   }
 
-                  return <span className={classNames('follow', this.state.followed ? 'hide' : '')}><i className="icon icon-plus"></i>关注</span>;
+                  return (
+                    <span
+                      className={classNames('follow', this.state.followed ? 'hide' : '')}
+                      onClick={this.follow.bind(this)}>
+                      <i className="icon icon-plus"></i>
+                      <b>关注</b>
+                    </span>
+                  );
                 } else {
-                  return <span className="del"><i className="icon icon-del"></i>删除</span>;
+                  return (
+                    <span className="del"><i className="icon icon-del"></i>删除</span>
+                  );
                 }
               })()
             }
@@ -79,6 +117,7 @@ export default class PostDetailItem extends React.Component {
           <div className="address"><i className="icon icon-address"></i>{this.state.addr}</div>
         </article>
         <Loading ref='loading' />
+        <Poptip ref='poptip' />
       </section>
     );
   }

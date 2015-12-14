@@ -12,6 +12,7 @@ import Topic from './topic/';
 import ActiveUser from './active-user/';
 import Loading from  '../loading/';
 import Poptip from  '../poptip/';
+import querystring from 'querystring';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -19,7 +20,8 @@ export default class BBS extends React.Component {
 
     this.state = {
       tab: 'all', // all, focus, hot
-      posts: []
+      posts: [],
+      qs: querystring.parse(location.search.substring(1))
     };
   }
 
@@ -35,7 +37,13 @@ export default class BBS extends React.Component {
         url = '/mvc/bbs_v2/show_all';
         break;
       case 'focus':
-        return this.queryFocusForum();
+        let qs = querystring.stringify({
+          token: this.state.qs.token,
+          f: 0
+        });
+
+        url = '/mvc/bbs_v2/show_follow_forums?' + qs;
+        break;
       case 'hot':
         url = '/mvc/bbs_v2/hot_forum';
         break;
@@ -67,57 +75,6 @@ export default class BBS extends React.Component {
   formatForums(list: Array<Object>) {
     list.forEach((item) => {
       item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
-    });
-  }
-
-  queryFocusedUsers(cb) {
-    $.ajax({
-      url: '/mvc/mineFellowUserForRc',
-      type: 'GET',
-      data: {
-        pageSize: 1000
-      },
-      success: (users) => {
-        let uids = users.map((user) => {
-          return user.userID;
-        });
-
-        cb(uids);
-      },
-      error: () => {
-
-      }
-    })
-  }
-
-  queryFocusForum() {
-    this.queryFocusedUsers((uids) => {
-      $.ajax({
-        url: '/mvc/bbs_v2/show_more_forum',
-        type: 'GET',
-        data: {
-          userIDs: uids.join()
-        },
-        success: (data) => {
-          this.formatForums(data.bbsForumList);
-          this.queryUserInfo(data.bbsForumList);
-        }
-      });
-    })
-  }
-
-  queryUserInfo(uids: Array<Number>, cb: Function) {
-    $.ajax({
-      url: '/mvc/searchUsersEncrypt',
-      type: 'GET',
-      data: {
-        userIDs: uids.join()
-      },
-      success: cb,
-      error: () => {
-        this.refs.poptip.error('获取用户头像失败');
-        this.refs.loading.close();
-      }
     });
   }
 
