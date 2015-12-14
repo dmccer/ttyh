@@ -11,7 +11,8 @@ module.exports = {
     'bbs-post': './src/asset/js/bbs/post/add.js',
     'bbs-detail': './src/asset/js/bbs/detail.js',
     'about-me': './src/asset/js/bbs/about-me/index.js',
-    'login': './src/asset/js/login/index.js',
+    login: './src/asset/js/login/index.js',
+    register: './src/asset/js/register/index.js',
     vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './bower_components/zepto/zepto.js']
   },
   output: {

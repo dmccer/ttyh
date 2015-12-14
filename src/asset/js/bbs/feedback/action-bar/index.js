@@ -10,10 +10,12 @@ export default class ActionBar extends React.Component {
 
   render() {
     const url = './bbs-comment.html?' + querystring.stringify({
-      id: this.props.postId,
+      fid: this.props.fid,
       tid: this.props.tid,
-      uid: this.props.uid
-    })
+      uid: this.props.uid,
+      token: this.props.token
+    });
+
     return (
       <div className="fb-action-bar">
         <ul className="grid">

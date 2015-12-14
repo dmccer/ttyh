@@ -31,7 +31,7 @@ export default class PostAdd extends React.Component {
       maxTextLen: 2000,
       submited: false,
       address: {},
-      uid: query.uid
+      qs: query
     }
   }
 
@@ -65,13 +65,14 @@ export default class PostAdd extends React.Component {
     e.preventDefault();
 
     $.ajax({
-      url: '/mvc/bbs/post',
+      url: '/mvc/bbs_v2/post',
       type: 'POST',
       data: {
-        uid: this.state.uid,
+        uid: this.state.qs.uid,
+        token: this.state.qs.token,
         title: this.state.title,
         content: this.state.text,
-        addr: this.state.address,
+        addr: this.state.address.city + this.state.address.area,
         tid: this.state.topic && this.state.topic.id || null,
         imgs_url: this.state.photo
       },

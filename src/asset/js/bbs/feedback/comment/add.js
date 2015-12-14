@@ -26,10 +26,8 @@ export default class CommentAdd extends React.Component {
 
     this.state = {
       text: '',
-      maxCommentLen: 2000,
-      pid: query.id,
-      tid: query.tid,
-      uid: query.uidid
+      maxCommentLen: 200,
+      qs: query
     }
   }
 
@@ -37,22 +35,23 @@ export default class CommentAdd extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    if (this.state.content == null) {
+    if ($.trim(this.state.text) === '') {
       this.refs.poptip.warn(COMMENT_ERR[5]);
+
       return;
     }
 
     this.refs.loading.show('发布中...');
 
     $.ajax({
-      url: '/mvc/bbs/comment',
+      url: '/mvc/bbs_v2/comment',
       type: 'POST',
       data: {
-        uid: this.state.uid,
-        pid: this.state.pid,
+        token: this.state.qs.token,
+        uid: this.state.qs.uid,
+        pid: this.state.qs.fid,
         content: this.state.text,
-        tid: this.state.tid,
-        // photos: this.state.photo
+        tid: this.state.qs.tid
       },
       success: (data) => {
         this.refs.loading.close();

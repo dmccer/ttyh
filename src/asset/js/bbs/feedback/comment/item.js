@@ -8,9 +8,6 @@ export default class Comment extends React.Component {
   }
 
   render() {
-    // <img className="avatar" src={this.props.item.user.avatar} />
-    // <div className="poster">{this.props.item.user.nickname}</div>
-
     // <div className="photo">
     //   <a href="#"><img src="http://img1.ph.126.net/YoeTcZOUqh9cX7nrFLk09A==/6631415211375428308.jpg" /></a>
     // </div>
@@ -18,7 +15,8 @@ export default class Comment extends React.Component {
       <li className="comment-item">
         <header className="row">
           <div className="profile">
-
+            <img className="avatar" src={this.props.item.imgUrl} />
+            <div className="poster">{this.props.item.userName}</div>
             <div className="post-meta">
               {
                 (() => {

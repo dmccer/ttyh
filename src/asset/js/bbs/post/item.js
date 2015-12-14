@@ -8,11 +8,18 @@ export default class PostItem extends React.Component {
   constructor() {
     super();
 
-    this.state = {}
+    this.state = {
+      qs: querystring.parse(location.search.substring(1))
+    }
   }
 
   handleClickItem(post) {
-    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + querystring.stringify({ id: post.id, tid: post.tid }));
+    const qs = querystring.stringify(Object.assign(this.state.qs, {
+      fid: post.id,
+      tid: post.tid
+    }));
+
+    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
   }
 
   handleShowPic(img: string, e) {

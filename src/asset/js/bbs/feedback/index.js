@@ -28,7 +28,7 @@ export default class Feedback extends React.Component {
       tab: 'comment', // comment, praise
       comments: [],
       praises: [],
-      uid: query.uid
+      qs: query
     }
   }
 
@@ -57,11 +57,10 @@ export default class Feedback extends React.Component {
   }
   queryCommentList() {
     $.ajax({
-      url: '/mvc/bbs/show_commend',
+      url: '/mvc/bbs_v2/show_commend',
       type: 'GET',
       data: {
-        id: this.props.postId,
-        uid: null,
+        id: this.props.fid,
         t: 20
       },
       success: (data) => {
@@ -74,10 +73,10 @@ export default class Feedback extends React.Component {
 
   queryPraiseList() {
     $.ajax({
-      url: '/mvc/bbs/show_praise',
+      url: '/mvc/bbs_v2/show_praise',
       type: 'GET',
       data: {
-        id: this.props.postId,
+        id: this.props.fid,
         t: 20
       },
       success: (data) => {
@@ -92,11 +91,12 @@ export default class Feedback extends React.Component {
     this.refs.loading.show('请求中...');
 
     $.ajax({
-      url: '/mvc/bbs/praise',
+      url: '/mvc/bbs_v2/praise',
       type: 'POST',
       data: {
-        uid: this.state.uid,
-        fid: this.props.postId
+        uid: this.state.qs.uid,
+        fid: this.props.fid,
+        token: this.state.qs.token
       },
       success: (data) => {
         this.refs.loading.close();
@@ -132,9 +132,10 @@ export default class Feedback extends React.Component {
         }
         <div className="action-bar-holder"></div>
         <ActionBar
-          postId={this.props.postId}
-          tid={this.props.topicId}
-          uid={this.state.uid}
+          fid={this.props.fid}
+          tid={this.props.tid}
+          uid={this.state.qs.uid}
+          token={this.state.qs.token}
           onPraise={this.praise.bind(this)}
         />
         <Loading ref="loading" />

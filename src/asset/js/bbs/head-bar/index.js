@@ -66,6 +66,7 @@ export default class HeadBar extends React.Component {
   render() {
     const isAllTabActive = ['all', 'focus'].indexOf(this.props.on) !== -1;
     const aboutMeUrl = './bbs-about-me.html?' + querystring.stringify(this.state.qs);
+    const postUrl = './bbs-post.html?' + querystring.stringify(this.state.qs);
 
     return (
       <section className="row head-bar">
@@ -100,7 +101,7 @@ export default class HeadBar extends React.Component {
             </a>
           </li>
         </ul>
-        <div className="post"><a href="./bbs-post.html">发帖<i className="icon icon-edit"></i></a></div>
+        <div className="post"><a href={postUrl}>发帖<i className="icon icon-edit"></i></a></div>
       </section>
     );
   }

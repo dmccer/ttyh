@@ -150,13 +150,17 @@
   .post-title {
     position: relative;
 
+    > h2 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .browse-count {
+      float: right;
       display: block;
-      position: absolute;
       color: @c_lightBlack;
-      top: 50%;
-      right: 0;
-      transform: translate(0, -50%);
+      margin-top: 5px;
 
       b {
         color: @c_black;

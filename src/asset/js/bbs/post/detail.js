@@ -19,7 +19,7 @@ export default class PostDetailItem extends React.Component {
       url: '/mvc/bbs_v2/show_forum',
       type: 'GET',
       data: {
-        id: this.props.id,
+        id: this.props.fid,
         uid: null
       },
       success: (data) => {
@@ -67,8 +67,8 @@ export default class PostDetailItem extends React.Component {
         </header>
         <article className="post-body">
           <div className="post-title">
-            <h2>{this.state.title}</h2>
             <span className="browse-count">被浏览 <b>{this.state.bcount}</b> 次</span>
+            <h2>{this.state.title}</h2>
           </div>
           <section className="post-content">
             <p className="post-text"><b>#{this.state.title}#</b>{this.state.content}</p>

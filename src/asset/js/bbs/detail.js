@@ -17,8 +17,8 @@ export default class BBSDetail extends React.Component {
   render() {
     return (
       <section className="post-detail">
-        <PostDetailItem id={this.state.id} />
-        <Feedback postId={this.state.id} topicId={this.state.tid} />
+        <PostDetailItem fid={this.state.fid} />
+        <Feedback fid={this.state.fid} tid={this.state.tid} />
       </section>
     )
   }
