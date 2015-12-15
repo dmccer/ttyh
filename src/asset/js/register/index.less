@@ -49,6 +49,7 @@ body {
     }
 
     .control {
+      position: relative;
       height: 100%;
       overflow: hidden;
 
@@ -60,7 +61,18 @@ body {
         border-left: none;
         border-top: none;
         border-bottom: 1px solid @c_lightGrey;
+
+        &.verify-code {
+          padding-right: 7em;
+        }
       }
+    }
+
+    .verify-tip-btn {
+      position: absolute;
+      width: 7em;
+      right: 10px;
+      top: 9px;
     }
   }
 

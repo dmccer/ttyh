@@ -81,9 +81,14 @@ module.exports = {
     inline: true,
     proxy: {
       '/mvc/bbs*': {
-          target: 'http://api.ttyhuo.com:83',
-          // target: 'http://o.dp:3000',
-          secure: false
+        target: 'http://api.ttyhuo.com:83',
+        // target: 'http://o.dp:3000',
+        secure: false
+      },
+      '/mvc/code_msg*': {
+        target: 'http://api.ttyhuo.com:83',
+        // target: 'http://o.dp:3000',
+        secure: false
       },
       '/mvc*': {
         target: 'http://ttyhuo.com',
