@@ -7,9 +7,23 @@ export default class CommentList extends React.Component {
     super()
   }
 
+  praise(forum: Object) {
+    this.props.onPraise(forum);
+  }
+
+  comment(forum: Object) {
+    this.props.onComment(forum);
+  }
+
   render() {
     let commentList = this.props.items.map((item, index) => {
-      return <Comment key={'comment_' + index} item={item} />
+      return (
+        <Comment
+          key={'comment_' + index}
+          item={item}
+          onPraise={this.praise.bind(this)}
+          onComment={this.comment.bind(this)} />
+      )
     })
 
     return (

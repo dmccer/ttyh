@@ -87,15 +87,26 @@ export default class Feedback extends React.Component {
     })
   }
 
-  praise() {
+  comment(forum) {
+    const url = '/bbs-comment.html?' + querystring.stringify({
+      fid: forum.id,
+      tid: forum.tid,
+      uid: this.state.qs.uid,
+      token: this.state.qs.token
+    });
+
+    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, url);
+  }
+
+  praise(forum: Object) {
     this.refs.loading.show('请求中...');
 
     $.ajax({
       url: '/mvc/bbs_v2/praise',
       type: 'POST',
       data: {
+        fid: forum.id,
         uid: this.state.qs.uid,
-        fid: this.props.fid,
         token: this.state.qs.token
       },
       success: (data) => {
@@ -108,35 +119,54 @@ export default class Feedback extends React.Component {
         }
 
         this.refs.poptip.success('点赞成功');
+
+        // 评论列表中点赞
+        if (forum.id !== this.state.qs.fid) {
+          this.queryCommentList();
+          return;
+        }
+
+        // 当前帖子点赞
         this.queryPraiseList();
       }
-    })
+    });
+  }
+
+  renderTab() {
+    switch(this.state.tab) {
+      case 'comment':
+        return (
+          <CommentList
+            items={this.state.comments}
+            onPraise={this.praise.bind(this)}
+            onComment={this.comment.bind(this)} />
+        );
+      case 'praise':
+        return <PraiseList items={this.state.praises} />;
+    }
   }
 
   render() {
     return (
       <section className="feedback">
         <ul className="feedback-type-tabs">
-          <li className={this.state.tab === 'comment' ? 'on' : ''} onClick={this.switchTab.bind(this, 'comment')}><a href="#">评论</a></li>
-          <li className={this.state.tab === 'praise' ? 'on' : ''} onClick={this.switchTab.bind(this, 'praise')}><a href="#">赞</a></li>
+          <li
+            className={this.state.tab === 'comment' ? 'on' : ''}
+            onClick={this.switchTab.bind(this, 'comment')}>
+            <a href="#">评论</a>
+          </li>
+          <li
+            className={this.state.tab === 'praise' ? 'on' : ''}
+            onClick={this.switchTab.bind(this, 'praise')}>
+            <a href="#">赞</a>
+          </li>
         </ul>
-        {
-          (() => {
-            switch(this.state.tab) {
-              case 'comment':
-                return <CommentList items={this.state.comments} />;
-              case 'praise':
-                return <PraiseList items={this.state.praises} />;
-            }
-          })()
-        }
+        {this.renderTab()}
         <div className="action-bar-holder"></div>
         <ActionBar
-          fid={this.props.fid}
-          tid={this.props.tid}
-          uid={this.state.qs.uid}
-          token={this.state.qs.token}
+          forum={{id: this.props.fid}}
           onPraise={this.praise.bind(this)}
+          onComment={this.comment.bind(this)}
         />
         <Loading ref="loading" />
         <Poptip ref="poptip" />

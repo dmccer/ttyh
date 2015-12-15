@@ -8,23 +8,27 @@ export default class ActionBar extends React.Component {
     super();
   }
 
-  render() {
-    const url = './bbs-comment.html?' + querystring.stringify({
-      fid: this.props.fid,
-      tid: this.props.tid,
-      uid: this.props.uid,
-      token: this.props.token
-    });
+  comment(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    this.props.onComment(this.props.forum);
+  }
+
+  praise() {
+    this.props.onPraise(this.props.forum);
+  }
+
+  render() {
     return (
       <div className="fb-action-bar">
         <ul className="grid">
           <li>
-            <a href={url}>
+            <a href="#" onClick={this.comment.bind(this)}>
               <i className="icon icon-edit"></i>评论
             </a>
           </li>
-          <li onClick={this.props.onPraise}><i className="icon icon-praise"></i>赞</li>
+          <li onClick={this.praise.bind(this)}><i className="icon icon-praise"></i>赞</li>
         </ul>
       </div>
     )

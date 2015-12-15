@@ -7,10 +7,15 @@ export default class Comment extends React.Component {
     super()
   }
 
+  praise() {
+    this.props.onPraise(this.props.item);
+  }
+
+  comment() {
+    this.props.onComment(this.props.item);
+  }
+
   render() {
-    // <div className="photo">
-    //   <a href="#"><img src="http://img1.ph.126.net/YoeTcZOUqh9cX7nrFLk09A==/6631415211375428308.jpg" /></a>
-    // </div>
     return (
       <li className="comment-item">
         <header className="row">
@@ -29,8 +34,8 @@ export default class Comment extends React.Component {
             </div>
           </div>
           <div className="post-feedback">
-            <span><i className="icon icon-praise"></i>{this.props.item.pcount}</span>
-            <span><i className="icon icon-edit"></i>{this.props.item.rcount}</span>
+            <span onClick={this.praise.bind(this)}><i className="icon icon-praise"></i>{this.props.item.pcount}</span>
+            <span onClick={this.comment.bind(this)}><i className="icon icon-edit"></i>{this.props.item.rcount}</span>
           </div>
         </header>
         <article className="post-body">
