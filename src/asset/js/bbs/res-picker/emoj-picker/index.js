@@ -3,6 +3,7 @@ import './index.less';
 
 import React from 'react';
 import Slider from 'react-slick';
+import Emoj from '../../emoj/';
 
 export default class EmojPicker extends React.Component {
   constructor() {
@@ -43,8 +44,8 @@ export default class EmojPicker extends React.Component {
           href="#"
           key={key}
           onClick={this.pick.bind(this, `[/f${code}]`)}>
-          <img src={`./img/qq/f${code}.png`} />
-        </a>
+            <Emoj code={code} />
+          </a>
       );
 
       if (i === 22) {
@@ -72,7 +73,7 @@ export default class EmojPicker extends React.Component {
       slidesToShow: 1,
       slidesToScroll: 1,
       className: 'emoj-list',
-      initialSlide: 1,
+      initialSlide: 0,
       arrows: false,
       centerMode: true
     };
