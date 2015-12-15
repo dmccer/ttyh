@@ -142,7 +142,7 @@ export default class Login extends React.Component {
             </div>
           </div>
           <p className="forget">
-            <a href="#">
+            <a href="./retrieve.html">
               <i className="icon icon-question"></i>
               忘记密码
             </a>

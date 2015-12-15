@@ -3,7 +3,7 @@ var path = require('path');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-// 'webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server',
+
 module.exports = {
   entry: {
     bbs: './src/asset/js/bbs/index.js',
@@ -13,6 +13,7 @@ module.exports = {
     'about-me': './src/asset/js/bbs/about-me/index.js',
     login: './src/asset/js/login/index.js',
     register: './src/asset/js/register/index.js',
+    retrieve: './src/asset/js/retrieve/index.js',
     vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './bower_components/zepto/zepto.js']
   },
   output: {
