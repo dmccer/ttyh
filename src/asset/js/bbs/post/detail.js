@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import Emoj from '../emoj/';
 import querystring from 'querystring';
 
 export default class PostDetailItem extends React.Component {
@@ -109,7 +110,7 @@ export default class PostDetailItem extends React.Component {
             <h2>{this.state.title}</h2>
           </div>
           <section className="post-content">
-            <p className="post-text"><b>#{this.state.title}#</b>{this.state.content}</p>
+            <p className="post-text"><b>#{this.state.title}#</b>{Emoj.formatText(this.state.content)}</p>
             <div className="photo">
               {imgs}
             </div>

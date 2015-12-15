@@ -1,9 +1,12 @@
-import '../../../less/global/layout.less';
 import './index.less';
 
 import React from 'react';
 
 export default class Emoj extends React.Component {
+  static code_reg() {
+    return /\[\/f(\d+)\]/g;
+  }
+
   constructor() {
     super();
 
@@ -12,6 +15,43 @@ export default class Emoj extends React.Component {
       emojIconPadding: 10,
       emojCountPerLine: 6
     };
+  }
+
+  static formatText(text: string) {
+    let cnt = text;
+
+    if ($.trim(cnt) === '') {
+      return;
+    }
+
+    let m = cnt.match(Emoj.code_reg());
+
+    if (!m) {
+      return cnt;
+    }
+
+    let r = [];
+
+    m.forEach((s, i) => {
+      let si = cnt.indexOf(s);
+
+      let code = parseInt(s.match(/\d+/)[0], 10);
+
+      if (si === 0) {
+        cnt = cnt.substring(0, s.length);
+        r.push(<Emoj key={'emoj-text-item_' + r.length} code={code} />)
+
+        return;
+      }
+
+      let t = cnt.substring(0, si);
+      cnt = cnt.substring(0, t.length);
+
+      r.push(<span key={'emoj-text-item_' + r.length}>{t}</span>);
+      r.push(<Emoj key={'emoj-text-item_' + r.length} code={code} />)
+    });
+
+    return <span>{r}</span>;
   }
 
   pos(code: Number) {

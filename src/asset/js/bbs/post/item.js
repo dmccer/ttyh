@@ -1,7 +1,9 @@
 import './item.less';
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import FullscreenImg from '../../fullscreen-img/';
+import Emoj from '../emoj/';
 import querystring from 'querystring';
 
 export default class PostItem extends React.Component {
@@ -39,7 +41,7 @@ export default class PostItem extends React.Component {
     });
   }
 
-  render() {
+  renderImgs() {
     let imgs;
 
     if (this.props.item.imgs && this.props.item.imgs.length) {
@@ -74,6 +76,10 @@ export default class PostItem extends React.Component {
       imgs.splice(3, this.props.item.imgs.length - 3);
     }
 
+    return imgs;
+  }
+
+  renderFullscreenImgs() {
     let fullscreeImgs = this.state.fullscreeImgs && this.state.fullscreeImgs.length
       ? <FullscreenImg
         images={this.state.fullscreeImgs}
@@ -81,7 +87,10 @@ export default class PostItem extends React.Component {
         onClose={this.closeFullscrrenImg.bind(this)} />
       : null;
 
+    return fullscreeImgs;
+  }
 
+  render() {
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
@@ -98,11 +107,14 @@ export default class PostItem extends React.Component {
         <article className="post-body">
           <h2>{this.props.item.title}</h2>
           <section className="post-content">
-            <p className="post-text"><b>#{this.props.item.title}#</b>{this.props.item.content}</p>
+            <p className="post-text">
+              <b>#{this.props.item.title}#</b>
+              {Emoj.formatText(this.props.item.content)}
+            </p>
             <ul className="post-photos">
-              {imgs}
+              {this.renderImgs()}
             </ul>
-            {fullscreeImgs}
+            {this.renderFullscreenImgs()}
           </section>
         </article>
       </li>

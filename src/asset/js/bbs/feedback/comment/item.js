@@ -1,6 +1,7 @@
 import './item.less';
 
 import React from 'react';
+import Emoj from '../../emoj/';
 
 export default class Comment extends React.Component {
   constructor() {
@@ -40,7 +41,7 @@ export default class Comment extends React.Component {
         </header>
         <article className="post-body">
           <section className="post-content">
-            <p className="post-text">{this.props.item.content}</p>
+            <p className="post-text">{Emoj.formatText(this.props.item.content)}</p>
             {
               (() => {
                 if (this.props.item.replied) {

@@ -1,6 +1,7 @@
 import './item.less';
 
 import React from 'react';
+import Emoj from '../../emoj/';
 
 export default class ReportItem extends React.Component {
   constructor() {
@@ -40,7 +41,7 @@ export default class ReportItem extends React.Component {
           </div>
         </header>
         <article className="post-body">
-          <p className="post-text">{this.props.item.content}</p>
+          <p className="post-text">{Emoj.formatText(his.props.item.content)}</p>
         </article>
       </div>
     )
