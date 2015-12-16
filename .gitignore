@@ -1,6 +1,4 @@
-
-dist/
-bower_components/
+assets/
 
 # Numerous always-ignore extensions
 *.bak
