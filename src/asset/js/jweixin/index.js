@@ -1,7 +1,6 @@
 export default class JWeiXin {
   constructor(fn) {
-    // location.href.split('#')[0]
-    this.url = encodeURIComponent('http://www.ttyhuo.com');
+    this.url = encodeURIComponent(location.href.split('#')[0]);
     this.fn = fn;
 
     this.config();
