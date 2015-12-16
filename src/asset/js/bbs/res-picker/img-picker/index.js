@@ -3,6 +3,8 @@ import './index.less';
 
 import React from 'react';
 import ImgItem4Picker from './item';
+import Poptip from '../../../poptip/';
+import JWeiXin from '../../../jweixin/';
 
 export default class ImgPicker extends React.Component {
   constructor() {
@@ -25,6 +27,14 @@ export default class ImgPicker extends React.Component {
         }
       ]
     }
+
+    new JWeiXin(() => {
+      alert('验证通过');
+
+      this.setState({
+        wxReady: true
+      });
+    });
   }
 
   // 选择某一张照片
@@ -35,6 +45,19 @@ export default class ImgPicker extends React.Component {
   // 从相册中选择照片或者拍照
   selectImg(e: Object) {
     e.stopPropagation();
+
+    if (!this.state.wxReady) {
+      this.refs.poptip.warn('正在等待微信验证');
+      return;
+    }
+
+    wx.chooseImage({
+      success: (res) => {
+        console.log(res.localIds);
+
+        alert(res.localIds);
+      }
+    });
 
     // imgs 发生改变
     this.props.onImgsChange(this.state.imgs);
@@ -70,6 +93,7 @@ export default class ImgPicker extends React.Component {
           onClick={this.selectImg.bind(this)}>
           <div className="img-item-inner"></div>
         </div>
+        <Poptip ref="poptip" />
       </section>
     )
   }
