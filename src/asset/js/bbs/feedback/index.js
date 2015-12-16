@@ -164,7 +164,10 @@ export default class Feedback extends React.Component {
         {this.renderTab()}
         <div className="action-bar-holder"></div>
         <ActionBar
-          forum={{id: this.props.fid}}
+          forum={{
+            id: this.props.fid,
+            tid: this.props.tid
+          }}
           onPraise={this.praise.bind(this)}
           onComment={this.comment.bind(this)}
         />
