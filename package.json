@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "prestart": "npm install;./node_modules/.bin/bower --allow-root install;",
+    "prestart": "npm install; cd ./node_modules/zepto; npm install; npm run dist; cd ../../",
     "start": "./node_modules/.bin/gulp watch & ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "build": "dist",
@@ -24,17 +24,19 @@
   "homepage": "https://github.com/dmccer/ttyh#readme",
   "dependencies": {
     "classnames": "^2.2.1",
+    "normalize.css": "^3.0.3",
     "querystring": "^0.2.0",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
-    "react-slick": "^0.9.3"
+    "react-slick": "^0.9.3",
+    "slick-carousel": "^1.5.9",
+    "zepto": "https://github.com/madrobby/zepto/tarball/v1.1.6"
   },
   "devDependencies": {
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-react": "^6.1.18",
-    "bower": "^1.6.6",
     "css-loader": "^0.23.0",
     "file-loader": "^0.8.5",
     "gulp": "^3.9.0",

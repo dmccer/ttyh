@@ -26,8 +26,10 @@ export default class PostDetailItem extends React.Component {
         uid: this.state.qs.uid
       },
       success: (data) => {
+        let forum;
+
         if (data && data.bbsForumList && data.bbsForumList.length) {
-          let forum = data.bbsForumList[0];
+          forum = data.bbsForumList[0];
 
           forum.imgs = forum.imgs_url && forum.imgs_url.split(';') || [];
 

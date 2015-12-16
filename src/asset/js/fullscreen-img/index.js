@@ -1,4 +1,4 @@
-import '../../../../bower_components/slick-carousel/slick/slick.less';
+import '../../../../node_modules/slick-carousel/slick/slick.less';
 import './index.less';
 
 import React from 'react';

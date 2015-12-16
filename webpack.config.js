@@ -3,8 +3,10 @@ var path = require('path');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var pkg = require('./package.json');
 
 module.exports = {
+  watch: true,
   entry: {
     bbs: './src/asset/js/bbs/index.js',
     'bbs-comment': './src/asset/js/bbs/feedback/comment/add.js',
@@ -14,7 +16,7 @@ module.exports = {
     login: './src/asset/js/login/index.js',
     register: './src/asset/js/register/index.js',
     retrieve: './src/asset/js/retrieve/index.js',
-    vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './bower_components/zepto/zepto.js']
+    vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './node_modules/zepto/dist/zepto.js']
   },
   output: {
     path: path.join(__dirname, 'dist', 'js'),
@@ -83,12 +85,10 @@ module.exports = {
     proxy: {
       '/mvc/bbs*': {
         target: 'http://api.ttyhuo.com:83',
-        // target: 'http://o.dp:3000',
         secure: false
       },
       '/mvc/code_msg*': {
         target: 'http://api.ttyhuo.com:83',
-        // target: 'http://o.dp:3000',
         secure: false
       },
       '/mvc*': {
