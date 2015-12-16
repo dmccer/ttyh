@@ -1,6 +1,7 @@
 import './index.less';
 
 import React from 'react';
+import emojPNG from '../../../img/qq/emoj.png';
 
 export default class Emoj extends React.Component {
   static code_reg() {
@@ -71,7 +72,7 @@ export default class Emoj extends React.Component {
     let pos = this.pos(this.props.code);
 
     let emojStyle = {
-      'backgroundImage': `url(${require('../../../img/qq/emoj.png')})`,
+      'backgroundImage': `url(${emojPNG})`,
       'backgroundPosition': `${pos.x}px ${pos.y}px`
     }
 
