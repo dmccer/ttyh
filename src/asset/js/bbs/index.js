@@ -4,6 +4,7 @@ import '../../less/page/bbs.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import $ from 'zepto';
 
 import HeadBar from './head-bar/';
 import NoticeBoard from './notice-board/';

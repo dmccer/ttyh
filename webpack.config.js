@@ -24,6 +24,11 @@ module.exports = {
     filename: '[name].bundle.js',
     chunkFilename: '[id].chunk.js'
   },
+  resolve: {
+    alias: {
+      zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js')
+    }
+  },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js'),
     new webpack.optimize.UglifyJsPlugin({

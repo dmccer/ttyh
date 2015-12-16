@@ -4,6 +4,7 @@ import './index.less';
 import React from 'react';
 import Slider from 'react-slick';
 import Emoj from '../../emoj/';
+import delPNG from '../../../../img/qq/del.png';
 
 export default class EmojPicker extends React.Component {
   constructor() {
@@ -55,7 +56,7 @@ export default class EmojPicker extends React.Component {
             href="#"
             key={'emoj-item_clear'}
             onClick={this.del.bind(this)}>
-            <img src="./img/qq/del.png" />
+            <img src={delPNG} />
           </a>
         )
       }

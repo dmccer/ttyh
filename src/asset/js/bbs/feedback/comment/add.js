@@ -4,6 +4,7 @@ import './add.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'zepto';
 import querystring from 'querystring';
 import ResPicker from './../../res-picker/';
 import Loading from  '../../../loading/';

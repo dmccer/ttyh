@@ -4,6 +4,7 @@ import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'zepto';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
 import querystring from 'querystring';

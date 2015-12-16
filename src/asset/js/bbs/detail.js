@@ -4,6 +4,7 @@ import '../../less/page/bbs-detail.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import $ from 'zepto';
 
 import PostDetailItem from './post/detail';
 import Feedback from './feedback/';

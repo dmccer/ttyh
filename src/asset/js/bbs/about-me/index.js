@@ -2,6 +2,7 @@ import '../../../less/global/global.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'zepto';
 
 import AboutMeHeadBar from './head-bar/';
 import Post from '../post/';
