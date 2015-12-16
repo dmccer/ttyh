@@ -12,15 +12,15 @@ module.exports = {
     'bbs-comment': './src/asset/js/bbs/feedback/comment/add.js',
     'bbs-post': './src/asset/js/bbs/post/add.js',
     'bbs-detail': './src/asset/js/bbs/detail.js',
-    'about-me': './src/asset/js/bbs/about-me/index.js',
+    'bbs-about-me': './src/asset/js/bbs/about-me/index.js',
     login: './src/asset/js/login/index.js',
     register: './src/asset/js/register/index.js',
     retrieve: './src/asset/js/retrieve/index.js',
     vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './node_modules/zepto/dist/zepto.js']
   },
   output: {
-    path: path.join(__dirname, 'dist', 'js'),
-    publicPath: 'dist/js',
+    path: path.join(__dirname, pkg.build),
+    publicPath: pkg.build,
     filename: '[name].bundle.js',
     chunkFilename: "[id].chunk.js"
   },
@@ -30,6 +30,62 @@ module.exports = {
       compress: {
         warnings: false
       }
+    }),
+    new HtmlWebpackPlugin({
+      title: '社区',
+      template: './src/page/index.html',
+      filename: 'bbs.html',
+      chunks: ['bbs', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '发帖',
+      template: './src/page/index.html',
+      filename: 'bbs-post.html',
+      chunks: ['bbs-post', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '帖子详情',
+      template: './src/page/index.html',
+      filename: 'bbs-detail.html',
+      chunks: ['bbs-detail', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '评论',
+      template: './src/page/index.html',
+      filename: 'bbs-comment.html',
+      chunks: ['bbs-comment', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '与我有关',
+      template: './src/page/index.html',
+      filename: 'bbs-about-me.html',
+      chunks: ['bbs-about-me', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '登录',
+      template: './src/page/index.html',
+      filename: 'login.html',
+      chunks: ['login', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '注册',
+      template: './src/page/index.html',
+      filename: 'register.html',
+      chunks: ['register', 'vendor'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '找回密码',
+      template: './src/page/index.html',
+      filename: 'retrieve.html',
+      chunks: ['retrieve', 'vendor'],
+      inject: 'body'
     })
   ],
   module: {

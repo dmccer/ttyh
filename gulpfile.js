@@ -51,9 +51,9 @@ gulp.task('page', function() {
   return page_task(s_page);
 });
 
-gulp.task('default', ['image', 'less', 'page']);
+gulp.task('default', ['image', 'less']);
 gulp.task('watch', ['default'], function() {
   gulp.watch(s_img, ['image']);
   gulp.watch(s_less, ['less']);
-  gulp.watch(s_page, ['page']);
+  // gulp.watch(s_page, ['page']);
 })
