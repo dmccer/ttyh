@@ -35,6 +35,8 @@ export default class PostDetailItem extends React.Component {
         }
 
         this.refs.loading.close();
+
+        this.props.onLoadForum(forum);
       },
       error: () => {
         this.refs.loading.close();

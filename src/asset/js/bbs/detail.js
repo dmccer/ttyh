@@ -14,10 +14,16 @@ export default class BBSDetail extends React.Component {
     this.state = querystring.parse(location.search.substring(1));
   }
 
+  loadForum(forum: Object) {
+    this.setState({
+      tid: forum.tid
+    });
+  }
+
   render() {
     return (
       <section className="post-detail">
-        <PostDetailItem fid={this.state.fid} />
+        <PostDetailItem fid={this.state.fid} onLoadForum={this.loadForum.bind(this)}/>
         <Feedback fid={this.state.fid} tid={this.state.tid} />
       </section>
     )
