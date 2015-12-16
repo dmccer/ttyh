@@ -71,7 +71,7 @@ export default class Emoj extends React.Component {
     let pos = this.pos(this.props.code);
 
     let emojStyle = {
-      'backgroundImage': `url('./img/qq/emoj.png')`,
+      'backgroundImage': `url(${require('../../../img/qq/emoj.png')})`,
       'backgroundPosition': `${pos.x}px ${pos.y}px`
     }
 

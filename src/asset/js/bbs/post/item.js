@@ -1,6 +1,5 @@
 import './item.less';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import FullscreenImg from '../../fullscreen-img/';
 import Emoj from '../emoj/';

@@ -1,3 +1,4 @@
+import '../../less/global/global.less';
 import '../../less/global/form.less';
 import './index.less';
 

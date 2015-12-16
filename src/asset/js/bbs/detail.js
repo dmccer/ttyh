@@ -1,3 +1,4 @@
+import '../../less/global/global.less';
 import '../../less/page/bbs-detail.less';
 
 import React from 'react';
