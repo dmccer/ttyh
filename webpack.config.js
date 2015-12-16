@@ -19,10 +19,10 @@ module.exports = {
     vendor: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server', './node_modules/zepto/dist/zepto.js']
   },
   output: {
-    path: path.join(__dirname, pkg.build),
-    publicPath: pkg.build,
+    path: path.resolve(__dirname, pkg.dest),
+    publicPath: '/' + pkg.dest,
     filename: '[name].bundle.js',
-    chunkFilename: "[id].chunk.js"
+    chunkFilename: '[id].chunk.js'
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js'),
@@ -130,7 +130,7 @@ module.exports = {
   },
   lessLoader: {
     lessPlugins: [
-      new LessPluginCleanCSS({advanced: true, keepSpecialComments: false}),
+      new LessPluginCleanCSS({ advanced: true, keepSpecialComments: false }),
       new LessPluginAutoPrefix({ browsers: ['last 3 versions', 'Android 4'] })
     ]
   },

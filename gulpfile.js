@@ -9,7 +9,7 @@ var pkg = require('./package.json');
 var IMG_DIR_NAME = 'img';
 var CSS_DIR_NAME = 'css';
 var JS_DIR_NAME = 'js';
-var DIST = pkg.build;
+var DIST = pkg.dest;
 
 var s_img = ['./src/asset/img/**/*'];
 var s_less = ['./src/asset/less/global/global.less'];

@@ -8,7 +8,7 @@
     "prestart": "npm install; cd ./node_modules/zepto; npm install; npm run dist; cd ../../",
     "start": "./node_modules/.bin/gulp watch & ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
-  "build": "dist",
+  "dest": "assets",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dmccer/ttyh.git"
