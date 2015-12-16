@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test",
     "prestart": "npm install; cd ./node_modules/zepto; npm install; npm run dist; cd ../../",
-    "start": "./node_modules/.bin/gulp watch & ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
+    "start": "./node_modules/.bin/gulp; ./node_modules/.bin/webpack --config ./webpack.prd.config.js",
+    "dev": "npm run prestart; ./node_modules/.bin/gulp watch & ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "dest": "assets",
   "repository": {
