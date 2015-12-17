@@ -7,6 +7,8 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import ResPicker from '../res-picker/';
 import TipBox from '../tipbox/';
+import Loading from '../../loading/';
+import Poptip from '../../poptip/';
 import querystring from 'querystring';
 
 const SUBMIT_CODE_MSG_MAP = {
@@ -62,6 +64,8 @@ export default class PostAdd extends React.Component {
   }
 
   uploadImage(cb) {
+    this.refs.loading.show('正在上传图片...');
+
     let media_ids = [];
 
     if (this.state.photo && this.state.photo.length) {
@@ -86,8 +90,11 @@ export default class PostAdd extends React.Component {
 
   submit(e) {
     e.preventDefault();
+    e.stopPropagation();
 
     this.uploadImage((media_ids) => {
+      this.refs.loading.show('正在发布...');
+
       $.ajax({
         url: '/mvc/bbs_v2/post',
         type: 'POST',
@@ -101,6 +108,8 @@ export default class PostAdd extends React.Component {
           imgs_url: media_ids
         },
         success: (data) => {
+          this.refs.loading.close();
+
           if (data === 0) {
             this.setState({
               submited: true,
@@ -116,6 +125,8 @@ export default class PostAdd extends React.Component {
           }
         },
         error: () => {
+          this.refs.loading.close();
+
           this.setState({
             submited: true,
             submitOk: false,
@@ -296,6 +307,8 @@ export default class PostAdd extends React.Component {
             }
           })()
         }
+        <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </section>
     )
   }
