@@ -4,7 +4,6 @@ import './add.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import classNames from 'classnames';
 import ResPicker from '../res-picker/';
 import TipBox from '../tipbox/';
