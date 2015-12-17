@@ -11,21 +11,7 @@ export default class ImgPicker extends React.Component {
     super();
 
     this.state = {
-      imgs: [
-        {
-          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
-          name: '美女1'
-        }, {
-          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
-          name: '美女2'
-        }, {
-          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
-          name: '美女3'
-        }, {
-          url: 'http://img2.ph.126.net/1bwNe2kDqwt-FzPFQcIXbw==/6630455337722996867.jpg',
-          name: '美女4'
-        }
-      ]
+      imgs: []
     }
 
     new JWeiXin(() => {

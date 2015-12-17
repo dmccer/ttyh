@@ -64,16 +64,19 @@ export default class PostAdd extends React.Component {
   }
 
   uploadImage(cb) {
-    this.refs.loading.show('正在上传图片...');
-
     let media_ids = [];
 
+    alert(JSON.stringify(this.state.photo))
+
     if (this.state.photo && this.state.photo.length) {
+      this.refs.loading.show('正在上传图片...');
       this.state.photo.forEch((item) => {
         wx.uploadImage({
           localId: item.url,
           success: (res) => {
             media_ids.push(res.serverId);
+
+            alert(res.serverId);
 
             if (media_ids.length === this.state.photo.length) {
               cb(media_ids.join());
