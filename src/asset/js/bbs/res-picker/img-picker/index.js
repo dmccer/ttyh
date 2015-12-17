@@ -29,8 +29,6 @@ export default class ImgPicker extends React.Component {
     }
 
     new JWeiXin(() => {
-      alert('验证通过');
-
       this.setState({
         wxReady: true
       });
@@ -71,9 +69,9 @@ export default class ImgPicker extends React.Component {
 
   // 删除照片
   del(imgItem: Object) {
-    let index = this.state.imgs.findIndex((img) => {
-      return imgItem.url === img.url
-    });
+    let index = this.sate.imgs.indexOf(imgItem);
+
+    alert('index: ' + index);
 
     alert('del2');
 
