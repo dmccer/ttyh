@@ -7,16 +7,18 @@ export default class JWeiXin {
   }
 
   config() {
-    $.get(`/mvc/bbs_v2/jsapi?url=${this.url}`, null, (data) => {
+    $.getJSON(`/mvc/bbs_v2/jsapi?url=${this.url}`, null, (data) => {
       if (!data) {
         return;
       }
 
-      wx.config(Object.assign({
+      let config = Object.assign({
         debug: false,
         appId: 'wx13306fcc7460426e',
         jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage']
-      }, data));
+      }, data)
+
+      wx.config(config);
 
       wx.ready(this.fn);
 
