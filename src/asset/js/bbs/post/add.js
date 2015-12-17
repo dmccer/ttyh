@@ -66,8 +66,6 @@ export default class PostAdd extends React.Component {
   uploadImage(cb) {
     let media_ids = [];
 
-    alert(JSON.stringify(this.state.photo))
-
     if (this.state.photo && this.state.photo.length) {
       this.refs.loading.show('正在上传图片...');
       this.state.photo.forEach((item) => {
@@ -75,8 +73,6 @@ export default class PostAdd extends React.Component {
           localId: item.url,
           success: (res) => {
             media_ids.push(res.serverId);
-
-            alert(res.serverId);
 
             if (media_ids.length === this.state.photo.length) {
               cb(media_ids.join());
@@ -108,7 +104,7 @@ export default class PostAdd extends React.Component {
           content: this.state.text,
           addr: this.state.address.city + this.state.address.area,
           tid: this.state.topic && this.state.topic.id || null,
-          imgs_url: media_ids
+          media_ids: media_ids
         },
         success: (data) => {
           this.refs.loading.close();
