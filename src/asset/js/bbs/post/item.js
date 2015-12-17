@@ -15,7 +15,7 @@ export default class PostItem extends React.Component {
   }
 
   handleClickItem(post) {
-    const qs = querystring.stringify(Object.assign(this.state.qs, {
+    const qs = querystring.stringify($.extend({}, this.state.qs, {
       fid: post.id,
       tid: post.tid
     }));
