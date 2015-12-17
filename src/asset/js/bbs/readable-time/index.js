@@ -7,7 +7,8 @@ export default class ReadableTime extends React.Component {
   }
 
   calcTime() {
-    let delta = new Date().getTime() - this.props.time;
+    let now = new Date();
+    let delta = now.getTime() - this.props.time;
 
     if (delta / 1000 < 10) {
       return '刚刚';
@@ -35,6 +36,10 @@ export default class ReadableTime extends React.Component {
     let d = date.getDate();
     if (d < 10) {
       d = '0' + d;
+    }
+
+    if (date.getFullYear() === now.getFullYear()) {
+      return `${m}-${d}`;
     }
 
     return `${date.getFullYear()}-${m}-${d}`;
