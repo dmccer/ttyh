@@ -7,7 +7,9 @@ export default class ImgItem4Picker extends React.Component {
 
   del(e: Object) {
     e.stopPropagation();
-    alert('del1');
+
+    alert(this.props.onDel);
+
     this.props.onDel(this.props.item);
   }
 
