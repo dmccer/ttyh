@@ -64,6 +64,33 @@ export default class PostDetailItem extends React.Component {
     });
   }
 
+  del() {
+    this.refs.loading.show('请求中...');
+
+    $.ajax({
+      url: '/mvc/bbs/_del',
+      type: 'POST',
+      data: {
+        uid: this.state.uid,
+        token: this.state.qs.token,
+        fid: this.props.fid
+      },
+      success: (data) => {
+        this.refs.loading.close();
+
+        this.refs.poptip.success('删除成功');
+
+        setTimeout(() => {
+          history.back();
+        }, 3000);
+      },
+      error: () => {
+        this.refs.loading.close();
+        this.refs.poptip.success('删除失败');
+      }
+    });
+  }
+
   render_follow() {
     if (this.state.uid !== this.state.qs.uid) {
       if (this.state.follow === 1) {
@@ -86,7 +113,7 @@ export default class PostDetailItem extends React.Component {
       );
     } else {
       return (
-        <span className="del"><i className="icon icon-del"></i>删除</span>
+        <span className="del" onClick={this.del.bind(this)}><i className="icon icon-del"></i>删除</span>
       );
     }
   }

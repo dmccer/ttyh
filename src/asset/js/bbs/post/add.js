@@ -73,8 +73,8 @@ export default class PostAdd extends React.Component {
         title: this.state.title,
         content: this.state.text,
         addr: this.state.address.city + this.state.address.area,
-        tid: this.state.topic && this.state.topic.id || null,
-        imgs_url: this.state.photo
+        tid: this.state.topic && this.state.topic.id || null
+        // imgs_url: this.state.photo
       },
       success: (data) => {
         if (data === 0) {

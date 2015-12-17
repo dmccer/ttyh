@@ -44,56 +44,56 @@ module.exports = {
       title: '社区',
       template: './src/page/index.html',
       filename: 'bbs.html',
-      chunks: ['bbs', 'zepto', 'dev'],
+      chunks: ['bbs', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '发帖',
       template: './src/page/index.html',
       filename: 'bbs-post.html',
-      chunks: ['bbs-post', 'zepto', 'dev'],
+      chunks: ['bbs-post', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '帖子详情',
       template: './src/page/index.html',
       filename: 'bbs-detail.html',
-      chunks: ['bbs-detail', 'zepto', 'dev'],
+      chunks: ['bbs-detail', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '评论',
       template: './src/page/index.html',
       filename: 'bbs-comment.html',
-      chunks: ['bbs-comment', 'zepto', 'dev'],
+      chunks: ['bbs-comment', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '与我有关',
       template: './src/page/index.html',
       filename: 'bbs-about-me.html',
-      chunks: ['bbs-about-me', 'zepto', 'dev'],
+      chunks: ['bbs-about-me', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '登录',
       template: './src/page/index.html',
       filename: 'login.html',
-      chunks: ['login', 'zepto', 'dev'],
+      chunks: ['login', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '注册',
       template: './src/page/index.html',
       filename: 'register.html',
-      chunks: ['register', 'zepto', 'dev'],
+      chunks: ['register', 'zepto'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '找回密码',
       template: './src/page/index.html',
       filename: 'retrieve.html',
-      chunks: ['retrieve', 'zepto', 'dev'],
+      chunks: ['retrieve', 'zepto'],
       inject: 'body'
     })
   ],
