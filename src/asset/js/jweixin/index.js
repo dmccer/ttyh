@@ -18,6 +18,8 @@ export default class JWeiXin {
         jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage']
       }, data)
 
+      console.log(config);
+
       wx.config(config);
 
       wx.ready(this.fn);
