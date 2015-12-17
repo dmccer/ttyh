@@ -69,7 +69,8 @@ export default class ImgPicker extends React.Component {
 
   // 删除照片
   del(imgItem: Object) {
-    let index = this.sate.imgs.indexOf(imgItem);
+    alert(1)
+    let index = this.state.imgs.indexOf(imgItem);
 
     alert('index: ' + index);
 
@@ -88,7 +89,7 @@ export default class ImgPicker extends React.Component {
         key={'img-item-4picker_' + index}
         item={img}
         onPick={this.pick.bind(this)}
-        onDel={this.del.bind(this)} />
+        onRemove={this.del.bind(this)} />
     });
 
     return (
