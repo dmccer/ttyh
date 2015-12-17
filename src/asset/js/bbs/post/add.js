@@ -70,7 +70,7 @@ export default class PostAdd extends React.Component {
 
     if (this.state.photo && this.state.photo.length) {
       this.refs.loading.show('正在上传图片...');
-      this.state.photo.forEch((item) => {
+      this.state.photo.forEach((item) => {
         wx.uploadImage({
           localId: item.url,
           success: (res) => {
