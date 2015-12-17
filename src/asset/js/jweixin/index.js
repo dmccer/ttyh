@@ -12,17 +12,22 @@ export default class JWeiXin {
         return;
       }
 
-      let config = Object.assign({
+      let config = {
         debug: false,
         appId: 'wx13306fcc7460426e',
+        timestamp: data.timestamp,
+        nonceStr: data.noncestr,
+        signature: data.signature,
         jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage']
-      }, data)
+      };
 
-      console.log(config);
+      console.log(config)
 
       wx.config(config);
 
-      wx.ready(this.fn);
+      wx.ready(() => {
+        alert('验证成功');
+      });
 
       wx.error((res) => {
         alert('验证失败');
