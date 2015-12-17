@@ -53,9 +53,15 @@ export default class ImgPicker extends React.Component {
 
     wx.chooseImage({
       success: (res) => {
-        console.log(res.localIds);
+        if (res.localIds && res.localIds.length) {
+          res.localIds.forEach((localId) => {
+            this.state.imgs.push({
+              url: localId
+            });
+          });
 
-        alert(JSON.stringify(res.localIds));
+          this.forceUpdate();
+        }
       }
     });
 
@@ -68,6 +74,8 @@ export default class ImgPicker extends React.Component {
     let index = this.state.imgs.findIndex((img) => {
       return imgItem.url === img.url
     });
+
+    alert('del2');
 
     this.state.imgs.splice(index, 1);
     this.forceUpdate()
