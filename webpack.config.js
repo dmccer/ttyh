@@ -36,6 +36,11 @@ module.exports = {
         warnings: false
       }
     }),
+    new webpack.ProvidePlugin({
+      $: 'zepto',
+      Zepto: 'zepto',
+      'window.Zepto': 'zepto'
+    }),
     new HtmlWebpackPlugin({
       title: '社区',
       template: './src/page/index.html',
