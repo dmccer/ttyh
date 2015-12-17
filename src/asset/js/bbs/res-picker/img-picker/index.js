@@ -69,15 +69,10 @@ export default class ImgPicker extends React.Component {
 
   // 删除照片
   del(imgItem: Object) {
-    alert(1)
     let index = this.state.imgs.indexOf(imgItem);
 
-    alert('index: ' + index);
-
-    alert('del2');
-
     this.state.imgs.splice(index, 1);
-    this.forceUpdate()
+    this.forceUpdate();
 
     // imgs 发生改变
     this.props.onImgsChange(this.state.imgs);

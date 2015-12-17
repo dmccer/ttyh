@@ -61,44 +61,69 @@ export default class PostAdd extends React.Component {
     }
   }
 
+  uploadImage(cb) {
+    let media_ids = [];
+
+    if (this.state.photo && this.state.photo.length) {
+      this.state.photo.forEch((item) => {
+        wx.uploadImage({
+          localId: item.url,
+          success: (res) => {
+            media_ids.push(res.serverId);
+
+            if (media_ids.length === this.state.photo.length) {
+              cb(media_ids.join());
+            }
+          }
+        });
+      });
+
+      return;
+    }
+
+    cb();
+  }
+
   submit(e) {
     e.preventDefault();
 
-    $.ajax({
-      url: '/mvc/bbs_v2/post',
-      type: 'POST',
-      data: {
-        uid: this.state.qs.uid,
-        token: this.state.qs.token,
-        title: this.state.title,
-        content: this.state.text,
-        addr: this.state.address.city + this.state.address.area,
-        tid: this.state.topic && this.state.topic.id || null
-        // imgs_url: this.state.photo
-      },
-      success: (data) => {
-        if (data === 0) {
-          this.setState({
-            submited: true,
-            submitOk: true,
-            submitMsg: '发布成功'
-          });
-        } else {
+    this.uploadImage((media_ids) => {
+      $.ajax({
+        url: '/mvc/bbs_v2/post',
+        type: 'POST',
+        data: {
+          uid: this.state.qs.uid,
+          token: this.state.qs.token,
+          title: this.state.title,
+          content: this.state.text,
+          addr: this.state.address.city + this.state.address.area,
+          tid: this.state.topic && this.state.topic.id || null
+          imgs_url: media_ids
+        },
+        success: (data) => {
+          if (data === 0) {
+            this.setState({
+              submited: true,
+              submitOk: true,
+              submitMsg: '发布成功'
+            });
+          } else {
+            this.setState({
+              submited: true,
+              submitOk: false,
+              submitMsg: SUBMIT_CODE_MSG_MAP[data]
+            });
+          }
+        },
+        error: () => {
           this.setState({
             submited: true,
             submitOk: false,
-            submitMsg: SUBMIT_CODE_MSG_MAP[data]
+            submitMsg: '发布失败'
           });
         }
-      },
-      error: () => {
-        this.setState({
-          submited: true,
-          submitOk: false,
-          submitMsg: '发布失败'
-        });
-      }
-    })
+      });
+    });
   }
 
   handleTitleChange(e) {
