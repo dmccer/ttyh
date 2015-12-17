@@ -32,6 +32,30 @@ export default class CommentAdd extends React.Component {
     }
   }
 
+  uploadImage(cb) {
+    let media_ids = [];
+
+    if (this.state.photo && this.state.photo.length) {
+      this.refs.loading.show('正在上传图片...');
+      this.state.photo.forEach((item) => {
+        wx.uploadImage({
+          localId: item.url,
+          success: (res) => {
+            media_ids.push(res.serverId);
+
+            if (media_ids.length === this.state.photo.length) {
+              cb(media_ids.join());
+            }
+          }
+        });
+      });
+
+      return;
+    }
+
+    cb();
+  }
+
   submit(e: Object) {
     e.preventDefault();
     e.stopPropagation();
@@ -42,37 +66,40 @@ export default class CommentAdd extends React.Component {
       return;
     }
 
-    this.refs.loading.show('发布中...');
+    this.uploadImage((media_ids) => {
+      this.refs.loading.show('发布中...');
 
-    $.ajax({
-      url: '/mvc/bbs_v2/comment',
-      type: 'POST',
-      data: {
-        token: this.state.qs.token,
-        uid: this.state.qs.uid,
-        pid: this.state.qs.fid,
-        content: this.state.text,
-        tid: this.state.qs.tid
-      },
-      success: (data) => {
-        this.refs.loading.close();
+      $.ajax({
+        url: '/mvc/bbs_v2/comment',
+        type: 'POST',
+        data: {
+          token: this.state.qs.token,
+          uid: this.state.qs.uid,
+          pid: this.state.qs.fid,
+          content: this.state.text,
+          tid: this.state.qs.tid,
+          media_ids: media_ids
+        },
+        success: (data) => {
+          this.refs.loading.close();
 
-        if (data !== 0) {
-          this.refs.poptip.warn(COMMENT_ERR[data] || '发布评论失败');
+          if (data !== 0) {
+            this.refs.poptip.warn(COMMENT_ERR[data] || '发布评论失败');
 
-          return;
+            return;
+          }
+
+          this.refs.poptip.success('发布成功');
+
+          setTimeout(() => {
+            history.back();
+          }, 3000)
+        },
+        error: () => {
+
         }
-
-        this.refs.poptip.success('发布成功');
-
-        setTimeout(() => {
-          history.back();
-        }, 3000)
-      },
-      error: () => {
-
-      }
-    })
+      });
+    });
   }
 
   handleCommentChange(e: Object) {
