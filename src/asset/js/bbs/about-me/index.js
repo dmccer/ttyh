@@ -14,14 +14,14 @@ export default class AboutMe extends React.Component {
 
     this.state = {
       qs: querystring.parse(location.search.substring(1)),
-      tab: 'post', // post, reply
+      tab: 'forum', // post, reply
       posts: [],
       replies: [],
       tabs: [{
-        key: 'post',
+        key: 'forum',
         text: '我的发帖'
       }, {
-        key: 'reply',
+        key: 'comment',
         text: '我的回复'
       }]
     }
@@ -35,23 +35,26 @@ export default class AboutMe extends React.Component {
     this.checkHasNewPostsOrReplies();
 
     switch (tab) {
-      case 'post':
+      case 'forum':
         return this.queryMyPosts();
-      case 'reply':
+      case 'comment':
         return this.queryMyReplies();
     }
   }
 
   checkHasNewPostsOrReplies() {
-    // $.ajax({
-    //   url: '/notice/aboutme',
-    //   type: 'GET',
-    //   success: (data) => {
-    //     this.state.tabs.forEach((tab) => {
-    //       tab.has = data[tab.key];
-    //     });
-    //   }
-    // })
+    $.ajax({
+      url: '/mvc/bbs/has_remind',
+      type: 'GET',
+      data: {
+        uid: this.state.qs.uid
+      },
+      success: (data) => {
+        this.state.tabs.forEach((tab) => {
+          tab.has = data[tab.key + '_count'] !== 0;
+        });
+      }
+    });
   }
 
   format(list: Object) {
@@ -121,9 +124,9 @@ export default class AboutMe extends React.Component {
         {
           (() => {
             switch (this.state.tab) {
-              case 'post':
+              case 'forum':
                 return <Post items={this.state.posts} />;
-              case 'reply':
+              case 'comment':
                 return <ReplyList items={this.state.replies} />;
             }
           })()
