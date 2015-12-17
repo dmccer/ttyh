@@ -4,6 +4,7 @@ import React from 'react';
 import FullscreenImg from '../../fullscreen-img/';
 import Emoj from '../emoj/';
 import querystring from 'querystring';
+import ReadableTime from '../readable-time/';
 
 export default class PostItem extends React.Component {
   constructor() {
@@ -96,7 +97,7 @@ export default class PostItem extends React.Component {
           <div className="profile">
             <img className="avatar" src={this.props.item.imgUrl} />
             <div className="poster">{this.props.item.userName}</div>
-            <div className="post-time"><i className="icon icon-clock"></i>{new Date(this.props.item.create_time).toLocaleDateString().substring(5).replace('/', '-')}</div>
+            <ReadableTime time={this.props.item.create_time} />
           </div>
           <div className="post-feedback">
             <span><i className="icon icon-edit"></i>{this.props.item.rcount}</span>

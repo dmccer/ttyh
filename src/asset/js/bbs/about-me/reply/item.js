@@ -2,6 +2,7 @@ import './item.less';
 
 import React from 'react';
 import Emoj from '../../emoj/';
+import ReadableTime from '../../readable-time/';
 
 export default class ReportItem extends React.Component {
   constructor() {
@@ -16,7 +17,7 @@ export default class ReportItem extends React.Component {
             <img className="avatar" src={this.props.item.imgUrl} />
             <div className="poster">{this.props.item.userName}</div>
             <div className="post-meta">
-              <i className="icon icon-clock"></i>{new Date(this.props.item.create_time).toLocaleDateString().substring(5).replace('/', '-')}
+              <ReadableTime time={this.props.item.create_time} />
             </div>
           </div>
           <div className="post-feedback">

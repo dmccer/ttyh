@@ -5,6 +5,7 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Emoj from '../emoj/';
 import querystring from 'querystring';
+import ReadableTime from '../readable-time/';
 
 export default class PostDetailItem extends React.Component {
   constructor() {
@@ -129,7 +130,7 @@ export default class PostDetailItem extends React.Component {
           <div className="profile">
             <img className="avatar" src={this.state.imgUrl}></img>
             <div className="poster">{this.state.userName}<i className={classNames('flag', this.state.mine ? '' : 'hide')}>楼主</i></div>
-            <div className="post-time"><i className="icon icon-clock"></i>{new Date(this.state.create_time).toLocaleDateString().substring(5).replace('/', '-')}</div>
+            <ReadableTime time={this.state.create_time} />
           </div>
           <div className="poster-actions">
             {this.render_follow()}

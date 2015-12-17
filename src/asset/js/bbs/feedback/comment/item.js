@@ -2,6 +2,7 @@ import './item.less';
 
 import React from 'react';
 import Emoj from '../../emoj/';
+import ReadableTime from '../../readable-time/';
 
 export default class Comment extends React.Component {
   constructor() {
@@ -31,7 +32,7 @@ export default class Comment extends React.Component {
                   }
                 })()
               }
-              <i className="icon icon-clock"></i>{new Date(this.props.item.create_time).toLocaleDateString().substring(5).replace('/', '-')}
+              <ReadableTime time={this.props.item.create_time} />
             </div>
           </div>
           <div className="post-feedback">

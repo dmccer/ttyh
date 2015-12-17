@@ -1,6 +1,7 @@
 import './item.less';
 
 import React from 'react';
+import ReadableTime from '../../readable-time/';
 
 export default class Praise extends React.Component {
   constructor() {
@@ -18,7 +19,7 @@ export default class Praise extends React.Component {
           <div className="post-meta">
             <span className="floor">{this.props.item.floor}楼</span>
             <i className="icon icon-clock"></i>
-            {new Date(this.props.item.do_time).toLocaleDateString().substring(5).replace('/', '-')}
+            <ReadableTime time={this.props.item.do_time} />
           </div>
         </div>
       </li>
