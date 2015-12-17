@@ -21,16 +21,12 @@ export default class JWeiXin {
         jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage']
       };
 
-      console.log(config)
-
       wx.config(config);
 
-      wx.ready(() => {
-        alert('验证成功');
-      });
+      wx.ready(this.fn);
 
       wx.error((res) => {
-        alert('验证失败');
+        alert('微信验证失败');
         console.log('微信验证失败', res);
       })
     });

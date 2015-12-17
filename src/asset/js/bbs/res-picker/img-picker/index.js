@@ -55,7 +55,7 @@ export default class ImgPicker extends React.Component {
       success: (res) => {
         console.log(res.localIds);
 
-        alert(res.localIds);
+        alert(JSON.stringify(res.localIds));
       }
     });
 
