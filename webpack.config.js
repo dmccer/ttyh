@@ -16,7 +16,8 @@ module.exports = {
     login: './src/asset/js/login/index.js',
     register: './src/asset/js/register/index.js',
     retrieve: './src/asset/js/retrieve/index.js',
-    ved: ['webpack-dev-server/client?http://192.168.0.100:8080', 'webpack/hot/dev-server']
+    term: './src/asset/js/term/index.js',
+    ved: ['webpack-dev-server/client?http://192.168.0.112:8080', 'webpack/hot/dev-server']
   },
   output: {
     path: path.resolve(__dirname, pkg.dest),
@@ -97,6 +98,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'retrieve.html',
       chunks: ['retrieve', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '服务协议',
+      template: './src/page/index.html',
+      filename: 'term.html',
+      chunks: ['term', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

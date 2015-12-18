@@ -1,5 +1,6 @@
 import '../../less/global/global.less';
 import '../../less/global/form.less';
+import '../../less/component/icon.less';
 import './index.less';
 
 import React from 'react';
@@ -50,7 +51,7 @@ export default class Login extends React.Component {
         }
       },
       error: () => {
-        this.refs.poptip.error('系统异常')
+        this.refs.poptip.error('系统异常');
       }
     })
   }
@@ -115,11 +116,11 @@ export default class Login extends React.Component {
   render() {
     return (
       <section className="login">
-        <div className="logo"><img src="" /></div>
+        <div className="logo"><img src={require('../../img/common/logo.png')} /></div>
         <form className="form" onSubmit={this.handleSubmit.bind(this)}>
           <div className="field-group">
             <div className="field">
-              <label className="icon icon-tel"></label>
+              <label><i className="icon icon-tel s20"></i></label>
               <div className="control">
                 <input
                   type="tel"
@@ -130,7 +131,7 @@ export default class Login extends React.Component {
               </div>
             </div>
             <div className="field">
-              <label className="icon icon-lock"></label>
+              <label><i className="icon icon-lock s20"></i></label>
               <div className="control">
                 <input
                   type="password"
@@ -144,7 +145,7 @@ export default class Login extends React.Component {
           </div>
           <p className="forget">
             <a href="./retrieve.html">
-              <i className="icon icon-question"></i>
+              <i className="icon icon-question s20"></i>
               忘记密码
             </a>
           </p>

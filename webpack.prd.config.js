@@ -14,7 +14,8 @@ module.exports = {
     'bbs-about-me': './src/asset/js/bbs/about-me/index.js',
     login: './src/asset/js/login/index.js',
     register: './src/asset/js/register/index.js',
-    retrieve: './src/asset/js/retrieve/index.js'
+    retrieve: './src/asset/js/retrieve/index.js',
+    term: './src/asset/js/term/index.js'
   },
   output: {
     path: path.resolve(__dirname, pkg.dest),
@@ -95,6 +96,13 @@ module.exports = {
       filename: 'retrieve.html',
       chunks: ['retrieve', 'zepto'],
       inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '服务协议',
+      template: './src/page/index.html',
+      filename: 'term.html',
+      chunks: ['term', 'zepto'],
+      inject: 'body'
     })
   ],
   module: {
@@ -128,6 +136,9 @@ module.exports = {
     }, {
       test: /\.(woff|eot)(#[a-zA-Z])*$/,
       loader: 'file-loader'
+    }, {
+      text: /\.txt$/,
+      loader: 'raw-loader'
     }, {
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,

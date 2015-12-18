@@ -1,5 +1,6 @@
 import '../../less/global/global.less';
 import '../../less/global/form.less';
+import '../../less/component/icon.less';
 import './index.less';
 
 import React from 'react';
@@ -229,7 +230,7 @@ export default class Retrieve extends React.Component {
       <form className="form" onSubmit={this.handleNextSubmit.bind(this)}>
         <div className="field-group">
           <div className="field">
-            <label className="icon icon-tel"></label>
+            <label><i className="icon icon-tel s20"></i></label>
             <div className="control">
               <input
                 type="tel"
@@ -240,7 +241,7 @@ export default class Retrieve extends React.Component {
             </div>
           </div>
           <div className="field">
-            <label className="icon icon-tel"></label>
+            <label><i className="icon icon-key s20"></i></label>
             <div className="control">
               <input
                 type="tel"
@@ -269,7 +270,7 @@ export default class Retrieve extends React.Component {
       <form className="form" onSubmit={this.handleEditPassword.bind(this)}>
         <div className="field-group">
           <div className="field">
-            <label className="icon icon-tel"></label>
+            <label><i className="icon icon-tel s20"></i></label>
             <div className="control">
               <input
                 type="tel"
@@ -279,7 +280,7 @@ export default class Retrieve extends React.Component {
             </div>
           </div>
           <div className="field">
-            <label className="icon icon-tel"></label>
+            <label><i className="icon icon-account s20"></i></label>
             <div className="control">
               <input
                 type="tel"
@@ -291,7 +292,7 @@ export default class Retrieve extends React.Component {
             </div>
           </div>
           <div className="field">
-            <label className="icon icon-lock"></label>
+            <label><i className="icon icon-lock s20"></i></label>
             <div className="control">
               <input
                 type="password"
@@ -323,7 +324,7 @@ export default class Retrieve extends React.Component {
 
     return (
       <section className="retrieve">
-        <div className="logo"><img src="" /></div>
+        <div className="logo"><img src={require('../../img/common/logo.png')} /></div>
         {form}
         <Loading ref="loading" />
         <Poptip ref="poptip" />

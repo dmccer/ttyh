@@ -6,7 +6,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import ResPicker from '../res-picker/';
-import TipBox from '../tipbox/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import querystring from 'querystring';
@@ -31,7 +30,6 @@ export default class PostAdd extends React.Component {
       text: '',
       maxTitleLen: 20,
       maxTextLen: 2000,
-      submited: false,
       address: {},
       qs: query
     }
@@ -110,27 +108,15 @@ export default class PostAdd extends React.Component {
           this.refs.loading.close();
 
           if (data === 0) {
-            this.setState({
-              submited: true,
-              submitOk: true,
-              submitMsg: '发布成功'
-            });
+            this.refs.poptip.success('发布成功');
+
+            // location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+\?$/, '/bbs.html');
           } else {
-            this.setState({
-              submited: true,
-              submitOk: false,
-              submitMsg: SUBMIT_CODE_MSG_MAP[data]
-            });
+            this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data]);
           }
         },
         error: () => {
           this.refs.loading.close();
-
-          this.setState({
-            submited: true,
-            submitOk: false,
-            submitMsg: '发布失败'
-          });
         }
       });
     });
@@ -157,18 +143,6 @@ export default class PostAdd extends React.Component {
 
     this.setState({
       text: val
-    });
-  }
-
-  handleTipBoxClosed() {
-    if (this.state.submitOk) {
-      location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html');
-
-      return;
-    }
-
-    this.setState({
-      submited: false
     });
   }
 
@@ -299,13 +273,6 @@ export default class PostAdd extends React.Component {
             />
           </section>
         </form>
-        {
-          (() => {
-            if (this.state.submited) {
-              return <TipBox msg={this.state.submitMsg} ok={this.state.submitOk} onClose={this.handleTipBoxClosed.bind(this)} />
-            }
-          })()
-        }
         <Loading ref="loading" />
         <Poptip ref="poptip" />
       </section>

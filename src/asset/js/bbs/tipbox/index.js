@@ -3,6 +3,9 @@ import './index.less';
 import React from 'react';
 import classNames from 'classnames';
 
+/**
+ * <TipBox msg={this.state.submitMsg} ok={this.state.submitOk} onClose={this.handleTipBoxClosed.bind(this)} />
+ */
 export default class TipBox extends React.Component {
   constructor() {
     super();

@@ -1,5 +1,6 @@
 import '../../less/global/global.less';
 import '../../less/global/form.less';
+import '../../less/component/icon.less';
 import './index.less';
 
 import React from 'react';
@@ -181,11 +182,11 @@ export default class Register extends React.Component {
   render() {
     return (
       <section className="register">
-        <div className="logo"><img src="" /></div>
+        <div className="logo"><img src={require('../../img/common/logo.png')} /></div>
         <form className="form" onSubmit={this.handleSubmit.bind(this)}>
           <div className="field-group">
             <div className="field">
-              <label className="icon icon-tel"></label>
+              <label><i className="icon icon-tel s20"></i></label>
               <div className="control">
                 <input
                   type="tel"
@@ -196,7 +197,7 @@ export default class Register extends React.Component {
               </div>
             </div>
             <div className="field">
-              <label className="icon icon-tel"></label>
+              <label><i className="icon icon-key s20"></i></label>
               <div className="control">
                 <input
                   type="tel"
@@ -213,7 +214,7 @@ export default class Register extends React.Component {
               </div>
             </div>
             <div className="field">
-              <label className="icon icon-lock"></label>
+              <label><i className="icon icon-lock s20"></i></label>
               <div className="control">
                 <input
                   type="password"
@@ -234,7 +235,7 @@ export default class Register extends React.Component {
                 type="checkbox"
                 value={this.state.term}
                 onChange={this.handleBoolChange.bind(this, 'term')}
-              /> 天天有货服务条款
+              /> <a href="./term.html">天天有货服务条款</a>
             </label>
           </p>
         </form>
