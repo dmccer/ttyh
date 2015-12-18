@@ -98,8 +98,8 @@ export default class PostDetailItem extends React.Component {
         return (
           <span
             className="followed">
-            <i className="icon icon-correct"></i>
-            <b>已关注</b>
+            <i className="icon icon-correct s20"></i>
+            <span><b>已关注</b></span>
           </span>
         )
       }
@@ -109,12 +109,12 @@ export default class PostDetailItem extends React.Component {
           className="follow"
           onClick={this.follow.bind(this)}>
           <i className="icon icon-plus"></i>
-          <b>关注</b>
+          <span><b>关注</b></span>
         </span>
       );
     } else {
       return (
-        <span className="del" onClick={this.del.bind(this)}><i className="icon icon-del"></i>删除</span>
+        <span className="del" onClick={this.del.bind(this)}><i className="icon icon-del s20"></i>删除</span>
       );
     }
   }

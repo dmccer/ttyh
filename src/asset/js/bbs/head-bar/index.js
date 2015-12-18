@@ -28,6 +28,8 @@ export default class HeadBar extends React.Component {
   }
 
   componentDidMount() {
+    this.checkHasNewPostsOrReplies();
+    
     this.setState({
       selectedTabItem: this.state.tabItems[0]
     });
@@ -63,6 +65,21 @@ export default class HeadBar extends React.Component {
     });
   }
 
+  checkHasNewPostsOrReplies() {
+    $.ajax({
+      url: '/mvc/bbs/has_remind',
+      type: 'GET',
+      data: {
+        uid: this.state.qs.uid
+      },
+      success: (data) => {
+        this.setState({
+          notice: data.comment_count !== 0
+        });
+      }
+    });
+  }
+
   render() {
     const isAllTabActive = ['all', 'focus'].indexOf(this.props.on) !== -1;
     const aboutMeUrl = './bbs-about-me.html?' + querystring.stringify(this.state.qs);
@@ -71,7 +88,17 @@ export default class HeadBar extends React.Component {
     return (
       <section className="row head-bar">
         <div className="notice">
-          <a href={aboutMeUrl}><i className="icon icon-bell s20 on"></i><span>提醒</span></a>
+          <a href={aboutMeUrl}>
+            <i className="icon icon-bell s20 on"></i>
+            <span>提醒</span>
+            {
+              (() => {
+                if (this.state.notice) {
+                  return <i className="icon icon-dot"></i>;
+                }
+              })()
+            }
+          </a>
         </div>
         <ul className="tabs grid">
           <li
@@ -96,7 +123,7 @@ export default class HeadBar extends React.Component {
           </li>
           <li value={this.state.tabVals[2]} className={classNames('tab', this.props.on === 'hot' ? 'active' : '')} onClick={this.switchTab.bind(this, 'hot')}>
             <a href="#" className="tab-text">
-              <i className="icon icon-hot s20"></i>
+              <i className={classNames('icon icon-hot s20', this.props.on === 'hot' ? 'off' : 'on')}></i>
               <span>热门</span>
             </a>
           </li>

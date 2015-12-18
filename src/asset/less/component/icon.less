@@ -112,7 +112,9 @@
   &.icon-lock,
   &.icon-question,
   &.icon-key,
-  &.icon-account {
+  &.icon-account,
+  &.icon-correct,
+  &.icon-del {
     background-size: 100% 100%;
 
     &.s30 {
@@ -173,7 +175,14 @@
   }
 
   &.icon-hot {
-    background-image: url('../../img/2x/hot-30@2x.png');
+    &.on {
+      background-image: url('../../img/2x/hot-30-on@2x.png');
+    }
+
+    &.off {
+      background-image: url('../../img/2x/hot-30-off@2x.png');
+    }
+
   }
 
   &.icon-photo {
@@ -236,5 +245,13 @@
 
   &.icon-account {
     background-image: url('../../img/common/account-30.png');
+  }
+
+  &.icon-correct {
+    background-image: url('../../img/2x/correct-30@2x.png');
+  }
+
+  &.icon-del {
+    background-image: url('../../img/2x/del-30@2x.png');
   }
 }

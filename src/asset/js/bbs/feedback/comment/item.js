@@ -3,10 +3,15 @@ import './item.less';
 import React from 'react';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
+import querystring from 'querystring';
 
 export default class Comment extends React.Component {
   constructor() {
-    super()
+    super();
+
+    this.state = {
+      qs: querystring.parse(location.search.substring(1))
+    }
   }
 
   praise() {

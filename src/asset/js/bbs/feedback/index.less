@@ -1,4 +1,5 @@
 @import '../../../less/global/site.variable';
+@import '../../../less/component/icon-util.less';
 
 .feedback {
   background-color: @white;
@@ -20,8 +21,19 @@
       }
 
       &.on a {
+        position: relative;
         color: @black;
         font-weight: bolder;
+
+        .arrow(10px, 1px, 45deg, @c_lightGrey);
+
+        &:before {
+          position: absolute;
+          bottom: -5px;
+          left: 50%;
+          margin-left: -5px;
+          background-color: @white;
+        }
       }
     }
   }

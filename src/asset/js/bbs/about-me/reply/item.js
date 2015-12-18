@@ -23,7 +23,7 @@ export default class ReportItem extends React.Component {
           <div className="post-feedback">
             <div className="post-feedback-inner">
               <p className="praise-count">
-                <i className="icon icon-praise"></i>
+                <i className="icon icon-praise s15 disable"></i>
                 <span>{this.props.item.pcount}</span>
               </p>
               {
@@ -31,7 +31,7 @@ export default class ReportItem extends React.Component {
                   if (this.props.item.remind_count != 0) {
                     return (
                       <p className="reply-count">
-                        <i className="icon icon-edit"></i>
+                        <i className="icon icon-edit s15 disable"></i>
                         <span>{this.props.item.remind_count + ' 新回复'}</span>
                       </p>
                     )
