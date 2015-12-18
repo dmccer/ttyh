@@ -91,7 +91,10 @@ export default class ResPicker extends React.Component {
           key={'picker-menu_' + index}
           onClick={this.switchMenu.bind(this, menu)}
           className={classNames(this.props.on === menu.id ? 'on': '')}>
-          <a href="#">{menu.text}</a>
+          <a href="#">
+            <i className={classNames('icon s20', 'icon-' + menu.id , this.props.on === menu.id ? 'on': 'off')}></i>
+            {menu.text}
+          </a>
         </li>
       )
     })

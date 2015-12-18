@@ -121,7 +121,7 @@ export default class PostDetailItem extends React.Component {
 
   render() {
     let imgs = this.state.imgs
-      ? <a href={this.state.imgs[0]}><img src={this.state.imgs[0]} /></a>
+      ? <a href="javascript:void(0)"><img src={this.state.imgs[0]} /></a>
       : '';
 
     return (
@@ -147,7 +147,15 @@ export default class PostDetailItem extends React.Component {
               {imgs}
             </div>
           </section>
-          <div className="address"><i className="icon icon-address"></i>{this.state.addr}</div>
+          <div className="address">
+          {
+            (() => {
+              if (this.state.addr !== '') {
+                return <div><i className="icon icon-address s20"></i>{this.state.addr}</div>;
+              }
+            })()
+          }
+          </div>
         </article>
         <Loading ref='loading' />
         <Poptip ref='poptip' />

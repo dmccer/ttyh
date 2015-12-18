@@ -36,8 +36,8 @@ export default class Comment extends React.Component {
             </div>
           </div>
           <div className="post-feedback">
-            <span onClick={this.praise.bind(this)}><i className="icon icon-praise"></i>{this.props.item.pcount}</span>
-            <span onClick={this.comment.bind(this)}><i className="icon icon-edit"></i>{this.props.item.rcount}</span>
+            <span onClick={this.praise.bind(this)}><i className="icon icon-praise s15 off"></i>{this.props.item.pcount}</span>
+            <span onClick={this.comment.bind(this)}><i className="icon icon-edit s15 off"></i>{this.props.item.rcount}</span>
           </div>
         </header>
         <article className="post-body">

@@ -71,7 +71,7 @@ export default class HeadBar extends React.Component {
     return (
       <section className="row head-bar">
         <div className="notice">
-          <a href={aboutMeUrl}><i className="icon icon-bell"></i>提醒</a>
+          <a href={aboutMeUrl}><i className="icon icon-bell s20 on"></i><span>提醒</span></a>
         </div>
         <ul className="tabs grid">
           <li
@@ -96,12 +96,12 @@ export default class HeadBar extends React.Component {
           </li>
           <li value={this.state.tabVals[2]} className={classNames('tab', this.props.on === 'hot' ? 'active' : '')} onClick={this.switchTab.bind(this, 'hot')}>
             <a href="#" className="tab-text">
+              <i className="icon icon-hot s20"></i>
               <span>热门</span>
-              <i className="icon icon-hot"></i>
             </a>
           </li>
         </ul>
-        <div className="post"><a href={postUrl}>发帖<i className="icon icon-edit"></i></a></div>
+        <div className="post"><a href={postUrl}><span>发帖</span><i className="icon icon-edit s20 on"></i></a></div>
       </section>
     );
   }

@@ -15,6 +15,12 @@
   display: inline-block;
   vertical-align: middle;
 
+  & + span {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 3px;
+  }
+
   &.icon-dot {
     .dot(10px, @c_orange);
   }
@@ -90,5 +96,120 @@
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     animation-delay: 0;
+  }
+
+  &.icon-bell,
+  &.icon-edit,
+  &.icon-clock,
+  &.icon-praise,
+  &.icon-hot,
+  &.icon-photo,
+  &.icon-emoj,
+  &.icon-topic,
+  &.icon-address,
+  &.icon-ok {
+    background-size: 100% 100%;
+
+    &.s30 {
+      width: 30px;
+      height: 30px;
+    }
+
+    &.s20 {
+      width: 20px;
+      height: 20px;
+    }
+
+    &.s15 {
+      width: 15px;
+      height: 15px;
+    }
+
+    &.s12 {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &.icon-bell {
+    background-image: url('../../img/2x/bell-40@2x.png');
+  }
+
+  &.icon-edit {
+    &.on {
+      background-image: url('../../img/2x/edit-40@2x.png');
+    }
+
+    &.off {
+      background-image: url('../../img/2x/edit-30-off@2x.png');
+    }
+
+    &.disable {
+      background-image: url('../../img/2x/edit-20@2x.png');
+    }
+  }
+
+  &.icon-clock {
+    background-image: url('../../img/2x/clock-20@2x.png');
+  }
+
+  &.icon-praise {
+    &.on {
+      background-image: url('../../img/2x/praise-30-on@2x.png');
+    }
+
+    &.off {
+      background-image: url('../../img/2x/praise-30-off@2x.png');
+    }
+
+    &.disable {
+      background-image: url('../../img/2x/praise-20@2x.png');
+    }
+  }
+
+  &.icon-hot {
+    background-image: url('../../img/2x/hot-30@2x.png');
+  }
+
+  &.icon-photo {
+    &.on {
+      background-image: url('../../img/2x/photo-40-on@2x.png');
+    }
+
+    &.off {
+      background-image: url('../../img/2x/photo-40-off@2x.png');
+    }
+  }
+
+  &.icon-emoj {
+    &.on {
+      background-image: url('../../img/2x/emoj-40-on@2x.png');
+    }
+
+    &.off {
+      background-image: url('../../img/2x/emoj-40-off@2x.png');
+    }
+  }
+
+  &.icon-topic {
+    &.on {
+      background-image: url('../../img/2x/topic-40-on@2x.png');
+    }
+
+    &.off {
+      background-image: url('../../img/2x/topic-40-off@2x.png');
+    }
+
+    &.disable {
+      background-image: url('../../img/2x/topic-40-on@2x.png');
+    }
+  }
+
+  &.icon-address {
+    background-image: url('../../img/2x/address-40@2x.png');
+  }
+
+  &.icon-ok {
+    background-image: url('../../img/2x/ok@2x.png');
   }
 }

@@ -284,7 +284,7 @@ export default class PostAdd extends React.Component {
               </li>
               <li className="location-tag">
                 <div className="action-tag" onClick={this.toggleAddress.bind(this)}>
-                  <i className="icon icon-address"></i>
+                  <i className="icon icon-address s20"></i>
                   <span>{addressDescription}</span>
                   <i className={addressActionIconClasses}></i>
                 </div>

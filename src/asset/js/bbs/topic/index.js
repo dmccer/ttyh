@@ -31,7 +31,7 @@ export default class Topic extends React.Component {
         href="#"
         key={'topic-item_' + index}
         title={topic.name}
-      >{topic.name}</a>
+      ><i className="icon icon-topic s20 disable"></i>{topic.name}</a>
     })
 
     return (

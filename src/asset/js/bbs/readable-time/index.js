@@ -48,7 +48,7 @@ export default class ReadableTime extends React.Component {
   render() {
     return (
       <div className="readable-time">
-        <i className="icon icon-clock"></i>
+        <i className="icon icon-clock s12"></i>
         <span>{this.calcTime()}</span>
       </div>
     )

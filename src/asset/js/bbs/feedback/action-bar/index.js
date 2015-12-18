@@ -25,10 +25,10 @@ export default class ActionBar extends React.Component {
         <ul className="grid">
           <li>
             <a href="#" onClick={this.comment.bind(this)}>
-              <i className="icon icon-edit"></i>评论
+              <i className="icon icon-edit s20 off"></i>评论
             </a>
           </li>
-          <li onClick={this.praise.bind(this)}><i className="icon icon-praise"></i>赞</li>
+          <li onClick={this.praise.bind(this)}><i className="icon icon-praise s20 off"></i>赞</li>
         </ul>
       </div>
     )

@@ -100,8 +100,8 @@ export default class PostItem extends React.Component {
             <ReadableTime time={this.props.item.create_time} />
           </div>
           <div className="post-feedback">
-            <span><i className="icon icon-edit"></i>{this.props.item.rcount}</span>
-            <span><i className="icon icon-praise"></i>{this.props.item.pcount}</span>
+            <span><i className="icon icon-edit s15 disable"></i>{this.props.item.rcount}</span>
+            <span><i className="icon icon-praise s15 disable"></i>{this.props.item.pcount}</span>
           </div>
         </header>
         <article className="post-body">
