@@ -35,7 +35,7 @@ export default class BBS extends React.Component {
 
     switch(q) {
       case 'all':
-        url = '/mvc/bbs_v2/show_all';
+        url = '/api/bbs_v2/show_all';
         break;
       case 'focus':
         let qs = querystring.stringify({
@@ -43,10 +43,10 @@ export default class BBS extends React.Component {
           f: 0
         });
 
-        url = '/mvc/bbs_v2/show_follow_forums?' + qs;
+        url = '/api/bbs_v2/show_follow_forums?' + qs;
         break;
       case 'hot':
-        url = '/mvc/bbs_v2/hot_forum';
+        url = '/api/bbs_v2/hot_forum';
         break;
     }
 

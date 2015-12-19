@@ -93,7 +93,7 @@ export default class PostAdd extends React.Component {
       this.refs.loading.show('正在发布...');
 
       $.ajax({
-        url: '/mvc/bbs_v2/post',
+        url: '/api/bbs_v2/post',
         type: 'POST',
         data: {
           uid: this.state.qs.uid,

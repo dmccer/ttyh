@@ -67,7 +67,7 @@ export default class HeadBar extends React.Component {
 
   checkHasNewPostsOrReplies() {
     $.ajax({
-      url: '/mvc/bbs/has_remind',
+      url: '/api/bbs/has_remind',
       type: 'GET',
       data: {
         uid: this.state.qs.uid

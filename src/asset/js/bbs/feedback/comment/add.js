@@ -70,7 +70,7 @@ export default class CommentAdd extends React.Component {
       this.refs.loading.show('发布中...');
 
       $.ajax({
-        url: '/mvc/bbs_v2/comment',
+        url: '/api/bbs_v2/comment',
         type: 'POST',
         data: {
           token: this.state.qs.token,

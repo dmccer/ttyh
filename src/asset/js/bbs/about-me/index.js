@@ -44,7 +44,7 @@ export default class AboutMe extends React.Component {
 
   checkHasNewPostsOrReplies() {
     $.ajax({
-      url: '/mvc/bbs/has_remind',
+      url: '/api/bbs/has_remind',
       type: 'GET',
       data: {
         uid: this.state.qs.uid
@@ -65,7 +65,7 @@ export default class AboutMe extends React.Component {
 
   queryMyPosts() {
     $.ajax({
-      url: '/mvc/bbs_v2/show_my_forum',
+      url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
       data: {
         uid: this.state.qs.uid,
@@ -86,7 +86,7 @@ export default class AboutMe extends React.Component {
 
   queryMyReplies() {
     $.ajax({
-      url: '/mvc/bbs_v2/show_my_commend',
+      url: '/api/bbs_v2/show_my_commend',
       type: 'GET',
       data: {
         uid: this.state.qs.uid,

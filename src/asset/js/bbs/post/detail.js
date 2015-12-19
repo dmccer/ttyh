@@ -20,7 +20,7 @@ export default class PostDetailItem extends React.Component {
     this.refs.loading.show('加载中...');
 
     $.ajax({
-      url: '/mvc/bbs_v2/show_forum',
+      url: '/api/bbs_v2/show_forum',
       type: 'GET',
       data: {
         id: this.props.fid,
@@ -51,7 +51,7 @@ export default class PostDetailItem extends React.Component {
     this.refs.loading.show('加载中...');
 
     $.ajax({
-      url: '/mvc/follow_' + this.state.uid,
+      url: '/api/follow_' + this.state.uid,
       type: 'GET',
       success: (data) => {
         this.refs.loading.close();
@@ -69,7 +69,7 @@ export default class PostDetailItem extends React.Component {
     this.refs.loading.show('请求中...');
 
     $.ajax({
-      url: '/mvc/bbs/_del',
+      url: '/api/bbs/_del',
       type: 'POST',
       data: {
         uid: this.state.uid,

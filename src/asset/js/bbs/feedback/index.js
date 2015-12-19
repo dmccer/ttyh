@@ -57,7 +57,7 @@ export default class Feedback extends React.Component {
   }
   queryCommentList() {
     $.ajax({
-      url: '/mvc/bbs_v2/show_commend',
+      url: '/api/bbs_v2/show_commend',
       type: 'GET',
       data: {
         id: this.props.fid,
@@ -73,7 +73,7 @@ export default class Feedback extends React.Component {
 
   queryPraiseList() {
     $.ajax({
-      url: '/mvc/bbs_v2/show_praise',
+      url: '/api/bbs_v2/show_praise',
       type: 'GET',
       data: {
         id: this.props.fid,
@@ -102,7 +102,7 @@ export default class Feedback extends React.Component {
     this.refs.loading.show('请求中...');
 
     $.ajax({
-      url: '/mvc/bbs_v2/praise',
+      url: '/api/bbs_v2/praise',
       type: 'POST',
       data: {
         fid: forum.id,

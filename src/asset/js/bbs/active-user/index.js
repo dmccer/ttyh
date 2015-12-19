@@ -14,7 +14,7 @@ export default class Post extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/mvc/bbs/hot_user',
+      url: '/api/bbs/hot_user',
       type: 'GET',
       success: (data) => {
         this.setState({

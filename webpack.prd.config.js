@@ -3,9 +3,13 @@ var path = require('path');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var node_modules = path.resolve(__dirname, 'node_modules');
+var pathToReact = path.resolve(node_modules, 'react/');
+
 var pkg = require('./package.json');
 
 module.exports = {
+  watch: true,
   entry: {
     bbs: './src/asset/js/bbs/index.js',
     'bbs-comment': './src/asset/js/bbs/feedback/comment/add.js',
@@ -19,17 +23,18 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, pkg.dest),
-    publicPath: '',
-    filename: '[name].bundle.js',
+    filename: '[name].js',
     chunkFilename: '[id].chunk.js'
   },
   resolve: {
     alias: {
-      zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js')
+      zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js'),
+      // react: pathToReact
     }
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('zepto', 'zepto.bundle.js'),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.CommonsChunkPlugin('zepto', 'zepto.js', Infinity),
     new webpack.ProvidePlugin({
       $: 'zepto',
       zepto: 'zepto',
@@ -41,67 +46,70 @@ module.exports = {
         warnings: false
       }
     }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development')
+    }),
     new HtmlWebpackPlugin({
       title: '社区',
       template: './src/page/index.html',
       filename: 'bbs.html',
-      chunks: ['bbs', 'zepto'],
+      chunks: ['zepto', 'bbs'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '发帖',
       template: './src/page/index.html',
       filename: 'bbs-post.html',
-      chunks: ['bbs-post', 'zepto'],
+      chunks: ['zepto', 'bbs-post'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '帖子详情',
       template: './src/page/index.html',
       filename: 'bbs-detail.html',
-      chunks: ['bbs-detail', 'zepto'],
+      chunks: ['zepto', 'bbs-detail'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '评论',
       template: './src/page/index.html',
       filename: 'bbs-comment.html',
-      chunks: ['bbs-comment', 'zepto'],
+      chunks: ['zepto', 'bbs-comment'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '与我有关',
       template: './src/page/index.html',
       filename: 'bbs-about-me.html',
-      chunks: ['bbs-about-me', 'zepto'],
+      chunks: ['zepto', 'bbs-about-me'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '登录',
       template: './src/page/index.html',
       filename: 'login.html',
-      chunks: ['login', 'zepto'],
+      chunks: ['zepto', 'login'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '注册',
       template: './src/page/index.html',
       filename: 'register.html',
-      chunks: ['register', 'zepto'],
+      chunks: ['zepto', 'register'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '找回密码',
       template: './src/page/index.html',
       filename: 'retrieve.html',
-      chunks: ['retrieve', 'zepto'],
+      chunks: ['zepto', 'retrieve'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '服务协议',
       template: './src/page/index.html',
       filename: 'term.html',
-      chunks: ['term', 'zepto'],
+      chunks: ['zepto', 'term'],
       inject: 'body'
     })
   ],
@@ -137,16 +145,17 @@ module.exports = {
       test: /\.(woff|eot)(#[a-zA-Z])*$/,
       loader: 'file-loader'
     }, {
-      text: /\.txt$/,
+      test: /\.txt$/,
       loader: 'raw-loader'
     }, {
-      test: /\.jsx?$/,
-      exclude: /(node_modules|bower_components)/,
-      loaders: [
-        'react-hot',
-        'babel?presets[]=react,presets[]=es2015'
-      ]
-    }]
+      test: /\.js?$/,
+      exclude: /node_modules/,
+      loaders: ['babel?presets[]=react&presets[]=es2015']
+    }, {
+      test: /zepto(\.min)?\.js$/,
+      loader: "exports?Zepto; delete window.$; delete window.Zepto;"
+    }],
+    // noParse: [pathToReact]
   },
   lessLoader: {
     lessPlugins: [

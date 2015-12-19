@@ -13,7 +13,7 @@ export default class Topic extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/mvc/bbs/all_topic',
+      url: '/api/bbs/all_topic',
       type: 'GET',
       success: (data) => {
         this.setState({
