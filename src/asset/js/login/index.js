@@ -13,7 +13,9 @@ export default class Login extends React.Component {
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      count: '获取验证码'
+    };
   }
 
   validateTel() {
@@ -99,6 +101,31 @@ export default class Login extends React.Component {
     })
   }
 
+  count_down() {
+    let count = 60;
+
+    let fn = () => {
+      count--;
+
+      if (count === 0) {
+        this.setState({
+          count: '获取验证码',
+          verifyCodeDisabled: false
+        });
+
+        return;
+      }
+
+      this.setState({
+        count: '还剩 ' + count + ' s'
+      });
+
+      setTimeout(fn, 1000);
+    }
+
+    fn();
+  }
+
   handleGetVerifyCode(e: Object) {
     e.preventDefault();
     e.stopPropagation();
@@ -112,6 +139,8 @@ export default class Login extends React.Component {
 
       return;
     }
+
+    this.count_down();
 
     this.handleValidateTelRemote(() => {
       this.setState({
@@ -220,7 +249,7 @@ export default class Login extends React.Component {
                   type="button"
                   className="btn teal verify-tip-btn"
                   onClick={this.handleGetVerifyCode.bind(this)}
-                  disabled={this.state.verifyCodeDisabled}>获取验证码</button>
+                  disabled={this.state.verifyCodeDisabled}>{this.state.count}</button>
               </div>
             </div>
           </div>
