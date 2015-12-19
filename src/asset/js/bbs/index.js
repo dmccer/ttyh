@@ -14,6 +14,7 @@ import ActiveUser from './active-user/';
 import Loading from  '../loading/';
 import Poptip from  '../poptip/';
 import querystring from 'querystring';
+import LoginBtn from './login-btn/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -110,6 +111,13 @@ export default class BBS extends React.Component {
                     <HotPost items={this.state.posts} />
                   </div>
                 )
+            }
+          })()
+        }
+        {
+          (() => {
+            if (!this.state.qs.token || !this.state.qs.uid) {
+              return <LoginBtn />;
             }
           })()
         }

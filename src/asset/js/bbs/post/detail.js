@@ -12,7 +12,8 @@ export default class PostDetailItem extends React.Component {
     super();
 
     this.state = {
-      qs: querystring.parse(location.search.substring(1))
+      qs: querystring.parse(location.search.substring(1)),
+      imgs: []
     };
   }
 
@@ -120,9 +121,9 @@ export default class PostDetailItem extends React.Component {
   }
 
   render() {
-    let imgs = this.state.imgs
-      ? <a href="javascript:void(0)"><img src={this.state.imgs[0]} /></a>
-      : '';
+    let imgs = this.state.imgs.map((img, index) => {
+      return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img} /></a>
+    });
 
     return (
       <section className="post-item post-detail" key={'post-detail_' + this.state.id}>

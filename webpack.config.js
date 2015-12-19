@@ -173,6 +173,10 @@ module.exports = {
       '/mvc*': {
         target: 'http://ttyhuo.com',
         secure: false
+      },
+      '/api*': {
+        target: 'http://m.ttyhuo.com',
+        secure: false
       }
     }
   }
