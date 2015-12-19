@@ -120,14 +120,6 @@ export default class Login extends React.Component {
     });
   }
 
-  handleTelChange(e: Object) {
-    let tel = e.target.value;
-
-    this.setState({
-      tel: tel.replace(/[^\d]+/g, '')
-    });
-  }
-
   handleValidateTelRemote(cb) {
     this.refs.loading.show('正在获取验证码...');
 
@@ -195,20 +187,6 @@ export default class Login extends React.Component {
     o[field] = $.trim(e.target.value).replace(/[^\d]+/g, '');
 
     this.setState(o);
-  }
-
-  handleStrChange(field: string, e: Object) {
-    let o = {};
-
-    o[field] = $.trim(e.target.value);
-
-    this.setState(o);
-  }
-
-  handleVerifyCodeChange() {
-    this.setState({
-      password: e.target.value
-    });
   }
 
   render() {
