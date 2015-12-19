@@ -7,7 +7,7 @@ export default class JWeiXin {
   }
 
   config() {
-    $.getJSON(`/mvc/bbs_v2/jsapi?url=${this.url}`, null, (data) => {
+    $.getJSON(`/api/bbs_v2/jsapi?url=${this.url}`, null, (data) => {
       if (!data) {
         return;
       }
