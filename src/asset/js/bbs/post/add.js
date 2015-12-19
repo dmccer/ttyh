@@ -112,7 +112,7 @@ export default class PostAdd extends React.Component {
 
             // location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+\?$/, '/bbs.html');
           } else {
-            this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data]);
+            this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data] || '发布失败');
           }
         },
         error: () => {
