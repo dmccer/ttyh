@@ -117,7 +117,7 @@ export default class Login extends React.Component {
       }
 
       this.setState({
-        count: '还剩 ' + count + ' s'
+        count: '获取验证码(' + count + 's)'
       });
 
       setTimeout(fn, 1000);
