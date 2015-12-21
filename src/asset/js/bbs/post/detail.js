@@ -52,7 +52,7 @@ export default class PostDetailItem extends React.Component {
     this.refs.loading.show('加载中...');
 
     $.ajax({
-      url: '/api/follow_' + this.state.uid,
+      url: '/mvc/follow_' + this.state.uid,
       type: 'GET',
       success: (data) => {
         this.refs.loading.close();

@@ -1,13 +1,15 @@
 import './index.less';
 
 import React from 'react';
+import querystring from 'querystring';
 
 export default class Topic extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      topics: []
+      topics: [],
+      qs: querystring.parse(location.search.substring(1))
     }
   }
 
@@ -27,8 +29,10 @@ export default class Topic extends React.Component {
 
   render() {
     let topicList = this.state.topics.map((topic, index) => {
+      let url = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, { tid: topic.id }));
+
       return <a
-        href="#"
+        href={url}
         key={'topic-item_' + index}
         title={topic.name}
       ><i className="icon icon-topic s20 disable"></i>{topic.name}</a>

@@ -1,0 +1,99 @@
+@import '../../../less/global/site.variable';
+
+@padding: 10px;
+@borderColor: @darkWhite;
+@itemBgColor: @white;
+@avatarSize: 50px;
+
+.user-list {
+
+}
+
+.user-item {
+  background-color: @itemBgColor;
+  border-bottom: 1px solid @borderColor;
+  padding: @padding;
+}
+
+
+.user-item-inner {
+  .col {
+    vertical-align: middle;
+    overflow: hidden;
+  }
+
+  .avatar-col {
+    width: @avatarSize;
+  }
+
+  .avatar {
+    display: block;
+    width: @avatarSize;
+    height: @avatarSize;
+    border-radius: @avatarSize;
+    background-color: @c_lightGreen;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .profile {
+    padding-left: @padding;
+
+    h2, p {
+      margin-bottom: 5px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    p {
+      color: @c_lightBlack;
+
+      > span {
+        display: inline-block;
+        border-right: 1px solid @darkWhite;
+        padding-left: @padding;
+        padding-right: @padding;
+
+        &:last-child {
+          padding-right: 0;
+          border-right: none;
+        }
+
+        &:first-child {
+          padding-left: 0;
+        }
+
+        b {
+          color: @c_teal;
+          font-weight: normal;
+        }
+      }
+    }
+  }
+
+  .actions {
+    width: 5em;
+    font-size: 1.5rem;
+    text-align: right;
+
+    span {
+      > * {
+        vertical-align: middle;
+      }
+    }
+
+    .follow {
+      color: @c_orange;
+    }
+
+    .followed {
+      color: @c_lightBlack;
+    }
+  }
+}

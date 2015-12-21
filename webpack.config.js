@@ -17,6 +17,9 @@ module.exports = {
     register: './src/asset/js/register/index.js',
     retrieve: './src/asset/js/retrieve/index.js',
     term: './src/asset/js/term/index.js',
+    'topic-posts': './src/asset/js/bbs/post/list-topic.js',
+    'user-posts': './src/asset/js/bbs/post/list-user.js',
+    'active-users': './src/asset/js/bbs/active-user/list.js',
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
   output: {
@@ -105,6 +108,27 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'term.html',
       chunks: ['term', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '话题帖子',
+      template: './src/page/index.html',
+      filename: 'topic-posts.html',
+      chunks: ['topic-posts', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '用户帖子',
+      template: './src/page/index.html',
+      filename: 'user-posts.html',
+      chunks: ['user-posts', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '活跃用户',
+      template: './src/page/index.html',
+      filename: 'active-users.html',
+      chunks: ['active-users', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

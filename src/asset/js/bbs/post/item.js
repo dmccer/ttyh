@@ -91,11 +91,15 @@ export default class PostItem extends React.Component {
   }
 
   render() {
+    let url = './user-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
+      tuid: this.props.item.uid
+    }));
+
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
-            <img className="avatar" src={this.props.item.imgUrl} />
+            <a href={url} className="avatar"><img src={this.props.item.imgUrl} /></a>
             <div className="poster">{this.props.item.userName}</div>
             <ReadableTime time={this.props.item.create_time} />
           </div>
