@@ -37,17 +37,19 @@
   }
 
   .nb-time, .nb-content p {
-    height: 21px;
     color: @c_black;
   }
 
   .nb-content {
+    height: 40px;
     font-size: 1.3rem;
     position: relative;
     overflow: hidden;
 
-    p {
-      overflow: hidden;
+    .nb-text {
+      position: absolute;
+      white-space: nowrap;
+      left: 0;
     }
   }
 }

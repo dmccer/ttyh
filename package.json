@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "prestart": "npm install; cd ./node_modules/zepto; npm install; npm run dist; cd ../../",
+    "prestart": "npm install; cd ./node_modules/zepto; npm install; MODULES='zepto event ajax form ie fx' npm run dist; cd ../../",
     "start": "rm -rf ./assets; NODE_ENV=production ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --profile --colors",
     "dev": "npm run prestart; ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
