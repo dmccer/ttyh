@@ -3,6 +3,7 @@ import './item.less';
 import React from 'react';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
+import Avatar from '../../avatar/';
 import querystring from 'querystring';
 
 export default class Comment extends React.Component {
@@ -27,7 +28,7 @@ export default class Comment extends React.Component {
       <li className="comment-item">
         <header className="row">
           <div className="profile">
-            <img className="avatar" src={this.props.item.imgUrl} />
+            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
             <div className="poster">{this.props.item.userName}</div>
             <div className="post-meta">
               {

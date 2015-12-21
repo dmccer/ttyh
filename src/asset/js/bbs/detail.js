@@ -1,5 +1,5 @@
 import '../../less/global/global.less';
-import '../../less/page/bbs-detail.less';
+import '../../less/global/layout.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';

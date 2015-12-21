@@ -5,6 +5,7 @@ import FullscreenImg from '../../fullscreen-img/';
 import Emoj from '../emoj/';
 import querystring from 'querystring';
 import ReadableTime from '../readable-time/';
+import Avatar from '../avatar/';
 
 export default class PostItem extends React.Component {
   constructor() {
@@ -91,15 +92,15 @@ export default class PostItem extends React.Component {
   }
 
   render() {
-    let url = './user-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
-      tuid: this.props.item.uid
+    let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
+      tid: this.props.item.tid
     }));
 
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
-            <a href={url} className="avatar"><img src={this.props.item.imgUrl} /></a>
+            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
             <div className="poster">{this.props.item.userName}</div>
             <ReadableTime time={this.props.item.create_time} />
           </div>
@@ -112,7 +113,7 @@ export default class PostItem extends React.Component {
           <h2>{this.props.item.title}</h2>
           <section className="post-content">
             <p className="post-text">
-              <b>#{this.props.item.title}#</b>
+              <a href={topicPostUrl}><b>#{this.props.item.topic}#</b></a>
               {Emoj.formatText(this.props.item.content)}
             </p>
             <ul className="post-photos">

@@ -1,0 +1,38 @@
+@import '../../../less/global/site.variable';
+@import '../../../less/component/icon.less';
+
+.size(@s: 40px) {
+  width: @s;
+  height: @s;
+  line-height: @s;
+  border-radius: @s;
+}
+
+.avatar {
+  @s40: 40px;
+  @s45: 45px;
+  @s50: 50px;
+
+  &.s40 {
+    .size(@s40);
+  }
+
+  &.s45 {
+    .size(@s45);
+  }
+
+  &.s50 {
+    .size(@s50);
+  }
+
+  float: left;
+  text-align: center;
+  background-color: @c_lightGreen;
+  margin-right: 10px;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}

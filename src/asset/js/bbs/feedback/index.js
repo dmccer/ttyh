@@ -65,8 +65,9 @@ export default class Feedback extends React.Component {
       },
       success: (data) => {
         this.setState({
-          comments: data.bbsForumList
-        })
+          comments: data.bbsForumList,
+          load: true
+        });
       }
     })
   }
@@ -81,7 +82,8 @@ export default class Feedback extends React.Component {
       },
       success: (data) => {
         this.setState({
-          praises: data.bbsPraiseList
+          praises: data.bbsPraiseList,
+          load: true
         })
       }
     })
@@ -146,9 +148,13 @@ export default class Feedback extends React.Component {
     }
   }
 
-  render() {
+  _render() {
+    if (!this.state.load) {
+      return;
+    }
+
     return (
-      <section className="feedback">
+      <section>
         <ul className="feedback-type-tabs">
           <li
             className={this.state.tab === 'comment' ? 'on' : ''}
@@ -171,6 +177,14 @@ export default class Feedback extends React.Component {
           onPraise={this.praise.bind(this)}
           onComment={this.comment.bind(this)}
         />
+      </section>
+    )
+  }
+
+  render() {
+    return (
+      <section className="feedback">
+        {this._render()}
         <Loading ref="loading" />
         <Poptip ref="poptip" />
       </section>

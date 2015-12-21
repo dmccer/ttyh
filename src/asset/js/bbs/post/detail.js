@@ -1,4 +1,5 @@
 import './item.less';
+
 import React from 'react';
 import classNames from 'classnames';
 import Loading from '../../loading/';
@@ -6,6 +7,7 @@ import Poptip from '../../poptip/';
 import Emoj from '../emoj/';
 import querystring from 'querystring';
 import ReadableTime from '../readable-time/';
+import Avatar from '../avatar/';
 
 export default class PostDetailItem extends React.Component {
   constructor() {
@@ -13,7 +15,8 @@ export default class PostDetailItem extends React.Component {
 
     this.state = {
       qs: querystring.parse(location.search.substring(1)),
-      imgs: []
+      imgs: [],
+      load: false
     };
   }
 
@@ -39,8 +42,11 @@ export default class PostDetailItem extends React.Component {
         }
 
         this.refs.loading.close();
-
         this.props.onLoadForum(forum);
+
+        this.setState({
+          load: true
+        });
       },
       error: () => {
         this.refs.loading.close();
@@ -120,16 +126,24 @@ export default class PostDetailItem extends React.Component {
     }
   }
 
-  render() {
+  _render() {
+    if (!this.state.load) {
+      return;
+    }
+
     let imgs = this.state.imgs.map((img, index) => {
       return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img} /></a>
     });
 
+    let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
+      tid: this.state.tid
+    }));
+
     return (
-      <section className="post-item post-detail" key={'post-detail_' + this.state.id}>
+      <section className="post-item">
         <header className="row">
           <div className="profile">
-            <img className="avatar" src={this.state.imgUrl}></img>
+            <Avatar uid={this.state.uid} url={this.state.imgUrl} size="s40" />
             <div className="poster">{this.state.userName}<i className={classNames('flag', this.state.mine ? '' : 'hide')}>楼主</i></div>
             <ReadableTime time={this.state.create_time} />
           </div>
@@ -143,7 +157,10 @@ export default class PostDetailItem extends React.Component {
             <h2>{this.state.title}</h2>
           </div>
           <section className="post-content">
-            <p className="post-text"><b>#{this.state.title}#</b>{Emoj.formatText(this.state.content)}</p>
+            <p className="post-text">
+              <a href={topicPostUrl}><b>#{this.state.topic}#</b></a>
+              {Emoj.formatText(this.state.content)}
+            </p>
             <div className="photo">
               {imgs}
             </div>
@@ -158,6 +175,15 @@ export default class PostDetailItem extends React.Component {
           }
           </div>
         </article>
+      </section>
+    )
+  }
+
+  render() {
+
+    return (
+      <section className="post-detail">
+        {this._render()}
         <Loading ref='loading' />
         <Poptip ref='poptip' />
       </section>

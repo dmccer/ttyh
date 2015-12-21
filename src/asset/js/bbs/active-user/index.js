@@ -2,19 +2,22 @@ import './index.less';
 
 import React from 'react';
 import Poptip from '../../poptip/';
+import Avatar from '../avatar/';
+import querystring from 'querystring';
 
 export default class Post extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      users: []
+      users: [],
+      qs: querystring.parse(location.search.substring(1))
     }
   }
 
   componentDidMount() {
     $.ajax({
-      url: '/api/bbs/hot_user',
+      url: '/api/bbs_v2/hot_user',
       type: 'GET',
       success: (data) => {
         this.setState({
@@ -28,13 +31,21 @@ export default class Post extends React.Component {
   }
 
   render() {
-    let userList = this.state.users.splice(0, 6).map((user, index) => {
+    let userList = this.state.users.splice(0, 5).map((user, index) => {
       return (
-        <div className="avatar" key={'active-user_' + index}>
-          <a href="#" title={user.userName}><img src={user.imgUrl} /></a>
+        <div className="avatar-item" key={'active-user_' + index}>
+          <Avatar uid={user.uid} url={user.imgUrl} size="s45" />
         </div>
       )
     });
+
+    let url = './active-users.html?' + querystring.stringify(this.state.qs);
+
+    userList.push((
+      <div className="avatar-item more" key={'active-user_more'}>
+        <a href={url} className="avatar s45"><i className="icon icon-ellipsis"></i></a>
+      </div>
+    ));
 
     return (
       <section className="active-user">

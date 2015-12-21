@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import ReadableTime from '../readable-time/';
+import Avatar from '../avatar/';
 
 export default class ActiveUserList extends React.Component {
   constructor() {
@@ -21,7 +22,7 @@ export default class ActiveUserList extends React.Component {
     this.refs.loading.show('加载中...');
 
     $.ajax({
-      url: '/api/bbs/hot_user',
+      url: '/api/bbs_v2/hot_user',
       type: 'GET',
       success: (data) => {
         this.refs.loading.close();
@@ -84,7 +85,7 @@ export default class ActiveUserList extends React.Component {
         <div className="user-item" key={'active-user_' + index}>
           <div className="user-item-inner row">
             <div className="col avatar-col">
-              <a href="javascript: void(0)" className="avatar"><img src={user.imgUrl} /></a>
+              <Avatar uid={user.uid} url={user.imgUrl} size="s50" />
             </div>
             <div className="col profile">
               <h2>{user.userName}</h2>
