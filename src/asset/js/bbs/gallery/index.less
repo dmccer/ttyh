@@ -1,0 +1,47 @@
+@import '../../../less/global/site.variable';
+@import '../../../less/global/util.less';
+
+@borderColor: @c_lightGrey;
+@padding: 10px;
+
+.post-photos {
+  .clearfix();
+
+  li {
+    position: relative;
+    width: 55px;
+    height: 55px;
+    display: inline-block;
+    float: left;
+    margin-right: @padding;
+    border-radius: 5px;
+    background-color: @borderColor;
+    overflow: hidden;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: auto;
+        height: 100%;
+      }
+    }
+
+    .photo-tip {
+      background-color: rgba(0, 0, 0, 0.6);
+      color: @white;
+      border-radius: 5px;
+      padding: 3px 5px;
+      font-size: 12px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}
