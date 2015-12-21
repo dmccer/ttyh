@@ -23,15 +23,53 @@ export default class BBS extends React.Component {
     this.state = {
       tab: 'all', // all, focus, hot
       posts: [],
-      qs: querystring.parse(location.search.substring(1))
+      qs: querystring.parse(location.search.substring(1)),
+      last: null,
+      f: 0,
+      t: 30,
+      count: 0
     };
   }
 
   componentDidMount() {
     this.query(this.state.tab);
+
+    let winH = $(window).height();
+    let lastT = 0;
+    $(window).on('scroll', () => {
+      let docH = $(document).height();
+      let t = $(window).scrollTop();
+
+      if (t - lastT > 0 && t > docH - winH - 100) {
+        this.query(this.state.tab);
+      }
+
+      lastT = t;
+    });
   }
 
   query(q) {
+    if (this.state.loading) {
+      return;
+    }
+
+    let f = this.state.f;
+
+
+
+    if (this.state.last === q) {
+      f += this.state.count;
+    } else {
+      f = 0;
+    }
+
+    if (q === 'hot' && this.state.last === 'hot') {
+      this.refs.poptip.info('没有更多帖子啦');
+
+      return;
+    }
+
+
     let url;
 
     switch(q) {
@@ -40,8 +78,7 @@ export default class BBS extends React.Component {
         break;
       case 'focus':
         let qs = querystring.stringify({
-          token: this.state.qs.token,
-          f: 0
+          token: this.state.qs.token
         });
 
         url = '/api/bbs_v2/show_follow_forums?' + qs;
@@ -51,24 +88,39 @@ export default class BBS extends React.Component {
         break;
     }
 
+    this.setState({
+      loading: true
+    });
+
     this.refs.loading.show('加载中...');
 
     $.ajax({
       url: url,
       type: 'GET',
       data: {
-        t: 20
+        t: this.state.t,
+        f: f
       },
       success: (data) => {
         this.formatForums(data.bbsForumList)
 
         this.setState({
-          posts: data.bbsForumList
+          posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
+          f: f,
+          count: data.bbsForumList.length,
+          last: q
+        });
+
+        this.setState({
+          loading: false
         });
 
         this.refs.loading.close();
       },
       error: () => {
+        this.setState({
+          loading: false
+        });
         this.refs.loading.close();
       }
     });
@@ -88,39 +140,39 @@ export default class BBS extends React.Component {
     this.query(tab);
   }
 
+  renderLoginBtn() {
+    if (!this.state.qs.token || !this.state.qs.uid) {
+      return <LoginBtn />;
+    }
+  }
+
+  renderPosts() {
+    switch (this.state.tab) {
+      case 'all':
+      case 'focus':
+        return (
+          <div className="tab-all">
+            <NoticeBoard />
+            <Post items={this.state.posts} />
+          </div>
+        )
+      case 'hot':
+        return (
+          <div className="tab-hot">
+            <Topic />
+            <ActiveUser />
+            <HotPost items={this.state.posts} />
+          </div>
+        )
+    }
+  }
+
   render() {
     return (
       <div className="bbs page">
         <HeadBar on={this.state.tab} onSwitch={this.switchTab.bind(this)}/>
-        {
-          (() => {
-            switch (this.state.tab) {
-              case 'all':
-              case 'focus':
-                return (
-                  <div className="tab-all">
-                    <NoticeBoard />
-                    <Post items={this.state.posts} />
-                  </div>
-                )
-              case 'hot':
-                return (
-                  <div className="tab-hot">
-                    <Topic />
-                    <ActiveUser />
-                    <HotPost items={this.state.posts} />
-                  </div>
-                )
-            }
-          })()
-        }
-        {
-          (() => {
-            if (!this.state.qs.token || !this.state.qs.uid) {
-              return <LoginBtn />;
-            }
-          })()
-        }
+        {this.renderPosts()}
+        {this.renderLoginBtn()}
         <Loading ref='loading' />
         <Poptip ref='poptip' />
       </div>
