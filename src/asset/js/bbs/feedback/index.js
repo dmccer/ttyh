@@ -84,8 +84,11 @@ export default class Feedback extends React.Component {
       },
       success: (data) => {
         if (data && data.bbsForumList && data.bbsForumList.length) {
+          let list = f > 0 ? this.state.comments.concat(data.bbsForumList) : data.bbsForumList;
+          this.formatForum(data.bbsForumList, list);
+
           this.setState({
-            comments: f > 0 ? this.state.comments.concat(data.bbsForumList) : data.bbsForumList,
+            comments: list,
             f: f,
             count: data.bbsForumList.length,
             last: 'comment',
@@ -101,6 +104,14 @@ export default class Feedback extends React.Component {
         this.refs.loading.close();
       }
     })
+  }
+
+  formatForum(list, all) {
+    list.forEach((item) => {
+      if (item.cid !== 0) {
+        item.replied = list[item.cid - 1];
+      }
+    });
   }
 
   queryPraiseList() {

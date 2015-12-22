@@ -23,6 +23,15 @@ export default class Comment extends React.Component {
     this.props.onComment(this.props.item);
   }
 
+  renderReplied() {
+    return this.props.item.cid !== 0 ? (
+      <div className="replied">
+        <i className="icon icon-quote s12"></i>
+        <p className="replied-content"><span className="head">回复<b>{this.props.item.cid}</b>楼: </span>{Emoj.formatText(this.props.item.replied.content)}</p>
+      </div>
+    ) : null;
+  }
+
   render() {
     let lz = this.props.item.uid === this.props.uid ? <i className="ticon louzhu light-purple"></i> : null;
 
@@ -54,18 +63,7 @@ export default class Comment extends React.Component {
         <article className="post-body">
           <section className="post-content">
             <p className="post-text">{Emoj.formatText(this.props.item.content)}</p>
-            {
-              (() => {
-                if (this.props.item.replied) {
-                  return (
-                    <div className="replied">
-                      <i className="icon icon-quote">『</i>
-                      <p className="replied-content"><span className="head">回复<b>{this.props.item.replied.floor}</b>楼: </span>{this.props.item.replied.text}</p>
-                    </div>
-                  )
-                }
-              })()
-            }
+            {this.renderReplied()}
           </section>
         </article>
       </li>
