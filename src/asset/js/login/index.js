@@ -45,6 +45,20 @@ export default class Login extends React.Component {
       return;
     }
 
+    if (!this.validateTel()) {
+      return;
+    }
+
+    if (!this.state.verifyCode) {
+      this.refs.poptip.warn('验证码不能为空');
+      return;
+    }
+
+    if (!this.state.loggingUserSnapShotKey && !this.state.draftUserSnapShotKey) {
+      this.refs.poptip.warn('请先获取验证码');
+      return;
+    }
+
     let url, data = {
       confirmCode: this.state.verifyCode
     };
