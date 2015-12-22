@@ -66,18 +66,24 @@ export default class HeadBar extends React.Component {
   }
 
   checkHasNewPostsOrReplies() {
-    $.ajax({
-      url: '/api/bbs/has_remind',
-      type: 'GET',
-      data: {
-        uid: this.state.qs.uid
-      },
-      success: (data) => {
-        this.setState({
-          notice: data.comment_count !== 0
-        });
-      }
-    });
+    let fn = () => {
+      $.ajax({
+        url: '/api/bbs/has_remind',
+        type: 'GET',
+        data: {
+          uid: this.state.qs.uid
+        },
+        success: (data) => {
+          this.setState({
+            notice: data.comment_count !== 0
+          });
+        }
+      });
+
+      setTimeout(fn, 60*1000);
+    }
+
+    fn();
   }
 
   render() {

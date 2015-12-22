@@ -27,7 +27,7 @@ export default class CommentAdd extends React.Component {
 
     this.state = {
       text: '',
-      maxCommentLen: 200,
+      maxCommentLen: 500,
       qs: query
     }
   }
