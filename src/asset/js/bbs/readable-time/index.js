@@ -7,6 +7,10 @@ export default class ReadableTime extends React.Component {
   }
 
   calcTime() {
+    if (!this.props.time) {
+      return;
+    }
+    
     let now = new Date();
     let delta = now.getTime() - this.props.time;
 

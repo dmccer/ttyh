@@ -2,6 +2,7 @@ import './index.less';
 
 import React from 'react';
 import ReadableTime from '../readable-time/';
+import Emoj from '../emoj/';
 
 export default class NoticeBoard extends React.Component {
   constructor() {
@@ -62,7 +63,7 @@ export default class NoticeBoard extends React.Component {
           <i className="tag purple">公告</i>
         </div>
         <div className="nb-time"><ReadableTime time={this.state.time} /></div>
-        <div className="nb-content" ref="content"><p className="nb-text" ref="text"><a href={url}>{this.state.text}</a></p></div>
+        <div className="nb-content" ref="content"><p className="nb-text" ref="text"><a href={url}>{Emoj.formatText(this.state.text)}</a></p></div>
       </section>
     );
   }
