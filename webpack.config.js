@@ -210,6 +210,10 @@ module.exports = {
       '/api*': {
         target: 'http://m.ttyhuo.com',
         secure: false
+      },
+      '/*.jsp*': {
+        target: 'http://m.ttyhuo.com/bbs',
+        secure: false
       }
     }
   }

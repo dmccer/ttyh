@@ -29,7 +29,7 @@ export default class HeadBar extends React.Component {
 
   componentDidMount() {
     this.checkHasNewPostsOrReplies();
-    
+
     this.setState({
       selectedTabItem: this.state.tabItems[0]
     });
@@ -82,8 +82,8 @@ export default class HeadBar extends React.Component {
 
   render() {
     const isAllTabActive = ['all', 'focus'].indexOf(this.props.on) !== -1;
-    const aboutMeUrl = './bbs-about-me.html?' + querystring.stringify(this.state.qs);
-    const postUrl = './bbs-post.html?' + querystring.stringify(this.state.qs);
+    const aboutMeUrl = './bbs-about-me.jsp?' + querystring.stringify(this.state.qs);
+    const postUrl = './bbs-post.jsp?' + querystring.stringify(this.state.qs);
 
     return (
       <section className="row head-bar">
