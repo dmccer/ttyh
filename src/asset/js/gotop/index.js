@@ -27,6 +27,6 @@ export default class GoTop extends React.Component {
   }
 
   render() {
-      return this.state.on ? <div className="go-top" onClick={this.back.bind(this)}>回顶</div> : null;
+      return this.state.on ? <div className="go-top" onClick={this.back.bind(this)}>顶部</div> : null;
   }
 }

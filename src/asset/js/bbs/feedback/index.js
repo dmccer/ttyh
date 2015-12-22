@@ -188,7 +188,10 @@ export default class Feedback extends React.Component {
 
         // 评论列表中点赞
         if (forum.id !== this.state.qs.fid) {
-          this.queryCommentList();
+          forum.ipraised = true;
+          forum.pcount++;
+
+          this.forceUpdate();
           return;
         }
 
