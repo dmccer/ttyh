@@ -8,6 +8,7 @@ import ActionBar from './action-bar/';
 import querystring from 'querystring';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import LoadMore from '../../load-more/';
 
 const PRAISE_ERR = {
   1: '参数有误',
@@ -28,7 +29,10 @@ export default class Feedback extends React.Component {
       tab: 'comment', // comment, praise
       comments: [],
       praises: [],
-      qs: query
+      qs: query,
+      f: 0,
+      t: 30,
+      count: 0
     }
   }
 
@@ -45,6 +49,10 @@ export default class Feedback extends React.Component {
 
   componentDidMount() {
     this.queryFeedback(this.state.tab);
+
+    LoadMore.init(() => {
+      this.queryFeedback(this.state.tab);
+    });
   }
 
   queryFeedback(tab) {
@@ -56,23 +64,56 @@ export default class Feedback extends React.Component {
     }
   }
   queryCommentList() {
+    let f = this.state.f;
+
+    if (this.state.last === 'comment') {
+      f += this.state.count;
+    } else {
+      f = 0;
+    }
+
+    this.refs.loading.show('加载中...');
+
     $.ajax({
       url: '/api/bbs_v2/show_commend',
       type: 'GET',
       data: {
         id: this.props.fid,
-        t: 20
+        t: this.state.t,
+        f: f
       },
       success: (data) => {
-        this.setState({
-          comments: data.bbsForumList,
-          load: true
-        });
+        if (data && data.bbsForumList && data.bbsForumList.length) {
+          this.setState({
+            comments: f > 0 ? this.state.comments.concat(data.bbsForumList) : data.bbsForumList,
+            f: f,
+            count: data.bbsForumList.length,
+            last: 'comment',
+            load: true
+          });
+        } else {
+          this.refs.poptip.info('没有更多了');
+        }
+
+        this.refs.loading.close();
+      },
+      error: () => {
+        this.refs.loading.close();
       }
     })
   }
 
   queryPraiseList() {
+    let f = this.state.f;
+
+    if (this.state.last === 'praise') {
+      f += this.state.count;
+    } else {
+      f = 0;
+    }
+
+    this.refs.loading.show('加载中...');
+
     $.ajax({
       url: '/api/bbs_v2/show_praise',
       type: 'GET',
@@ -81,16 +122,28 @@ export default class Feedback extends React.Component {
         t: 20
       },
       success: (data) => {
-        this.setState({
-          praises: data.bbsPraiseList,
-          load: true
-        })
+        if (data && data.bbsPraiseList && data.bbsPraiseList.length) {
+          this.setState({
+            praises: f > 0 ? this.state.praises.concat(data.bbsPraiseList) : data.bbsPraiseList,
+            f: f,
+            count: data.bbsPraiseList.length,
+            last: 'praise',
+            load: true
+          });
+        } else {
+          this.refs.poptip.info('没有更多了');
+        }
+
+        this.refs.loading.close();
+      },
+      error: () => {
+        this.refs.loading.close();
       }
-    })
+    });
   }
 
   comment(forum) {
-    const url = '/bbs-comment.html?' + querystring.stringify({
+    const url = './bbs-comment.jsp?' + querystring.stringify({
       fid: forum.id,
       tid: forum.tid,
       uid: this.state.qs.uid,
