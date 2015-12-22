@@ -4,6 +4,7 @@ import '../../less/page/bbs.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import querystring from 'querystring';
 
 import HeadBar from './head-bar/';
 import NoticeBoard from './notice-board/';
@@ -13,8 +14,8 @@ import Topic from './topic/';
 import ActiveUser from './active-user/';
 import Loading from  '../loading/';
 import Poptip from  '../poptip/';
-import querystring from 'querystring';
 import LoginBtn from './login-btn/';
+import LoadMore from '../load-more/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -34,28 +35,13 @@ export default class BBS extends React.Component {
   componentDidMount() {
     this.query(this.state.tab);
 
-    let winH = $(window).height();
-    let lastT = 0;
-    $(window).on('scroll', () => {
-      let docH = $(document).height();
-      let t = $(window).scrollTop();
-
-      if (t - lastT > 0 && t > docH - winH - 100) {
-        this.query(this.state.tab);
-      }
-
-      lastT = t;
+    LoadMore.init(() => {
+      this.query(this.state.tab);
     });
   }
 
   query(q) {
-    if (this.state.loading) {
-      return;
-    }
-
     let f = this.state.f;
-
-
 
     if (this.state.last === q) {
       f += this.state.count;
@@ -68,7 +54,6 @@ export default class BBS extends React.Component {
 
       return;
     }
-
 
     let url;
 
@@ -88,10 +73,6 @@ export default class BBS extends React.Component {
         break;
     }
 
-    this.setState({
-      loading: true
-    });
-
     this.refs.loading.show('加载中...');
 
     $.ajax({
@@ -102,25 +83,22 @@ export default class BBS extends React.Component {
         f: f
       },
       success: (data) => {
-        this.formatForums(data.bbsForumList)
+        if (data && data.bbsForumList && data.bbsForumList.length) {
+          this.formatForums(data.bbsForumList)
 
-        this.setState({
-          posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
-          f: f,
-          count: data.bbsForumList.length,
-          last: q
-        });
-
-        this.setState({
-          loading: false
-        });
+          this.setState({
+            posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
+            f: f,
+            count: data.bbsForumList.length,
+            last: q
+          });
+        } else {
+          this.refs.poptip.info('没有更多了');
+        }
 
         this.refs.loading.close();
       },
       error: () => {
-        this.setState({
-          loading: false
-        });
         this.refs.loading.close();
       }
     });

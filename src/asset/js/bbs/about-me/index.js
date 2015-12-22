@@ -2,11 +2,14 @@ import '../../../less/global/global.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import querystring from 'querystring';
 
 import AboutMeHeadBar from './head-bar/';
 import Post from '../post/';
 import ReplyList from './reply/';
-import querystring from 'querystring';
+import LoadMore from '../../load-more/';
+import Loading from  '../../loading/';
+import Poptip from  '../../poptip/';
 
 export default class AboutMe extends React.Component {
   constructor() {
@@ -23,12 +26,19 @@ export default class AboutMe extends React.Component {
       }, {
         key: 'comment',
         text: '我的回复'
-      }]
+      }],
+      f: 0,
+      t: 30,
+      count: 0
     }
   }
 
   componentDidMount() {
     this.query(this.state.tab);
+
+    LoadMore.init(() => {
+      this.query(this.state.tab);
+    });
   }
 
   query(tab: string) {
@@ -64,43 +74,85 @@ export default class AboutMe extends React.Component {
   }
 
   queryMyPosts() {
+    let f = this.state.f;
+
+    if (this.state.last === 'forum') {
+      f += this.state.count;
+    } else {
+      f = 0;
+    }
+
+    this.refs.loading.show('加载中...');
+
     $.ajax({
       url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,
-        t: 20
+        t: this.state.t,
+        f: f
       },
       success: (data) => {
         if (data && data.bbsForumList && data.bbsForumList.length) {
           this.format(data.bbsForumList);
 
           this.setState({
-            posts: data.bbsForumList
+            posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
+            f: f,
+            count: data.bbsForumList.length,
+            last: 'forum'
           });
+        } else {
+          this.refs.poptip.info('没有更多了');
         }
+
+        this.refs.loading.close();
+      },
+      error: () => {
+        this.refs.loading.close();
       }
     });
   }
 
   queryMyReplies() {
+    let f = this.state.f;
+
+    if (this.state.last === 'comment') {
+      f += this.state.count;
+    } else {
+      f = 0;
+    }
+
+    this.refs.loading.show('加载中...');
+
     $.ajax({
       url: '/api/bbs_v2/show_my_commend',
       type: 'GET',
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,
-        t: 20
+        t: this.state.t,
+        f: f
       },
       success: (data) => {
         if (data && data.bbsForumList && data.bbsForumList.length) {
           this.format(data.bbsForumList);
 
           this.setState({
-            replies: data.bbsForumList
+            replies: f > 0 ? this.state.replies.concat(data.bbsForumList) : data.bbsForumList,
+            f: f,
+            count: data.bbsForumList.length,
+            last: 'comment'
           });
+        } else {
+          this.refs.poptip.info('没有更多了');
         }
+
+        this.refs.loading.close();
+      },
+      error: () => {
+        this.refs.loading.close();
       }
     })
   }
@@ -131,6 +183,8 @@ export default class AboutMe extends React.Component {
             }
           })()
         }
+        <Loading ref='loading' />
+        <Poptip ref='poptip' />
       </section>
     )
   }

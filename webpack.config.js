@@ -31,7 +31,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js')
+      zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js'),
+      'lodash-fn': path.resolve(__dirname, './node_modules/lodash/function.js')
     }
   },
   plugins: [
@@ -52,7 +53,7 @@ module.exports = {
       title: '社区',
       template: './src/page/index.html',
       filename: 'bbs.html',
-      chunks: ['bbs', 'zepto', 'ved'],
+      chunks: ['bbs', 'zepto', 'lodash-fn', 'ved'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
@@ -66,7 +67,7 @@ module.exports = {
       title: '帖子详情',
       template: './src/page/index.html',
       filename: 'bbs-detail.html',
-      chunks: ['bbs-detail', 'zepto', 'ved'],
+      chunks: ['bbs-detail', 'zepto', 'lodash-fn', 'ved'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
@@ -80,7 +81,7 @@ module.exports = {
       title: '与我有关',
       template: './src/page/index.html',
       filename: 'bbs-about-me.html',
-      chunks: ['bbs-about-me', 'zepto', 'ved'],
+      chunks: ['bbs-about-me', 'zepto', 'lodash-fn', 'ved'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
@@ -122,7 +123,7 @@ module.exports = {
       title: '用户帖子',
       template: './src/page/index.html',
       filename: 'user-posts.html',
-      chunks: ['user-posts', 'zepto', 'ved'],
+      chunks: ['user-posts', 'zepto', 'lodash-fn', 'ved'],
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
