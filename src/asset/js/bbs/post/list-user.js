@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Post from './index';
 import Loading from '../../loading/';
+import Poptip from  '../../poptip/';
+import LoadMore from '../../load-more/';
 
 export default class UserPosts extends React.Component {
   constructor() {
@@ -13,27 +15,49 @@ export default class UserPosts extends React.Component {
 
     this.state = {
       posts: [],
-      qs: querystring.parse(location.search.substring(1))
+      qs: querystring.parse(location.search.substring(1)),
+      f: 0,
+      t: 30
     }
   }
 
   componentDidMount() {
+    this.query();
+
+    LoadMore.init(() => {
+      this.query();
+    });
+
+
+  }
+
+  query() {
     this.refs.loading.show('加载中...');
 
     $.ajax({
       url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
       data: {
-        uid: this.state.qs.tuid
+        uid: this.state.qs.tuid,
+        f: this.state.f,
+        t: 30
       },
       success: (data) => {
         this.refs.loading.close();
 
-        this.formatForums(data.bbsForumList)
+        if (data && data.bbsForumList && data.bbsForumList.length) {
+          this.formatForums(data.bbsForumList)
 
-        this.setState({
-          posts: data.bbsForumList
-        });
+          this.setState({
+            posts: this.state.f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
+            f: this.state.f + data.bbsForumList.length
+          });
+        } else {
+          this.refs.poptip.info('没有更多了');
+        }
+      },
+      error: () => {
+        this.refs.loading.close();
       }
     });
   }

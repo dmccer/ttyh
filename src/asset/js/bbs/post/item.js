@@ -27,9 +27,13 @@ export default class PostItem extends React.Component {
   }
 
   render() {
-    let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
+    let qs = querystring.stringify($.extend({}, this.state.qs, {
       tid: this.props.item.tid
     }));
+    
+    let topicPostUrl = this.state.qs.tid
+      ? 'javascript:void(0)'
+      : ('./topic-posts.html?' + qs);
 
     return (
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
