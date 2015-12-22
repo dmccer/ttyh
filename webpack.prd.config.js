@@ -19,7 +19,11 @@ module.exports = {
     login: './src/asset/js/login/index.js',
     register: './src/asset/js/register/index.js',
     retrieve: './src/asset/js/retrieve/index.js',
-    term: './src/asset/js/term/index.js'
+    term: './src/asset/js/term/index.js',
+    'topic-posts': './src/asset/js/bbs/post/list-topic.js',
+    'user-posts': './src/asset/js/bbs/post/list-user.js',
+    'active-users': './src/asset/js/bbs/active-user/list.js',
+    'notice': './src/asset/js/bbs/notice/index.js',
   },
   output: {
     path: path.resolve(__dirname, pkg.dest),
@@ -29,7 +33,7 @@ module.exports = {
   resolve: {
     alias: {
       zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js'),
-      // react: pathToReact
+      'lodash-fn': path.resolve(__dirname, './node_modules/lodash/function.js')
     }
   },
   plugins: [
@@ -110,6 +114,34 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'term.html',
       chunks: ['zepto', 'term'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '话题帖子',
+      template: './src/page/index.html',
+      filename: 'topic-posts.html',
+      chunks: ['topic-posts', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '用户帖子',
+      template: './src/page/index.html',
+      filename: 'user-posts.html',
+      chunks: ['user-posts', 'zepto', 'lodash-fn', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '活跃用户',
+      template: './src/page/index.html',
+      filename: 'active-users.html',
+      chunks: ['active-users', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '小妹公告',
+      template: './src/page/index.html',
+      filename: 'notice.html',
+      chunks: ['notice', 'zepto', 'ved'],
       inject: 'body'
     })
   ],
