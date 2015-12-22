@@ -9,6 +9,7 @@ import PostDetailItem from './post/detail';
 import Feedback from './feedback/';
 import GoTop from '../gotop/';
 
+
 export default class BBSDetail extends React.Component {
   constructor() {
     super();
@@ -18,7 +19,8 @@ export default class BBSDetail extends React.Component {
 
   loadForum(forum: Object) {
     this.setState({
-      tid: forum.tid
+      tid: forum.tid,
+      uid: forum.uid
     });
   }
 
@@ -26,7 +28,7 @@ export default class BBSDetail extends React.Component {
     return (
       <section className="post-detail">
         <PostDetailItem fid={this.state.fid} onLoadForum={this.loadForum.bind(this)}/>
-        <Feedback fid={this.state.fid} tid={this.state.tid} />
+        <Feedback fid={this.state.fid} tid={this.state.tid} uid={this.state.uid} />
         <GoTop />
       </section>
     )

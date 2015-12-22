@@ -11,7 +11,7 @@ export default class PraiseList extends React.Component {
     let praiseList = this.props.items.map((item, index) => {
       item.floor = index + 1;
 
-      return <Praise key={'praise_' + index} item={item} />
+      return <Praise key={'praise_' + index} item={item} uid={this.props.uid} />
     });
 
     return (

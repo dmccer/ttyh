@@ -193,11 +193,12 @@ export default class Feedback extends React.Component {
         return (
           <CommentList
             items={this.state.comments}
+            uid={this.props.uid}
             onPraise={this.praise.bind(this)}
             onComment={this.comment.bind(this)} />
         );
       case 'praise':
-        return <PraiseList items={this.state.praises} />;
+        return <PraiseList items={this.state.praises} uid={this.props.uid} />;
     }
   }
 

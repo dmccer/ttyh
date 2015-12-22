@@ -126,6 +126,24 @@ export default class PostDetailItem extends React.Component {
     }
   }
 
+  renderTIcon() {
+    let ticons = []
+
+    if (this.state.good === 1) {
+      ticons.push(<i className="ticon jing teal" key="ticon-item-jing"></i>);
+    }
+
+    if (this.state.sort === 1) {
+      ticons.push(<i className="ticon ding orange" key="ticon-item-ding"></i>);
+    }
+
+    if (this.state.uid == 25946) {
+      ticons.push(<i className="ticon guan light-purple" key="ticon-item-guan"></i>);
+    }
+
+    return ticons;
+  }
+
   _render() {
     if (!this.state.load) {
       return;
@@ -144,8 +162,14 @@ export default class PostDetailItem extends React.Component {
         <header className="row">
           <div className="profile">
             <Avatar uid={this.state.uid} url={this.state.imgUrl} size="s40" />
-            <div className="poster">{this.state.userName}<i className={classNames('flag', this.state.mine ? '' : 'hide')}>楼主</i></div>
-            <ReadableTime time={this.state.create_time} />
+            <div className="poster">
+              {this.state.userName}
+              <i className="ticon louzhu light-purple"></i>
+            </div>
+            <div className="">
+              {this.renderTIcon()}
+              <ReadableTime time={this.state.create_time} />
+            </div>
           </div>
           <div className="poster-actions">
             {this.render_follow()}

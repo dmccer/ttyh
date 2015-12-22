@@ -21,6 +21,7 @@ export default class CommentList extends React.Component {
         <Comment
           key={'comment_' + index}
           item={item}
+          uid={this.props.uid}
           onPraise={this.praise.bind(this)}
           onComment={this.comment.bind(this)} />
       )

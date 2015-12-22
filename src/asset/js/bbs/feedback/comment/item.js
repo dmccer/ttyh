@@ -24,12 +24,17 @@ export default class Comment extends React.Component {
   }
 
   render() {
+    let lz = this.props.item.uid === this.props.uid ? <i className="ticon louzhu light-purple"></i> : null;
+
     return (
       <li className="comment-item">
         <header className="row">
           <div className="profile">
             <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
-            <div className="poster">{this.props.item.userName}</div>
+            <div className="poster">
+              {this.props.item.userName}
+              {lz}
+            </div>
             <div className="post-meta">
               {
                 (() => {

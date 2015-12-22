@@ -5,15 +5,51 @@
 @padding: 10px;
 @profileColor: @c_lightBlack;
 
-.flag {
+.ticon {
   display: inline-block;
-  border: 1px solid @c_purple;
-  border-radius: 2px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: @c_purple;
+  border-radius: 3px;
+  color: @white;
   font-size: 0.8em;
-  vertical-align: middle;
+  text-align: center;
+  padding: 2px 4px;
+  margin-right: 3px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:before {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &.jing:before {
+    content: '精';
+  }
+
+  &.guan:before {
+    content: '官';
+  }
+
+  &.ding:before {
+    content: '顶';
+  }
+
+  &.louzhu:before {
+    content: '楼主';
+  }
+
+  &.teal {
+    background-color: @c_teal;
+  }
+
+  &.orange {
+    background-color: @c_orange;
+  }
+
+  &.light-purple {
+    background-color: #A1A3CB;
+  }
 }
 
 .post-item {
@@ -90,7 +126,7 @@
 // 详情版 post
 .post-detail {
   .poster {
-    .flag {
+    .ticon {
       margin-left: 5px;
       vertical-align: bottom;
     }

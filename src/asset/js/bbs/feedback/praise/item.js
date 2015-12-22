@@ -11,12 +11,16 @@ export default class Praise extends React.Component {
 
   render() {
     let praiseItem = this.props.item;
+    let lz = praiseItem.uid === this.props.uid ? <i className="ticon louzhu light-purple"></i> : null;
 
     return (
       <li className="praise-item">
         <div className="profile">
           <Avatar uid={praiseItem.uid} url={praiseItem.imgUrl} size="s40" />
-          <div className="poster">{praiseItem.userName}</div>
+          <div className="poster">
+            {praiseItem.userName}
+            {lz}
+          </div>
           <div className="post-meta">
             <span className="floor">{this.props.item.floor}楼</span>
             <i className="icon icon-clock"></i>
