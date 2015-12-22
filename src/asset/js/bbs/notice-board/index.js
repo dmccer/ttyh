@@ -18,9 +18,11 @@ export default class NoticeBoard extends React.Component {
       url: '/api/bbs/all_public',
       type: 'GET',
       success: (data) => {
+        let notice = data.bbsForumList[0];
         this.setState({
-          time: data.bbsForumList[0].create_time,
-          text: data.bbsForumList[0].content
+          time: notice.create_time,
+          text: notice.content,
+          id: notice.id
         });
 
         this.scroll();
@@ -53,13 +55,14 @@ export default class NoticeBoard extends React.Component {
   }
 
   render() {
+    let url = './notice.html?id=' + this.state.id;
     return (
       <section className="notice-board">
         <div className="nb-tag">
           <i className="tag purple">公告</i>
         </div>
         <div className="nb-time"><ReadableTime time={this.state.time} /></div>
-        <div className="nb-content" ref="content"><p className="nb-text" ref="text">{this.state.text}</p></div>
+        <div className="nb-content" ref="content"><p className="nb-text" ref="text"><a href={url}>{this.state.text}</a></p></div>
       </section>
     );
   }

@@ -13,6 +13,17 @@
   @s45: 45px;
   @s50: 50px;
 
+  float: left;
+  text-align: center;
+  background-color: @c_lightGreen;
+  margin-right: 10px;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    width: auto;
+  }
+
   &.s40 {
     .size(@s40);
   }
@@ -23,16 +34,5 @@
 
   &.s50 {
     .size(@s50);
-  }
-
-  float: left;
-  text-align: center;
-  background-color: @c_lightGreen;
-  margin-right: 10px;
-  overflow: hidden;
-
-  img {
-    height: 100%;
-    width: 100%;
   }
 }

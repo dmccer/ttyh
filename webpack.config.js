@@ -20,6 +20,7 @@ module.exports = {
     'topic-posts': './src/asset/js/bbs/post/list-topic.js',
     'user-posts': './src/asset/js/bbs/post/list-user.js',
     'active-users': './src/asset/js/bbs/active-user/list.js',
+    'notice': './src/asset/js/bbs/notice/index.js',
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
   output: {
@@ -129,6 +130,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'active-users.html',
       chunks: ['active-users', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '小妹公告',
+      template: './src/page/index.html',
+      filename: 'notice.html',
+      chunks: ['notice', 'zepto', 'ved'],
       inject: 'body'
     })
   ],
