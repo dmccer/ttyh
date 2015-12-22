@@ -62,27 +62,33 @@ export default class PostAdd extends React.Component {
   }
 
   uploadImage(cb) {
-    let media_ids = [];
 
-    if (this.state.photo && this.state.photo.length) {
-      this.refs.loading.show('正在上传图片...');
-      this.state.photo.forEach((item) => {
-        wx.uploadImage({
-          localId: item.url,
-          success: (res) => {
-            media_ids.push(res.serverId);
-
-            if (media_ids.length === this.state.photo.length) {
-              cb(media_ids.join());
-            }
-          }
-        });
-      });
-
-      return;
+    if (!this.state.photo || !this.state.photo.length) {
+      return cb();
     }
 
-    cb();
+    let media_ids = [];
+
+    let len = this.state.photo.length;
+    let fn = (i) => {
+      let item = this.state.photo[i];
+
+      wx.uploadImage({
+        localId: item.url,
+        success: (res) => {
+          media_ids.push(res.serverId);
+
+          // 上传完成
+          if (i === len - 1) {
+            return cb(media_ids.join());
+          }
+
+          fn(++i);
+        }
+      });
+    }
+
+    fn(0);
   }
 
   submit(e) {
