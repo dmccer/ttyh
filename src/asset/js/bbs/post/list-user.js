@@ -9,6 +9,7 @@ import Loading from '../../loading/';
 import Poptip from  '../../poptip/';
 import LoadMore from '../../load-more/';
 import GoTop from '../../gotop/';
+import JWeiXin from '../../jweixin/';
 
 export default class UserPosts extends React.Component {
   constructor() {
@@ -20,6 +21,12 @@ export default class UserPosts extends React.Component {
       f: 0,
       t: 30
     }
+
+    new JWeiXin(() => {
+      this.setState({
+        wx_ready: true
+      });
+    });
   }
 
   componentDidMount() {
@@ -28,8 +35,6 @@ export default class UserPosts extends React.Component {
     LoadMore.init(() => {
       this.query();
     });
-
-
   }
 
   query() {
@@ -72,7 +77,7 @@ export default class UserPosts extends React.Component {
   render() {
     return (
       <section className="topic-posts">
-        <Post items={this.state.posts} />
+        <Post items={this.state.posts} wx_ready={this.state.wx_ready} />
         <GoTop />
         <Loading ref="loading" />
       </section>

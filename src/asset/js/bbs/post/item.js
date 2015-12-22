@@ -30,7 +30,7 @@ export default class PostItem extends React.Component {
     let qs = querystring.stringify($.extend({}, this.state.qs, {
       tid: this.props.item.tid
     }));
-    
+
     let topicPostUrl = this.state.qs.tid
       ? 'javascript:void(0)'
       : ('./topic-posts.html?' + qs);
@@ -55,7 +55,7 @@ export default class PostItem extends React.Component {
               <a href={topicPostUrl}><b>#{this.props.item.topic}#</b></a>
               {Emoj.formatText(this.props.item.content)}
             </p>
-            <Gallery imgs={this.props.item.imgs} />
+            <Gallery imgs={this.props.item.imgs} wx_ready={this.props.wx_ready} />
           </section>
         </article>
       </li>

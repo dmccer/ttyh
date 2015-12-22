@@ -17,6 +17,7 @@ import Poptip from  '../poptip/';
 import LoginBtn from './login-btn/';
 import LoadMore from '../load-more/';
 import GoTop from '../gotop/';
+import JWeiXin from '../jweixin/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -31,6 +32,12 @@ export default class BBS extends React.Component {
       t: 30,
       count: 0
     };
+
+    new JWeiXin(() => {
+      this.setState({
+        wx_ready: true
+      });
+    });
   }
 
   componentDidMount() {
@@ -132,7 +139,7 @@ export default class BBS extends React.Component {
         return (
           <div className="tab-all">
             <NoticeBoard />
-            <Post items={this.state.posts} />
+            <Post items={this.state.posts} wx_ready={this.state.wx_ready} />
           </div>
         )
       case 'hot':

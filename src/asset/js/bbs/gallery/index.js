@@ -1,26 +1,19 @@
 import './index.less';
 
 import React from 'react';
-import JWeiXin from '../../jweixin/';
 
 export default class Gallery extends React.Component {
   constructor() {
     super();
-
-    this.state = {
-      ready: false
-    };
-
-    new JWeiXin(() => {
-      this.setState({
-        ready: true
-      });
-    });
   }
 
   handleShowPic(img: string, e: Object) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!this.props.wx_ready) {
+      return;
+    }
 
     wx.previewImage({
       current: img,

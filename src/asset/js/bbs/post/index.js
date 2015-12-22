@@ -9,7 +9,7 @@ export default class Post extends React.Component {
 
   render() {
     let list = this.props.items.map((post, index) => {
-      return <PostItem key={'post_' + index} item={post} />
+      return <PostItem key={'post_' + index} item={post} wx_ready={this.props.wx_ready} />
     });
 
     return (

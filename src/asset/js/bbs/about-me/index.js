@@ -11,6 +11,7 @@ import LoadMore from '../../load-more/';
 import Loading from  '../../loading/';
 import Poptip from  '../../poptip/';
 import GoTop from '../../gotop/';
+import JWeiXin from '../../jweixin/';
 
 export default class AboutMe extends React.Component {
   constructor() {
@@ -31,7 +32,13 @@ export default class AboutMe extends React.Component {
       f: 0,
       t: 30,
       count: 0
-    }
+    };
+
+    new JWeiXin(() => {
+      this.setState({
+        wx_ready: true
+      });
+    });
   }
 
   componentDidMount() {
@@ -178,7 +185,7 @@ export default class AboutMe extends React.Component {
           (() => {
             switch (this.state.tab) {
               case 'forum':
-                return <Post items={this.state.posts} />;
+                return <Post items={this.state.posts} wx_ready={this.state.wx_ready} />;
               case 'comment':
                 return <ReplyList items={this.state.replies} />;
             }
