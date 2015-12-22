@@ -91,12 +91,15 @@ export default class Feedback extends React.Component {
             comments: list,
             f: f,
             count: data.bbsForumList.length,
-            last: 'comment',
-            load: true
+            last: 'comment'
           });
         } else {
           this.refs.poptip.info('没有更多了');
         }
+
+        this.setState({
+          load: true
+        });
 
         this.refs.loading.close();
       },
@@ -138,12 +141,15 @@ export default class Feedback extends React.Component {
             praises: f > 0 ? this.state.praises.concat(data.bbsPraiseList) : data.bbsPraiseList,
             f: f,
             count: data.bbsPraiseList.length,
-            last: 'praise',
-            load: true
+            last: 'praise'
           });
         } else {
           this.refs.poptip.info('没有更多了');
         }
+
+        this.setState({
+          load: true
+        });
 
         this.refs.loading.close();
       },
