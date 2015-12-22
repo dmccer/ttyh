@@ -8,6 +8,7 @@ import Post from './index';
 import Loading from '../../loading/';
 import Poptip from  '../../poptip/';
 import LoadMore from '../../load-more/';
+import GoTop from '../../gotop/';
 
 export default class TopicPosts extends React.Component {
   constructor() {
@@ -70,6 +71,7 @@ export default class TopicPosts extends React.Component {
     return (
       <section className="topic-posts">
         <Post items={this.state.posts} />
+        <GoTop />
         <Loading ref="loading" />
       </section>
     );

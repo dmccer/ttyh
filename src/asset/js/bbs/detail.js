@@ -7,6 +7,7 @@ import querystring from 'querystring';
 
 import PostDetailItem from './post/detail';
 import Feedback from './feedback/';
+import GoTop from '../gotop/';
 
 export default class BBSDetail extends React.Component {
   constructor() {
@@ -26,6 +27,7 @@ export default class BBSDetail extends React.Component {
       <section className="post-detail">
         <PostDetailItem fid={this.state.fid} onLoadForum={this.loadForum.bind(this)}/>
         <Feedback fid={this.state.fid} tid={this.state.tid} />
+        <GoTop />
       </section>
     )
   }

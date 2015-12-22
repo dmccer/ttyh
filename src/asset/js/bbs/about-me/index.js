@@ -10,6 +10,7 @@ import ReplyList from './reply/';
 import LoadMore from '../../load-more/';
 import Loading from  '../../loading/';
 import Poptip from  '../../poptip/';
+import GoTop from '../../gotop/';
 
 export default class AboutMe extends React.Component {
   constructor() {
@@ -183,6 +184,7 @@ export default class AboutMe extends React.Component {
             }
           })()
         }
+        <GoTop />
         <Loading ref='loading' />
         <Poptip ref='poptip' />
       </section>

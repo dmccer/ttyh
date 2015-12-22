@@ -16,6 +16,7 @@ import Loading from  '../loading/';
 import Poptip from  '../poptip/';
 import LoginBtn from './login-btn/';
 import LoadMore from '../load-more/';
+import GoTop from '../gotop/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -151,6 +152,7 @@ export default class BBS extends React.Component {
         <HeadBar on={this.state.tab} onSwitch={this.switchTab.bind(this)}/>
         {this.renderPosts()}
         {this.renderLoginBtn()}
+        <GoTop />
         <Loading ref='loading' />
         <Poptip ref='poptip' />
       </div>
