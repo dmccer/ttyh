@@ -27,6 +27,8 @@ export default class TopicPosts extends React.Component {
         wx_ready: true
       });
     });
+
+    document.title = this.state.qs.topic;
   }
 
   componentDidMount() {

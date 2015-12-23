@@ -16,7 +16,7 @@ export default class Praise extends React.Component {
     return (
       <li className="praise-item">
         <div className="profile">
-          <Avatar uid={praiseItem.uid} url={praiseItem.imgUrl} size="s40" />
+          <Avatar uid={praiseItem.uid} name={praiseItem.userName} url={praiseItem.imgUrl} size="s40" />
           <div className="poster">
             {praiseItem.userName}
             {lz}

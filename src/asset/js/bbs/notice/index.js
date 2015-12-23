@@ -1,5 +1,6 @@
 import '../../../less/global/global.less';
 import '../post/item.less';
+import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -51,14 +52,17 @@ export default class NoticeDetail extends React.Component {
     });
 
     let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
-      tid: this.state.tid
+      tid: this.state.tid,
+      topic: this.state.topic
     }));
+
+    let topic = $.trim(this.state.topic) !== '' ? <b>{`#${this.state.topic}#`}</b> : '';
 
     return (
       <section className="post-item">
         <header className="row">
           <div className="profile">
-            <Avatar uid={this.state.uid} url={require('../../../img/2x/ttxm@2x.png')} size="s40" />
+            <Avatar uid={this.state.uid} name={this.state.userName} url={require('../../../img/2x/ttxm@2x.png')} size="s40" />
             <div className="poster">{this.state.userName}<i className="flag">官方</i></div>
             <ReadableTime time={this.state.create_time} />
           </div>
@@ -69,7 +73,7 @@ export default class NoticeDetail extends React.Component {
           </div>
           <section className="post-content">
             <p className="post-text">
-              <a href={topicPostUrl}><b>#{this.state.topic}#</b></a>
+              <a href={topicPostUrl}>{topic}</a>
               {Emoj.formatText(this.state.content)}
             </p>
             <div className="photo">

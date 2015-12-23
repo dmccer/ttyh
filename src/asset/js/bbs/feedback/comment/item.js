@@ -40,7 +40,7 @@ export default class Comment extends React.Component {
       <li className="comment-item">
         <header className="row">
           <div className="profile">
-            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
+            <Avatar uid={this.props.item.uid} name={this.props.item.userName} url={this.props.item.imgUrl} size="s40" />
             <div className="poster">
               {this.props.item.userName}
               {lz}

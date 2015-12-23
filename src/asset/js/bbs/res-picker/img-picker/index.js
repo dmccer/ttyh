@@ -35,6 +35,12 @@ export default class ImgPicker extends React.Component {
       return;
     }
 
+    if (this.state.imgs.length === 9) {
+      this.refs.poptip.warn('最多只能上传 9 张');
+
+      return;
+    }
+
     wx.chooseImage({
       success: (res) => {
         if (res.localIds && res.localIds.length) {
@@ -73,14 +79,16 @@ export default class ImgPicker extends React.Component {
         onRemove={this.del.bind(this)} />
     });
 
+    let addItem = this.state.imgs.length === 9 ? null : <div
+      className="img-item4picker add-img-item"
+      onClick={this.selectImg.bind(this)}>
+      <div className="img-item-inner"></div>
+    </div>;
+
     return (
       <section className="img-picker">
         {imgItemList}
-        <div
-          className="img-item4picker add-img-item"
-          onClick={this.selectImg.bind(this)}>
-          <div className="img-item-inner"></div>
-        </div>
+        {addItem}
         <Poptip ref="poptip" />
       </section>
     )

@@ -34,7 +34,7 @@ export default class Post extends React.Component {
     let userList = this.state.users.splice(0, 5).map((user, index) => {
       return (
         <div className="avatar-item" key={'active-user_' + index}>
-          <Avatar uid={user.uid} url={user.imgUrl} size="s45" />
+          <Avatar uid={user.uid} name={user.userName} url={user.imgUrl} size="s45" />
         </div>
       )
     });

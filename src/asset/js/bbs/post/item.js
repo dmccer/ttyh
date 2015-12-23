@@ -28,7 +28,8 @@ export default class PostItem extends React.Component {
 
   render() {
     let qs = querystring.stringify($.extend({}, this.state.qs, {
-      tid: this.props.item.tid
+      tid: this.props.item.tid,
+      topic: this.props.item.topic
     }));
 
     let topicPostUrl = this.state.qs.tid
@@ -39,7 +40,7 @@ export default class PostItem extends React.Component {
       <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
-            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
+            <Avatar uid={this.props.item.uid} name={this.props.item.userName} url={this.props.item.imgUrl} size="s40" />
             <div className="poster">{this.props.item.userName}</div>
             <ReadableTime time={this.props.item.create_time} />
           </div>

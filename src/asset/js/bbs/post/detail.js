@@ -21,6 +21,10 @@ export default class PostDetailItem extends React.Component {
   }
 
   componentDidMount() {
+    this.fetch();
+  }
+
+  fetch() {
     this.refs.loading.show('加载中...');
 
     $.ajax({
@@ -62,8 +66,9 @@ export default class PostDetailItem extends React.Component {
       type: 'GET',
       success: (data) => {
         this.refs.loading.close();
-
         this.refs.poptip.success('关注成功');
+
+        this.fetch();
       },
       error: (xhr) => {
         if (xhr.status === 403) {
@@ -162,14 +167,15 @@ export default class PostDetailItem extends React.Component {
     });
 
     let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
-      tid: this.state.tid
+      tid: this.state.tid,
+      topic: this.state.topic
     }));
 
     return (
       <section className="post-item">
         <header className="row">
           <div className="profile">
-            <Avatar uid={this.state.uid} url={this.state.imgUrl} size="s40" />
+            <Avatar uid={this.state.uid} name={this.state.userName} url={this.state.imgUrl} size="s40" />
             <div className="poster">
               {this.state.userName}
               <i className="ticon louzhu light-purple"></i>

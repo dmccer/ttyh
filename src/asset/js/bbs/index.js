@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import querystring from 'querystring';
+import fnu from 'lodash-fn';
 
 import HeadBar from './head-bar/';
 import NoticeBoard from './notice-board/';
@@ -23,8 +24,16 @@ export default class BBS extends React.Component {
   constructor() {
     super();
 
+    let hash;
+    let hashStr = location.hash;
+
+    if (hashStr !== '') {
+      hash = querystring.parse(hashStr.substring(1));
+    }
+
     this.state = {
-      tab: 'all', // all, focus, hot
+      hash: hash || {},
+      tab: hash && hash.tab || 'all', // all, focus, hot
       posts: [],
       qs: querystring.parse(location.search.substring(1)),
       last: null,
@@ -45,6 +54,25 @@ export default class BBS extends React.Component {
 
     LoadMore.init(() => {
       this.query(this.state.tab);
+    });
+
+    $(document).on('touchmove', (e) => {
+      if (this.state.scrolling) {
+        return;
+      }
+
+      this.setState({
+        scrolling: true
+      });
+    }).on('touchend', () => {
+      if (!this.state.scrolling) {
+        return;
+      }
+      setTimeout(() => {
+        this.setState({
+          scrolling: false
+        });
+      }, 300)
     });
   }
 
@@ -110,8 +138,12 @@ export default class BBS extends React.Component {
           this.refs.poptip.info('没有更多了');
         }
       },
-      error: () => {
+      error: (xhr) => {
         this.refs.loading.close();
+
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
       }
     });
   }
@@ -126,6 +158,16 @@ export default class BBS extends React.Component {
     this.setState({
       tab: tab
     });
+
+    let url, hash = this.state.hash;
+    let hasTabHash = !!hash.tab;
+
+    hash.tab = tab;
+    let qsHash = `#${querystring.stringify(hash)}`;
+
+    url = hasTabHash ? location.href.replace(/#.+$/, qsHash) : (location.href + qsHash);
+
+    location.href = url;
 
     this.query(tab);
   }
@@ -162,7 +204,7 @@ export default class BBS extends React.Component {
       <div className="bbs page">
         <HeadBar on={this.state.tab} onSwitch={this.switchTab.bind(this)}/>
         {this.renderPosts()}
-        {this.renderLoginBtn()}
+        {this.state.scrolling ? '' : this.renderLoginBtn()}
         <GoTop />
         <Loading ref='loading' />
         <Poptip ref='poptip' />

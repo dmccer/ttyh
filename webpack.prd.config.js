@@ -131,7 +131,7 @@ module.exports = {
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      title: '活跃用户',
+      title: '人气用户',
       template: './src/page/index.html',
       filename: 'active-users.html',
       chunks: ['active-users', 'zepto', 'ved'],

@@ -40,10 +40,15 @@ export default class HeadBar extends React.Component {
     e.stopPropagation();
 
     if (this.props.on === tab) {
+      if (tab !== 'hot') {
+        this.toggleSpread(e);
+      }
+
       return;
     }
 
     this.props.onSwitch(tab);
+    this.close();
   }
 
   selectSpreadItem(tabItem: Object, e: Object) {
@@ -62,6 +67,12 @@ export default class HeadBar extends React.Component {
 
     this.setState({
       showSpreadList: !this.state.showSpreadList
+    });
+  }
+
+  close() {
+    this.setState({
+      showSpreadList: false
     });
   }
 
@@ -122,7 +133,7 @@ export default class HeadBar extends React.Component {
                 this.state.tabItems.map((item, index) => {
                   return <li
                     key={'tab-item_' + index}
-                    onClick={this.selectSpreadItem.bind(this, item)}>{item.text}</li>
+                    onClick={this.selectSpreadItem.bind(this, item)}>{item.text}<i className={classNames('icon s20', (this.props.on === item.key) && 'icon-right' || '')}></i></li>
                 })
               }
             </ul>

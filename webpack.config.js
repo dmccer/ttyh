@@ -127,7 +127,7 @@ module.exports = {
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      title: '活跃用户',
+      title: '人气用户',
       template: './src/page/index.html',
       filename: 'active-users.html',
       chunks: ['active-users', 'zepto', 'ved'],
@@ -209,8 +209,8 @@ module.exports = {
         secure: false
       },
       '/api*': {
-        target: 'http://o.dp:3000',
-        // target: 'http://m.ttyhuo.com',
+        // target: 'http://o.dp:3000',
+        target: 'http://m.ttyhuo.com',
         secure: false
       },
       '/*.jsp*': {

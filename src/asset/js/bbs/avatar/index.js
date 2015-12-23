@@ -15,8 +15,10 @@ export default class Avatar extends React.Component {
 
   render() {
     let qs = querystring.stringify($.extend({}, this.state.qs, {
-      tuid: this.props.uid
+      tuid: this.props.uid,
+      title: this.props.name
     }));
+
     let userPostUrl = this.state.qs.tuid
       ? 'javascript:void(0)'
       : ('./user-posts.html?' + qs);
