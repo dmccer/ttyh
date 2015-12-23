@@ -212,6 +212,10 @@ export default class Feedback extends React.Component {
 
         // 当前帖子点赞
         this.queryPraiseList();
+
+        this.setState({
+          praised: true
+        });
       },
 
       error: (xhr) => {
