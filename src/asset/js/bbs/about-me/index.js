@@ -13,6 +13,13 @@ import Poptip from  '../../poptip/';
 import GoTop from '../../gotop/';
 import JWeiXin from '../../jweixin/';
 
+const DEL_REPLY_ERR = {
+  1: 'uid 有误',
+  2: 'fid 有误',
+  3: '帖子不存在',
+  4: '禁止非本人操作'
+}
+
 export default class AboutMe extends React.Component {
   constructor() {
     super();
@@ -186,6 +193,38 @@ export default class AboutMe extends React.Component {
     })
   }
 
+  removeReply(reply: Object) {
+    this.refs.loading.show('请求中...');
+
+    $.ajax({
+      url: '/api/bbs_v2/_del',
+      type: 'POST',
+      data: {
+        uid: this.state.qs.uid,
+        token: this.state.qs.token,
+        fid: reply.id
+      },
+      succes: (code) => {
+        this.refs.loading.close();
+
+        if (code === 0) {
+          this.refs.poptip.success('删除成功');
+
+          return;
+        }
+
+        this.refs.poptip.warn(DEL_REPLY_ERR[code] || '删除失败');
+      },
+      error: (xhr) => {
+        this.refs.loading.close();
+
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
+      }
+    });
+  }
+
   switchTab(tab: string) {
     this.setState({
       tab: tab
@@ -208,7 +247,7 @@ export default class AboutMe extends React.Component {
               case 'forum':
                 return <Post items={this.state.posts} wx_ready={this.state.wx_ready} />;
               case 'comment':
-                return <ReplyList items={this.state.replies} />;
+                return <ReplyList items={this.state.replies} remove={this.removeReply.bind(this)} />;
             }
           })()
         }

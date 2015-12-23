@@ -196,6 +196,7 @@ module.exports = {
     inline: true,
     proxy: {
       '/mvc/bbs*': {
+        // target: 'http://o.dp:3000',
         target: 'http://api.ttyhuo.com:83',
         secure: false
       },
@@ -208,7 +209,8 @@ module.exports = {
         secure: false
       },
       '/api*': {
-        target: 'http://m.ttyhuo.com',
+        target: 'http://o.dp:3000',
+        // target: 'http://m.ttyhuo.com',
         secure: false
       },
       '/*.jsp*': {

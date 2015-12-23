@@ -9,9 +9,25 @@ export default class ReportItem extends React.Component {
     super()
   }
 
+  touchstart(e) {
+    this._start = new Date().getTime();
+  }
+
+  touchend(e) {
+    if (Date.now() - this._start >= 3000) {
+      if (confirm('确认删除该条回复?')) {
+        this.props.remove(this.props.item);
+      }
+    } else {
+      this._start = null;
+    }
+  }
+
   render() {
+    // <i className="icon icon-edit s15 disable"></i>
+
     return (
-      <div className="reply-item">
+      <div className="reply-item" onTouchStart={this.touchstart.bind(this)} onTouchEnd={this.touchend.bind(this)}>
         <header className="row">
           <div className="profile">
             <img className="avatar" src={this.props.item.imgUrl} />
@@ -31,7 +47,6 @@ export default class ReportItem extends React.Component {
                   if (this.props.item.remind_count != 0) {
                     return (
                       <p className="reply-count">
-                        <i className="icon icon-edit s15 disable"></i>
                         <span>{this.props.item.remind_count + ' 新回复'}</span>
                       </p>
                     )
