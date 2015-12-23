@@ -65,7 +65,11 @@ export default class PostDetailItem extends React.Component {
 
         this.refs.poptip.success('关注成功');
       },
-      error: () => {
+      error: (xhr) => {
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
+
         this.refs.loading.close();
         this.refs.poptip.success('关注失败');
       }
@@ -92,7 +96,11 @@ export default class PostDetailItem extends React.Component {
           history.back();
         }, 3000);
       },
-      error: () => {
+      error: (xhr) => {
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
+
         this.refs.loading.close();
         this.refs.poptip.success('删除失败');
       }

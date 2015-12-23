@@ -9,6 +9,10 @@ let LoadMore = {
       let docH = $(document).height();
       let t = $(window).scrollTop();
 
+      if (docH < winH) {
+        return;
+      }
+
       if (t - lastT > 0 && t > docH - winH - 100) {
         cb();
       }

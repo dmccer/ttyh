@@ -71,6 +71,11 @@ export default class AboutMe extends React.Component {
         this.state.tabs.forEach((tab) => {
           tab.has = data[tab.key + '_count'] !== 0;
         });
+      },
+      error: (xhr) => {
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
       }
     });
   }
@@ -102,6 +107,8 @@ export default class AboutMe extends React.Component {
         f: f
       },
       success: (data) => {
+        this.refs.loading.close();
+
         if (data && data.bbsForumList && data.bbsForumList.length) {
           this.format(data.bbsForumList);
 
@@ -111,14 +118,20 @@ export default class AboutMe extends React.Component {
             count: data.bbsForumList.length,
             last: 'forum'
           });
-        } else {
-          this.refs.poptip.info('没有更多了');
+
+          return;
         }
 
-        this.refs.loading.close();
+        if (this.state.posts.length) {
+          this.refs.poptip.info('没有更多了');
+        }
       },
-      error: () => {
+      error: (xhr) => {
         this.refs.loading.close();
+
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
       }
     });
   }
@@ -144,6 +157,8 @@ export default class AboutMe extends React.Component {
         f: f
       },
       success: (data) => {
+        this.refs.loading.close();
+
         if (data && data.bbsForumList && data.bbsForumList.length) {
           this.format(data.bbsForumList);
 
@@ -153,14 +168,20 @@ export default class AboutMe extends React.Component {
             count: data.bbsForumList.length,
             last: 'comment'
           });
-        } else {
-          this.refs.poptip.info('没有更多了');
+
+          return;
         }
 
-        this.refs.loading.close();
+        if (this.state.replies.length) {
+          this.refs.poptip.info('没有更多了');
+        }
       },
-      error: () => {
+      error: (xhr) => {
         this.refs.loading.close();
+
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
       }
     })
   }

@@ -62,7 +62,6 @@ export default class PostAdd extends React.Component {
   }
 
   uploadImage(cb) {
-
     if (!this.state.photo || !this.state.photo.length) {
       return cb();
     }
@@ -121,8 +120,13 @@ export default class PostAdd extends React.Component {
             this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data] || '发布失败');
           }
         },
-        error: () => {
+        error: (xhr) => {
+          if (xhr.status === 403) {
+            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+          }
+
           this.refs.loading.close();
+          this.refs.poptip.warn('发布失败');
         }
       });
     });
@@ -226,7 +230,7 @@ export default class PostAdd extends React.Component {
       )
       : '';
 
-    let addressDescription = this.state.showAddress ? (this.state.address.city + ' ' + this.state.address.area) : '显示位置';
+    let addressDescription = this.state.showAddress ? `${this.state.address.city} ${this.state.address.area}` : '显示位置';
     let addressActionIconClasses = classNames('icon round action-icon', this.state.showAddress ? 'icon-minus yellow' : 'icon-plus teal');
 
     return (

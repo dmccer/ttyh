@@ -51,9 +51,13 @@ export default class ActiveUserList extends React.Component {
         user.follow = 1;
         this.forceUpdate();
       },
-      error: () => {
+      error: (xhr) => {
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
+
         this.refs.loading.close();
-        this.refs.poptip.success('关注失败');
+        this.refs.poptip.warn('关注失败');
       }
     });
   }

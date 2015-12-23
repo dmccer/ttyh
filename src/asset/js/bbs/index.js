@@ -91,6 +91,8 @@ export default class BBS extends React.Component {
         f: f
       },
       success: (data) => {
+        this.refs.loading.close();
+
         if (data && data.bbsForumList && data.bbsForumList.length) {
           this.formatForums(data.bbsForumList)
 
@@ -100,11 +102,13 @@ export default class BBS extends React.Component {
             count: data.bbsForumList.length,
             last: q
           });
-        } else {
-          this.refs.poptip.info('没有更多了');
+
+          return;
         }
 
-        this.refs.loading.close();
+        if (this.state.posts.length) {
+          this.refs.poptip.info('没有更多了');
+        }
       },
       error: () => {
         this.refs.loading.close();

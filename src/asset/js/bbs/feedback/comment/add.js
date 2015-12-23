@@ -95,8 +95,13 @@ export default class CommentAdd extends React.Component {
             history.back();
           }, 3000)
         },
-        error: () => {
+        error: (xhr) => {
+          if (xhr.status === 403) {
+            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+          }
 
+          this.refs.loading.close();
+          this.refs.poptip.warn('发布失败');
         }
       });
     });

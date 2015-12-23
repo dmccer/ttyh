@@ -58,7 +58,11 @@ export default class TopicPosts extends React.Component {
             posts: this.state.f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
             f: this.state.f + data.bbsForumList.length
           });
-        } else {
+
+          return;
+        }
+
+        if (this.state.posts.length) {
           this.refs.poptip.info('没有更多了');
         }
       },

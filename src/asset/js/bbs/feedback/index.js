@@ -63,6 +63,7 @@ export default class Feedback extends React.Component {
         return this.queryPraiseList();
     }
   }
+
   queryCommentList() {
     let f = this.state.f;
 
@@ -83,6 +84,12 @@ export default class Feedback extends React.Component {
         f: f
       },
       success: (data) => {
+        this.setState({
+          load: true
+        });
+
+        this.refs.loading.close();
+
         if (data && data.bbsForumList && data.bbsForumList.length) {
           let list = f > 0 ? this.state.comments.concat(data.bbsForumList) : data.bbsForumList;
           this.formatForum(data.bbsForumList, list);
@@ -93,15 +100,13 @@ export default class Feedback extends React.Component {
             count: data.bbsForumList.length,
             last: 'comment'
           });
-        } else {
-          this.refs.poptip.info('没有更多了');
+
+          return;
         }
 
-        this.setState({
-          load: true
-        });
-
-        this.refs.loading.close();
+        if (this.state.comments.length) {
+          this.refs.poptip.info('没有更多了');
+        }
       },
       error: () => {
         this.refs.loading.close();
@@ -136,6 +141,12 @@ export default class Feedback extends React.Component {
         t: 20
       },
       success: (data) => {
+        this.refs.loading.close();
+
+        this.setState({
+          load: true
+        });
+
         if (data && data.bbsPraiseList && data.bbsPraiseList.length) {
           this.setState({
             praises: f > 0 ? this.state.praises.concat(data.bbsPraiseList) : data.bbsPraiseList,
@@ -143,15 +154,13 @@ export default class Feedback extends React.Component {
             count: data.bbsPraiseList.length,
             last: 'praise'
           });
-        } else {
-          this.refs.poptip.info('没有更多了');
+
+          return;
         }
 
-        this.setState({
-          load: true
-        });
-
-        this.refs.loading.close();
+        if (this.state.praises.length) {
+          this.refs.poptip.info('没有更多了');
+        }
       },
       error: () => {
         this.refs.loading.close();
@@ -160,7 +169,7 @@ export default class Feedback extends React.Component {
   }
 
   comment(forum) {
-    const url = './bbs-comment.jsp?' + querystring.stringify({
+    const url = '/bbs-comment.jsp?' + querystring.stringify({
       fid: forum.id,
       tid: forum.tid,
       uid: this.state.qs.uid,
@@ -203,6 +212,15 @@ export default class Feedback extends React.Component {
 
         // 当前帖子点赞
         this.queryPraiseList();
+      },
+
+      error: (xhr) => {
+        if (xhr.status === 403) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+        }
+
+        this.refs.loading.close();
+        this.refs.poptip.success('点赞失败, 请重试');
       }
     });
   }
