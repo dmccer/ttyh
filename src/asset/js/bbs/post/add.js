@@ -90,9 +90,29 @@ export default class PostAdd extends React.Component {
     fn(0);
   }
 
+  validate() {
+    if ($.trim(this.state.title) === '') {
+      this.refs.poptip.warn('标题不能为空');
+
+      return false;
+    }
+
+    if ($.trim(this.state.content) === '') {
+      this.refs.poptip.warn('内容不能为空');
+
+      return false;
+    }
+
+    return true;
+  }
+
   submit(e) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!this.validate()) {
+      return;
+    }
 
     this.uploadImage((media_ids) => {
       this.refs.loading.show('正在发布...');
@@ -276,6 +296,7 @@ export default class PostAdd extends React.Component {
             </ul>
             <ResPicker
               menus={['topic', 'emoj', 'photo']}
+              maxPhotoCount={9}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
               onDelEmoj={this.delEmoj.bind(this)}

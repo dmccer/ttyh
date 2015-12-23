@@ -86,6 +86,7 @@ export default class UserPosts extends React.Component {
         <Post items={this.state.posts} wx_ready={this.state.wx_ready} />
         <GoTop />
         <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </section>
     );
   }

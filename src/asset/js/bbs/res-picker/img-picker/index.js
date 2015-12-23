@@ -35,8 +35,8 @@ export default class ImgPicker extends React.Component {
       return;
     }
 
-    if (this.state.imgs.length === 9) {
-      this.refs.poptip.warn('最多只能上传 9 张');
+    if (this.state.imgs.length === this.props.maxPhotoCount) {
+      this.refs.poptip.warn(`最多只能上传 ${this.props.maxPhotoCount} 张`);
 
       return;
     }
@@ -79,7 +79,7 @@ export default class ImgPicker extends React.Component {
         onRemove={this.del.bind(this)} />
     });
 
-    let addItem = this.state.imgs.length === 9 ? null : <div
+    let addItem = this.state.imgs.length === this.props.maxPhotoCount ? null : <div
       className="img-item4picker add-img-item"
       onClick={this.selectImg.bind(this)}>
       <div className="img-item-inner"></div>

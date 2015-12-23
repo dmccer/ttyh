@@ -2,6 +2,7 @@ import './index.less';
 
 import React from 'react';
 import querystring from 'querystring';
+import cx from 'classnames';
 
 export default class ActionBar extends React.Component {
   constructor() {
@@ -28,7 +29,7 @@ export default class ActionBar extends React.Component {
               <i className="icon icon-edit s20 off"></i>评论
             </a>
           </li>
-          <li onClick={this.praise.bind(this)}><i className="icon icon-praise s20 off"></i>赞</li>
+          <li onClick={this.praise.bind(this)}><i className={cx('icon icon-praise s20', this.props.praised ? 'on' : 'off')}></i>赞</li>
         </ul>
       </div>
     )

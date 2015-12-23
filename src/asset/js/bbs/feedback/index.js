@@ -266,6 +266,7 @@ export default class Feedback extends React.Component {
             id: this.props.fid,
             tid: this.props.tid
           }}
+          praised={this.state.praised}
           onPraise={this.praise.bind(this)}
           onComment={this.comment.bind(this)}
         />

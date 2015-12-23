@@ -81,7 +81,7 @@ export default class ResPicker extends React.Component {
         picker = <EmojPicker onPick={this.pickEmoj.bind(this)} onDel={this.delEmoj.bind(this)} />
         break;
       case 'photo':
-        picker = <ImgPicker onImgsChange={this.handleImgsChange.bind(this)} />
+        picker = <ImgPicker onImgsChange={this.handleImgsChange.bind(this)} maxPhotoCount={this.props.maxPhotoCount} />
         break;
     }
 
