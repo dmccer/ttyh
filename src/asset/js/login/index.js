@@ -156,14 +156,14 @@ export default class Login extends React.Component {
 
     this.count_down();
 
-    this.handleValidateTelRemote(() => {
-      this.setState({
-        verifyCodeDisabled: true
-      });
+    this.setState({
+      verifyCodeDisabled: true
     });
+
+    this.handleValidateTelRemote();
   }
 
-  handleValidateTelRemote(cb) {
+  handleValidateTelRemote() {
     this.refs.loading.show('正在获取验证码...');
 
     $.ajax({
@@ -183,8 +183,6 @@ export default class Login extends React.Component {
             loggingUserSnapShotKey: res.loggingUserSnapShotKey
           });
 
-          cb();
-
           return;
         }
 
@@ -195,8 +193,6 @@ export default class Login extends React.Component {
             tip: null,
             draftUserSnapShotKey: res.draftUserSnapShotKey
           });
-
-          cb();
 
           return;
         }

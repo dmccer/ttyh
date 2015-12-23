@@ -18,15 +18,19 @@ export default class Poptip extends React.Component {
       msg: msg
     };
 
+    // 同一提示不重复显示
+    let hasTip = this.state.tips.find((item) => {
+      return tip.type === item.type && tip.msg === item.msg;
+    });
+
+    if (hasTip) {
+      return;
+    }
+
     this.state.tips.push(tip);
     this.forceUpdate();
 
-    setTimeout(() => {
-      const index = this.state.tips.indexOf(tip);
-      this.state.tips.splice(index, 1);
-
-      this.forceUpdate();
-    }, timeout);
+    setTimeout(this.close.bind(this, tip), timeout);
   }
 
   success(msg: string) {
@@ -45,12 +49,20 @@ export default class Poptip extends React.Component {
     this.show('warning', msg);
   }
 
+  close(tip: Object) {
+    const index = this.state.tips.indexOf(tip);
+    this.state.tips.splice(index, 1);
+
+    this.forceUpdate();
+  }
+
   render() {
     let tipList = this.state.tips.map((tip, index) => {
       return (
         <div
           className="poptip-cnt"
-          key={'poptip_' + index}>
+          key={'poptip_' + index}
+          onClick={this.close.bind(this, tip)}>
           <i className={classNames('icon', 'icon-' + tip.type)}></i>{tip.msg}
         </div>
       )
