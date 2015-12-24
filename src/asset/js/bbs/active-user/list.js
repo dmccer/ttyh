@@ -42,7 +42,7 @@ export default class ActiveUserList extends React.Component {
     this.refs.loading.show('请求中...');
 
     $.ajax({
-      url: '/mvc/follow_' + user.uid,
+      url: '/mvc/followForBBS_' + user.uid,
       type: 'GET',
       success: (data) => {
         this.refs.loading.close();
