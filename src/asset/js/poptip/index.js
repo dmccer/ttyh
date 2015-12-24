@@ -23,7 +23,7 @@ export default class Poptip extends React.Component {
       return tip.type === item.type && tip.msg === item.msg;
     });
 
-    if (!hasTip || hasTip.length) {
+    if (hasTip && hasTip.length) {
       return;
     }
 
