@@ -57,7 +57,7 @@ export default class ImgPicker extends React.Component {
           });
 
           if (this.state.imgs.length > this.props.maxPhotoCount) {
-            this.state.imgs.splice(0, this.props.maxPhotoCount);
+            this.state.imgs.splice(this.props.maxPhotoCount, this.state.imgs.length - this.props.maxPhotoCount);
           }
 
           this.forceUpdate();
