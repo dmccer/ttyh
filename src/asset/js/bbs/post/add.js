@@ -250,7 +250,7 @@ export default class PostAdd extends React.Component {
       )
       : '';
 
-    let addressDescription = this.state.showAddress ? `${this.state.address.city} ${this.state.address.area}` : '显示位置';
+    let addressDescription = this.state.showAddress ? `${this.state.address.city || ''} ${this.state.address.area || ''}` : '显示位置';
     let addressActionIconClasses = classNames('icon round action-icon', this.state.showAddress ? 'icon-minus yellow' : 'icon-plus teal');
 
     return (

@@ -74,12 +74,15 @@ export default class Login extends React.Component {
       data.draftUserSnapShotKey = this.state.draftUserSnapShotKey;
     }
 
+    this.refs.loading.show('登录中...');
+
     $.ajax({
       url: url,
       type: 'POST',
       data: data,
       success: (res) => {
         if (res.viewName === 'user/home') {
+          this.refs.loading.close();
           this.refs.poptip.success('登录成功');
 
           // 跳转
@@ -111,6 +114,7 @@ export default class Login extends React.Component {
         this.refs.poptip.warn(msg);
       },
       error: () => {
+        this.refs.loading.close();
         this.refs.poptip.error('系统异常');
       }
     })

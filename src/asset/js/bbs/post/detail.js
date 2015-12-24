@@ -31,7 +31,7 @@ export default class PostDetailItem extends React.Component {
       url: '/api/bbs_v2/show_forum',
       type: 'GET',
       data: {
-        id: this.props.fid,
+        id: this.state.qs.fid,
         uid: this.state.qs.uid
       },
       success: (data) => {
@@ -82,6 +82,10 @@ export default class PostDetailItem extends React.Component {
   }
 
   del() {
+    if (!confirm('确认删除该帖子?')) {
+      return;
+    }
+
     this.refs.loading.show('请求中...');
 
     $.ajax({
