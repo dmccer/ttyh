@@ -24,9 +24,17 @@ export default class AboutMe extends React.Component {
   constructor() {
     super();
 
+    let hash;
+    let hashStr = location.hash;
+
+    if (hashStr !== '') {
+      hash = querystring.parse(hashStr.substring(1));
+    }
+
     this.state = {
       qs: querystring.parse(location.search.substring(1)),
-      tab: 'forum', // post, reply
+      hash: hash || {},
+      tab: hash && hash.tab || 'forum', // all, focus, hot
       posts: [],
       replies: [],
       tabs: [{
@@ -204,11 +212,18 @@ export default class AboutMe extends React.Component {
         token: this.state.qs.token,
         fid: reply.id
       },
-      succes: (code) => {
+      success: (code) => {
         this.refs.loading.close();
 
-        if (code === 0) {
+        if (code == 0) {
           this.refs.poptip.success('删除成功');
+
+          this.setState({
+            f: 0,
+            count: 0
+          });
+
+          this.queryMyReplies();
 
           return;
         }
@@ -229,6 +244,16 @@ export default class AboutMe extends React.Component {
     this.setState({
       tab: tab
     });
+
+    let url, hash = this.state.hash;
+    let hasTabHash = !!hash.tab;
+
+    hash.tab = tab;
+    let qsHash = `#${querystring.stringify(hash)}`;
+
+    url = hasTabHash ? location.href.replace(/#.+$/, qsHash) : (location.href + qsHash);
+
+    location.href = url;
 
     this.query(tab);
   }

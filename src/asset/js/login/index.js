@@ -40,6 +40,10 @@ export default class Login extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    if (this.state.submiting) {
+      return;
+    }
+
     if (this.state.tip) {
       this.refs.poptip.warn(this.state.tip);
       return;
@@ -58,6 +62,10 @@ export default class Login extends React.Component {
       this.refs.poptip.warn('请先获取验证码');
       return;
     }
+
+    this.setState({
+      submiting: true
+    });
 
     let url, data = {
       confirmCode: this.state.verifyCode,
@@ -112,10 +120,18 @@ export default class Login extends React.Component {
         }
 
         this.refs.poptip.warn(msg);
+
+        this.setState({
+          submiting: false
+        });
       },
       error: () => {
         this.refs.loading.close();
         this.refs.poptip.error('系统异常');
+
+        this.setState({
+          submiting: false
+        });
       }
     })
   }
@@ -220,6 +236,8 @@ export default class Login extends React.Component {
         this.refs.poptip.warn(msg);
       },
       error: () => {
+        this.refs.loading.close();
+        
         this.refs.poptip.error('系统异常')
       }
     });

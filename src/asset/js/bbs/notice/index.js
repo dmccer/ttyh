@@ -26,7 +26,7 @@ export default class NoticeDetail extends React.Component {
     this.refs.loading.show('加载中...');
 
     $.ajax({
-      url: '/api/bbs/all_public',
+      url: '/api/bbs_v2/all_public',
       type: 'GET',
       success: (data) => {
         let notice = data.bbsForumList[0];
