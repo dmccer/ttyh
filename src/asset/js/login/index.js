@@ -40,10 +40,10 @@ export default class Login extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    if (this.state.tip) {
-      this.refs.poptip.warn(this.state.tip);
-      return;
-    }
+    // if (this.state.tip) {
+    //   this.refs.poptip.warn(this.state.tip);
+    //   return;
+    // }
 
     if (!this.validateTel()) {
       return;
@@ -198,15 +198,29 @@ export default class Login extends React.Component {
           return;
         }
 
+          if (res.viewName === 'user/home') {
+            this.refs.poptip.success('登录成功');
+
+            // 跳转
+            let qs = querystring.stringify({
+              uid: res.loggedUser.userID,
+              token: res.token
+            });
+
+            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+
+            return;
+          }
+
         let msg;
 
         switch(res.viewName) {
           case 'user/login':
             msg = '手机号格式不正确';
             break;
-          case 'user/home':
-            msg = '服务器已登录';
-            break;
+          // case 'user/home':
+          //   msg = '服务器已登录';
+          //   break;
         }
 
         this.setState({
