@@ -135,7 +135,7 @@ export default class PostAdd extends React.Component {
           if (data === 0) {
             this.refs.poptip.success('发布成功');
 
-            // location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+\?$/, '/bbs.html');
+            history.back();
           } else {
             this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data] || '发布失败');
           }
