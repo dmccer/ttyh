@@ -58,7 +58,7 @@ export default class Login extends React.Component {
       return;
     }
 
-    if (!this.state.loggingUserSnapShotKey && !this.state.draftUserSnapShotKey) {
+    if (!this.state.loggingUserSnapShotKey || !this.state.draftUserSnapShotKey) {
       this.refs.poptip.warn('请先获取验证码');
       return;
     }
@@ -237,7 +237,7 @@ export default class Login extends React.Component {
       },
       error: () => {
         this.refs.loading.close();
-        
+
         this.refs.poptip.error('系统异常')
       }
     });
