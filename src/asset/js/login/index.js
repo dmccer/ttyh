@@ -60,7 +60,8 @@ export default class Login extends React.Component {
     }
 
     let url, data = {
-      confirmCode: this.state.verifyCode
+      confirmCode: this.state.verifyCode,
+      userName: ''
     };
 
     if (this.state.loggingUserSnapShotKey) {
