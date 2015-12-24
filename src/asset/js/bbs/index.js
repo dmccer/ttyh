@@ -105,10 +105,12 @@ export default class BBS extends React.Component {
     $.ajax({
       url: url,
       type: 'GET',
+      cache: false,
       data: {
         t: this.state.t,
         f: f
       },
+      cache: false,
       success: (data) => {
         this.refs.loading.close();
 

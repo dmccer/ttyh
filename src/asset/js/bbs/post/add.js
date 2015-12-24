@@ -41,6 +41,7 @@ export default class PostAdd extends React.Component {
         $.ajax({
           url: 'http://api.map.baidu.com/geocoder/v2/',
           type: 'GET',
+          cache: false,
           data: {
             ak: '50b9214f70f98c0315913018ba25b420',
             location: `${pos.coords.latitude},${pos.coords.longitude}`,

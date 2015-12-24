@@ -30,6 +30,7 @@ export default class PostDetailItem extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_forum',
       type: 'GET',
+      cache: false,
       data: {
         id: this.state.qs.fid,
         uid: this.state.qs.uid
@@ -64,6 +65,7 @@ export default class PostDetailItem extends React.Component {
     $.ajax({
       url: '/mvc/followForBBS_' + this.state.uid,
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.refs.loading.close();
         this.refs.poptip.success('关注成功');

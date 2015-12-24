@@ -45,6 +45,7 @@ export default class TopicPosts extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_all',
       type: 'GET',
+      cache: false,
       data: {
         tid: this.state.qs.tid,
         f: this.state.f,

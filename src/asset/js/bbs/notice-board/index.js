@@ -18,6 +18,7 @@ export default class NoticeBoard extends React.Component {
     $.ajax({
       url: '/api/bbs/all_public',
       type: 'GET',
+      cache: false,
       success: (data) => {
         let notice = data.bbsForumList[0];
         this.setState({

@@ -79,6 +79,7 @@ export default class AboutMe extends React.Component {
     $.ajax({
       url: '/api/bbs/has_remind',
       type: 'GET',
+      cache: false,
       data: {
         uid: this.state.qs.uid
       },
@@ -115,6 +116,8 @@ export default class AboutMe extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
+      cache: false,
+      cache: false,
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,
@@ -125,6 +128,7 @@ export default class AboutMe extends React.Component {
         this.refs.loading.close();
 
         if (data && data.bbsForumList && data.bbsForumList.length) {
+          console.log(data.bbsForumList);
           this.format(data.bbsForumList);
 
           this.setState({
@@ -165,6 +169,7 @@ export default class AboutMe extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_my_commend',
       type: 'GET',
+      cache: false,
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,

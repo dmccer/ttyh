@@ -78,6 +78,7 @@ export default class Feedback extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_commend',
       type: 'GET',
+      cache: false,
       data: {
         id: this.props.fid,
         t: this.state.t,
@@ -136,6 +137,7 @@ export default class Feedback extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_praise',
       type: 'GET',
+      cache: false,
       data: {
         id: this.props.fid,
         t: 20
@@ -255,12 +257,12 @@ export default class Feedback extends React.Component {
           <li
             className={this.state.tab === 'comment' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'comment')}>
-            <a href="#">评论</a>
+            <a href="#">评论 <span className="count">{this.state.comments.length}</span></a>
           </li>
           <li
             className={this.state.tab === 'praise' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'praise')}>
-            <a href="#">赞</a>
+            <a href="#">赞 <span className="count">{this.state.praises.length}</span></a>
           </li>
         </ul>
         {this.renderTab()}

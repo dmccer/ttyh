@@ -24,6 +24,7 @@ export default class ActiveUserList extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/hot_user',
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.refs.loading.close();
 
@@ -44,6 +45,7 @@ export default class ActiveUserList extends React.Component {
     $.ajax({
       url: '/mvc/followForBBS_' + user.uid,
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.refs.loading.close();
 

@@ -19,6 +19,7 @@ export default class Post extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/hot_user',
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.setState({
           users: data.bbsUserDoSortDTOList

@@ -81,6 +81,7 @@ export default class HeadBar extends React.Component {
       $.ajax({
         url: '/api/bbs/has_remind',
         type: 'GET',
+        cache: false,
         data: {
           uid: this.state.qs.uid
         },

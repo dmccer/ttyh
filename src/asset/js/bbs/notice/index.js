@@ -28,6 +28,7 @@ export default class NoticeDetail extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/all_public',
       type: 'GET',
+      cache: false,
       success: (data) => {
         let notice = data.bbsForumList[0];
         notice.load = true;

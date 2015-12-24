@@ -15,8 +15,9 @@ export default class Topic extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/api/bbs/all_topic',
+      url: '/api/bbs_v2/all_topic',
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.setState({
           topics: data.bbsTopicList
