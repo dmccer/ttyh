@@ -60,11 +60,19 @@ export default class CommentAdd extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    if (this.state.uploading) {
+      return;
+    }
+
     if ($.trim(this.state.text) === '') {
       this.refs.poptip.warn(COMMENT_ERR[5]);
 
       return;
     }
+
+    this.setState({
+      uploading: true
+    });
 
     this.uploadImage((media_ids) => {
       this.refs.loading.show('发布中...');
@@ -86,6 +94,10 @@ export default class CommentAdd extends React.Component {
           if (data !== 0) {
             this.refs.poptip.warn(COMMENT_ERR[data] || '发布评论失败');
 
+            this.setState({
+              uploading: false
+            });
+
             return;
           }
 
@@ -99,6 +111,10 @@ export default class CommentAdd extends React.Component {
           if (xhr.status === 403) {
             location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
           }
+
+          this.setState({
+            uploading: false
+          });
 
           this.refs.loading.close();
           this.refs.poptip.warn('发布失败');

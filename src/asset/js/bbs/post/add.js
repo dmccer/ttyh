@@ -110,9 +110,17 @@ export default class PostAdd extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    if (this.state.uploading) {
+      return;
+    }
+
     if (!this.validate()) {
       return;
     }
+
+    this.setState({
+      uploading: true
+    });
 
     this.uploadImage((media_ids) => {
       this.refs.loading.show('正在发布...');
@@ -138,12 +146,20 @@ export default class PostAdd extends React.Component {
             history.back();
           } else {
             this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data] || '发布失败');
+
+            this.setState({
+              uploading: false
+            });
           }
         },
         error: (xhr) => {
           if (xhr.status === 403) {
             location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
           }
+
+          this.setState({
+            uploading: false
+          });
 
           this.refs.loading.close();
           this.refs.poptip.warn('发布失败');
