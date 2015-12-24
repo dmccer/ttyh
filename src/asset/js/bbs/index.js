@@ -56,24 +56,15 @@ export default class BBS extends React.Component {
       this.query(this.state.tab);
     });
 
-    $(document).on('touchmove', (e) => {
-      if (this.state.scrolling) {
-        return;
-      }
+    let winH = $(window).height();
+    $(window).on('scroll', fnu.debounce(() => {
+      let t = $(window).scrollTop();
+      let on = t > 1.5 * winH;
 
       this.setState({
-        scrolling: true
-      });
-    }).on('touchend', () => {
-      if (!this.state.scrolling) {
-        return;
-      }
-      setTimeout(() => {
-        this.setState({
-          scrolling: false
-        });
-      }, 300)
-    });
+        hasGoTop: on
+      })
+    }))
   }
 
   query(q) {
@@ -204,8 +195,8 @@ export default class BBS extends React.Component {
       <div className="bbs page">
         <HeadBar on={this.state.tab} onSwitch={this.switchTab.bind(this)}/>
         {this.renderPosts()}
-        {this.state.scrolling ? '' : this.renderLoginBtn()}
         <GoTop />
+        {this.state.hasGoTop ? null : this.renderLoginBtn()}
         <Loading ref='loading' />
         <Poptip ref='poptip' />
       </div>

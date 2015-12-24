@@ -16,8 +16,10 @@ export default class GoTop extends React.Component {
 
     $(window).on('scroll', fnu.debounce(() => {
       let t = $(window).scrollTop();
+      let on = t > 1.5 * winH;
+
       this.setState({
-        on: t > 1.5 * winH
+        on: on
       });
     }));
   }
