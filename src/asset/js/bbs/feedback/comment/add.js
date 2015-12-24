@@ -189,6 +189,7 @@ export default class CommentAdd extends React.Component {
             <ResPicker
               menus={['emoj', 'photo']}
               maxPhotoCount={3}
+              photos={this.state.photo}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
               onDelEmoj={this.delEmoj.bind(this)}

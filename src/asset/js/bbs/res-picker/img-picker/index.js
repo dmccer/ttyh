@@ -21,6 +21,12 @@ export default class ImgPicker extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.setState({
+      imgs: this.props.photos || []
+    });
+  }
+
   // 选择某一张照片
   pick(img: Object, e: Object) {
     // 显示大图

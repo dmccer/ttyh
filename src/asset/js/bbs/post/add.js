@@ -97,7 +97,7 @@ export default class PostAdd extends React.Component {
       return false;
     }
 
-    if ($.trim(this.state.content) === '') {
+    if ($.trim(this.state.text) === '') {
       this.refs.poptip.warn('内容不能为空');
 
       return false;
@@ -297,6 +297,7 @@ export default class PostAdd extends React.Component {
             <ResPicker
               menus={['topic', 'emoj', 'photo']}
               maxPhotoCount={9}
+              photos={this.state.photo}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
               onDelEmoj={this.delEmoj.bind(this)}
