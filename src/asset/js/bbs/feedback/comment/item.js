@@ -7,7 +7,7 @@ import cx from 'classnames';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
 import Avatar from '../../avatar/';
-import Gallery from '../../gallery/';
+const WH_REG = /\[\d+:\d+\]/g;
 
 export default class Comment extends React.Component {
   constructor() {
@@ -37,6 +37,9 @@ export default class Comment extends React.Component {
 
   render() {
     let lz = this.props.item.uid === this.props.uid ? <i className="ticon louzhu light-purple"></i> : null;
+    let imgs = this.props.item.imgs.map((img, index) => {
+      return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img.replace(WH_REG, '')} /></a>
+    });
 
     return (
       <li className="comment-item">
@@ -66,7 +69,9 @@ export default class Comment extends React.Component {
         <article className="post-body">
           <section className="post-content">
             <p className="post-text">{Emoj.formatText(this.props.item.content)}</p>
-            <Gallery imgs={this.props.item.imgs} wx_ready={this.props.wx_ready} />
+            <div className="photo">
+              {imgs}
+            </div>
             {this.renderReplied()}
           </section>
         </article>

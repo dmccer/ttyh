@@ -106,8 +106,14 @@ export default class BBSDetail extends React.Component {
       cache: false,
       success: (data) => {
         this.refs.loading.close();
-        this.refs.poptip.success('关注成功');
 
+        if (data.errMsg) {
+          this.refs.poptip.success(data.errMsg);
+
+          return;
+        }
+
+        this.refs.poptip.success('关注成功');
         this.fetch();
       },
       error: (xhr) => {

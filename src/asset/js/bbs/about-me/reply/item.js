@@ -3,6 +3,7 @@ import './item.less';
 import React from 'react';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
+import Avatar from '../../avatar/';
 
 export default class ReportItem extends React.Component {
   constructor() {
@@ -46,7 +47,7 @@ export default class ReportItem extends React.Component {
       <div className="reply-item" onTouchStart={this.touchstart.bind(this)} onTouchEnd={this.touchend.bind(this)}>
         <header className="row">
           <div className="profile">
-            <img className="avatar" src={this.props.item.imgUrl} />
+            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
             <div className="poster">{this.props.item.userName}</div>
             <div className="post-meta">
               <ReadableTime time={this.props.item.create_time} />

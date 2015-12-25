@@ -7,6 +7,8 @@ import querystring from 'querystring';
 import ReadableTime from '../readable-time/';
 import Avatar from '../avatar/';
 
+const WH_REG = /\[\d+:\d+\]/g;
+
 export default class PostDetailItem extends React.Component {
   constructor() {
     super();
@@ -73,7 +75,7 @@ export default class PostDetailItem extends React.Component {
     }
 
     let imgs = forum.imgs.map((img, index) => {
-      return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img} /></a>
+      return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img.replace(WH_REG, '')} /></a>
     });
 
     let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {

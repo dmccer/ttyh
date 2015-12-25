@@ -205,7 +205,7 @@ export default class Feedback extends React.Component {
         this.refs.poptip.success('点赞成功');
 
         // 评论列表中点赞
-        if (forum.id !== this.state.qs.fid) {
+        if (forum.id != this.state.qs.fid) {
           forum.ipraised = true;
           forum.pcount++;
 
