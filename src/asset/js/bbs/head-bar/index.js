@@ -30,8 +30,22 @@ export default class HeadBar extends React.Component {
   componentDidMount() {
     this.checkHasNewPostsOrReplies();
 
+    let tab;
+
+    if (this.props.on) {
+      tab = this.state.tabItems.filter((tab) => {
+        return tab.key === this.props.on;
+      });
+
+      if (tab && tab.length) {
+        tab = tab[0];
+      } else {
+        tab = null;
+      }
+    }
+
     this.setState({
-      selectedTabItem: this.state.tabItems[0]
+      selectedTabItem: tab || this.state.tabItems[0]
     });
   }
 

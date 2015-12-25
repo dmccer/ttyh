@@ -24,18 +24,12 @@ export default class BBS extends React.Component {
   constructor() {
     super();
 
-    let hash;
-    let hashStr = location.hash;
-
-    if (hashStr !== '') {
-      hash = querystring.parse(hashStr.substring(1));
-    }
+    let query = querystring.parse(location.search.substring(1));
 
     this.state = {
-      hash: hash || {},
-      tab: hash && hash.tab || 'all', // all, focus, hot
+      tab: query.tab || 'all', // all, focus, hot
       posts: [],
-      qs: querystring.parse(location.search.substring(1)),
+      qs: query,
       last: null,
       f: 0,
       t: 30,
@@ -151,17 +145,10 @@ export default class BBS extends React.Component {
       tab: tab
     });
 
-    let url, hash = this.state.hash;
-    let hasTabHash = !!hash.tab;
+    let qs = querystring.stringify($.extend({}, this.state.qs, { tab: tab }));
+    location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
 
-    hash.tab = tab;
-    let qsHash = `#${querystring.stringify(hash)}`;
-
-    url = hasTabHash ? location.href.replace(/#.+$/, qsHash) : (location.href + qsHash);
-
-    location.href = url;
-
-    this.query(tab);
+    // this.query(tab);
   }
 
   renderLoginBtn() {

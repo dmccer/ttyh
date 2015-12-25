@@ -24,7 +24,7 @@ export default class Avatar extends React.Component {
       : ('./user-posts.html?' + qs);
 
     let avatar = this.props.url
-      ? <img src={this.props.url} />
+      ? <img src={this.props.url + '!small'} />
       : <i className="icon icon-avatar"></i>;
 
     let avatarClassNames = classNames('avatar', this.props.size || 's40');

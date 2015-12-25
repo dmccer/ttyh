@@ -58,7 +58,7 @@ export default class Login extends React.Component {
       return;
     }
 
-    if (!this.state.loggingUserSnapShotKey || !this.state.draftUserSnapShotKey) {
+    if (!this.state.loggingUserSnapShotKey && !this.state.draftUserSnapShotKey) {
       this.refs.poptip.warn('请先获取验证码');
       return;
     }
@@ -195,6 +195,15 @@ export default class Login extends React.Component {
       },
       success: (res) => {
         this.refs.loading.close();
+
+        if (res.viewName === 'user/home') {
+          let qs = querystring.stringify({
+            uid: res.loggedUser.userID,
+            token: res.token
+          });
+
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+        }
 
         if (res.viewName === 'user/login/confirm') {
           this.refs.poptip.success('验证码发送成功');

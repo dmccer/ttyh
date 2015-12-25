@@ -21,6 +21,7 @@ module.exports = {
     'user-posts': './src/asset/js/bbs/post/list-user.js',
     'active-users': './src/asset/js/bbs/active-user/list.js',
     'notice': './src/asset/js/bbs/notice/index.js',
+    'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
   output: {
@@ -36,6 +37,7 @@ module.exports = {
     }
   },
   plugins: [
+    // new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin('ved', 'ved.bundle.js'),
     new webpack.optimize.CommonsChunkPlugin('zepto', 'zepto.bundle.js'),
     new webpack.ProvidePlugin({

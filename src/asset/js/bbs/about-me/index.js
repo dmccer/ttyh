@@ -24,17 +24,11 @@ export default class AboutMe extends React.Component {
   constructor() {
     super();
 
-    let hash;
-    let hashStr = location.hash;
-
-    if (hashStr !== '') {
-      hash = querystring.parse(hashStr.substring(1));
-    }
+    let query = querystring.parse(location.search.substring(1));
 
     this.state = {
-      qs: querystring.parse(location.search.substring(1)),
-      hash: hash || {},
-      tab: hash && hash.tab || 'forum', // all, focus, hot
+      qs: query,
+      tab: query.tab || 'forum', // all, focus, hot
       posts: [],
       replies: [],
       tabs: [{
@@ -249,17 +243,10 @@ export default class AboutMe extends React.Component {
       tab: tab
     });
 
-    let url, hash = this.state.hash;
-    let hasTabHash = !!hash.tab;
+    let qs = querystring.stringify($.extend({}, this.state.qs, { tab: tab }));
+    location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
 
-    hash.tab = tab;
-    let qsHash = `#${querystring.stringify(hash)}`;
-
-    url = hasTabHash ? location.href.replace(/#.+$/, qsHash) : (location.href + qsHash);
-
-    location.href = url;
-
-    this.query(tab);
+    // this.query(tab);
   }
 
   render() {
