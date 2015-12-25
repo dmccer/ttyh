@@ -11,8 +11,8 @@ export default class CommentList extends React.Component {
     this.props.onPraise(forum);
   }
 
-  comment(forum: Object) {
-    this.props.onComment(forum);
+  comment(forum: Object, type) {
+    this.props.onComment(forum, type);
   }
 
   render() {

@@ -49,9 +49,12 @@ export default class Feedback extends React.Component {
 
   componentDidMount() {
     this.queryFeedback(this.state.tab);
+    this.queryPraiseList();
 
     LoadMore.init(() => {
-      this.queryFeedback(this.state.tab);
+      if (this.state.tab === 'comment') {
+        this.queryCommentList();
+      }
     });
   }
 
@@ -170,12 +173,13 @@ export default class Feedback extends React.Component {
     });
   }
 
-  comment(forum) {
+  comment(forum, type) {
     const url = '/bbs-comment.jsp?' + querystring.stringify({
       fid: forum.id,
       tid: forum.tid,
       uid: this.state.qs.uid,
-      token: this.state.qs.token
+      token: this.state.qs.token,
+      commend_type: type
     });
 
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, url);
@@ -257,12 +261,12 @@ export default class Feedback extends React.Component {
           <li
             className={this.state.tab === 'comment' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'comment')}>
-            <a href="#">评论 <span className="count">{this.state.comments.length}</span></a>
+            <a href="#">评论 <span className="count">{this.state.comments.length || ''}</span></a>
           </li>
           <li
             className={this.state.tab === 'praise' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'praise')}>
-            <a href="#">赞 <span className="count">{this.state.praises.length}</span></a>
+            <a href="#">赞 <span className="count">{this.state.praises.length || ''}</span></a>
           </li>
         </ul>
         {this.renderTab()}

@@ -13,7 +13,7 @@ export default class ActionBar extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    this.props.onComment(this.props.forum);
+    this.props.onComment(this.props.forum, 0);
   }
 
   praise() {

@@ -117,7 +117,6 @@ export default class AboutMe extends React.Component {
       url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
       cache: false,
-      cache: false,
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,
@@ -275,7 +274,7 @@ export default class AboutMe extends React.Component {
           (() => {
             switch (this.state.tab) {
               case 'forum':
-                return <Post items={this.state.posts} wx_ready={this.state.wx_ready} />;
+                return <Post items={this.state.posts} remind={true} wx_ready={this.state.wx_ready} />;
               case 'comment':
                 return <ReplyList items={this.state.replies} remove={this.removeReply.bind(this)} />;
             }

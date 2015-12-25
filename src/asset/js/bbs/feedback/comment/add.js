@@ -84,9 +84,11 @@ export default class CommentAdd extends React.Component {
           token: this.state.qs.token,
           uid: this.state.qs.uid,
           pid: this.state.qs.fid,
+          id: this.state.qs.fid,
           content: this.state.text,
           tid: this.state.qs.tid,
-          media_ids: media_ids
+          media_ids: media_ids,
+          commend_type: this.state.qs.commend_type
         },
         success: (data) => {
           this.refs.loading.close();

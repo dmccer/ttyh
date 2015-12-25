@@ -63,8 +63,8 @@ export default class BBS extends React.Component {
 
       this.setState({
         hasGoTop: on
-      })
-    }))
+      });
+    }));
   }
 
   query(q) {
@@ -110,7 +110,6 @@ export default class BBS extends React.Component {
         t: this.state.t,
         f: f
       },
-      cache: false,
       success: (data) => {
         this.refs.loading.close();
 
