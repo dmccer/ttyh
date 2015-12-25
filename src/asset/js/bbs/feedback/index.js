@@ -56,7 +56,6 @@ export default class Feedback extends React.Component {
 
   componentDidMount() {
     this.queryFeedback(this.state.tab);
-    this.queryPraiseList();
 
     LoadMore.init(() => {
       if (this.state.tab === 'comment') {
@@ -90,7 +89,7 @@ export default class Feedback extends React.Component {
       type: 'GET',
       cache: false,
       data: {
-        id: this.props.fid,
+        id: this.state.qs.fid,
         t: this.state.t,
         f: f
       },
@@ -143,7 +142,7 @@ export default class Feedback extends React.Component {
       type: 'GET',
       cache: false,
       data: {
-        id: this.props.fid,
+        id: this.state.qs.fid,
         f: 0,
         t: 20
       },
@@ -173,7 +172,7 @@ export default class Feedback extends React.Component {
       // 被评论 id
       pid: forum.id,
       // 主贴 id
-      fid: this.props.fid,
+      fid: this.state.qs.fid,
       tid: forum.tid,
       uid: this.state.qs.uid,
       token: this.state.qs.token,
@@ -221,7 +220,7 @@ export default class Feedback extends React.Component {
           praised: true
         });
 
-        location.reload();
+        this.props.onPraise();
       },
 
       error: (xhr) => {
@@ -256,8 +255,14 @@ export default class Feedback extends React.Component {
       return;
     }
 
-    let rcount = this.props.rcount ? <span className="count">{this.props.rcount}</span> : null;
-    let pcount = this.props.pcount ? <span className="count">{this.props.pcount}</span> : null;
+    let forum = this.props.forum;
+
+    if (!forum) {
+      return;
+    }
+
+    let rcount = forum.rcount ? <span className="count">{forum.rcount}</span> : null;
+    let pcount = forum.pcount ? <span className="count">{forum.pcount}</span> : null;
 
     return (
       <section>
@@ -277,8 +282,8 @@ export default class Feedback extends React.Component {
         <div className="action-bar-holder"></div>
         <ActionBar
           forum={{
-            id: this.props.fid,
-            tid: this.props.tid
+            id: forum.id,
+            tid: forum.tid
           }}
           praised={this.state.praised}
           onPraise={this.praise.bind(this)}
