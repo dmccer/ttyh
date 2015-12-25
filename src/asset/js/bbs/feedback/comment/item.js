@@ -1,11 +1,13 @@
 import './item.less';
 
 import React from 'react';
+import querystring from 'querystring';
+import cx from 'classnames';
+
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
 import Avatar from '../../avatar/';
-import querystring from 'querystring';
-import cx from 'classnames';
+import Gallery from '../../gallery/';
 
 export default class Comment extends React.Component {
   constructor() {
@@ -64,6 +66,7 @@ export default class Comment extends React.Component {
         <article className="post-body">
           <section className="post-content">
             <p className="post-text">{Emoj.formatText(this.props.item.content)}</p>
+            <Gallery imgs={this.props.item.imgs} wx_ready={this.props.wx_ready} />
             {this.renderReplied()}
           </section>
         </article>

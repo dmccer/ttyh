@@ -9,6 +9,7 @@ import querystring from 'querystring';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import LoadMore from '../../load-more/';
+import JWeiXin from '../../jweixin/';
 
 const PRAISE_ERR = {
   1: '参数有误',
@@ -33,7 +34,13 @@ export default class Feedback extends React.Component {
       f: 0,
       t: 30,
       count: 0
-    }
+    };
+
+    new JWeiXin(() => {
+      this.setState({
+        wx_ready: true
+      });
+    });
   }
 
   switchTab(tab: string, e: Object) {
@@ -123,6 +130,8 @@ export default class Feedback extends React.Component {
       if (item.cid !== 0) {
         item.replied = list[item.cid - 1];
       }
+
+      item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
     });
   }
 
@@ -243,7 +252,8 @@ export default class Feedback extends React.Component {
             items={this.state.comments}
             uid={this.props.uid}
             onPraise={this.praise.bind(this)}
-            onComment={this.comment.bind(this)} />
+            onComment={this.comment.bind(this)}
+            wx_ready={this.state.wx_ready} />
         );
       case 'praise':
         return <PraiseList items={this.state.praises} uid={this.props.uid} />;

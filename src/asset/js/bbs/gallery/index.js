@@ -2,6 +2,8 @@ import './index.less';
 
 import React from 'react';
 
+const WH_REG = /\[\d+:\d+\]/g;
+
 export default class Gallery extends React.Component {
   constructor() {
     super();
@@ -30,6 +32,7 @@ export default class Gallery extends React.Component {
 
       imgs = _imgs.map((item, index) => {
         let count = index === 2 ? lenStr : null;
+        item = item.replace(WH_REG, '');
 
         return (
           <li

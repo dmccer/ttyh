@@ -32,8 +32,6 @@ export default class PostItem extends React.Component {
 
     let post = this.props.item;
 
-    console.log(post)
-
     const qs = querystring.stringify($.extend({}, this.state.qs, {
       fid: post.id
     }));
