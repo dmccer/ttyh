@@ -25,11 +25,7 @@ export default class BBSDetail extends React.Component {
       pcount: forum.pcount
     });
   }
-
-  onPraise() {
-    
-  }
-
+  
   render() {
     return (
       <section className="post-detail">
