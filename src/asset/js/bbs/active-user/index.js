@@ -20,13 +20,16 @@ export default class Post extends React.Component {
       url: '/api/bbs_v2/hot_user',
       type: 'GET',
       cache: false,
+      data: {
+        uid: this.state.qs.uid
+      },
       success: (data) => {
         this.setState({
           users: data.bbsUserDoSortDTOList
         });
       },
       error: () => {
-        this.refs.poptip.warn('加载活跃用户失败');
+        this.refs.poptip.warn('加载人气用户失败');
       }
     })
   }

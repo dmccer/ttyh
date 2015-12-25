@@ -28,7 +28,7 @@ export default class UserPosts extends React.Component {
       });
     });
 
-    document.title = this.state.qs.title;
+    document.title = this.state.qs.title + '的帖子';
   }
 
   componentDidMount() {
