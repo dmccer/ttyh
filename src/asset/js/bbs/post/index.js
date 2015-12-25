@@ -12,6 +12,10 @@ export default class Post extends React.Component {
       return <PostItem key={'post_' + index} remind={this.props.remind} item={post} wx_ready={this.props.wx_ready} />
     });
 
+    if (!list.length) {
+      list = <div className="empty-list">没有数据</div>;
+    }
+
     return (
       <section className="post">
         <ul className="posts scroll-list">

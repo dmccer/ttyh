@@ -49,7 +49,14 @@ export default class ActiveUserList extends React.Component {
       success: (data) => {
         this.refs.loading.close();
 
+        if (data.errMsg) {
+          this.refs.poptip.success(data.errMsg);
+
+          return;
+        }
+
         this.refs.poptip.success('关注成功');
+
         user.follow = 1;
         this.forceUpdate();
       },
@@ -91,7 +98,7 @@ export default class ActiveUserList extends React.Component {
         <div className="user-item" key={'active-user_' + index}>
           <div className="user-item-inner row">
             <div className="col avatar-col">
-              <Avatar uid={user.uid} url={user.imgUrl} size="s50" />
+              <Avatar uid={user.uid} url={user.imgUrl} name={user.userName} size="s50" />
             </div>
             <div className="col profile">
               <h2>{user.userName}</h2>
