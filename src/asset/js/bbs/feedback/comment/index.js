@@ -11,8 +11,8 @@ export default class CommentList extends React.Component {
     this.props.onPraise(forum);
   }
 
-  comment(forum: Object) {
-    this.props.onComment(forum);
+  comment(forum: Object, type) {
+    this.props.onComment(forum, type);
   }
 
   render() {
@@ -23,7 +23,8 @@ export default class CommentList extends React.Component {
           item={item}
           uid={this.props.uid}
           onPraise={this.praise.bind(this)}
-          onComment={this.comment.bind(this)} />
+          onComment={this.comment.bind(this)}
+          wx_ready={this.props.wx_ready} />
       )
     })
 

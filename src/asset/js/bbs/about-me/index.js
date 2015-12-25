@@ -24,9 +24,17 @@ export default class AboutMe extends React.Component {
   constructor() {
     super();
 
+    let hash;
+    let hashStr = location.hash;
+
+    if (hashStr !== '') {
+      hash = querystring.parse(hashStr.substring(1));
+    }
+
     this.state = {
       qs: querystring.parse(location.search.substring(1)),
-      tab: 'forum', // post, reply
+      hash: hash || {},
+      tab: hash && hash.tab || 'forum', // all, focus, hot
       posts: [],
       replies: [],
       tabs: [{
@@ -71,6 +79,7 @@ export default class AboutMe extends React.Component {
     $.ajax({
       url: '/api/bbs/has_remind',
       type: 'GET',
+      cache: false,
       data: {
         uid: this.state.qs.uid
       },
@@ -107,6 +116,7 @@ export default class AboutMe extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
+      cache: false,
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,
@@ -117,6 +127,7 @@ export default class AboutMe extends React.Component {
         this.refs.loading.close();
 
         if (data && data.bbsForumList && data.bbsForumList.length) {
+          console.log(data.bbsForumList);
           this.format(data.bbsForumList);
 
           this.setState({
@@ -157,6 +168,7 @@ export default class AboutMe extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_my_commend',
       type: 'GET',
+      cache: false,
       data: {
         uid: this.state.qs.uid,
         token: this.state.qs.token,
@@ -204,11 +216,18 @@ export default class AboutMe extends React.Component {
         token: this.state.qs.token,
         fid: reply.id
       },
-      succes: (code) => {
+      success: (code) => {
         this.refs.loading.close();
 
-        if (code === 0) {
+        if (code == 0) {
           this.refs.poptip.success('删除成功');
+
+          this.setState({
+            f: 0,
+            count: 0
+          });
+
+          this.queryMyReplies();
 
           return;
         }
@@ -230,6 +249,16 @@ export default class AboutMe extends React.Component {
       tab: tab
     });
 
+    let url, hash = this.state.hash;
+    let hasTabHash = !!hash.tab;
+
+    hash.tab = tab;
+    let qsHash = `#${querystring.stringify(hash)}`;
+
+    url = hasTabHash ? location.href.replace(/#.+$/, qsHash) : (location.href + qsHash);
+
+    location.href = url;
+
     this.query(tab);
   }
 
@@ -245,7 +274,7 @@ export default class AboutMe extends React.Component {
           (() => {
             switch (this.state.tab) {
               case 'forum':
-                return <Post items={this.state.posts} wx_ready={this.state.wx_ready} />;
+                return <Post items={this.state.posts} remind={true} wx_ready={this.state.wx_ready} />;
               case 'comment':
                 return <ReplyList items={this.state.replies} remove={this.removeReply.bind(this)} />;
             }

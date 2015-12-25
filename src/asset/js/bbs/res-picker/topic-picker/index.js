@@ -15,6 +15,7 @@ export default class TopicPicker extends React.Component {
     $.ajax({
       url: '/api/bbs/all_topic',
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.setState({
           topics: data.bbsTopicList

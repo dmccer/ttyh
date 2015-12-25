@@ -60,11 +60,19 @@ export default class CommentAdd extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    if (this.state.uploading) {
+      return;
+    }
+
     if ($.trim(this.state.text) === '') {
       this.refs.poptip.warn(COMMENT_ERR[5]);
 
       return;
     }
+
+    this.setState({
+      uploading: true
+    });
 
     this.uploadImage((media_ids) => {
       this.refs.loading.show('发布中...');
@@ -75,16 +83,22 @@ export default class CommentAdd extends React.Component {
         data: {
           token: this.state.qs.token,
           uid: this.state.qs.uid,
-          pid: this.state.qs.fid,
+          pid: this.state.qs.pid,
+          id: this.state.qs.fid,
           content: this.state.text,
           tid: this.state.qs.tid,
-          media_ids: media_ids
+          media_ids: media_ids,
+          commend_type: this.state.qs.commend_type
         },
         success: (data) => {
           this.refs.loading.close();
 
           if (data !== 0) {
             this.refs.poptip.warn(COMMENT_ERR[data] || '发布评论失败');
+
+            this.setState({
+              uploading: false
+            });
 
             return;
           }
@@ -99,6 +113,10 @@ export default class CommentAdd extends React.Component {
           if (xhr.status === 403) {
             location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
           }
+
+          this.setState({
+            uploading: false
+          });
 
           this.refs.loading.close();
           this.refs.poptip.warn('发布失败');
@@ -189,6 +207,7 @@ export default class CommentAdd extends React.Component {
             <ResPicker
               menus={['emoj', 'photo']}
               maxPhotoCount={3}
+              photos={this.state.photo}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
               onDelEmoj={this.delEmoj.bind(this)}

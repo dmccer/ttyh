@@ -19,6 +19,7 @@ export default class Post extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/hot_user',
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.setState({
           users: data.bbsUserDoSortDTOList
@@ -31,13 +32,19 @@ export default class Post extends React.Component {
   }
 
   render() {
-    let userList = this.state.users.splice(0, 5).map((user, index) => {
-      return (
-        <div className="avatar-item" key={'active-user_' + index}>
-          <Avatar uid={user.uid} name={user.userName} url={user.imgUrl} size="s45" />
-        </div>
-      )
-    });
+    let userList = [];
+
+    if (this.state.users.length) {
+      this.state.users.splice(5, this.state.users.length - 5);
+
+      userList = this.state.users.map((user, index) => {
+        return (
+          <div className="avatar-item" key={'active-user_' + index}>
+            <Avatar uid={user.uid} name={user.userName} url={user.imgUrl} size="s45" />
+          </div>
+        );
+      });
+    }
 
     let url = './active-users.html?' + querystring.stringify(this.state.qs);
 

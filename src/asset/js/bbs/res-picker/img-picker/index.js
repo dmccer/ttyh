@@ -21,6 +21,12 @@ export default class ImgPicker extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.setState({
+      imgs: this.props.photos || []
+    });
+  }
+
   // 选择某一张照片
   pick(img: Object, e: Object) {
     // 显示大图
@@ -35,7 +41,7 @@ export default class ImgPicker extends React.Component {
       return;
     }
 
-    if (this.state.imgs.length === this.props.maxPhotoCount) {
+    if (this.state.imgs.length > this.props.maxPhotoCount) {
       this.refs.poptip.warn(`最多只能上传 ${this.props.maxPhotoCount} 张`);
 
       return;
@@ -49,6 +55,10 @@ export default class ImgPicker extends React.Component {
               url: localId
             });
           });
+
+          if (this.state.imgs.length > this.props.maxPhotoCount) {
+            this.state.imgs.splice(this.props.maxPhotoCount, this.state.imgs.length - this.props.maxPhotoCount);
+          }
 
           this.forceUpdate();
         }
@@ -79,10 +89,9 @@ export default class ImgPicker extends React.Component {
         onRemove={this.del.bind(this)} />
     });
 
-    let addItem = this.state.imgs.length === this.props.maxPhotoCount ? null : <div
-      className="img-item4picker add-img-item"
-      onClick={this.selectImg.bind(this)}>
-      <div className="img-item-inner"></div>
+    let addItem = this.state.imgs.length >= this.props.maxPhotoCount ? null : <div
+      className="img-item4picker add-img-item">
+      <div className="img-item-inner" onClick={this.selectImg.bind(this)}></div>
     </div>;
 
     return (

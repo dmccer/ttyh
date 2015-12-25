@@ -41,6 +41,7 @@ export default class PostAdd extends React.Component {
         $.ajax({
           url: 'http://api.map.baidu.com/geocoder/v2/',
           type: 'GET',
+          cache: false,
           data: {
             ak: '50b9214f70f98c0315913018ba25b420',
             location: `${pos.coords.latitude},${pos.coords.longitude}`,
@@ -97,7 +98,7 @@ export default class PostAdd extends React.Component {
       return false;
     }
 
-    if ($.trim(this.state.content) === '') {
+    if ($.trim(this.state.text) === '') {
       this.refs.poptip.warn('内容不能为空');
 
       return false;
@@ -110,12 +111,28 @@ export default class PostAdd extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    if (this.state.uploading) {
+      return;
+    }
+
     if (!this.validate()) {
       return;
     }
 
+    this.setState({
+      uploading: true
+    });
+
     this.uploadImage((media_ids) => {
       this.refs.loading.show('正在发布...');
+
+      let addr;
+
+      if (this.state.showAddress) {
+        if (this.state.address.city && this.state.address.area) {
+          addr = this.state.address.city + this.state.address.area;
+        }
+      }
 
       $.ajax({
         url: '/api/bbs_v2/post',
@@ -125,7 +142,7 @@ export default class PostAdd extends React.Component {
           token: this.state.qs.token,
           title: this.state.title,
           content: this.state.text,
-          addr: this.state.address.city + this.state.address.area,
+          addr: addr,
           tid: this.state.topic && this.state.topic.id || null,
           media_ids: media_ids
         },
@@ -135,15 +152,23 @@ export default class PostAdd extends React.Component {
           if (data === 0) {
             this.refs.poptip.success('发布成功');
 
-            // location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+\?$/, '/bbs.html');
+            history.back();
           } else {
             this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data] || '发布失败');
+
+            this.setState({
+              uploading: false
+            });
           }
         },
         error: (xhr) => {
           if (xhr.status === 403) {
             location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
           }
+
+          this.setState({
+            uploading: false
+          });
 
           this.refs.loading.close();
           this.refs.poptip.warn('发布失败');
@@ -250,7 +275,7 @@ export default class PostAdd extends React.Component {
       )
       : '';
 
-    let addressDescription = this.state.showAddress ? `${this.state.address.city} ${this.state.address.area}` : '显示位置';
+    let addressDescription = this.state.showAddress ? `${this.state.address.city || ''} ${this.state.address.area || ''}` : '显示位置';
     let addressActionIconClasses = classNames('icon round action-icon', this.state.showAddress ? 'icon-minus yellow' : 'icon-plus teal');
 
     return (
@@ -297,6 +322,7 @@ export default class PostAdd extends React.Component {
             <ResPicker
               menus={['topic', 'emoj', 'photo']}
               maxPhotoCount={9}
+              photos={this.state.photo}
               onPick={this.handlePickRes.bind(this)}
               on={this.state.resMenu}
               onDelEmoj={this.delEmoj.bind(this)}

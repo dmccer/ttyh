@@ -26,8 +26,9 @@ export default class NoticeDetail extends React.Component {
     this.refs.loading.show('加载中...');
 
     $.ajax({
-      url: '/api/bbs/all_public',
+      url: '/api/bbs_v2/all_public',
       type: 'GET',
+      cache: false,
       success: (data) => {
         let notice = data.bbsForumList[0];
         notice.load = true;
@@ -62,7 +63,7 @@ export default class NoticeDetail extends React.Component {
       <section className="post-item">
         <header className="row">
           <div className="profile">
-            <Avatar uid={this.state.uid} name={this.state.userName} url={require('../../../img/2x/ttxm@2x.png')} size="s40" />
+            <Avatar uid={this.state.uid} name={this.state.userName} url={this.state.imgUrl} size="s40" />
             <div className="poster">{this.state.userName}<i className="flag">官方</i></div>
             <ReadableTime time={this.state.create_time} />
           </div>

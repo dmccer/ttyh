@@ -9,6 +9,7 @@ import querystring from 'querystring';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import LoadMore from '../../load-more/';
+import JWeiXin from '../../jweixin/';
 
 const PRAISE_ERR = {
   1: '参数有误',
@@ -33,7 +34,13 @@ export default class Feedback extends React.Component {
       f: 0,
       t: 30,
       count: 0
-    }
+    };
+
+    new JWeiXin(() => {
+      this.setState({
+        wx_ready: true
+      });
+    });
   }
 
   switchTab(tab: string, e: Object) {
@@ -51,7 +58,9 @@ export default class Feedback extends React.Component {
     this.queryFeedback(this.state.tab);
 
     LoadMore.init(() => {
-      this.queryFeedback(this.state.tab);
+      if (this.state.tab === 'comment') {
+        this.queryCommentList();
+      }
     });
   }
 
@@ -78,8 +87,9 @@ export default class Feedback extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_commend',
       type: 'GET',
+      cache: false,
       data: {
-        id: this.props.fid,
+        id: this.state.qs.fid,
         t: this.state.t,
         f: f
       },
@@ -119,25 +129,21 @@ export default class Feedback extends React.Component {
       if (item.cid !== 0) {
         item.replied = list[item.cid - 1];
       }
+
+      item.imgs = item.imgs_url ? item.imgs_url.split(';') : [];
     });
   }
 
   queryPraiseList() {
-    let f = this.state.f;
-
-    if (this.state.last === 'praise') {
-      f += this.state.count;
-    } else {
-      f = 0;
-    }
-
     this.refs.loading.show('加载中...');
 
     $.ajax({
       url: '/api/bbs_v2/show_praise',
       type: 'GET',
+      cache: false,
       data: {
-        id: this.props.fid,
+        id: this.state.qs.fid,
+        f: 0,
         t: 20
       },
       success: (data) => {
@@ -149,17 +155,10 @@ export default class Feedback extends React.Component {
 
         if (data && data.bbsPraiseList && data.bbsPraiseList.length) {
           this.setState({
-            praises: f > 0 ? this.state.praises.concat(data.bbsPraiseList) : data.bbsPraiseList,
-            f: f,
-            count: data.bbsPraiseList.length,
-            last: 'praise'
+            praises: data.bbsPraiseList
           });
 
           return;
-        }
-
-        if (this.state.praises.length) {
-          this.refs.poptip.info('没有更多了');
         }
       },
       error: () => {
@@ -168,12 +167,16 @@ export default class Feedback extends React.Component {
     });
   }
 
-  comment(forum) {
+  comment(forum, type) {
     const url = '/bbs-comment.jsp?' + querystring.stringify({
-      fid: forum.id,
+      // 被评论 id
+      pid: forum.id,
+      // 主贴 id
+      fid: this.state.qs.fid,
       tid: forum.tid,
       uid: this.state.qs.uid,
-      token: this.state.qs.token
+      token: this.state.qs.token,
+      commend_type: type
     });
 
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, url);
@@ -216,6 +219,8 @@ export default class Feedback extends React.Component {
         this.setState({
           praised: true
         });
+
+        this.props.onPraise();
       },
 
       error: (xhr) => {
@@ -237,7 +242,8 @@ export default class Feedback extends React.Component {
             items={this.state.comments}
             uid={this.props.uid}
             onPraise={this.praise.bind(this)}
-            onComment={this.comment.bind(this)} />
+            onComment={this.comment.bind(this)}
+            wx_ready={this.state.wx_ready} />
         );
       case 'praise':
         return <PraiseList items={this.state.praises} uid={this.props.uid} />;
@@ -249,26 +255,35 @@ export default class Feedback extends React.Component {
       return;
     }
 
+    let forum = this.props.forum;
+
+    if (!forum) {
+      return;
+    }
+
+    let rcount = forum.rcount ? <span className="count">{forum.rcount}</span> : null;
+    let pcount = forum.pcount ? <span className="count">{forum.pcount}</span> : null;
+
     return (
       <section>
         <ul className="feedback-type-tabs">
           <li
             className={this.state.tab === 'comment' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'comment')}>
-            <a href="#">评论</a>
+            <a href="#">评论 {rcount}</a>
           </li>
           <li
             className={this.state.tab === 'praise' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'praise')}>
-            <a href="#">赞</a>
+            <a href="#">赞 {pcount}</a>
           </li>
         </ul>
         {this.renderTab()}
         <div className="action-bar-holder"></div>
         <ActionBar
           forum={{
-            id: this.props.fid,
-            tid: this.props.tid
+            id: forum.id,
+            tid: forum.tid
           }}
           praised={this.state.praised}
           onPraise={this.praise.bind(this)}

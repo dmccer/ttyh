@@ -45,6 +45,7 @@ export default class UserPosts extends React.Component {
     $.ajax({
       url: '/api/bbs_v2/show_my_forum',
       type: 'GET',
+      cache: false,
       data: {
         uid: this.state.qs.tuid,
         f: this.state.f,

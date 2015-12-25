@@ -23,9 +23,25 @@ export default class ReportItem extends React.Component {
     }
   }
 
-  render() {
-    // <i className="icon icon-edit s15 disable"></i>
+  viewForum() {
+    let post = this.props.item;
 
+    const qs = querystring.stringify($.extend({}, this.state.qs, {
+      fid: post.pid
+    }));
+
+    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+  }
+
+  renderRemind() {
+    return this.props.item.remind_count != 0 ? (
+      <p className="reply-count" onClick={this.viewForum.bind(this)}>
+        <span>{this.props.item.remind_count + ' 新回复'}</span>
+      </p>
+    ) : null;
+  }
+
+  render() {
     return (
       <div className="reply-item" onTouchStart={this.touchstart.bind(this)} onTouchEnd={this.touchend.bind(this)}>
         <header className="row">
@@ -42,17 +58,7 @@ export default class ReportItem extends React.Component {
                 <i className="icon icon-praise s15 disable"></i>
                 <span>{this.props.item.pcount}</span>
               </p>
-              {
-                (() => {
-                  if (this.props.item.remind_count != 0) {
-                    return (
-                      <p className="reply-count">
-                        <span>{this.props.item.remind_count + ' 新回复'}</span>
-                      </p>
-                    )
-                  }
-                })()
-              }
+              {this.renderRemind()}
             </div>
           </div>
         </header>

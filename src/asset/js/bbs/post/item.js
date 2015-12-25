@@ -26,6 +26,39 @@ export default class PostItem extends React.Component {
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
   }
 
+  viewForum(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let post = this.props.item;
+
+    const qs = querystring.stringify($.extend({}, this.state.qs, {
+      fid: post.id
+    }));
+
+    $.ajax({
+      url: '/api/bbs_v2/clear_remind',
+      type: 'POST',
+      data: {
+        id: post.id
+      },
+      success: () => {
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+      },
+      error: () => {
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+      }
+    });
+  }
+
+  renderRemind() {
+    return this.props.remind && this.props.item.remind_count != 0 ? (
+      <p className="reply-count" onClick={this.viewForum.bind(this)}>
+        <span>{this.props.item.remind_count + ' 新回复'}</span>
+      </p>
+    ) : null;
+  }
+
   render() {
     let qs = querystring.stringify($.extend({}, this.state.qs, {
       tid: this.props.item.tid,
@@ -50,7 +83,11 @@ export default class PostItem extends React.Component {
           </div>
         </header>
         <article className="post-body">
-          <h2>{this.props.item.title}</h2>
+          <div className="title-container row">
+            <h2>{this.props.item.title}</h2>
+            <div>{this.renderRemind()}</div>
+          </div>
+
           <section className="post-content">
             <p className="post-text">
               <a href={topicPostUrl}><b>#{this.props.item.topic}#</b></a>

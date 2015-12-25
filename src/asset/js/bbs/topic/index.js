@@ -15,8 +15,9 @@ export default class Topic extends React.Component {
 
   componentDidMount() {
     $.ajax({
-      url: '/api/bbs/all_topic',
+      url: '/api/bbs_v2/all_topic',
       type: 'GET',
+      cache: false,
       success: (data) => {
         this.setState({
           topics: data.bbsTopicList
@@ -29,7 +30,7 @@ export default class Topic extends React.Component {
 
   render() {
     let topicList = this.state.topics.map((topic, index) => {
-      let url = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, { tid: topic.id }));
+      let url = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, { tid: topic.id, topic: topic.name }));
 
       return <a
         href={url}

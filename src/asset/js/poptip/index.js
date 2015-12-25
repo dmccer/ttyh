@@ -19,11 +19,11 @@ export default class Poptip extends React.Component {
     };
 
     // 同一提示不重复显示
-    let hasTip = this.state.tips.find((item) => {
+    let hasTip = this.state.tips.filter((item) => {
       return tip.type === item.type && tip.msg === item.msg;
     });
 
-    if (hasTip) {
+    if (hasTip && hasTip.length) {
       return;
     }
 
