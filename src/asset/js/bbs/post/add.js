@@ -126,6 +126,14 @@ export default class PostAdd extends React.Component {
     this.uploadImage((media_ids) => {
       this.refs.loading.show('正在发布...');
 
+      let addr;
+
+      if (this.state.showAddress) {
+        if (this.state.address.city && this.state.address.area) {
+          addr = this.state.address.city + this.state.address.area;
+        }
+      }
+
       $.ajax({
         url: '/api/bbs_v2/post',
         type: 'POST',
@@ -134,7 +142,7 @@ export default class PostAdd extends React.Component {
           token: this.state.qs.token,
           title: this.state.title,
           content: this.state.text,
-          addr: this.state.address.city + this.state.address.area,
+          addr: addr,
           tid: this.state.topic && this.state.topic.id || null,
           media_ids: media_ids
         },

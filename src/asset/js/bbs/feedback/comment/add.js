@@ -83,7 +83,7 @@ export default class CommentAdd extends React.Component {
         data: {
           token: this.state.qs.token,
           uid: this.state.qs.uid,
-          pid: this.state.qs.fid,
+          pid: this.state.qs.pid,
           id: this.state.qs.fid,
           content: this.state.text,
           tid: this.state.qs.tid,

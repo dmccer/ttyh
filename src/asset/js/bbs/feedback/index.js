@@ -136,14 +136,6 @@ export default class Feedback extends React.Component {
   }
 
   queryPraiseList() {
-    let f = this.state.f;
-
-    if (this.state.last === 'praise') {
-      f += this.state.count;
-    } else {
-      f = 0;
-    }
-
     this.refs.loading.show('加载中...');
 
     $.ajax({
@@ -152,6 +144,7 @@ export default class Feedback extends React.Component {
       cache: false,
       data: {
         id: this.props.fid,
+        f: 0,
         t: 20
       },
       success: (data) => {
@@ -163,17 +156,10 @@ export default class Feedback extends React.Component {
 
         if (data && data.bbsPraiseList && data.bbsPraiseList.length) {
           this.setState({
-            praises: f > 0 ? this.state.praises.concat(data.bbsPraiseList) : data.bbsPraiseList,
-            f: f,
-            count: data.bbsPraiseList.length,
-            last: 'praise'
+            praises: data.bbsPraiseList
           });
 
           return;
-        }
-
-        if (this.state.praises.length) {
-          this.refs.poptip.info('没有更多了');
         }
       },
       error: () => {
@@ -184,7 +170,10 @@ export default class Feedback extends React.Component {
 
   comment(forum, type) {
     const url = '/bbs-comment.jsp?' + querystring.stringify({
-      fid: forum.id,
+      // 被评论 id
+      pid: forum.id,
+      // 主贴 id
+      fid: this.props.fid,
       tid: forum.tid,
       uid: this.state.qs.uid,
       token: this.state.qs.token,
@@ -231,6 +220,8 @@ export default class Feedback extends React.Component {
         this.setState({
           praised: true
         });
+
+        location.reload();
       },
 
       error: (xhr) => {
@@ -265,18 +256,21 @@ export default class Feedback extends React.Component {
       return;
     }
 
+    let rcount = this.props.rcount ? <span className="count">{this.props.rcount}</span> : null;
+    let pcount = this.props.pcount ? <span className="count">{this.props.pcount}</span> : null;
+
     return (
       <section>
         <ul className="feedback-type-tabs">
           <li
             className={this.state.tab === 'comment' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'comment')}>
-            <a href="#">评论 <span className="count">{this.state.comments.length || ''}</span></a>
+            <a href="#">评论 {rcount}</a>
           </li>
           <li
             className={this.state.tab === 'praise' ? 'on' : ''}
             onClick={this.switchTab.bind(this, 'praise')}>
-            <a href="#">赞 <span className="count">{this.state.praises.length || ''}</span></a>
+            <a href="#">赞 {pcount}</a>
           </li>
         </ul>
         {this.renderTab()}

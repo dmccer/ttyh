@@ -90,9 +90,8 @@ export default class ImgPicker extends React.Component {
     });
 
     let addItem = this.state.imgs.length >= this.props.maxPhotoCount ? null : <div
-      className="img-item4picker add-img-item"
-      onClick={this.selectImg.bind(this)}>
-      <div className="img-item-inner"></div>
+      className="img-item4picker add-img-item">
+      <div className="img-item-inner" onClick={this.selectImg.bind(this)}></div>
     </div>;
 
     return (
