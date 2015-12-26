@@ -44,7 +44,7 @@ export default class ReportItem extends React.Component {
         url: '/api/bbs_v2/clear_remind',
         type: 'POST',
         data: {
-          id: post.pid
+          id: post.id
         },
         success: () => {
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
