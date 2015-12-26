@@ -15,33 +15,54 @@ export default class ReportItem extends React.Component {
     }
   }
 
-  touchstart(e) {
-    this._start = new Date().getTime();
-  }
+  // touchstart(e) {
+  //   this._start = new Date().getTime();
+  // }
+  //
+  // touchend(e) {
+  //   if (Date.now() - this._start >= 3000) {
+  //     if (confirm('确认删除该条回复?')) {
+  //       this.props.remove(this.props.item);
+  //     }
+  //   } else {
+  //     this._start = null;
+  //   }
+  // }
 
-  touchend(e) {
-    if (Date.now() - this._start >= 3000) {
-      if (confirm('确认删除该条回复?')) {
-        this.props.remove(this.props.item);
-      }
-    } else {
-      this._start = null;
-    }
-  }
+  viewForum(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-  viewForum() {
     let post = this.props.item;
 
     const qs = querystring.stringify($.extend({}, this.state.qs, {
       fid: post.pid
     }));
 
+    if (post.remind_count !== 0) {
+      $.ajax({
+        url: '/api/bbs_v2/clear_remind',
+        type: 'POST',
+        data: {
+          id: post.pid
+        },
+        success: () => {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+        },
+        error: () => {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+        }
+      });
+
+      return;
+    }
+
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
   }
 
   renderRemind() {
     return this.props.item.remind_count != 0 ? (
-      <p className="reply-count" onClick={this.viewForum.bind(this)}>
+      <p className="reply-count">
         <span>{this.props.item.remind_count + ' 新回复'}</span>
       </p>
     ) : null;
@@ -49,7 +70,7 @@ export default class ReportItem extends React.Component {
 
   render() {
     return (
-      <div className="reply-item" onTouchStart={this.touchstart.bind(this)} onTouchEnd={this.touchend.bind(this)}>
+      <div className="reply-item" onClick={this.viewForum.bind(this)}>
         <header className="row">
           <div className="profile">
             <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} name={this.props.item.userName} size="s40" />

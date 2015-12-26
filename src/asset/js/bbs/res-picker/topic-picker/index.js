@@ -32,7 +32,15 @@ export default class TopicPicker extends React.Component {
   }
 
   render() {
-    let topicList = this.state.topics.map((topic, index) => {
+    let topics = [];
+
+    this.state.topics.forEach((item) => {
+      if (item.id != 1) {
+        topics.push(item);
+      }
+    });
+
+    let topicList = topics.map((topic, index) => {
       return (
         <a
           href="#"

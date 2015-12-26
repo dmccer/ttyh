@@ -23,14 +23,21 @@ export default class Avatar extends React.Component {
       ? 'javascript:void(0)'
       : ('./user-posts.html?' + qs);
 
-    let avatar = this.props.url
-      ? <img src={this.props.url + '!small'} />
-      : <i className="icon icon-avatar"></i>;
-
     let avatarClassNames = classNames('avatar', this.props.size || 's40');
 
-    return (
-      <a href={userPostUrl} className={avatarClassNames}>{avatar}</a>
-    );
+    if (this.props.url) {
+      let style = {
+        backgroundImage: `url(${this.props.url}!small)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center'
+      };
+
+      return (
+        <a href={userPostUrl} className={avatarClassNames} style={style}></a>
+      );
+    } else {
+      return <a href={userPostUrl} className={avatarClassNames}><i className="icon icon-avatar"></i></a>
+    }
+
   }
 }

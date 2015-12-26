@@ -91,7 +91,15 @@ export default class PostItem extends React.Component {
 
           <section className="post-content">
             <p className="post-text">
-              <a href={topicPostUrl}><b>#{this.props.item.topic}#</b></a>
+              {
+                (() => {
+                    if (this.props.item.tid != 1) {
+                      return (
+                        <a href={topicPostUrl}><b>#{this.props.item.topic}#</b></a>
+                      )
+                    }
+                })()
+              }
               {Emoj.formatText(this.props.item.content)}
             </p>
             <Gallery imgs={this.props.item.imgs} wx_ready={this.props.wx_ready} />
