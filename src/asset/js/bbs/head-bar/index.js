@@ -100,9 +100,11 @@ export default class HeadBar extends React.Component {
           uid: this.state.qs.uid
         },
         success: (data) => {
-          this.setState({
-            notice: data.comment_count !== 0
-          });
+          if (data) {
+            this.setState({
+              notice: data.comment_count !== 0
+            });
+          }
         }
       });
 

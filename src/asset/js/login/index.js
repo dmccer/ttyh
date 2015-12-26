@@ -13,8 +13,11 @@ export default class Login extends React.Component {
   constructor() {
     super();
 
+    let query = querystring.parse(location.search.substring(1));
+
     this.state = {
-      count: '获取验证码'
+      count: '获取验证码',
+      qs: query
     };
   }
 
@@ -69,7 +72,8 @@ export default class Login extends React.Component {
 
     let url, data = {
       confirmCode: this.state.verifyCode,
-      userName: ''
+      userName: '',
+      code: this.state.qs.code
     };
 
     if (this.state.loggingUserSnapShotKey) {

@@ -121,7 +121,6 @@ export default class AboutMe extends React.Component {
         this.refs.loading.close();
 
         if (data && data.bbsForumList && data.bbsForumList.length) {
-          console.log(data.bbsForumList);
           this.format(data.bbsForumList);
 
           this.setState({
