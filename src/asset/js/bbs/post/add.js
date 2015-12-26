@@ -163,7 +163,9 @@ export default class PostAdd extends React.Component {
         },
         error: (xhr) => {
           if (xhr.status === 403) {
-            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html?code=' + this.state.qs.code);
+            let qs = querystring.stringify(this.state.qs);
+
+            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
           }
 
           this.setState({
