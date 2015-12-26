@@ -209,6 +209,7 @@ export default class Login extends React.Component {
           });
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+          return;
         }
 
         if (res.viewName === 'user/login/confirm') {
