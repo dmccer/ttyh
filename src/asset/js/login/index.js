@@ -204,7 +204,8 @@ export default class Login extends React.Component {
         if (res.viewName === 'user/home') {
           let qs = querystring.stringify({
             uid: res.loggedUser.userID,
-            token: res.token
+            token: res.token,
+            code: this.state.qs.code
           });
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
@@ -231,20 +232,6 @@ export default class Login extends React.Component {
 
           return;
         }
-
-          if (res.viewName === 'user/home') {
-            this.refs.poptip.success('登录成功');
-
-            // 跳转
-            let qs = querystring.stringify({
-              uid: res.loggedUser.userID,
-              token: res.token
-            });
-
-            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
-
-            return;
-          }
 
         let msg;
 

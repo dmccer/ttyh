@@ -1,13 +1,18 @@
 import './item.less';
 
 import React from 'react';
+import querystring from 'querystring';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
 import Avatar from '../../avatar/';
 
 export default class ReportItem extends React.Component {
   constructor() {
-    super()
+    super();
+
+    this.state = {
+      qs: querystring.parse(location.search.substring(1))
+    }
   }
 
   touchstart(e) {
@@ -47,7 +52,7 @@ export default class ReportItem extends React.Component {
       <div className="reply-item" onTouchStart={this.touchstart.bind(this)} onTouchEnd={this.touchend.bind(this)}>
         <header className="row">
           <div className="profile">
-            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} size="s40" />
+            <Avatar uid={this.props.item.uid} url={this.props.item.imgUrl} name={this.props.item.userName} size="s40" />
             <div className="poster">{this.props.item.userName}</div>
             <div className="post-meta">
               <ReadableTime time={this.props.item.create_time} />
