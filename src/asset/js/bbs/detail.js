@@ -90,7 +90,6 @@ export default class BBSDetail extends React.Component {
         if (xhr.status === 403) {
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html?code=' + this.state.qs.code);
         }
-
         this.refs.loading.close();
         this.refs.poptip.success('删除失败');
       }

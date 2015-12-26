@@ -307,7 +307,7 @@ export default class PostAdd extends React.Component {
             </div>
           </div>
           <section className="footer fixed">
-            <ul className="grid picked-tag">
+            <ul className="row picked-tag">
               <li className="topic-tag">
               {topic}
               </li>
