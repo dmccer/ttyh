@@ -124,6 +124,7 @@ export default class Login extends React.Component {
             break;
         }
 
+        this.refs.loading.close();
         this.refs.poptip.warn(msg);
 
         this.setState({
