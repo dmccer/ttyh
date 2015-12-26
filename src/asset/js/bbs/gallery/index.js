@@ -33,14 +33,16 @@ export default class Gallery extends React.Component {
       imgs = _imgs.map((item, index) => {
         let count = index === 2 ? lenStr : null;
         item = item.replace(WH_REG, '');
-
+        let bg = {
+          backgroundImage: `url(${item}!small)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center'
+        };
         return (
           <li
             key={'img_' + index}
             onClick={this.handleShowPic.bind(this, item)}>
-            <a href={item}>
-              <img src={item + '!small'} />
-            </a>
+            <a href={item} style={bg}></a>
             {count}
           </li>
         );
