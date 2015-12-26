@@ -51,6 +51,9 @@ export default class ActiveUserList extends React.Component {
       url: '/mvc/followForBBS_' + user.uid,
       type: 'GET',
       cache: false,
+      data: {
+        code: this.state.qs.code
+      },
       success: (data) => {
         this.refs.loading.close();
 
