@@ -8,13 +8,15 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import ReadableTime from '../readable-time/';
 import Avatar from '../avatar/';
+import querystring from 'querystring';
 
 export default class ActiveUserList extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      users: []
+      users: [],
+      qs: querystring.parse(location.search.substring(1))
     }
   }
 
@@ -25,6 +27,9 @@ export default class ActiveUserList extends React.Component {
       url: '/api/bbs_v2/hot_user',
       type: 'GET',
       cache: false,
+      data: {
+        uid: this.state.qs.uid
+      },
       success: (data) => {
         this.refs.loading.close();
 
