@@ -2,6 +2,7 @@ import '../../../less/global/global.less';
 import './index.less';
 
 import React from 'react';
+import querystring from 'querystring';
 
 export default class LoginBtn extends React.Component {
   constructor() {
