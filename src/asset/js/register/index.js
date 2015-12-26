@@ -38,7 +38,7 @@ export default class Register extends React.Component {
         if (res.viewName === 'user/home') {
           this.refs.poptip.success('注册成功');
 
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html?code=' + this.state.qs.code);
           return;
         }
 

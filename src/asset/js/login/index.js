@@ -100,7 +100,8 @@ export default class Login extends React.Component {
           // 跳转
           let qs = querystring.stringify({
             uid: res.loggedUser.userID,
-            token: res.token
+            token: res.token,
+            code: this.state.qs.code
           });
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);

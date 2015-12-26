@@ -91,7 +91,7 @@ export default class Retrieve extends React.Component {
           this.refs.poptip.success('修改密码成功');
 
           setTimeout(() => {
-            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html');
+            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/login.html?code=' + this.state.qs.code);
           }, 3000)
 
           return;
