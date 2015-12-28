@@ -14,7 +14,7 @@ export default class LoginBtn extends React.Component {
   }
 
   render() {
-    let loginUrl = `/login.html?${qs}`;
+    let loginUrl = `/login.html?${this.state.qs}`;
 
     return (
       <div className="login-btn">
