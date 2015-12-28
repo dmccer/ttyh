@@ -29,7 +29,15 @@ export default class Topic extends React.Component {
   }
 
   render() {
-    let topicList = this.state.topics.map((topic, index) => {
+    let topics = [];
+
+    this.state.topics.forEach((item) => {
+      if (item.id != 1) {
+        topics.push(item);
+      }
+    });
+
+    let topicList = topics.map((topic, index) => {
       let url = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, { tid: topic.id, topic: topic.name }));
 
       return <a
