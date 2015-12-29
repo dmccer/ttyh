@@ -174,7 +174,7 @@ export default class BBS extends React.Component {
           <div className="tab-hot">
             <Topic />
             <ActiveUser />
-            <HotPost items={this.state.posts} />
+            <HotPost items={this.state.posts} wx_ready={this.state.wx_ready} />
           </div>
         )
     }
