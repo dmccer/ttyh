@@ -27,7 +27,7 @@ export default class BBS extends React.Component {
     let query = querystring.parse(location.search.substring(1));
 
     this.state = {
-      tab: query.tab || 'all', // all, focus, hot
+      tab: query._bbstab || 'all', // all, focus, hot
       posts: [],
       qs: query,
       last: null,
@@ -147,7 +147,7 @@ export default class BBS extends React.Component {
       tab: tab
     });
 
-    let qs = querystring.stringify($.extend({}, this.state.qs, { tab: tab }));
+    let qs = querystring.stringify($.extend({}, this.state.qs, { _bbstab: tab }));
     location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
 
     // this.query(tab);
