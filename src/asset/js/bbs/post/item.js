@@ -17,44 +17,48 @@ export default class PostItem extends React.Component {
     }
   }
 
-  handleClickItem(post) {
-    const qs = querystring.stringify($.extend({}, this.state.qs, {
-      fid: post.id,
-      tid: post.tid,
-      code: this.state.qs.code
-    }));
+  // handleClickItem(post) {
+  //   const qs = querystring.stringify($.extend({}, this.state.qs, {
+  //     fid: post.id,
+  //     tid: post.tid,
+  //     code: this.state.qs.code
+  //   }));
+  //
+  //   location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+  // }
 
-    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
-  }
-
-  viewForum(e) {
+  viewForum(post, e) {
     e.preventDefault();
     e.stopPropagation();
-
-    let post = this.props.item;
 
     const qs = querystring.stringify($.extend({}, this.state.qs, {
       fid: post.id
     }));
 
-    $.ajax({
-      url: '/api/bbs_v2/clear_remind',
-      type: 'POST',
-      data: {
-        id: post.id
-      },
-      success: () => {
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
-      },
-      error: () => {
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
-      }
-    });
+    if (post.remind_count !== 0) {
+      $.ajax({
+        url: '/api/bbs_v2/clear_remind',
+        type: 'POST',
+        data: {
+          id: post.id
+        },
+        success: () => {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+        },
+        error: () => {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+        }
+      });
+
+      return;
+    }
+
+    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
   }
 
   renderRemind() {
     return this.props.remind && this.props.item.remind_count != 0 ? (
-      <p className="reply-count" onClick={this.viewForum.bind(this)}>
+      <p className="reply-count">
         <span>{this.props.item.remind_count + ' 新回复'}</span>
       </p>
     ) : null;
@@ -71,7 +75,7 @@ export default class PostItem extends React.Component {
       : ('./topic-posts.html?' + qs);
 
     return (
-      <li className="post-item" onClick={this.handleClickItem.bind(this, this.props.item)}>
+      <li className="post-item" onClick={this.viewForum.bind(this, this.props.item)}>
         <header className="row">
           <div className="profile">
             <Avatar uid={this.props.item.uid} name={this.props.item.userName} url={this.props.item.imgUrl} size="s40" />
