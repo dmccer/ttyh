@@ -153,7 +153,7 @@ export default class BBS extends React.Component {
   }
 
   renderLoginBtn() {
-    if (!this.state.localUser.token || !this.state.qs.uid) {
+    if (!this.state.localUser || !this.state.localUser.token || !this.state.qs.uid) {
       return <LoginBtn />;
     }
   }
