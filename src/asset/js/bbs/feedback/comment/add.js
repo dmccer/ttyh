@@ -28,7 +28,8 @@ export default class CommentAdd extends React.Component {
     this.state = {
       text: '',
       maxCommentLen: 500,
-      qs: query
+      qs: query,
+      localUser: JSON.parse(localStorage.getItem('user'))
     }
   }
 
@@ -86,12 +87,12 @@ export default class CommentAdd extends React.Component {
         url: '/api/bbs_v2/comment',
         type: 'POST',
         data: {
-          token: this.state.qs.token,
+          token: this.state.localUser.token,
           uid: this.state.qs.uid,
           pid: this.state.qs.pid,
           id: this.state.qs.fid,
           content: this.state.text,
-          tid: this.state.qs.tid,
+          tid: this.state.qs.tid || 1,
           media_ids: media_ids,
           commend_type: this.state.qs.commend_type
         },

@@ -39,6 +39,7 @@ export default class Login extends React.Component {
     return true;
   }
 
+  // 登录处理
   handleSubmit(e: Object) {
     e.preventDefault();
     e.stopPropagation();
@@ -99,10 +100,14 @@ export default class Login extends React.Component {
 
           // 跳转
           let qs = querystring.stringify({
-            uid: res.loggedUser.userID,
+            uid: res.loggedUser.userID
+          });
+
+          // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
+          localStorage.setItem('user', JSON.stringify({
             token: res.token,
             code: this.state.qs.code
-          });
+          }));
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
 
@@ -142,6 +147,7 @@ export default class Login extends React.Component {
     })
   }
 
+  // 倒计时
   count_down() {
     let count = 60;
 
@@ -167,6 +173,7 @@ export default class Login extends React.Component {
     fn();
   }
 
+  // 获取验证码处理
   handleGetVerifyCode(e: Object) {
     e.preventDefault();
     e.stopPropagation();
@@ -190,6 +197,7 @@ export default class Login extends React.Component {
     this.handleValidateTelRemote();
   }
 
+  // 验证手机
   handleValidateTelRemote() {
     this.refs.loading.show('正在获取验证码...');
 
@@ -204,13 +212,16 @@ export default class Login extends React.Component {
 
         if (res.viewName === 'user/home') {
           let qs = querystring.stringify({
-            uid: res.loggedUser.userID,
-            token: res.token,
-            code: this.state.qs.code
+            uid: res.loggedUser.userID
           });
 
+          // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
+          localStorage.setItem('user', JSON.stringify({
+            token: res.token,
+            code: this.state.qs.code
+          }));
+
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
-          return;
         }
 
         if (res.viewName === 'user/login/confirm') {
@@ -241,9 +252,6 @@ export default class Login extends React.Component {
           case 'user/login':
             msg = '手机号格式不正确';
             break;
-          // case 'user/home':
-          //   msg = '服务器已登录';
-          //   break;
         }
 
         this.setState({
@@ -260,6 +268,7 @@ export default class Login extends React.Component {
     });
   }
 
+  // 处理数字型字段发生改变
   handleNumChange(field: string, e: Object) {
     let o = {};
 

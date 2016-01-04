@@ -30,6 +30,7 @@ export default class BBS extends React.Component {
       tab: query._bbstab || 'all', // all, focus, hot
       posts: [],
       qs: query,
+      localUser: JSON.parse(localStorage.getItem('user')),
       last: null,
       f: 0,
       t: 30,
@@ -84,7 +85,7 @@ export default class BBS extends React.Component {
         break;
       case 'focus':
         let qs = querystring.stringify({
-          token: this.state.qs.token
+          token: this.state.localUser.token
         });
 
         url = '/api/bbs_v2/show_follow_forums?' + qs;
@@ -149,12 +150,10 @@ export default class BBS extends React.Component {
 
     let qs = querystring.stringify($.extend({}, this.state.qs, { _bbstab: tab }));
     location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
-
-    // this.query(tab);
   }
 
   renderLoginBtn() {
-    if (!this.state.qs.token || !this.state.qs.uid) {
+    if (!this.state.localUser.token || !this.state.qs.uid) {
       return <LoginBtn />;
     }
   }

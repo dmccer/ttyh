@@ -31,6 +31,7 @@ export default class AboutMe extends React.Component {
       tab: query.tab || 'forum', // all, focus, hot
       posts: [],
       replies: [],
+      localUser: JSON.parse(localStorage.getItem('user')),
       tabs: [{
         key: 'forum',
         text: '我的发帖'
@@ -115,7 +116,7 @@ export default class AboutMe extends React.Component {
       cache: false,
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
+        token: this.state.localUser && this.state.localUser.token || null,
         t: this.state.t,
         f: f
       },
@@ -168,7 +169,7 @@ export default class AboutMe extends React.Component {
       cache: false,
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
+        token: this.state.localUser.token,
         t: this.state.t,
         f: f
       },
@@ -212,7 +213,7 @@ export default class AboutMe extends React.Component {
       type: 'POST',
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
+        token: this.state.localUser.token,
         fid: reply.id
       },
       success: (code) => {
@@ -252,8 +253,6 @@ export default class AboutMe extends React.Component {
 
     let qs = querystring.stringify($.extend({}, this.state.qs, { tab: tab }));
     location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
-
-    // this.query(tab);
   }
 
   render() {

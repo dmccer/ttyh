@@ -15,20 +15,6 @@ export default class ReportItem extends React.Component {
     }
   }
 
-  // touchstart(e) {
-  //   this._start = new Date().getTime();
-  // }
-  //
-  // touchend(e) {
-  //   if (Date.now() - this._start >= 3000) {
-  //     if (confirm('确认删除该条回复?')) {
-  //       this.props.remove(this.props.item);
-  //     }
-  //   } else {
-  //     this._start = null;
-  //   }
-  // }
-
   viewForum(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -39,6 +25,8 @@ export default class ReportItem extends React.Component {
       fid: post.pid
     }));
 
+    let url = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+
     if (post.remind_count !== 0) {
       $.ajax({
         url: '/api/bbs_v2/clear_remind',
@@ -47,17 +35,17 @@ export default class ReportItem extends React.Component {
           id: post.id
         },
         success: () => {
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+          location.href = url;
         },
         error: () => {
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+          location.href = url;
         }
       });
 
       return;
     }
 
-    location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
+    location.href = url;
   }
 
   renderRemind() {

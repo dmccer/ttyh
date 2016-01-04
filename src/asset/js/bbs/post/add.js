@@ -31,7 +31,8 @@ export default class PostAdd extends React.Component {
       maxTitleLen: 20,
       maxTextLen: 2000,
       address: {},
-      qs: query
+      qs: query,
+      localUser: JSON.parse(localStorage.getItem('user'))
     }
   }
 
@@ -139,7 +140,7 @@ export default class PostAdd extends React.Component {
         type: 'POST',
         data: {
           uid: this.state.qs.uid,
-          token: this.state.qs.token,
+          token: this.state.localUser.token,
           title: this.state.title,
           content: this.state.text,
           addr: addr,

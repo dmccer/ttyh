@@ -19,6 +19,7 @@ export default class BBSDetail extends React.Component {
 
     this.state = {
       qs: querystring.parse(location.search.substring(1)),
+      localUser: JSON.parse(localStorage.getItem('user'))
     };
   }
 
@@ -74,7 +75,7 @@ export default class BBSDetail extends React.Component {
       type: 'POST',
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
+        token: this.state.localUser.token,
         fid: this.state.forum.id
       },
       success: (data) => {
@@ -106,7 +107,7 @@ export default class BBSDetail extends React.Component {
       type: 'GET',
       cache: false,
       data: {
-        code: this.state.qs.code
+        code: this.state.localUser.code
       },
       success: (data) => {
         this.refs.loading.close();

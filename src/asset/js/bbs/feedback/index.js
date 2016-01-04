@@ -31,6 +31,7 @@ export default class Feedback extends React.Component {
       comments: [],
       praises: [],
       qs: query,
+      localUser: JSON.parse(localStorage.getItem('user')),
       f: 0,
       t: 30,
       count: 0
@@ -175,9 +176,8 @@ export default class Feedback extends React.Component {
       fid: this.state.qs.fid,
       tid: forum.tid,
       uid: this.state.qs.uid,
-      token: this.state.qs.token,
       commend_type: type,
-      code: this.state.qs.code
+      code: this.state.localUser.code
     });
 
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, url);
@@ -192,7 +192,7 @@ export default class Feedback extends React.Component {
       data: {
         fid: forum.id,
         uid: this.state.qs.uid,
-        token: this.state.qs.token
+        token: this.state.localUser && this.state.localUser.token || null
       },
       success: (data) => {
         this.refs.loading.close();
