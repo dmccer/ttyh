@@ -115,7 +115,6 @@ export default class AboutMe extends React.Component {
       cache: false,
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
         t: this.state.t,
         f: f
       },
@@ -168,7 +167,6 @@ export default class AboutMe extends React.Component {
       cache: false,
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
         t: this.state.t,
         f: f
       },
@@ -212,7 +210,6 @@ export default class AboutMe extends React.Component {
       type: 'POST',
       data: {
         uid: this.state.qs.uid,
-        token: this.state.qs.token,
         fid: reply.id
       },
       success: (code) => {

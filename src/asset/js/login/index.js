@@ -72,8 +72,7 @@ export default class Login extends React.Component {
 
     let url, data = {
       confirmCode: this.state.verifyCode,
-      userName: '',
-      code: this.state.qs.code
+      userName: ''
     };
 
     if (this.state.loggingUserSnapShotKey) {
@@ -100,8 +99,7 @@ export default class Login extends React.Component {
           // 跳转
           let qs = querystring.stringify({
             uid: res.loggedUser.userID,
-            token: res.token,
-            code: this.state.qs.code
+            token: res.token
           });
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
@@ -205,8 +203,7 @@ export default class Login extends React.Component {
         if (res.viewName === 'user/home') {
           let qs = querystring.stringify({
             uid: res.loggedUser.userID,
-            token: res.token,
-            code: this.state.qs.code
+            token: res.token
           });
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);

@@ -175,9 +175,7 @@ export default class Feedback extends React.Component {
       fid: this.state.qs.fid,
       tid: forum.tid,
       uid: this.state.qs.uid,
-      token: this.state.qs.token,
-      commend_type: type,
-      code: this.state.qs.code
+      commend_type: type
     });
 
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, url);
@@ -192,7 +190,6 @@ export default class Feedback extends React.Component {
       data: {
         fid: forum.id,
         uid: this.state.qs.uid,
-        token: this.state.qs.token
       },
       success: (data) => {
         this.refs.loading.close();

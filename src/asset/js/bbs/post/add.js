@@ -139,7 +139,6 @@ export default class PostAdd extends React.Component {
         type: 'POST',
         data: {
           uid: this.state.qs.uid,
-          token: this.state.qs.token,
           title: this.state.title,
           content: this.state.text,
           addr: addr,

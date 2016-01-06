@@ -86,7 +86,6 @@ export default class CommentAdd extends React.Component {
         url: '/api/bbs_v2/comment',
         type: 'POST',
         data: {
-          token: this.state.qs.token,
           uid: this.state.qs.uid,
           pid: this.state.qs.pid,
           id: this.state.qs.fid,

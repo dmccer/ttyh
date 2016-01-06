@@ -52,7 +52,6 @@ export default class ActiveUserList extends React.Component {
       type: 'GET',
       cache: false,
       data: {
-        code: this.state.qs.code
       },
       success: (data) => {
         this.refs.loading.close();
