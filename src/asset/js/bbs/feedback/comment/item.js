@@ -27,7 +27,7 @@ export default class Comment extends React.Component {
   }
 
   renderReplied() {
-    return this.props.item.cid !== 0 ? (
+    return this.props.item.cid !== 0 && this.props.item.replied ? (
       <div className="replied">
         <i className="icon icon-quote s12"></i>
         <p className="replied-content"><span className="head">回复<b>{this.props.item.cid}</b>楼: </span>{Emoj.formatText(this.props.item.replied.content)}</p>
