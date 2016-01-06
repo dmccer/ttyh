@@ -169,7 +169,7 @@ export default class AboutMe extends React.Component {
       cache: false,
       data: {
         uid: this.state.qs.uid,
-        token: this.state.localUser.token,
+        token: this.state.localUser && this.state.localUser.token || null,
         t: this.state.t,
         f: f
       },
@@ -213,7 +213,7 @@ export default class AboutMe extends React.Component {
       type: 'POST',
       data: {
         uid: this.state.qs.uid,
-        token: this.state.localUser.token,
+        token: this.state.localUser && this.state.localUser.token || null,
         fid: reply.id
       },
       success: (code) => {

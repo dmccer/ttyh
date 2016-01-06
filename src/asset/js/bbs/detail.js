@@ -75,7 +75,7 @@ export default class BBSDetail extends React.Component {
       type: 'POST',
       data: {
         uid: this.state.qs.uid,
-        token: this.state.localUser.token,
+        token: this.state.localUser && this.state.localUser.token || null,
         fid: this.state.forum.id
       },
       success: (data) => {
@@ -106,9 +106,6 @@ export default class BBSDetail extends React.Component {
       url: '/mvc/followForBBS_' + this.state.forum.uid,
       type: 'GET',
       cache: false,
-      data: {
-        code: this.state.localUser.code
-      },
       success: (data) => {
         this.refs.loading.close();
 

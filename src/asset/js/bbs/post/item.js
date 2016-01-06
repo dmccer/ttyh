@@ -17,16 +17,6 @@ export default class PostItem extends React.Component {
     }
   }
 
-  // handleClickItem(post) {
-  //   const qs = querystring.stringify($.extend({}, this.state.qs, {
-  //     fid: post.id,
-  //     tid: post.tid,
-  //     code: this.state.qs.code
-  //   }));
-  //
-  //   location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
-  // }
-
   viewForum(post, e) {
     e.preventDefault();
     e.stopPropagation();

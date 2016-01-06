@@ -73,8 +73,7 @@ export default class Login extends React.Component {
 
     let url, data = {
       confirmCode: this.state.verifyCode,
-      userName: '',
-      code: this.state.qs.code
+      userName: ''
     };
 
     if (this.state.loggingUserSnapShotKey) {
@@ -105,8 +104,7 @@ export default class Login extends React.Component {
 
           // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
           localStorage.setItem('user', JSON.stringify({
-            token: res.token,
-            code: this.state.qs.code
+            token: res.token
           }));
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
@@ -217,9 +215,8 @@ export default class Login extends React.Component {
 
           // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
           localStorage.setItem('user', JSON.stringify({
-            token: res.token,
-            code: this.state.qs.code
-          }));
+            token: res.token
+          });
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
         }

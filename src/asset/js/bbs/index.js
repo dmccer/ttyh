@@ -85,7 +85,7 @@ export default class BBS extends React.Component {
         break;
       case 'focus':
         let qs = querystring.stringify({
-          token: this.state.localUser.token
+          token: this.state.localUser && this.state.localUser.token || null
         });
 
         url = '/api/bbs_v2/show_follow_forums?' + qs;
