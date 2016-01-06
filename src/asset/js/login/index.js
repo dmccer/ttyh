@@ -216,7 +216,7 @@ export default class Login extends React.Component {
           // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
           localStorage.setItem('user', JSON.stringify({
             token: res.token
-          });
+          }));
 
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
         }
