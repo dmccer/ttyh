@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import querystring from 'querystring';
 import fnu from 'lodash-fn';
+import cookie from 'react-cookie';
 
 import HeadBar from './head-bar/';
 import NoticeBoard from './notice-board/';
@@ -25,6 +26,13 @@ export default class BBS extends React.Component {
     super();
 
     let query = querystring.parse(location.search.substring(1));
+
+    let token = cookie.load('token');
+    if (token) {
+      localStorage.setItem('user', JSON.stringify({
+        token: token
+      }));
+    }
 
     this.state = {
       tab: query._bbstab || 'all', // all, focus, hot
