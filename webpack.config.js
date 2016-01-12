@@ -22,6 +22,7 @@ module.exports = {
     'active-users': './src/asset/js/bbs/active-user/list.js',
     'notice': './src/asset/js/bbs/notice/index.js',
     'pkg-pub': './src/asset/js/pkg/pub/index.js',
+    'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -148,6 +149,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'pkg-pub.html',
       chunks: ['pkg-pub', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '发布货源-备注',
+      template: './src/page/index.html',
+      filename: 'pkg-pub-memo.html',
+      chunks: ['pkg-pub-memo', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

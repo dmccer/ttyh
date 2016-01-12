@@ -1,0 +1,46 @@
+@import '../../../../less/global/site.variable';
+@import '../../../../less/global/util.less';
+
+body {
+  background-color: @offWhite;
+}
+
+.form {
+  padding: 10px;
+}
+
+.control {
+  height: 55px;
+  box-sizing: border-box;
+
+  textarea {
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+}
+
+.tag {
+  color: @c_lightBlack;
+  font-size: 13px;
+  border-radius: 2px;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid @c_lightGrey;
+}
+
+.memo-tag-list {
+  .clearfix();
+
+  .tag {
+    float: left;
+    margin-right: 2%;
+    margin-bottom: 6px;
+    width: 32%;
+
+    &:nth-child(3n) {
+      margin-right: 0;
+    }
+  }
+}

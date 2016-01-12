@@ -69,7 +69,7 @@ export default class PkgPubPage extends React.Component {
           <div className="field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              <span className="input-holder">备注</span>
+              <a href="./pkg-pub-memo.html" className="input-holder">备注</a>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
