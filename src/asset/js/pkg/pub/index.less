@@ -76,6 +76,13 @@ body {
 
     .input-holder {
       color: @c_grey;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.on {
+        color: @black;
+      }
     }
 
     .input_placeholder(@c_grey);

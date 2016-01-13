@@ -18,11 +18,13 @@ export default class PkgPubPage extends React.Component {
 
     let query = querystring.parse(location.search.substring(1));
 
-    this.state = {
+    this.state = $.extend({
       qs: query,
       truckType: {},
       pkgType: {}
-    };
+    }, JSON.parse(localStorage.getItem('pkg-pub')) || {}, {
+      memo: localStorage.getItem('memo')
+    });
   }
 
   componentWillMount() {
@@ -88,6 +90,24 @@ export default class PkgPubPage extends React.Component {
     })
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // TODO:
+    // 提交服务器
+  }
+
+  writeDraft() {
+    localStorage.setItem('pkg-pub', JSON.stringify({
+      truckType: this.state.truckType,
+      pkgType: this.state.pkgType,
+      startPoint: this.state.startPoint,
+      endPoint: this.state.endPoint,
+      pkgWeight: this.state.pkgWeight
+    }));
+  }
+
   toggleCitySelector(field, e) {
     let offset = $(e.target).offset();
     let top = offset.top + offset.height;
@@ -114,7 +134,9 @@ export default class PkgPubPage extends React.Component {
     let d = {};
     d[this.state.citySelectorField] = province;
 
-    this.setState(d);
+    this.setState(d, () => {
+      this.writeDraft();
+    });
   }
 
   handleSelectCity(city) {
@@ -123,7 +145,9 @@ export default class PkgPubPage extends React.Component {
 
     d[field] = `${this.state[field]}-${city}`;
 
-    this.setState(d);
+    this.setState(d, () => {
+      this.writeDraft();
+    });
   }
 
   handleSelectArea(area) {
@@ -132,7 +156,9 @@ export default class PkgPubPage extends React.Component {
 
     d[field] = `${this.state[field]}-${area}`;
 
-    this.setState(d);
+    this.setState(d, () => {
+      this.writeDraft();
+    });
   }
 
   handleCancelCitySelector() {
@@ -145,7 +171,31 @@ export default class PkgPubPage extends React.Component {
     let d = {};
 
     d[this.state.selectorField] = item;
-    this.setState(d);
+    this.setState(d, () => {
+      this.writeDraft();
+    });
+  }
+
+  handleNumChange(field: string, e: Object) {
+    let o = {};
+
+    o[field] = $.trim(e.target.value).replace(/[^\d\.]+/g, '');
+
+    this.setState(o, () => {
+      this.writeDraft();
+    });
+  }
+
+  renderMemo() {
+    if (this.state.memo) {
+      return (
+        <a href="./pkg-pub-memo.html" className="input-holder on">{this.state.memo}</a>
+      );
+    }
+
+    return (
+      <a href="./pkg-pub-memo.html" className="input-holder">备注</a>
+    );
   }
 
   render() {
@@ -212,6 +262,8 @@ export default class PkgPubPage extends React.Component {
               <input
                 type="text"
                 placeholder="货重"
+                value={this.state.pkgWeight}
+                onChange={this.handleNumChange.bind(this, 'pkgWeight')}
               />
               <i className="icon icon-arrow"></i>
             </div>
@@ -219,12 +271,16 @@ export default class PkgPubPage extends React.Component {
           <div className="field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              <a href="./pkg-pub-memo.html" className="input-holder">备注</a>
+              {this.renderMemo()}
               <i className="icon icon-arrow"></i>
             </div>
           </div>
         </div>
-        <button className="btn block teal pub-btn" type="submit">发布</button>
+        <button
+          className="btn block teal pub-btn"
+          type="submit"
+          onClick={this.handleSubmit.bind(this)}
+        >发布</button>
         <div className="fixed-holder"></div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />

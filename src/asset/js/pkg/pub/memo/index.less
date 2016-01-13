@@ -10,7 +10,7 @@ body {
 }
 
 .control {
-  height: 55px;
+  height: 85px;
   box-sizing: border-box;
 
   textarea {
@@ -28,10 +28,16 @@ body {
   padding-top: 10px;
   padding-bottom: 10px;
   border: 1px solid @c_lightGrey;
+  background-color: @white;
+
+  &.selected {
+    background-color: @c_lightGrey;
+  }
 }
 
 .memo-tag-list {
   .clearfix();
+  margin-bottom: 10px;
 
   .tag {
     float: left;
