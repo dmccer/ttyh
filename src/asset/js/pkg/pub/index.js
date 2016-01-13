@@ -5,9 +5,10 @@ import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import querystring from 'querystring';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
-import querystring from 'querystring';
+import CitySelector from '../../city-selector/';
 
 export default class PkgPubPage extends React.Component {
   constructor() {
@@ -20,6 +21,50 @@ export default class PkgPubPage extends React.Component {
     };
   }
 
+  toggleCitySelector(field, e) {
+    let offset = $(e.target).offset();
+    let top = offset.top + offset.height;
+
+    this.setState({
+      citySelectorTop: top,
+      citySelectorField: field,
+      showCitySelector: true
+    });
+
+    this.forceUpdate();
+  }
+
+  handleSelectProvince(province) {
+    let d = {};
+    d[this.state.citySelectorField] = province;
+
+    this.setState(d);
+  }
+
+  handleSelectCity(city) {
+    let d = {};
+    let field = this.state.citySelectorField;
+
+    d[field] = `${this.state[field]}-${city}`;
+
+    this.setState(d);
+  }
+
+  handleSelectArea(area) {
+    let d = {};
+    let field = this.state.citySelectorField;
+
+    d[field] = `${this.state[field]}-${area}`;
+
+    this.setState(d);
+  }
+
+  handleCancelCitySelector() {
+    this.setState({
+      showCitySelector: false
+    });
+  }
+
   render() {
     return (
       <section className="pkg-pub">
@@ -27,15 +72,27 @@ export default class PkgPubPage extends React.Component {
         <div className="field-group">
           <div className="field">
             <label><i className="icon icon-start-point s20"></i></label>
-            <div className="control">
-              <span className="input-holder">请选择出发地址</span>
+            <div
+              className="control"
+              onClick={this.toggleCitySelector.bind(this, 'startPoint')}>
+              <input
+                type="text"
+                disabled="disabled"
+                placeholder="请选择出发地址"
+                value={this.state.startPoint} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
           <div className="field">
             <label><i className="icon icon-end-point s20"></i></label>
-            <div className="control">
-              <span className="input-holder">请选择到达地址</span>
+            <div
+              className="control"
+              onClick={this.toggleCitySelector.bind(this, 'endPoint')}>
+              <input
+                type="text"
+                disabled="disabled"
+                placeholder="请选择到达地址"
+                value={this.state.endPoint} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -45,14 +102,22 @@ export default class PkgPubPage extends React.Component {
           <div className="field">
             <label><i className="icon icon-truck-type s20"></i></label>
             <div className="control">
-              <span className="input-holder">所有车型</span>
+              <input
+                type="text"
+                disabled="disabled"
+                placeholder="所有车型"
+                value={this.state.truckType} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
           <div className="field">
             <label><i className="icon icon-pkg-type s20"></i></label>
             <div className="control">
-              <span className="input-holder">货物种类</span>
+              <input
+                type="text"
+                disabled="disabled"
+                placeholder="货物种类"
+                value={this.state.pkgType} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -78,6 +143,14 @@ export default class PkgPubPage extends React.Component {
         <div className="fixed-holder"></div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <CitySelector
+          on={this.state.showCitySelector}
+          top={this.state.citySelectorTop}
+          onSelectProvince={this.handleSelectProvince.bind(this)}
+          onSelectCity={this.handleSelectCity.bind(this)}
+          onSelectArea={this.handleSelectArea.bind(this)}
+          onCancel={this.handleCancelCitySelector.bind(this)}
+        />
       </section>
     );
   }
