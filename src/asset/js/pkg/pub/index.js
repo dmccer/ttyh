@@ -6,9 +6,11 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import CitySelector from '../../city-selector/';
+import Selector from '../../selector/';
 
 export default class PkgPubPage extends React.Component {
   constructor() {
@@ -17,8 +19,73 @@ export default class PkgPubPage extends React.Component {
     let query = querystring.parse(location.search.substring(1));
 
     this.state = {
-      qs: query
+      qs: query,
+      truckType: {},
+      pkgType: {}
     };
+  }
+
+  componentWillMount() {
+    let truckTypes = [
+      {
+        name: '平板',
+        id: 1
+      }, {
+        name: '高栏',
+        id: 2
+      }, {
+        name: '厢式',
+        id: 3
+      }, {
+        name: '面包车',
+        id: 4
+      }, {
+        name: '保温',
+        id: 5
+      }, {
+        name: '冷藏',
+        id: 6
+      }, {
+        name: '危险品',
+        id: 7
+      }, {
+        name: '集装箱',
+        id: 8
+      }, {
+        name: '其他',
+        id: 9
+      }
+    ];
+
+    let pkgTypes = [
+      {
+        name: '6.2 米',
+        id: 1
+      }, {
+        name: '5 米',
+        id: 2
+      }, {
+        name: '3.2 米',
+        id: 3
+      }, {
+        name: '4.2 米',
+        id: 4
+      }, {
+        name: '7.2 米',
+        id: 5
+      }, {
+        name: '14.2 米',
+        id: 6
+      }, {
+        name: '其他',
+        id: 7
+      }
+    ];
+
+    this.setState({
+      truckTypes: truckTypes,
+      pkgTypes: pkgTypes
+    })
   }
 
   toggleCitySelector(field, e) {
@@ -32,6 +99,15 @@ export default class PkgPubPage extends React.Component {
     });
 
     this.forceUpdate();
+  }
+
+  showSelector(field, e) {
+    this.setState({
+      selectorItems: this.state[`${field}s`],
+      selectorField: field
+    });
+
+    this.refs.selector.show();
   }
 
   handleSelectProvince(province) {
@@ -63,6 +139,13 @@ export default class PkgPubPage extends React.Component {
     this.setState({
       showCitySelector: false
     });
+  }
+
+  handleSelectItem(item) {
+    let d = {};
+
+    d[this.state.selectorField] = item;
+    this.setState(d);
   }
 
   render() {
@@ -106,7 +189,8 @@ export default class PkgPubPage extends React.Component {
                 type="text"
                 disabled="disabled"
                 placeholder="所有车型"
-                value={this.state.truckType} />
+                onClick={this.showSelector.bind(this, 'truckType')}
+                value={this.state.truckType.name} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -117,7 +201,8 @@ export default class PkgPubPage extends React.Component {
                 type="text"
                 disabled="disabled"
                 placeholder="货物种类"
-                value={this.state.pkgType} />
+                onClick={this.showSelector.bind(this, 'pkgType')}
+                value={this.state.pkgType.name} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -151,6 +236,10 @@ export default class PkgPubPage extends React.Component {
           onSelectArea={this.handleSelectArea.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
+        <Selector
+          ref="selector"
+          items={this.state.selectorItems}
+          select={this.handleSelectItem.bind(this)} />
       </section>
     );
   }
