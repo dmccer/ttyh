@@ -54,17 +54,25 @@ export default class PkgPubMemoPage extends React.Component {
     ];
 
     if (memo != null) {
-      memos.forEach((item) => {
-        if (memo.indexOf(item.name) !== -1) {
-          item.selected = true;
-        }
-      });
+      memos = this.findAndSetSelected(memos, memo);
     }
 
     this.setState({
       memo: memo,
       memos: memos
     });
+  }
+
+  findAndSetSelected(memos, memo) {
+    memos.forEach((item) => {
+      if (memo.indexOf(item.name) !== -1) {
+        item.selected = true;
+      } else {
+        item.selected = false;
+      }
+    });
+
+    return memos;
   }
 
   handleSubmit(e) {
@@ -77,12 +85,19 @@ export default class PkgPubMemoPage extends React.Component {
   }
 
   handleSelectMemo(memo) {
-    let memos = this.state.memos;
     memo.selected = true;
 
     this.setState({
-      memos: memos,
-      memo: this.state.memo && `${this.state.memo}, ${memo.name}` || memo.name
+      memo: this.state.memo && `${this.state.memo},${memo.name}` || memo.name
+    });
+  }
+
+  handleRemoveMemo(memo) {
+    memo.selected = false;
+    let m = this.state.memo.replace(`,${memo.name}`, '').replace(`${memo.name},`, '').replace(memo.name, '');
+
+    this.setState({
+      memo: m
     });
   }
 
@@ -90,8 +105,11 @@ export default class PkgPubMemoPage extends React.Component {
     let o = {};
 
     o[field] = $.trim(e.target.value);
+    o.memos = this.findAndSetSelected(this.state.memos, o[field]);
 
-    this.setState(o);
+    this.setState(o, () => {
+      localStorage.setItem('memo', this.state.memo);
+    });
   }
 
   render() {
@@ -102,7 +120,7 @@ export default class PkgPubMemoPage extends React.Component {
         <div
           key={`memo-item_${memo.id}`}
           className={cxs}
-          onClick={memo.selected ? null : this.handleSelectMemo.bind(this, memo)}>{memo.name}</div>
+          onClick={memo.selected ? this.handleRemoveMemo.bind(this, memo) : this.handleSelectMemo.bind(this, memo)}>{memo.name}</div>
       );
     });
 
