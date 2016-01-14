@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 
+import EditableMiniTruckItem from './editable-mini-truck-item/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
@@ -26,30 +27,12 @@ export default class RoadtrainPage extends React.Component {
   render() {
     return (
       <section className="roadtrain-page">
-        <ul className="truck-list">
-          <li>
-            <a href="#">
-              <h3>吉祥</h3>
-              <p>AU8998 厢式 3.3米 2吨</p>
-              <i className="icon icon-item-selected"></i>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <h3>吉祥</h3>
-              <p>AU8998 厢式 3.3米 2吨</p>
-              <i className="icon icon-item-selected"></i>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <h3>吉祥</h3>
-              <p>AU8998 厢式 3.3米 2吨</p>
-              <i className="icon s20 icon-item-selected"></i>
-            </a>
-          </li>
-        </ul>
-
+        <div className="truck-list">
+          <EditableMiniTruckItem />
+          <EditableMiniTruckItem />
+          <EditableMiniTruckItem />
+          <EditableMiniTruckItem />
+        </div>
         <div className="add-truck-btn">
           <a href="./truck-add.html">
             <i className="icon s20 icon-big-plus"></i>

@@ -1,0 +1,30 @@
+@import '../../../../less/global/site.variable';
+@import '../../../../less/global/layout.less';
+
+.editable-mini-truck-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.mini-truck-item-container {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+}
+
+.actions {
+  position: relative;
+  float: right;
+  text-align: center;
+  font-size: 15px;
+  color: @white;
+  background-color: @c_orange;
+  width: 50px;
+  height: 65px;
+
+  > li {
+    vertical-align: middle;
+    height: 100%;
+  }
+}
