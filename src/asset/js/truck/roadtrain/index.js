@@ -31,28 +31,28 @@ export default class RoadtrainPage extends React.Component {
             <a href="#">
               <h3>吉祥</h3>
               <p>AU8998 厢式 3.3米 2吨</p>
-              <i className="icon icon-arrow"></i>
+              <i className="icon icon-item-selected"></i>
             </a>
           </li>
           <li>
             <a href="#">
               <h3>吉祥</h3>
               <p>AU8998 厢式 3.3米 2吨</p>
-              <i className="icon icon-arrow"></i>
+              <i className="icon icon-item-selected"></i>
             </a>
           </li>
           <li>
             <a href="#">
               <h3>吉祥</h3>
               <p>AU8998 厢式 3.3米 2吨</p>
-              <i className="icon icon-arrow"></i>
+              <i className="icon s20 icon-item-selected"></i>
             </a>
           </li>
         </ul>
 
         <div className="add-truck-btn">
-          <a href="#">
-            <i className="icon icon-plus"></i>
+          <a href="./truck-add.html">
+            <i className="icon s20 icon-big-plus"></i>
             <span>添加车辆</span>
           </a>
         </div>

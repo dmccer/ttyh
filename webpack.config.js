@@ -25,6 +25,7 @@ module.exports = {
     'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
+    'truck-add': './src/asset/js/truck/add/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -172,6 +173,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'roadtrain.html',
       chunks: ['roadtrain', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '添加车辆',
+      template: './src/page/index.html',
+      filename: 'truck-add.html',
+      chunks: ['truck-add', 'zepto', 'ved'],
       inject: 'body'
     })
   ],
