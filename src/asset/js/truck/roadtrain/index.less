@@ -1,0 +1,81 @@
+@import '../../../less/global/site.variable';
+@import '../../../less/global/util.less';
+@import '../../../less/component/icon-util.less';
+
+body {
+  background-color: @offWhite;
+}
+
+.icon-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -4px;
+  display: inline-block;
+  vertical-align: middle;
+
+  .arrow(8px, 2px, 135deg, @c_grey);
+}
+
+.truck-list {
+  background-color: @white;
+  border-top: 1px solid @c_lightGrey;
+  border-bottom: 1px solid @c_lightGrey;
+
+  li {
+    border-bottom: 1px solid @c_lightGrey;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    a {
+      display: block;
+      position: relative;
+      padding: 12px 15px;
+    }
+
+    h3, p {
+      color: @c_black;
+      margin-bottom: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      font-weight: normal;
+    }
+
+    p {
+      font-size: 13px;
+      font-weight: bolder;
+    }
+  }
+}
+
+.add-truck-btn {
+  border-top: 1px solid @c_lightGrey;
+  border-bottom: 1px solid @c_lightGrey;
+  background-color: @white;
+  margin-top: 15px;
+
+  a {
+    .icon {
+      width: 30px;
+      height: 30px;
+      font-size: 30px;
+      font-weight: bolder;
+      line-height: 30px;
+    }
+
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: @c_grey;
+
+    span {
+      display: block;
+      padding-bottom: 10px;
+    }
+  }
+}

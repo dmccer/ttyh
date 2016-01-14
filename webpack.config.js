@@ -23,6 +23,8 @@ module.exports = {
     'notice': './src/asset/js/bbs/notice/index.js',
     'pkg-pub': './src/asset/js/pkg/pub/index.js',
     'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
+    'truck-pub': './src/asset/js/truck/pub/index.js',
+    'roadtrain': './src/asset/js/truck/roadtrain/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -156,6 +158,20 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'pkg-pub-memo.html',
       chunks: ['pkg-pub-memo', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '发布车源',
+      template: './src/page/index.html',
+      filename: 'truck-pub.html',
+      chunks: ['truck-pub', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '我的车队',
+      template: './src/page/index.html',
+      filename: 'roadtrain.html',
+      chunks: ['roadtrain', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

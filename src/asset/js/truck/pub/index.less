@@ -1,0 +1,188 @@
+@import '../../../less/global/site.variable';
+@import '../../../less/global/util.less';
+@import '../../../less/component/icon-util.less';
+
+body {
+  background-color: @offWhite;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: @c_black;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 27px;
+  line-height: 27px;
+  margin-bottom: 0;
+  margin-top: 0;
+
+  b {
+    color: @c_teal;
+    padding-right: 5px;
+  }
+}
+
+.icon-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -4px;
+  display: inline-block;
+  vertical-align: middle;
+
+  .arrow(8px, 2px, 135deg, @c_grey);
+}
+
+.field {
+  position: relative;
+  height: 50px;
+  box-sizing: border-box;
+  background-color: @white;
+
+  > label {
+    display: block;
+    float: left;
+    width: 50px;
+    height: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+    box-sizing: border-box;
+
+    i {
+      margin-top: 15px;
+    }
+  }
+
+  &:first-child {
+    border-top: 1px solid @c_lightGrey;
+  }
+
+  &:last-child {
+    border-bottom: 1px solid @c_lightGrey;
+
+    .control input,
+    .control .input-holder {
+      border-bottom: none;
+    }
+  }
+
+  .control {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+
+    input, .input-holder {
+      display: block;
+      width: 100%;
+      height: 49px;
+      line-height: 49px;
+      box-sizing: border-box;
+      font-size: 13px;
+      border-radius: 0;
+      border-right: none;
+      border-left: none;
+      border-top: none;
+      padding-left: 5px;
+      border-bottom: 1px solid @c_lightGrey;
+      padding-right: 20px;
+    }
+
+    .input-holder {
+      color: @c_grey;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.on {
+        color: @black;
+      }
+    }
+
+    .input_placeholder(@c_grey);
+  }
+}
+
+.truck-pub {
+  padding-top: 10px;
+}
+
+.biz-types {
+  background-color: @white;
+  border-top: 1px solid @c_lightGrey;
+  border-bottom: 1px solid @c_lightGrey;
+
+  label {
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 13px;
+
+    input {
+      margin-right: 5px;
+    }
+  }
+}
+
+.truck-list {
+  background-color: @white;
+  border-top: 1px solid @c_lightGrey;
+  border-bottom: 1px solid @c_lightGrey;
+
+  li {
+    border-bottom: 1px solid @c_lightGrey;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    a {
+      display: block;
+      position: relative;
+      padding: 12px 15px;
+    }
+
+    h3, p {
+      color: @c_black;
+      margin-bottom: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      font-weight: normal;
+    }
+
+    p {
+      font-size: 13px;
+      font-weight: bolder;
+    }
+  }
+}
+
+.memo {
+  height: 90px;
+
+  .control {
+    padding: 15px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    font-size: 13px;
+    padding: 0;
+    box-sizing: border-box;
+    resize: none;
+  }
+}
+
+.pub-btn {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 49px;
+  border-radius: 0;
+}
