@@ -27,6 +27,7 @@ module.exports = {
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
     'truck-add': './src/asset/js/truck/add/index.js',
     'my-pkg': './src/asset/js/pkg/my/index.js',
+    'my-truck': './src/asset/js/truck/my/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -188,6 +189,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'my-pkg.html',
       chunks: ['my-pkg', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '我发布的车源',
+      template: './src/page/index.html',
+      filename: 'my-truck.html',
+      chunks: ['my-truck', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

@@ -27,7 +27,7 @@ export default class MyPkgPage extends Component {
           <div className="img-tip">
             <img src={pkgPNG} />
           </div>
-          <p>还没有发布车源<br />赶快开始发布吧</p>
+          <p>还没有发布货源<br />赶快开始发布吧</p>
         </div>
       );
     }
