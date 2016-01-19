@@ -4,6 +4,31 @@
   position: relative;
   padding: 15px 10px;
   border-bottom: 1px solid @c_lightGrey;
+  overflow: hidden;
+}
+
+.certified-tag {
+  padding-bottom: 5px;
+  position: relative;
+  width: 18px;
+  text-align: center;
+  box-sizing: border-box;
+
+  &.off {
+    background-color: @c_grey;
+  }
+
+  &:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    content: '';
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid @white;
+  }
 }
 
 .account {
@@ -119,4 +144,19 @@
       }
     }
   }
+}
+
+.unread {
+  position: absolute;
+  background-color: @c_orange;
+  color: @white;
+  width: 70px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  transform: rotate(45deg);
+  z-index: 1;
+  right: -26px;
+  top: -5px;
 }

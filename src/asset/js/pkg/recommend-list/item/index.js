@@ -25,8 +25,8 @@ export default class RecommendPkgItem extends Component {
             </div>
             <div className="nick-name">如意</div>
             <div className="certified-tags">
-              <i className="certified-tag flag teal autonym">实</i>
-              <i className="certified-tag flag orange company">公</i>
+              <i className="certified-tag flag teal off">实</i>
+              <i className="certified-tag flag orange">公</i>
             </div>
           </div>
           <div className="pkg">
@@ -59,7 +59,7 @@ export default class RecommendPkgItem extends Component {
             <a href="tel:15601859828" className="icon icon-call s30"></a>
           </div>
         </div>
-        <div className="tag unread"></div>
+        <div className="tag unread">未读</div>
       </div>
     );
   }
