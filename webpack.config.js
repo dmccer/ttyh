@@ -26,6 +26,7 @@ module.exports = {
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
     'truck-add': './src/asset/js/truck/add/index.js',
+    'my-pkg': './src/asset/js/pkg/my/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -181,11 +182,18 @@ module.exports = {
       filename: 'truck-add.html',
       chunks: ['truck-add', 'zepto', 'ved'],
       inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '我发布的货源',
+      template: './src/page/index.html',
+      filename: 'my-pkg.html',
+      chunks: ['my-pkg', 'zepto', 'ved'],
+      inject: 'body'
     })
   ],
   module: {
     preLoaders: [{
-      test: /\.jsx?$/,
+      test: /\.js?$/,
       exclude: /(node_modules|bower_components)/,
       loader: 'source-map'
     }],
@@ -215,11 +223,11 @@ module.exports = {
       test: /\.(woff|eot)(#[a-zA-Z])*$/,
       loader: 'file-loader'
     }, {
-      test: /\.jsx?$/,
+      test: /\.js?$/,
       exclude: /(node_modules|bower_components)/,
       loaders: [
         'react-hot',
-        'babel?presets[]=react,presets[]=es2015'
+        'babel-loader'
       ]
     }, {
       test: /zepto(\.min)?\.js$/,

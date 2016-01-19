@@ -1,0 +1,93 @@
+@import '../../../less/global/site.variable';
+
+.pkg-item {
+  padding: 15px 10px;
+  border-bottom: 1px solid @c_lightGrey;
+
+  .title {
+    font-size: 16px;
+    font-weight: bolder;
+    color: @c_black;
+    margin-bottom: 10px;
+
+    > span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon {
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+  }
+
+  .detail {
+    position: relative;
+
+    p {
+      color: @c_black;
+      font-size: 13px;
+      margin-bottom: 5px;
+
+      > * {
+        margin-right: 10px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .pkg-desc {
+      .icon + span {
+        padding-left: 0;
+      }
+    }
+
+    .truck-desc {
+      span {
+        color: @c_lightBlack;
+      }
+    }
+
+    .recommend {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .extra {
+    margin-top: 10px;
+    overflow: hidden;
+
+    > span {
+      float: left;
+      color: @c_lightBlack;
+      padding-top: 2px;
+    }
+  }
+
+  .actions {
+    float: right;
+
+    li {
+      float: left;
+
+
+      a {
+        display: block;
+        font-size: 13px;
+        color: @c_teal;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-right: 1px solid @c_lightGrey;
+      }
+
+      &:last-child a {
+        border-right: none;
+      }
+    }
+  }
+
+}
