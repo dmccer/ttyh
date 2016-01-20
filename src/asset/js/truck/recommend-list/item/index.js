@@ -6,14 +6,14 @@ import './index.less';
 
 import React, {Component} from 'react';
 
-export default class RecommendPkgItem extends Component {
+export default class RecommendTruckItem extends Component {
   constructor() {
     super();
   }
 
   render() {
     return (
-      <div className="pkg-item">
+      <div className="truck-item">
         <div className="row">
           <div className="account">
             <div className="avatar">
@@ -28,25 +28,18 @@ export default class RecommendPkgItem extends Component {
               <i className="certified-tag flag orange">公</i>
             </div>
           </div>
-          <div className="pkg">
+          <div className="truck">
             <div className="title">
-              <span>上海市-浦东新区</span>
+              <i className="flag teal">顺风车</i>
+              <span>浦东新区</span>
+              <b>(5)</b>
               <i className="icon icon-target"></i>
-              <span>北京市-海淀区</span>
+              <span>海淀区</span>
+              <b>(3)</b>
             </div>
             <div className="detail">
-              <p className="pkg-desc">
-                <i className="icon icon-pkg-type s18"></i>
-                <span>冰激凌</span>
-                <span>10吨</span>
-                <span>5方</span>
-              </p>
-              <p className="truck-desc">
-                <i className="flag teal">需</i>
-                <span>7米</span>
-                <span>冷藏车</span>
-              </p>
-              <p className="memo">的沙发的沙发ijossddsf的撒范德萨发生的，是大方的说法第三方</p>
+              <p className="truck-desc">上海到哪里的货，天天有货为您服务，长期合作请联系我们</p>
+              <p><b>AU8998 厢式 3.3米 2.9吨</b></p>
               <p className="extra">
                 <span>1271.1公里</span>
                 <span className="divider">|</span>

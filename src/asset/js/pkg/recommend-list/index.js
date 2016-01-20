@@ -1,5 +1,5 @@
 /**
- * 推荐货源
+ * 推荐货源页面
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */

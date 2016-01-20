@@ -29,6 +29,7 @@ module.exports = {
     'my-pkg': './src/asset/js/pkg/my/index.js',
     'my-truck': './src/asset/js/truck/my/index.js',
     'recommend-pkg-list': './src/asset/js/pkg/recommend-list/index.js',
+    'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -204,6 +205,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'recommend-pkg-list.html',
       chunks: ['recommend-pkg-list', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '推荐车源',
+      template: './src/page/index.html',
+      filename: 'recommend-truck-list.html',
+      chunks: ['recommend-truck-list', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

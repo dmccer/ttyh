@@ -1,0 +1,148 @@
+@import '../../../../less/global/site.variable';
+
+.truck-item {
+  position: relative;
+  padding: 15px 10px;
+  border-bottom: 1px solid @c_lightGrey;
+  overflow: hidden;
+}
+
+.certified-tag {
+  padding-bottom: 5px;
+  position: relative;
+  width: 18px;
+  text-align: center;
+  box-sizing: border-box;
+
+  &.off {
+    background-color: @c_grey;
+  }
+
+  &:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    content: '';
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid @white;
+  }
+}
+
+.account {
+  width: 55px;
+  padding-right: 10px;
+
+  .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 45px;
+    overflow: hidden;
+
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .nick-name {
+    margin-top: 6px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  .certified-tags {
+    text-align: center;
+  }
+
+  .certified-tags > * {
+    margin-right: 3px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.tel {
+  width: 30px;
+  vertical-align: middle;
+}
+
+.truck-item {
+  .title {
+    font-size: 13px;
+    color: @c_lightBlack;
+    margin-bottom: 10px;
+
+    .flag {
+      margin-right: 15px;
+    }
+
+    b {
+      font-weight: normal;
+      color: @teal;
+      font-size: 13px;
+      padding-left: 5px;
+    }
+
+    > span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .icon + span {
+      padding-left: 0;
+    }
+  }
+
+  .detail {
+    .truck-desc {
+      color: @c_lightBlack;
+    }
+
+    .extra {
+      color: @c_lightBlack;
+      font-size: 11px;
+      margin-bottom: 0;
+
+      span {
+        &:first-child {
+          padding-right: 10px;
+        }
+
+        &:last-child {
+          padding-left: 10px;
+        }
+      }
+
+      .divider {
+        color: @c_lightGrey;
+      }
+    }
+  }
+}
+
+.unread {
+  position: absolute;
+  background-color: @c_orange;
+  color: @white;
+  width: 70px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  transform: rotate(45deg);
+  z-index: 1;
+  right: -26px;
+  top: -5px;
+}
