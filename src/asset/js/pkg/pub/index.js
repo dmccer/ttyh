@@ -6,6 +6,7 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import Promise from 'promise';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -13,18 +14,16 @@ import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
 
 export default class PkgPubPage extends React.Component {
+
+  state = $.extend({
+    qs: querystring.parse(location.search.substring(1)),
+    truckType: {},
+  }, JSON.parse(localStorage.getItem('pkg-pub')) || {}, {
+    memo: localStorage.getItem('memo')
+  });
+
   constructor() {
     super();
-
-    let query = querystring.parse(location.search.substring(1));
-
-    this.state = $.extend({
-      qs: query,
-      truckType: {},
-      pkgType: {}
-    }, JSON.parse(localStorage.getItem('pkg-pub')) || {}, {
-      memo: localStorage.getItem('memo')
-    });
   }
 
   componentWillMount() {
@@ -131,33 +130,42 @@ export default class PkgPubPage extends React.Component {
   }
 
   handleSelectProvince(province) {
-    let d = {};
-    d[this.state.citySelectorField] = province;
-
-    this.setState(d, () => {
+    this.setState({
+      [this.state.citySelectorField]: province
+    }, () => {
       this.writeDraft();
     });
   }
 
   handleSelectCity(city) {
-    let d = {};
     let field = this.state.citySelectorField;
 
-    d[field] = `${this.state[field]}-${city}`;
-
-    this.setState(d, () => {
+    this.setState({
+      [field]: `${this.state[field]}-${city}`
+    }, () => {
       this.writeDraft();
     });
   }
 
   handleSelectArea(area) {
-    let d = {};
     let field = this.state.citySelectorField;
 
-    d[field] = `${this.state[field]}-${area}`;
-
-    this.setState(d, () => {
+    this.setState({
+      [field]: `${this.state[field]}-${area}`
+    }, () => {
       this.writeDraft();
+    });
+  }
+
+  handleSelectHistory(...args) {
+    args.reverse();
+
+    let selected = args.filter((arg) => {
+      return !!arg;
+    });
+
+    this.setState({
+      [this.state.citySelectorField]: selected.join('-')
     });
   }
 
@@ -168,20 +176,17 @@ export default class PkgPubPage extends React.Component {
   }
 
   handleSelectItem(item) {
-    let d = {};
-
-    d[this.state.selectorField] = item;
-    this.setState(d, () => {
+    this.setState({
+      [this.state.selectorField]: item
+    }, () => {
       this.writeDraft();
     });
   }
 
   handleNumChange(field: string, e: Object) {
-    let o = {};
-
-    o[field] = $.trim(e.target.value).replace(/[^\d\.]+/g, '');
-
-    this.setState(o, () => {
+    this.setState({
+      [field]: $.trim(e.target.value).replace(/[^\d\.]+/g, '')
+    }, () => {
       this.writeDraft();
     });
   }
@@ -249,10 +254,8 @@ export default class PkgPubPage extends React.Component {
             <div className="control">
               <input
                 type="text"
-                disabled="disabled"
                 placeholder="货物种类"
-                onClick={this.showSelector.bind(this, 'pkgType')}
-                value={this.state.pkgType.name} />
+                value={this.state.pkgType} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -290,6 +293,7 @@ export default class PkgPubPage extends React.Component {
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}
+          onSelectHistory={this.handleSelectHistory.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
         <Selector

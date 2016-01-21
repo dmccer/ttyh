@@ -2,60 +2,81 @@ import './index.less';
 
 import React from 'react';
 import cx from 'classnames';
+import ReactIScroll from 'react-iscroll';
+import IScroll from 'iscroll/build/iscroll-lite';
+
 import Mask from '../mask/';
 
 export default class CitySelector extends React.Component {
+  state = {
+    historyCities: ['上海', '北京', '天津', '四川', '湛江'],
+    provinces: ["北京",
+      "天津",
+      "河北",
+      "山西",
+      "内蒙古",
+      "辽宁",
+      "吉林",
+      "黑龙江",
+      "上海",
+      "江苏",
+      "浙江",
+      "安徽",
+      "福建",
+      "江西",
+      "山东",
+      "河南",
+      "湖北",
+      "湖南",
+      "广东",
+      "广西",
+      "海南",
+      "重庆",
+      "四川",
+      "贵州",
+      "云南",
+      "西藏",
+      "陕西",
+      "甘肃",
+      "青海",
+      "宁夏",
+      "新疆",
+      "台湾",
+      "香港",
+      "澳门"
+    ],
+    cities: ['天津', '四川', '湛江'],
+    areas: ['北京', '天津', '四川'],
+    options: {
+      mouseWheel: true,
+      click: true,
+      scrollbars: true
+    }
+  };
+
   constructor() {
     super();
-
-    this.state = {
-      historyCities: ['上海', '北京', '天津', '四川', '湛江'],
-      provinces: ["北京",
-        "天津",
-        "河北",
-        "山西",
-        "内蒙古",
-        "辽宁",
-        "吉林",
-        "黑龙江",
-        "上海",
-        "江苏",
-        "浙江",
-        "安徽",
-        "福建",
-        "江西",
-        "山东",
-        "河南",
-        "湖北",
-        "湖南",
-        "广东",
-        "广西",
-        "海南",
-        "重庆",
-        "四川",
-        "贵州",
-        "云南",
-        "西藏",
-        "陕西",
-        "甘肃",
-        "青海",
-        "宁夏",
-        "新疆",
-        "台湾",
-        "香港",
-        "澳门"
-      ],
-      cities: ['天津', '四川', '湛江'],
-      areas: ['北京', '天津', '四川']
-    };
   }
 
+  /**
+   * 处理选择历史记录
+   */
+  select_history(item) {
+    this.props.onSelectHistory(item.area, item.city, item.province);
+  }
+
+  /**
+   * 处理选择地区
+   */
   select_area(area) {
     this.props.onSelectArea(area, this.state.city, this.state.province);
 
     this.close();
   }
 
+  /**
+   * 处理选择城市
+   */
   select_city(city) {
     this.setState({
       city: city
@@ -64,6 +85,9 @@ export default class CitySelector extends React.Component {
     this.props.onSelectCity(city, this.state.province);
   }
 
+  /**
+   * 处理选择省份
+   */
   select_province(province) {
     this.setState({
       province: province
@@ -72,6 +96,9 @@ export default class CitySelector extends React.Component {
     this.props.onSelectProvince(province);
   }
 
+  /**
+   * 关闭选择器
+   */
   close() {
     this.props.onCancel();
 
@@ -82,6 +109,9 @@ export default class CitySelector extends React.Component {
     });
   }
 
+  /**
+   * 点击空白区域取消选择
+   */
   cancel(e) {
     if (e.currentTarget !== e.target) {
       return;
@@ -90,15 +120,37 @@ export default class CitySelector extends React.Component {
     this.close();
   }
 
-  renderItem(list, field) {
-    return list.map((item) => {
+  /**
+   * 展示历史记录
+   */
+  renderHistory() {
+    let list = this.state.historyCities;
+
+    if (list.length) {
+      let historyList = list.map((item) => {
+        return (
+          <li
+            key={`history_${item}`}
+            onClick={this.select_history.bind(this, item)}
+          >{item.area || item.city || item.province}</li>
+        );
+      });
+
       return (
-        <li key={`${field}_${item}`} onClick={this[`select_${field}`].bind(this, item)}>{item}</li>
+        <div className="history">
+          <h2>历史记录</h2>
+          <ul className="history-cities">
+            {historyList}
+          </ul>
+        </div>
       );
-    });
+    }
   }
 
-  _render() {
+  /**
+   * 展示省份或城市或地区列表
+   */
+  renderItems() {
     if (!this.state.province) {
       return this.renderItem(this.state.provinces, 'province');
     }
@@ -108,6 +160,17 @@ export default class CitySelector extends React.Component {
     }
 
     return this.renderItem(this.state.areas, 'area');
+  }
+
+  /**
+   * 展示城市或省份或地区项
+   */
+  renderItem(list, field) {
+    return list.map((item) => {
+      return (
+        <li key={`${field}_${item}`} onClick={this[`select_${field}`].bind(this, item)}>{item}</li>
+      );
+    });
   }
 
   render() {
@@ -122,19 +185,15 @@ export default class CitySelector extends React.Component {
           height: height + "px",
           top: top + "px"
         }}
-        onClick={this.cancel.bind(this)}
-      >
+        onClick={this.cancel.bind(this)}>
         <div className="inner">
-          <div className="history">
-            <h2>历史记录</h2>
-            <ul className="history-cities">
-              {this.renderItem(this.state.historyCities, 'area')}
-            </ul>
-          </div>
+          {this.renderHistory()}
           <div className="cities">
-            <ul>
-              {this._render()}
-            </ul>
+            <ReactIScroll iScroll={IScroll} options={this.state.options}>
+              <ul>
+                {this.renderItems()}
+              </ul>
+            </ReactIScroll>
           </div>
         </div>
       </section>
