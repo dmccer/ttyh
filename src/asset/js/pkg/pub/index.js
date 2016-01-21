@@ -93,8 +93,67 @@ export default class PkgPubPage extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO:
-    // 提交服务器
+    let r = this.validate();
+    if (r !== true) {
+      this.refs.poptip.warn(r);
+
+      return;
+    }
+
+    this.refs.loading.show('发布中...');
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/api/pub_pkg',
+        type: 'POST',
+        data: {
+          startPoint: this.state.startPoint,
+          endPoint: this.state.endPoint,
+          truckType: this.state.truckType,
+          pkgType: this.state.pkgType,
+          pkgWeight: this.state.pkgWeight,
+          memo: this.state.memo
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      this.refs.poptip.success('发布货源成功');
+
+      // 清空发布货源草稿及备注
+      localStorage.removeItem('pkg-pub');
+      localStorage.removeItem('memo');
+
+      this.setState({
+        startPoint: null,
+        endPoint: null,
+        truckType: {},
+        pkgType: null,
+        pkgWeight: null,
+        memo: null
+      });
+
+      // TODO: 跳转到我的货源列表页面
+    }).catch(() => {
+      this.refs.poptip.error('发布货源失败');
+    }).done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  validate() {
+    if ($.trim(this.state.startPoint) === '') {
+      return '出发地址不能为空';
+    }
+
+    if ($.trim(this.state.endPoint) === '') {
+      return '到达地址不能为空';
+    }
+
+    if ($.trim(this.state.truckType) === '') {
+      return '车型不能为空';
+    }
+
+    return true;
   }
 
   writeDraft() {
@@ -116,8 +175,6 @@ export default class PkgPubPage extends React.Component {
       citySelectorField: field,
       showCitySelector: true
     });
-
-    this.forceUpdate();
   }
 
   showSelector(field, e) {
@@ -235,15 +292,18 @@ export default class PkgPubPage extends React.Component {
             </div>
           </div>
         </div>
-        <h2 className="subtitle"><b>*</b>货车要求</h2>
+        <h2 className="subtitle">货车要求</h2>
         <div className="field-group">
           <div className="field">
-            <label><i className="icon icon-truck-type s20"></i></label>
+            <label>
+              <b>*</b>
+              <i className="icon icon-truck-type s20"></i>
+            </label>
             <div className="control">
               <input
                 type="text"
                 disabled="disabled"
-                placeholder="所有车型"
+                placeholder="选择车型"
                 onClick={this.showSelector.bind(this, 'truckType')}
                 value={this.state.truckType.name} />
               <i className="icon icon-arrow"></i>

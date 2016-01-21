@@ -7,9 +7,29 @@ import IScroll from 'iscroll/build/iscroll-lite';
 
 import Mask from '../mask/';
 
+const HISTORY = 'city_selector_histories';
+
+// {
+//   'area': '任城',
+//   'city': '济宁',
+//   'province': '山东'
+// }, {
+//   'area': '',
+//   'city': '浦东新区',
+//   'province': '上海'
+// }
+
 export default class CitySelector extends React.Component {
+  static defaultProps = {
+    options: {
+      mouseWheel: true,
+      click: true,
+      scrollbars: true
+    }
+  };
+
   state = {
-    historyCities: ['上海', '北京', '天津', '四川', '湛江'],
+    historyCities: [],
     provinces: ["北京",
       "天津",
       "河北",
@@ -45,17 +65,22 @@ export default class CitySelector extends React.Component {
       "香港",
       "澳门"
     ],
-    cities: ['天津', '四川', '湛江'],
-    areas: ['北京', '天津', '四川'],
-    options: {
-      mouseWheel: true,
-      click: true,
-      scrollbars: true
-    }
+    cities: ['济宁', '济南', '青岛'],
+    areas: ['任城', '淄博', '兖州']
   };
 
   constructor() {
     super();
+  }
+
+  componentWillMount() {
+    // TODO: 获取省份
+  }
+
+  componentWillReceiveProps() {
+    this.setState({
+      historyCities: JSON.parse(localStorage.getItem(HISTORY)) || []
+    });
   }
 
   /**
@@ -63,6 +88,8 @@ export default class CitySelector extends React.Component {
    */
   select_history(item) {
     this.props.onSelectHistory(item.area, item.city, item.province);
+
+    this.close();
   }
 
   /**
@@ -71,7 +98,12 @@ export default class CitySelector extends React.Component {
   select_area(area) {
     this.props.onSelectArea(area, this.state.city, this.state.province);
 
-    this.close();
+    this.setState({
+      area: area
+    }, () => {
+      this.close();
+    });
+
   }
 
   /**
@@ -102,11 +134,35 @@ export default class CitySelector extends React.Component {
   close() {
     this.props.onCancel();
 
-    this.setState({
-      province: null,
-      city: null,
-      area: null
-    });
+    // 若有选择，则写入历史记录
+    if (this.state.province) {
+      let histories = this.state.historyCities;
+
+      let has = histories.find((item) => {
+        return item.province === this.state.province &&
+          item.city === this.state.city &&
+          item.area === this.state.area;
+      });
+
+      if (has) {
+        return;
+      }
+
+      let copy = histories.slice();
+      copy.push({
+        province: this.state.province,
+        city: this.state.city,
+        area: this.state.area
+      });
+
+      localStorage.setItem(HISTORY, JSON.stringify(copy));
+
+      this.setState({
+        province: null,
+        city: null,
+        area: null
+      });
+    }
   }
 
   /**
@@ -127,10 +183,10 @@ export default class CitySelector extends React.Component {
     let list = this.state.historyCities;
 
     if (list.length) {
-      let historyList = list.map((item) => {
+      let historyList = list.map((item, index) => {
         return (
           <li
-            key={`history_${item}`}
+            key={`history_${index}`}
             onClick={this.select_history.bind(this, item)}
           >{item.area || item.city || item.province}</li>
         );
@@ -189,7 +245,9 @@ export default class CitySelector extends React.Component {
         <div className="inner">
           {this.renderHistory()}
           <div className="cities">
-            <ReactIScroll iScroll={IScroll} options={this.state.options}>
+            <ReactIScroll
+              iScroll={IScroll}
+              options={this.props.options}>
               <ul>
                 {this.renderItems()}
               </ul>

@@ -1,3 +1,6 @@
+/**
+ * 发布货源备注填写和选择页面
+ */
 import '../../../../less/global/global.less';
 import '../../../../less/global/form.less';
 import './index.less';
@@ -5,16 +8,12 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import cx from 'classnames';
-
-import Poptip from '../../../poptip/';
-import Loading from '../../../loading/';
 
 export default class PkgPubMemoPage extends React.Component {
+  state = {};
+
   constructor() {
     super();
-
-    this.state = {};
   }
 
   componentWillMount() {
@@ -53,74 +52,50 @@ export default class PkgPubMemoPage extends React.Component {
       }
     ];
 
-    if (memo != null) {
-      memos = this.findAndSetSelected(memos, memo);
-    }
-
     this.setState({
       memo: memo,
       memos: memos
     });
   }
 
-  findAndSetSelected(memos, memo) {
-    memos.forEach((item) => {
-      if (memo.indexOf(item.name) !== -1) {
-        item.selected = true;
-      } else {
-        item.selected = false;
-      }
-    });
-
-    return memos;
-  }
-
+  /**
+   * 提交备注
+   */
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
 
     localStorage.setItem('memo', this.state.memo);
-
     history.back();
   }
 
+  /**
+   * 选择备注标签
+   */
   handleSelectMemo(memo) {
-    memo.selected = true;
-
     this.setState({
       memo: this.state.memo && `${this.state.memo},${memo.name}` || memo.name
     });
   }
 
-  handleRemoveMemo(memo) {
-    memo.selected = false;
-    let m = this.state.memo.replace(`,${memo.name}`, '').replace(`${memo.name},`, '').replace(memo.name, '');
-
-    this.setState({
-      memo: m
-    });
-  }
-
+  /**
+   * 处理备注内容改变
+   */
   handleStrChange(field: string, e: Object) {
-    let o = {};
-
-    o[field] = $.trim(e.target.value);
-    o.memos = this.findAndSetSelected(this.state.memos, o[field]);
-
-    this.setState(o, () => {
+    this.setState({
+      [field]: $.trim(e.target.value)
+    }, () => {
       localStorage.setItem('memo', this.state.memo);
     });
   }
 
   render() {
     let list = this.state.memos.map((memo) => {
-      let cxs = cx('tag', memo.selected ? 'selected' : '');
-
       return (
         <div
           key={`memo-item_${memo.id}`}
-          className={cxs}
-          onClick={memo.selected ? this.handleRemoveMemo.bind(this, memo) : this.handleSelectMemo.bind(this, memo)}>{memo.name}</div>
+          className="tag"
+          onClick={this.handleSelectMemo.bind(this, memo)}>{memo.name}</div>
       );
     });
 
