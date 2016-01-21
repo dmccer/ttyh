@@ -9,16 +9,6 @@ import Mask from '../mask/';
 
 const HISTORY = 'city_selector_histories';
 
-// {
-//   'area': '任城',
-//   'city': '济宁',
-//   'province': '山东'
-// }, {
-//   'area': '',
-//   'city': '浦东新区',
-//   'province': '上海'
-// }
-
 export default class CitySelector extends React.Component {
   static defaultProps = {
     options: {
@@ -144,18 +134,21 @@ export default class CitySelector extends React.Component {
           item.area === this.state.area;
       });
 
-      if (has) {
-        return;
+      if (!has) {
+        let copy = histories.slice();
+
+        if (histories.length >= 6) {
+          copy.pop();
+        }
+
+        copy.unshift({
+          province: this.state.province,
+          city: this.state.city,
+          area: this.state.area
+        });
+
+        localStorage.setItem(HISTORY, JSON.stringify(copy));
       }
-
-      let copy = histories.slice();
-      copy.push({
-        province: this.state.province,
-        city: this.state.city,
-        area: this.state.area
-      });
-
-      localStorage.setItem(HISTORY, JSON.stringify(copy));
 
       this.setState({
         province: null,
