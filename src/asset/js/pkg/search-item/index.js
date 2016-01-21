@@ -1,12 +1,17 @@
-import '../../../../less/global/global.less';
-import '../../../../less/global/layout.less';
-import '../../../../less/component/icon.less';
-import '../../../../less/component/flag.less';
+/**
+ * 找货列表项
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
+ */
+import '../../../less/global/global.less';
+import '../../../less/global/layout.less';
+import '../../../less/component/icon.less';
+import '../../../less/component/flag.less';
 import './index.less';
 
 import React, {Component} from 'react';
 
-export default class RecommendPkgItem extends Component {
+export default class SearchPkgItem extends Component {
   constructor() {
     super();
   }
@@ -58,7 +63,6 @@ export default class RecommendPkgItem extends Component {
             <a href="tel:15601859828" className="icon icon-call s30"></a>
           </div>
         </div>
-        <div className="tag unread">未读</div>
       </div>
     );
   }

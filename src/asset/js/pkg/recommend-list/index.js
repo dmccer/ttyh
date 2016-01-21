@@ -8,7 +8,7 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import RecommendPkgItem from './item/';
+import RecommendPkgItem from '../recommend-item/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 
 export default class RecommendPkgListPage extends Component {

@@ -30,6 +30,8 @@ module.exports = {
     'my-truck': './src/asset/js/truck/my/index.js',
     'recommend-pkg-list': './src/asset/js/pkg/recommend-list/index.js',
     'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
+    'pkg-search': './src/asset/js/pkg/search/index.js',
+    'search-filter': './src/asset/js/truck/filter/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -212,6 +214,20 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'recommend-truck-list.html',
       chunks: ['recommend-truck-list', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '找货',
+      template: './src/page/index.html',
+      filename: 'pkg-search.html',
+      chunks: ['pkg-search', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '筛选',
+      template: './src/page/index.html',
+      filename: 'search-filter.html',
+      chunks: ['search-filter', 'zepto', 'ved'],
       inject: 'body'
     })
   ],

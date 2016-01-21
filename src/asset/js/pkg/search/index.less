@@ -1,0 +1,33 @@
+@import '../../../less/global/site.variable';
+
+body {
+  background-color: @white;
+}
+
+.filters {
+  border-bottom: 1px solid @c_lightGrey;
+
+  li {
+    text-align: center;
+    font-size: 13px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    a {
+      display: block;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      border-right: 1px solid @c_lightGrey;
+      color: @c_black;
+    }
+  }
+
+  &:last-child {
+    width: 80px;
+    border-right: none;
+
+    a {
+      border-right: none;
+    }
+  }
+}
