@@ -7,6 +7,7 @@ import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Promise from 'promise';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -62,14 +63,68 @@ export default class TruckAddPage extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    let validate_msg = this.validate();
 
+    if (validate_msg !== true) {
+      this.refs.poptip.warn(validate_msg);
+
+      return;
+    }
+
+    this.refs.loading.show('请求中...');
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/api/add_truck',
+        type: 'POST',
+        data: {
+          truck_owner: this.state.name,
+          tel: this.state.tel,
+          license: this.state.license,
+          truck_type: this.state.truckType,
+          weight: this.state.weight
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      this.refs.poptip.success('添加车辆成功');
+
+      history.back();
+    }).catch(() => {
+      this.refs.poptip.warn('添加车辆失败');
+    }).done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  validate() {
+    if ($.trim(this.state.name) === '') {
+      return '司机姓名不能为空';
+    }
+
+    if ($.trim(this.state.tel) === '') {
+      return '手机号不能为空';
+    }
+
+    if ($.trim(this.state.license) === '') {
+      return '车牌号不能为空';
+    }
+
+    if ($.trim(this.state.truckType) === '') {
+      return '车型不能为空';
+    }
+
+    if ($.trim(this.state.weight) === '') {
+      return '载重不能为空';
+    }
+
+    return true;
   }
 
   handleSelectItem(item) {
-    let d = {};
-
-    d[this.state.selectorField] = item;
-    this.setState(d);
+    this.setState({
+      [this.state.selectorField]: item
+    });
   }
 
   showSelector(field, e) {
@@ -82,11 +137,9 @@ export default class TruckAddPage extends React.Component {
   }
 
   handleNumChange(field: string, e: Object) {
-    let o = {};
-
-    o[field] = $.trim(e.target.value).replace(/[^\d\.]+/g, '');
-
-    this.setState(o);
+    this.setState({
+      [field]: $.trim(e.target.value).replace(/[^\d\.]+/g, '')
+    });
   }
 
   handleTelChange(e: Object) {
@@ -96,10 +149,9 @@ export default class TruckAddPage extends React.Component {
   }
 
   handleStrChange(field: string, e: Object) {
-    let o = {};
-    o[field] = $.trim(e.target.value);
-
-    this.setState(o);
+    this.setState({
+      [field]: $.trim(e.target.value)
+    });
   }
 
   render() {
@@ -113,6 +165,8 @@ export default class TruckAddPage extends React.Component {
                 <input
                   type="text"
                   placeholder="输入司机姓名"
+                  value={this.state.name}
+                  onChange={this.handleStrChange.bind(this, 'name')}
                 />
               </div>
             </div>
@@ -134,8 +188,8 @@ export default class TruckAddPage extends React.Component {
               <input
                 type="text"
                 placeholder="输入车牌号"
-                value={this.state.licensePlate}
-                onChange={this.handleStrChange.bind(this, 'licensePlate')}
+                value={this.state.license}
+                onChange={this.handleStrChange.bind(this, 'license')}
               />
             </div>
           </div>

@@ -27,6 +27,7 @@
     "classnames": "^2.2.1",
     "lodash": "^3.10.1",
     "normalize.css": "^3.0.3",
+    "promise": "^7.1.1",
     "querystring": "^0.2.0",
     "react": "^0.14.3",
     "react-cookie": "^0.4.3",

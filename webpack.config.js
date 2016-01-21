@@ -299,8 +299,8 @@ module.exports = {
         secure: false
       },
       '/api*': {
-        // target: 'http://o.dp:3000',
-        target: 'http://m.ttyhuo.com',
+        target: 'http://o.dp:3000',
+        // target: 'http://m.ttyhuo.com',
         secure: false
       },
       '/*.jsp*': {

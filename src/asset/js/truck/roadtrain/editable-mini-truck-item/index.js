@@ -114,6 +114,16 @@ export default class EditableMiniTruckItem extends React.Component {
     }
   }
 
+  remove() {
+    if (confirm('是否删除该车?')) {
+      this.props.del(this.props.id);
+
+      this.setState({
+        left: 0
+      });
+    }
+  }
+
   render() {
     return (
       <div className="editable-mini-truck-item">
@@ -126,10 +136,10 @@ export default class EditableMiniTruckItem extends React.Component {
           onTouchMove={this.touchmove.bind(this)}
           onTouchEnd={this.touchend.bind(this)}
         >
-          <MiniTruckItem/>
+          <MiniTruckItem {...this.props}/>
         </div>
         <ul className="actions row">
-          <li className="remove">删除</li>
+          <li className="remove" onClick={this.remove.bind(this)}>删除</li>
         </ul>
       </div>
     );
