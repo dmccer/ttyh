@@ -21,10 +21,10 @@
 
 ### 发布货源
 
-Url: `/mvc/product_add_json`  
-Method: `POST`  
-Content-Type: `application/x-www-form-urlencoded`  
-Params:
+*Url*: `/mvc/product_add_json`  
+*Method*: `POST`  
+*Content-Type*: `application/x-www-form-urlencoded`  
+*Params*:
 
 ```javascript
   {
@@ -37,7 +37,7 @@ Params:
     memo: String // 备注, 如: 'bulabula....'
   }
 ```
-Response:
+*Response*:
 
 ```javascript
 {
