@@ -144,7 +144,7 @@ export default class PkgDetailPage extends Component {
           </div>
         </div>
         <div className="fixed-holder"></div>
-        <a href="tel:{pkg.tel}" className="call-btn">
+        <a href={`tel:${pkg.tel}`} className="call-btn">
           <i className="icon icon-call"></i>
           <span>电话联系</span>
         </a>
