@@ -4,8 +4,11 @@ import React from 'react';
 import cx from 'classnames';
 import ReactIScroll from 'react-iscroll';
 import IScroll from 'iscroll/build/iscroll-lite';
+import Promise from 'promise';
 
 import Mask from '../mask/';
+import Loading from '../loading/';
+import Poptip from '../poptip/';
 
 const HISTORY = 'city_selector_histories';
 
@@ -25,51 +28,110 @@ export default class CitySelector extends React.Component {
 
   state = {
     historyCities: [],
-    provinces: ["北京",
-      "天津",
-      "河北",
-      "山西",
-      "内蒙古",
-      "辽宁",
-      "吉林",
-      "黑龙江",
-      "上海",
-      "江苏",
-      "浙江",
-      "安徽",
-      "福建",
-      "江西",
-      "山东",
-      "河南",
-      "湖北",
-      "湖南",
-      "广东",
-      "广西",
-      "海南",
-      "重庆",
-      "四川",
-      "贵州",
-      "云南",
-      "西藏",
-      "陕西",
-      "甘肃",
-      "青海",
-      "宁夏",
-      "新疆",
-      "台湾",
-      "香港",
-      "澳门"
-    ],
-    cities: ['济宁', '济南', '青岛'],
-    areas: ['任城', '淄博', '兖州']
+    provinces: [],
+    cities: [],
+    areas: []
   };
 
   constructor() {
     super();
   }
 
-  componentWillMount() {
-    // TODO: 获取省份
+  componentDidMount() {
+    if (this.state.provinces && this.state.provinces.length) {
+      return;
+    }
+
+    this.fetchProvinces();
+  }
+
+  getIndex(field, listName) {
+    return this.state[listName].indexOf(this.state[field]);
+  }
+
+  fetchProvinces() {
+    this.refs.loading.show('加载中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/getCitys',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      this.setState({
+        provinces: res.resultList
+      });
+    }).catch((err) => {
+      this.refs.poptip.warn('加载省份失败,请重试');
+
+      console.error(`${new Date().toLocaleString()} - 错误日志 start`)
+      console.error(err)
+      console.error(`-- 错误日志 end --`)
+    }).done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  fetchCities() {
+    this.refs.loading.show('加载中...');
+
+    new Promise((resolve, reject) => {
+      let provinces = this.state.provinces;
+      let index = provinces.indexOf(this.state.province);
+
+      $.ajax({
+        url: '/mvc/v2/getCitys',
+        type: 'GET',
+        data: {
+          cityIndex: this.getIndex('province', 'provinces')
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      this.setState({
+        cities: res.resultList
+      });
+    }).catch((err) => {
+      this.refs.poptip.warn('加载城市失败,请重试');
+
+      console.error(`${new Date().toLocaleString()} - 错误日志 start`)
+      console.error(err)
+      console.error(`-- 错误日志 end --`)
+    }).done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  fetchAreas() {
+    this.refs.loading.show('加载中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/getCitys',
+        type: 'GET',
+        data: {
+          cityIndex: this.getIndex('province', 'provinces'),
+          districtIndex: this.getIndex('city', 'cities')
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      this.setState({
+        areas: res.resultList
+      });
+    }).catch((err) => {
+      this.refs.poptip.warn('加载地区失败,请重试');
+
+      console.error(`${new Date().toLocaleString()} - 错误日志 start`)
+      console.error(err)
+      console.error(`-- 错误日志 end --`)
+    }).done(() => {
+      this.refs.loading.close();
+    });
   }
 
   componentWillReceiveProps() {
@@ -113,6 +175,8 @@ export default class CitySelector extends React.Component {
   select_city(city) {
     this.setState({
       city: city
+    }, () => {
+      this.fetchAreas();
     });
 
     this.props.onSelectCity(city, this.state.province);
@@ -124,6 +188,8 @@ export default class CitySelector extends React.Component {
   select_province(province) {
     this.setState({
       province: province
+    }, () => {
+      this.fetchCities();
     });
 
     this.props.onSelectProvince(province);
@@ -232,7 +298,7 @@ export default class CitySelector extends React.Component {
    * 展示城市或省份或地区项
    */
   renderItem(list, field) {
-    return list.map((item) => {
+    return list.map((item, index) => {
       return (
         <li key={`${field}_${item}`} onClick={this[`select_${field}`].bind(this, item)}>{item}</li>
       );
@@ -264,6 +330,8 @@ export default class CitySelector extends React.Component {
             </ReactIScroll>
           </div>
         </div>
+        <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </section>
     );
   }

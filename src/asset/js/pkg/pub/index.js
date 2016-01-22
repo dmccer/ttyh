@@ -34,66 +34,7 @@ export default class PkgPubPage extends React.Component {
   }
 
   componentWillMount() {
-    // let truckTypes = [
-    //   {
-    //     name: '平板',
-    //     id: 1
-    //   }, {
-    //     name: '高栏',
-    //     id: 2
-    //   }, {
-    //     name: '厢式',
-    //     id: 3
-    //   }, {
-    //     name: '面包车',
-    //     id: 4
-    //   }, {
-    //     name: '保温',
-    //     id: 5
-    //   }, {
-    //     name: '冷藏',
-    //     id: 6
-    //   }, {
-    //     name: '危险品',
-    //     id: 7
-    //   }, {
-    //     name: '集装箱',
-    //     id: 8
-    //   }, {
-    //     name: '其他',
-    //     id: 9
-    //   }
-    // ];
-    //
-    // let truckLengths = [
-    //   {
-    //     name: '6.2 米',
-    //     id: 1
-    //   }, {
-    //     name: '5 米',
-    //     id: 2
-    //   }, {
-    //     name: '3.2 米',
-    //     id: 3
-    //   }, {
-    //     name: '4.2 米',
-    //     id: 4
-    //   }, {
-    //     name: '7.2 米',
-    //     id: 5
-    //   }, {
-    //     name: '14.2 米',
-    //     id: 6
-    //   }, {
-    //     name: '其他',
-    //     id: 7
-    //   }
-    // ];
-    //
-    // this.setState({
-    //   truckTypes: truckTypes,
-    //   truckLengths: truckLengths
-    // });
+
   }
 
   fetchTruckTypes() {
@@ -104,6 +45,16 @@ export default class PkgPubPage extends React.Component {
         success: resolve,
         error: reject
       });
+    }).then((res) => {
+      let truckTypes = res.truckTypeMap;
+      truckTypes = Object.keys(truckTypes).map((key) => {
+        return {
+          name: truckTypes[key],
+          id: key
+        };
+      });
+
+      return truckTypes;
     });
   }
 
@@ -115,7 +66,17 @@ export default class PkgPubPage extends React.Component {
         success: resolve,
         error: reject
       });
-    })
+    }).then((res) => {
+      let truckLengths = res.truckLengthList;
+      truckLengths = truckLengths.map((len) => {
+        return {
+          name: len,
+          id: len
+        };
+      });
+
+      return truckLengths;
+    });
   }
 
   handleSubmit(e) {
@@ -253,38 +214,32 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 处理选择车型和车长
+   */
   handleSelectTruckType() {
+    // 若已经请求过车型和车长列表，则直接展示
+    if (this.state.truckTypes && this.state.truckLengths) {
+      this.showSelector('truckType');
+
+      return;
+    }
+
     this.refs.loading.show('加载中...');
 
     Promise
       .all([this.fetchTruckTypes(), this.fetchTruckLengths()])
       .then((res) => {
-        let truckTypes = res[0].truckTypeMap;
-        truckTypes = Object.keys(truckTypes).map((key) => {
-          return {
-            name: truckTypes[key],
-            id: key
-          };
-        });
-
-        let truckLengths = res[1].truckLengthList;
-        truckLengths = truckLengths.map((len) => {
-          return {
-            name: len,
-            id: len
-          };
-        });
-
         this.setState({
-          truckTypes: truckTypes,
-          truckLengths: truckLengths
+          truckTypes: res[0],
+          truckLengths: res[1]
         }, () => {
           this.showSelector('truckType');
         });
       })
       .catch((...args) => {
         this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
-        
+
         console.error(`${new Date().toLocaleString()} - 错误日志 start`)
         console.error(args[0])
         console.error(`-- 错误日志 end --`)
@@ -294,6 +249,10 @@ export default class PkgPubPage extends React.Component {
       });
   }
 
+  /**
+   * 展示车型或车长选择面板
+   * @param  {String} field 字段名，truckType 或 truckLength
+   */
   showSelector(field) {
     this.setState({
       selectorItems: this.state[`${field}s`],
@@ -303,6 +262,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 选中车型或车长后存入本地
+   * 选中车型后再展示选则车长
+   */
   handleSelectItem(item) {
     let field = this.state.selectorField;
 
