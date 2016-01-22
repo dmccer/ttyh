@@ -15,7 +15,11 @@ export default class CitySelector extends React.Component {
       mouseWheel: true,
       click: true,
       scrollbars: true
-    }
+    },
+    onSelectHistory: () => {},
+    onSelectArea: () => {},
+    onSelectCity: () => {},
+    onSelectProvince: () => {}
   };
 
   state = {
@@ -77,9 +81,15 @@ export default class CitySelector extends React.Component {
    * 处理选择历史记录
    */
   select_history(item) {
-    this.props.onSelectHistory(item.area, item.city, item.province);
+    this.props.onSelectHistory(item.province, item.city, item.area);
 
-    this.close();
+    this.setState({
+      province: item.province,
+      city: item.city,
+      area: item.area
+    }, () => {
+      this.close();
+    });
   }
 
   /**
@@ -119,11 +129,9 @@ export default class CitySelector extends React.Component {
   }
 
   /**
-   * 关闭选择器
+   * 结束选择，关闭选择器
    */
   close() {
-    this.props.onCancel();
-
     // 若有选择，则写入历史记录
     if (this.state.province) {
       let histories = this.state.historyCities;
@@ -150,12 +158,19 @@ export default class CitySelector extends React.Component {
         localStorage.setItem(HISTORY, JSON.stringify(copy));
       }
 
-      this.setState({
-        province: null,
-        city: null,
-        area: null
-      });
+      this.clear();
     }
+
+    this.props.done(this.state.province, this.state.city, this.state.area);
+    this.props.onCancel();
+  }
+
+  clear() {
+    this.setState({
+      province: null,
+      city: null,
+      area: null
+    });
   }
 
   /**
@@ -166,7 +181,8 @@ export default class CitySelector extends React.Component {
       return;
     }
 
-    this.close();
+    this.clear();
+    this.props.onCancel();
   }
 
   /**
@@ -223,8 +239,8 @@ export default class CitySelector extends React.Component {
   }
 
   render() {
-    let height = $(window).height() - this.props.top + 1;
-    let top = this.props.top - 1;
+    let height = $(window).height() - this.props.top;
+    let top = this.props.top;
     let cxs = cx('city-selector', this.props.on ? 'on' : '');
 
     return (
