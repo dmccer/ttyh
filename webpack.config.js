@@ -32,6 +32,7 @@ module.exports = {
     'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
     'pkg-search': './src/asset/js/pkg/search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
+    'pkg-detail': './src/asset/js/pkg/detail/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -228,6 +229,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'search-filter.html',
       chunks: ['search-filter', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '货源详情',
+      template: './src/page/index.html',
+      filename: 'pkg-detail.html',
+      chunks: ['pkg-detail', 'zepto', 'ved'],
       inject: 'body'
     })
   ],
