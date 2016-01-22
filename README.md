@@ -21,9 +21,9 @@
 
 ### 发布货源
 
-Url: `/mvc/product_add_json`
-Method: `POST`
-Content-Type: `application/x-www-form-urlencoded`
+Url: `/mvc/product_add_json`  
+Method: `POST`  
+Content-Type: `application/x-www-form-urlencoded`  
 Params:
 
 ```javascript
