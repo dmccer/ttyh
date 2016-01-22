@@ -1,3 +1,8 @@
+/**
+ * 地址选择器
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
+ */
 import './index.less';
 
 import React from 'react';
@@ -11,6 +16,7 @@ import Loading from '../loading/';
 import Poptip from '../poptip/';
 
 const HISTORY = 'city_selector_histories';
+const ALL = '不限';
 
 export default class CitySelector extends React.Component {
   static defaultProps = {
@@ -38,6 +44,7 @@ export default class CitySelector extends React.Component {
   }
 
   componentDidMount() {
+    // 若获取过省份列表，则直接展示，无须再次请求
     if (this.state.provinces && this.state.provinces.length) {
       return;
     }
@@ -45,10 +52,18 @@ export default class CitySelector extends React.Component {
     this.fetchProvinces();
   }
 
+  /**
+   * 获取选中的数据在列表中的索引位置
+   * @param  {String} field    字段
+   * @param  {String} listName 列表字段
+   */
   getIndex(field, listName) {
     return this.state[listName].indexOf(this.state[field]);
   }
 
+  /**
+   * 获取省份列表
+   */
   fetchProvinces() {
     this.refs.loading.show('加载中...');
 
@@ -74,6 +89,9 @@ export default class CitySelector extends React.Component {
     });
   }
 
+  /**
+   * 获取城市列表
+   */
   fetchCities() {
     this.refs.loading.show('加载中...');
 
@@ -105,6 +123,9 @@ export default class CitySelector extends React.Component {
     });
   }
 
+  /**
+   * 获取地区列表
+   */
   fetchAreas() {
     this.refs.loading.show('加载中...');
 
@@ -151,7 +172,7 @@ export default class CitySelector extends React.Component {
       city: item.city,
       area: item.area
     }, () => {
-      this.close();
+      this.done();
     });
   }
 
@@ -159,46 +180,66 @@ export default class CitySelector extends React.Component {
    * 处理选择地区
    */
   select_area(area) {
-    this.props.onSelectArea(area, this.state.city, this.state.province);
+    if (area === ALL) {
+      this.done();
+
+      return;
+    }
+
 
     this.setState({
       area: area
     }, () => {
-      this.close();
-    });
+      this.props.onSelectArea(area, this.state.city, this.state.province);
 
+      this.done();
+    });
   }
 
   /**
    * 处理选择城市
    */
   select_city(city) {
+    if (city === ALL) {
+      this.done();
+
+      return;
+    }
+
     this.setState({
       city: city
     }, () => {
+      this.props.onSelectCity(city, this.state.province);
+
       this.fetchAreas();
     });
-
-    this.props.onSelectCity(city, this.state.province);
   }
 
   /**
    * 处理选择省份
    */
   select_province(province) {
+    if (province === ALL) {
+      this.close();
+
+      return;
+    }
+
     this.setState({
       province: province
     }, () => {
+      this.props.onSelectProvince(province);
+
       this.fetchCities();
     });
 
-    this.props.onSelectProvince(province);
+
   }
 
   /**
-   * 结束选择，关闭选择器
+   * 完成地址选择
    */
-  close() {
+  done() {
     // 若有选择，则写入历史记录
     if (this.state.province) {
       let histories = this.state.historyCities;
@@ -224,20 +265,29 @@ export default class CitySelector extends React.Component {
 
         localStorage.setItem(`${this.props.prefix}${HISTORY}`, JSON.stringify(copy));
       }
-
-      this.clear();
     }
 
     this.props.done(this.state.province, this.state.city, this.state.area);
-    this.props.onCancel();
+    this.close();
   }
 
+  /**
+   * 清除选中数据
+   */
   clear() {
     this.setState({
       province: null,
       city: null,
       area: null
     });
+  }
+
+  /**
+   * 关闭地址选择器
+   */
+  close() {
+    this.clear();
+    this.props.onCancel();
   }
 
   /**
@@ -248,8 +298,7 @@ export default class CitySelector extends React.Component {
       return;
     }
 
-    this.clear();
-    this.props.onCancel();
+    this.close();
   }
 
   /**

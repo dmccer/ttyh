@@ -19,24 +19,26 @@ import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
 
 const CITY_SELECTOR_PREFIX = 'shipper_';
+const DRAFT = 'pkg-pub';
+const MEMO = 'pkg-pub-memo';
 
 export default class PkgPubPage extends React.Component {
   state = $.extend({
     qs: querystring.parse(location.search.substring(1)),
     truckType: {},
     truckLength: {}
-  }, JSON.parse(localStorage.getItem('pkg-pub')) || {}, {
-    memo: localStorage.getItem('memo')
+  }, JSON.parse(localStorage.getItem(DRAFT)) || {}, {
+    memo: localStorage.getItem(MEMO)
   });
 
   constructor() {
     super();
   }
 
-  componentWillMount() {
-
-  }
-
+  /**
+   * 获取车型列表
+   * @return {Promise}
+   */
   fetchTruckTypes() {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -58,6 +60,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 获取车长列表
+   * @return {Promise}
+   */
   fetchTruckLengths() {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -79,6 +85,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 处理提交发布
+   * @param  {SubmitEvent} e
+   */
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -130,6 +140,9 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 校验必填字段
+   */
   validate() {
     if ($.trim(this.state.startPoint) === '') {
       return '出发地址不能为空';
@@ -146,8 +159,11 @@ export default class PkgPubPage extends React.Component {
     return true;
   }
 
+  /**
+   * 写入草稿
+   */
   writeDraft() {
-    localStorage.setItem('pkg-pub', JSON.stringify({
+    localStorage.setItem(DRAFT, JSON.stringify({
       truckType: this.state.truckType,
       truckLength: this.state.truckLength,
       pkgType: this.state.pkgType,
@@ -157,7 +173,15 @@ export default class PkgPubPage extends React.Component {
     }));
   }
 
+  /**
+   * 打开/关闭地址选择器
+   * @param  {String} field 字段名, fromCity(出发地)或toCity(到达地)
+   * @param  {ClickEvent} e
+   */
   toggleCitySelector(field, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     let offset = $(e.target).offset();
     let top = offset.top + offset.height;
 
@@ -168,6 +192,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 处理选择省份
+   * @param  {String} province 省份
+   */
   handleSelectProvince(province) {
     this.setState({
       [this.state.citySelectorField]: province
@@ -176,6 +204,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 处理选择城市
+   * @param  {String} city 城市
+   */
   handleSelectCity(city) {
     let field = this.state.citySelectorField;
 
@@ -186,6 +218,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 处理选择地区
+   * @param  {String} area 地区
+   */
   handleSelectArea(area) {
     let field = this.state.citySelectorField;
 
@@ -196,9 +232,11 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 处理选择历史地址
+   * @param  {Array} args [省份, 城市, 地区]
+   */
   handleSelectHistory(...args) {
-    args.reverse();
-
     let selected = args.filter((arg) => {
       return !!arg;
     });
@@ -208,6 +246,9 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 取消选择地址
+   */
   handleCancelCitySelector() {
     this.setState({
       showCitySelector: false
