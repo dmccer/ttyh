@@ -45,3 +45,99 @@
   msg: '' // 操作结果提示, 如: '发布货源成功'
 }
 ```
+
+### 我发布的货源列表
+
+*Url*: `/mvc/xxxx`  
+*Method*: `GET`  
+*Params*:
+
+```javascript
+// cookie 标示当前用户
+{
+	pageIndex: Number, // 页码, 起始页为 0, 如: 1
+	pageSize: Number // 每页记录条数, 默认为 10 条, 如: 10
+}
+```
+*Response*:
+
+```javascript
+[
+	{
+		product: {
+			productID: Number, // 货物id
+			createTime: Number, // 发布时间戳
+			fromCity: String, // 出发地
+			toCity: String, // 到达地
+			truckType: String, // 车型, 如: 厢式
+			truckLength: Number, // 车长, 如: 9.6
+			loadLimit: Number, // 载重, 如: 17.5
+			title: String, // 货物种类
+			memo: String, // 备注
+		}
+	}
+]
+```
+
+### 搜索货源
+
+*Url*: `/mvc/searchProductsForH5`  
+*Method*: `GET`  
+*Params*:
+
+```javascript
+// cookie 标识当前用户
+{
+	fromCity: String, // 出发城市, 空格分割省市县, 如: '上海 浦东新区'
+	toCity: String, // 到达城市, 同上
+	truckTypeFlag: String, // 车型标识码集, 逗号分割车型标示码, 如: '1,3,6'
+	loadLimitFlag: String, // 载重标识码集, 逗号分割载重标识码, 如: '2,4',
+	truckLengthFlag: String, // 车长标识码集, 逗号分割车长标识码, 如: '3,5'
+	pageIndex: Number, // 页码, 起始页为 0, 如: 1
+	pageSize: Number // 每页记录条数, 默认为 10 条, 如: 10
+}
+```
+*Response*:
+
+```javascript
+// 实名认证和公司认证信息
+[
+	{
+		providerUserName: String, // 货主姓名
+		provideUserImgUrl: String, // 货主图像 url
+		product: {
+			productID: Number, // 货源ID
+			createTime: Number, // 发布时间戳
+			fromCity: String, // 出发地
+			toCity: String, // 到达地
+			truckType: String, // 车型, 如: 厢式
+			truckLength: Number, // 车长, 如: 9.6
+			loadLimit: Number, // 载重, 如: 17.5
+			title: String, // 货物种类
+			memo: String, // 备注
+			provideUserMobileNo: String // 手机号
+			provideUserID: Number // 货主ID
+		}
+	}
+]
+```
+
+### 货源详情
+
+*Url*: `/mvc/searchProductsForH5`  
+*Method*: `GET`  
+*Params*:
+
+```javascript
+// cookie 标识当前用户
+{
+	productID: Number // 货源ID
+}
+```
+*Response*:
+
+```javascript
+{}
+```
+
+
