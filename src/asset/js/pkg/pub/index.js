@@ -13,6 +13,8 @@ import Loading from '../../loading/';
 import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
 
+const CITY_SELECTOR_PREFIX = 'shipper_';
+
 export default class PkgPubPage extends React.Component {
 
   state = $.extend({
@@ -350,6 +352,7 @@ export default class PkgPubPage extends React.Component {
         <CitySelector
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}
+          prefix={CITY_SELECTOR_PREFIX}
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}

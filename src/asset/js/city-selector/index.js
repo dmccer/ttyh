@@ -19,7 +19,8 @@ export default class CitySelector extends React.Component {
     onSelectHistory: () => {},
     onSelectArea: () => {},
     onSelectCity: () => {},
-    onSelectProvince: () => {}
+    onSelectProvince: () => {},
+    done: () => {}
   };
 
   state = {
@@ -73,7 +74,7 @@ export default class CitySelector extends React.Component {
 
   componentWillReceiveProps() {
     this.setState({
-      historyCities: JSON.parse(localStorage.getItem(HISTORY)) || []
+      historyCities: JSON.parse(localStorage.getItem(`${this.props.prefix}${HISTORY}`)) || []
     });
   }
 
@@ -155,7 +156,7 @@ export default class CitySelector extends React.Component {
           area: this.state.area
         });
 
-        localStorage.setItem(HISTORY, JSON.stringify(copy));
+        localStorage.setItem(`${this.props.prefix}${HISTORY}`, JSON.stringify(copy));
       }
 
       this.clear();

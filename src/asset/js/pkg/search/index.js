@@ -15,6 +15,7 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 
 const PKG_SEARCH = 'pkg-search';
+const CITY_SELECTOR_PREFIX = 'trucker_';
 
 export default class SearchPkgPage extends Component {
   state = {
@@ -141,6 +142,7 @@ export default class SearchPkgPage extends Component {
         <CitySelector
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}
+          prefix={CITY_SELECTOR_PREFIX}
           done={this.handleSelectCityDone.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
