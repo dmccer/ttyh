@@ -303,7 +303,7 @@ module.exports = {
         secure: false
       },
       '/mvc*': {
-        target: 'http://ttyhuo.com',
+        target: 'http://121.42.222.222:85',
         secure: false
       },
       '/api*': {

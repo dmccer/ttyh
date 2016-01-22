@@ -1,3 +1,8 @@
+/**
+ * 发布货源页面
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
+ */
 import '../../../less/global/global.less';
 import '../../../less/global/form.less';
 import '../../../less/component/icon.less';
@@ -16,10 +21,10 @@ import Selector from '../../selector/';
 const CITY_SELECTOR_PREFIX = 'shipper_';
 
 export default class PkgPubPage extends React.Component {
-
   state = $.extend({
     qs: querystring.parse(location.search.substring(1)),
     truckType: {},
+    truckLength: {}
   }, JSON.parse(localStorage.getItem('pkg-pub')) || {}, {
     memo: localStorage.getItem('memo')
   });
@@ -29,65 +34,87 @@ export default class PkgPubPage extends React.Component {
   }
 
   componentWillMount() {
-    let truckTypes = [
-      {
-        name: '平板',
-        id: 1
-      }, {
-        name: '高栏',
-        id: 2
-      }, {
-        name: '厢式',
-        id: 3
-      }, {
-        name: '面包车',
-        id: 4
-      }, {
-        name: '保温',
-        id: 5
-      }, {
-        name: '冷藏',
-        id: 6
-      }, {
-        name: '危险品',
-        id: 7
-      }, {
-        name: '集装箱',
-        id: 8
-      }, {
-        name: '其他',
-        id: 9
-      }
-    ];
+    // let truckTypes = [
+    //   {
+    //     name: '平板',
+    //     id: 1
+    //   }, {
+    //     name: '高栏',
+    //     id: 2
+    //   }, {
+    //     name: '厢式',
+    //     id: 3
+    //   }, {
+    //     name: '面包车',
+    //     id: 4
+    //   }, {
+    //     name: '保温',
+    //     id: 5
+    //   }, {
+    //     name: '冷藏',
+    //     id: 6
+    //   }, {
+    //     name: '危险品',
+    //     id: 7
+    //   }, {
+    //     name: '集装箱',
+    //     id: 8
+    //   }, {
+    //     name: '其他',
+    //     id: 9
+    //   }
+    // ];
+    //
+    // let truckLengths = [
+    //   {
+    //     name: '6.2 米',
+    //     id: 1
+    //   }, {
+    //     name: '5 米',
+    //     id: 2
+    //   }, {
+    //     name: '3.2 米',
+    //     id: 3
+    //   }, {
+    //     name: '4.2 米',
+    //     id: 4
+    //   }, {
+    //     name: '7.2 米',
+    //     id: 5
+    //   }, {
+    //     name: '14.2 米',
+    //     id: 6
+    //   }, {
+    //     name: '其他',
+    //     id: 7
+    //   }
+    // ];
+    //
+    // this.setState({
+    //   truckTypes: truckTypes,
+    //   truckLengths: truckLengths
+    // });
+  }
 
-    let pkgTypes = [
-      {
-        name: '6.2 米',
-        id: 1
-      }, {
-        name: '5 米',
-        id: 2
-      }, {
-        name: '3.2 米',
-        id: 3
-      }, {
-        name: '4.2 米',
-        id: 4
-      }, {
-        name: '7.2 米',
-        id: 5
-      }, {
-        name: '14.2 米',
-        id: 6
-      }, {
-        name: '其他',
-        id: 7
-      }
-    ];
+  fetchTruckTypes() {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/getTruckType',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
+    });
+  }
 
-    this.setState({
-      truckTypes: truckTypes,
-      pkgTypes: pkgTypes
+  fetchTruckLengths() {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/getTruckLength',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
     })
   }
 
@@ -161,6 +188,7 @@ export default class PkgPubPage extends React.Component {
   writeDraft() {
     localStorage.setItem('pkg-pub', JSON.stringify({
       truckType: this.state.truckType,
+      truckLength: this.state.truckLength,
       pkgType: this.state.pkgType,
       startPoint: this.state.startPoint,
       endPoint: this.state.endPoint,
@@ -177,15 +205,6 @@ export default class PkgPubPage extends React.Component {
       citySelectorField: field,
       showCitySelector: true
     });
-  }
-
-  showSelector(field, e) {
-    this.setState({
-      selectorItems: this.state[`${field}s`],
-      selectorField: field
-    });
-
-    this.refs.selector.show();
   }
 
   handleSelectProvince(province) {
@@ -234,12 +253,68 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  handleSelectTruckType() {
+    this.refs.loading.show('加载中...');
+
+    Promise
+      .all([this.fetchTruckTypes(), this.fetchTruckLengths()])
+      .then((res) => {
+        let truckTypes = res[0].truckTypeMap;
+        truckTypes = Object.keys(truckTypes).map((key) => {
+          return {
+            name: truckTypes[key],
+            id: key
+          };
+        });
+
+        let truckLengths = res[1].truckLengthList;
+        truckLengths = truckLengths.map((len) => {
+          return {
+            name: len,
+            id: len
+          };
+        });
+
+        this.setState({
+          truckTypes: truckTypes,
+          truckLengths: truckLengths
+        }, () => {
+          this.showSelector('truckType');
+        });
+      })
+      .catch((...args) => {
+        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
+        
+        console.error(`${new Date().toLocaleString()} - 错误日志 start`)
+        console.error(args[0])
+        console.error(`-- 错误日志 end --`)
+      })
+      .done(() => {
+        this.refs.loading.close();
+      });
+  }
+
+  showSelector(field) {
+    this.setState({
+      selectorItems: this.state[`${field}s`],
+      selectorField: field
+    }, () => {
+      this.refs.selector.show();
+    });
+  }
+
   handleSelectItem(item) {
+    let field = this.state.selectorField;
+
     this.setState({
       [this.state.selectorField]: item
     }, () => {
       this.writeDraft();
     });
+
+    if (field === 'truckType') {
+      this.showSelector('truckLength');
+    }
   }
 
   handleNumChange(field: string, e: Object) {
@@ -263,6 +338,11 @@ export default class PkgPubPage extends React.Component {
   }
 
   render() {
+    let truckType = this.state.truckType;
+    let truckLength = this.state.truckLength;
+
+    let truckDesc = truckType.name ? `${truckType.name} ${truckLength.name || ''}` : null;
+
     return (
       <section className="pkg-pub">
         <h2 className="subtitle"><b>*</b>地址信息</h2>
@@ -306,8 +386,8 @@ export default class PkgPubPage extends React.Component {
                 type="text"
                 disabled="disabled"
                 placeholder="选择车型"
-                onClick={this.showSelector.bind(this, 'truckType')}
-                value={this.state.truckType.name} />
+                onClick={this.handleSelectTruckType.bind(this)}
+                value={truckDesc} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
