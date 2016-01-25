@@ -1,0 +1,32 @@
+@import '../../less/global/site.variable';
+
+.size(@s: 40px) {
+  width: @s;
+  height: @s;
+  line-height: @s;
+  border-radius: @s;
+}
+
+.avatar {
+  @s40: 40px;
+  @s45: 45px;
+  @s50: 50px;
+
+  display: inline-block;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: @c_lightGreen;
+
+  &.s40 {
+    .size(@s40);
+  }
+
+  &.s45 {
+    .size(@s45);
+  }
+
+  &.s50 {
+    .size(@s50);
+  }
+}

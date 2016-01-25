@@ -219,16 +219,17 @@ export default class CitySelector extends React.Component {
    * 处理选择省份
    */
   select_province(province) {
-    if (province === ALL) {
-      this.close();
-
-      return;
-    }
-
     this.setState({
       province: province
     }, () => {
       this.props.onSelectProvince(province);
+
+      if (province === ALL) {
+        this.close();
+
+        this.done();
+        return;
+      }
 
       this.fetchCities();
     });
@@ -241,7 +242,7 @@ export default class CitySelector extends React.Component {
    */
   done() {
     // 若有选择，则写入历史记录
-    if (this.state.province) {
+    if (this.state.province && this.state.province !== '不限') {
       let histories = this.state.historyCities;
 
       let has = histories.find((item) => {

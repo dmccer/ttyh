@@ -6,34 +6,29 @@ import './index.less';
 
 import React, {Component} from 'react';
 
+import ReadableTime from '../../bbs/readable-time/'
+import PkgItemDesc from '../item-desc/';
+
 export default class PkgItem extends Component {
   constructor() {
     super();
   }
 
   render() {
+    let props = this.props;
+    let pkg = this.props.product || {};
     // <a href="#" className="recommend">
     //   <i className="flag orange">3 推荐 >></i>
     // </a>
     return (
       <div className="pkg-item">
         <div className="title">
-          <span>上海市-浦东新区</span>
+          <span>{pkg.fromCity}</span>
           <i className="icon icon-target"></i>
-          <span>北京市-海淀区</span>
+          <span>{pkg.toCity}</span>
         </div>
         <div className="detail">
-          <p className="pkg-desc">
-            <i className="icon icon-pkg-type s18"></i>
-            <span>冰激凌</span>
-            <span>10吨</span>
-            <span>5方</span>
-          </p>
-          <p className="truck-desc">
-            <i className="flag teal">需</i>
-            <span>7米</span>
-            <span>冷藏车</span>
-          </p>
+          <PkgItemDesc {...pkg} />
         </div>
         <div className="extra">
           <ul className="actions">
@@ -41,7 +36,7 @@ export default class PkgItem extends Component {
             <li><a href="#">详情</a></li>
             <li><a href="#">删除</a></li>
           </ul>
-          <span>1小时前发布</span>
+          <div><ReadableTime time={pkg.createTime}/>发布</div>
         </div>
       </div>
     );

@@ -1,0 +1,25 @@
+@import '../../../less/global/site.variable';
+
+.pkg-desc, .truck-desc {
+  color: @c_black;
+  font-size: 13px;
+  margin-bottom: 10px;
+
+  > * {
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.pkg-desc {
+  .icon + span {
+    padding-left: 0;
+  }
+}
+
+.truck-desc span {
+  color: @c_lightBlack;
+}

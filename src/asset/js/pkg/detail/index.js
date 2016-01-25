@@ -14,7 +14,7 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
 
-import ReadableTime from '../../bbs/readable-time/';
+import Avatar from '../../avatar/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
@@ -44,23 +44,106 @@ export default class PkgDetailPage extends Component {
       });
     }).then((res) => {
       this.setState({
-        pkg: res.pkg
+        pkg: res.data[0]
       });
-    }).catch(() => {
+    }).catch((...args) => {
+      console.log(args)
       this.refs.poptip.warn('加载货源详情失败, 请重试');
     }).done(() => {
       this.refs.loading.close();
     });
   }
 
+  follow() {
+    this.refs.loading.show('请求中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/followForBBS_' + this.state.pkg.product.provideUserID,
+        type: 'GET',
+        cache: false,
+        success: resolve,
+        error: reject
+      });
+    })
+    .then((res) => {
+      let pkg = this.state.pkg;
+      pkg.alreadyFavorite = true;
+
+      this.setState({
+        pkg: pkg
+      });
+
+      this.refs.poptip.success('关注成功');
+    })
+    .catch(() => {
+      this.refs.poptip.success('关注失败');
+    })
+    .done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  renderFollowStatus() {
+    let pkg = this.state.pkg;
+    let product = pkg.product;
+
+    if (pkg.alreadyFavorite) {
+      return (
+        <span
+          className="followed">
+          <i className="icon icon-correct s20"></i>
+          <span><b>已关注</b></span>
+        </span>
+      );
+    }
+
+    return (
+      <span
+        className="follow"
+        onClick={this.follow.bind(this)}>
+        <i className="icon icon-plus"></i>
+        <span><b>关注</b></span>
+      </span>
+    );
+  }
+
   render() {
     let pkg = this.state.pkg;
+    let product = pkg.product;
+
+    let pkgDesc;
+
+    if (product.title == null && product.pkgWeight == null) {
+      pkgDesc = '暂无';
+    } else {
+      let title = product.title && product.title || '';
+      let pkgWeight = product.pkgWeight && `${product.pkgWeight}吨` || '';
+
+      pkgDesc = `${title} ${pkgWeight}`;
+    }
+
+    let truckDesc;
+
+    if ($.trim(product.truckTypeStr) == '' &&
+      (parseFloat(product.loadLimit) === 0 || product.loadLimit != null) &&
+      (parseFloat(product.truckLength) === 0 || product.truckLength != null)) {
+      truckDesc = '暂无';
+    } else {
+      let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
+      let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
+
+      truckDesc = `${product.truckTypeStr} ${loadLimit} ${truckLength}`;
+    }
 
     return (
       <section className="pkg-detail-page">
         <h2 className="subtitle">
           <span>货源详情</span>
-          <ReadableTime time={pkg.product.createTime} />
+          <span className="pub-time">
+            <i className="icon icon-clock"></i>
+            {pkg.createTime}发布
+          </span>
         </h2>
         <div className="field-group">
           <div className="field">
@@ -90,7 +173,7 @@ export default class PkgDetailPage extends Component {
               <input
                 type="text"
                 disabled="disabled"
-                value={`${pkg.product.title || ''} ${pkg.product.pkgWeight != null ? (pkg.product.pkgWeight + '吨') : ''}`} />
+                value={pkgDesc} />
             </div>
           </div>
         </div>
@@ -104,7 +187,7 @@ export default class PkgDetailPage extends Component {
               <input
                 type="text"
                 disabled="disabled"
-                value={`${pkg.product.truckTypeStr || ''} ${pkg.product.loadLimit != null ? (pkg.product.loadLimit + '吨') : ''} ${pkg.product.truckLength != null ? (pkg.product.truckLength + '米') : ''}`} />
+                value={truckDesc} />
             </div>
           </div>
         </div>
@@ -113,7 +196,7 @@ export default class PkgDetailPage extends Component {
           <div className="field memo-field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              <span className="memo">{pkg.product.memo}</span>
+              <span className="memo">{pkg.product.description || '暂无'}</span>
               <span className="contact-count">
                 <b>{pkg.product.contactCount}</b>
                 位车主联系过该货源
@@ -123,12 +206,7 @@ export default class PkgDetailPage extends Component {
         </div>
         <div className="row">
           <div className="avatar-col">
-            <div className="avatar">
-              <a href="#" style={{
-                backgroundImage: 'url(http://imgsize.ph.126.net/?imgurl=http://img2.ph.126.net/Bxuv7RNkBKTwug5oISbHZw==/6631311857283249341.jpg_188x188x1.jpg)',
-                backgroundSize: 'cover'
-              }}></a>
-            </div>
+            <Avatar img={pkg.provideUserImgUrl} />
           </div>
           <div className="account-col">
             <span>{pkg.providerUserName}</span>
@@ -136,11 +214,7 @@ export default class PkgDetailPage extends Component {
             <i className="certified-tag flag orange">公</i>
           </div>
           <div className="follow-status-col">
-            <span
-              className="followed">
-              <i className="icon icon-correct s20"></i>
-              <span><b>已关注</b></span>
-            </span>
+            {this.renderFollowStatus()}
           </div>
         </div>
         <div className="fixed-holder"></div>

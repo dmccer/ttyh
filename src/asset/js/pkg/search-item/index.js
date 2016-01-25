@@ -4,36 +4,39 @@
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
 import '../../../less/global/global.less';
-import '../../../less/global/layout.less';
 import '../../../less/component/icon.less';
+import '../../../less/global/layout.less';
 import '../../../less/component/flag.less';
 import './index.less';
 
 import React, {Component} from 'react';
+import Avatar from '../../avatar/';
+import AccountCertifyStatus from '../../account-certify-status/';
+import PkgItemDesc from '../item-desc/';
 
-export default class SearchPkgItem extends Component {
+export default class SearchItem extends Component {
   constructor() {
     super();
+  }
+
+  detail(e) {
+    if (e.target === this.refs.tel) {
+      return;
+    }
+
+    location.href = `./pkg-detail.html?pid=${this.props.product.productID}`;
   }
 
   render() {
     let props = this.props;
 
     return (
-      <div className="pkg-item">
+      <div className="pkg-item" onClick={this.detail.bind(this)}>
         <div className="row">
           <div className="account">
-            <div className="avatar">
-              <a href="#" style={{
-                backgroundImage: `url(${props.provideUserImgUrl})`,
-                backgroundSize: 'cover'
-              }}></a>
-            </div>
+            <Avatar img={props.provideUserImgUrl} />
             <div className="nick-name">{props.providerUserName}</div>
-            <div className="certified-tags">
-              <i className="certified-tag flag teal off">实</i>
-              <i className="certified-tag flag orange">公</i>
-            </div>
+            <AccountCertifyStatus />
           </div>
           <div className="pkg">
             <div className="title">
@@ -42,16 +45,7 @@ export default class SearchPkgItem extends Component {
               <span>{props.product.toCity.replace(' ', '-')}</span>
             </div>
             <div className="detail">
-              <p className="pkg-desc">
-                <i className="icon icon-pkg-type s18"></i>
-                <span>{props.product.title}</span>
-                <span>{props.product.loadLimit}吨</span>
-              </p>
-              <p className="truck-desc">
-                <i className="flag teal">需</i>
-                <span>{props.product.truckLength}米</span>
-                <span>{props.product.truckType}</span>
-              </p>
+              <PkgItemDesc {...props.product} />
               <p className="memo">{props.product.memo}</p>
               <p className="extra">
                 <span>1271.1公里</span>
@@ -61,7 +55,7 @@ export default class SearchPkgItem extends Component {
             </div>
           </div>
           <div className="tel">
-            <a href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
+            <a ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
           </div>
         </div>
       </div>

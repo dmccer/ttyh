@@ -8,16 +8,43 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import Promise from 'promise';
+
+import Loading from '../../loading/';
+import Poptip from '../../poptip/';
 import PkgItem from '../item/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 
 export default class MyPkgPage extends Component {
   state = {
-    pkgs: [{}]
+    pkgs: []
   };
 
   constructor() {
     super();
+  }
+
+  componentDidMount() {
+    this.refs.loading.show('加载中...');
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/searchProductsForH5',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
+    })
+    .then((res) => {
+      this.setState({
+        pkgs: res.data
+      });
+    })
+    .catch(() => {
+      this.refs.poptip.warn('获取我发布的货源失败,请重试');
+    })
+    .done(() => {
+      this.refs.loading.close();
+    });
   }
 
   renderEmpty() {
@@ -38,12 +65,14 @@ export default class MyPkgPage extends Component {
     //   <a href="#">一键查看全部推荐车源</a>
     // </div>
     if (this.state.pkgs.length) {
+      let pkgs = this.state.pkgs.map((pkg, index) => {
+        return <PkgItem {...pkg} key={`pkg-item_${index}`} />;
+      });
+
       return (
         <div className="my-pkg">
           <div className="pkg-list">
-            <PkgItem />
-            <PkgItem />
-            <PkgItem />
+            {pkgs}
           </div>
         </div>
       );
@@ -56,6 +85,8 @@ export default class MyPkgPage extends Component {
         {this.renderEmpty()}
         {this.renderPkgList()}
         <a className="pub-btn">发布</a>
+        <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </div>
     );
   }

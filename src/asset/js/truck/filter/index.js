@@ -71,6 +71,10 @@ export default class SearchFilterPage extends Component {
     });
   }
 
+  /**
+   * 获取载重列表
+   * @return {Promise}
+   */
   fetchLoadLimit() {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -192,10 +196,12 @@ export default class SearchFilterPage extends Component {
   handleSelectItem(field, item) {
     let selected = this.state[field];
 
-    let has = selected.indexOf(item);
+    let index = selected.findIndex((s) => {
+      return s.id === item.id
+    });
 
-    if (has !== -1) {
-      selected.splice(has, 1);
+    if (index !== -1) {
+      selected.splice(index, 1);
     } else {
       selected.push(item);
     }
@@ -210,7 +216,7 @@ export default class SearchFilterPage extends Component {
     e.stopPropagation();
 
     let pageType = this.state.qs.type;
-    
+
     localStorage.setItem(`${SEARCH_FILTER_PREFIX}${pageType}`, JSON.stringify({
       selectedLoadLimits: this.state.selectedLoadLimits,
       selectedTruckTypes: this.state.selectedTruckTypes,

@@ -302,12 +302,16 @@ module.exports = {
         target: 'http://api.ttyhuo.com:83',
         secure: false
       },
-      '/mvc*': {
-        target: 'http://121.42.222.222:85',
-        secure: false
-      },
       '/mvc/searchProductsForH5': {
         target: 'http://121.42.200.139',
+        secure: false
+      },
+      '/mvc/searchMyProductsForH5': {
+        target: 'http://121.42.200.139',
+        secure: false
+      },
+      '/mvc*': {
+        target: 'http://121.42.222.222:85',
         secure: false
       },
       '/api*': {

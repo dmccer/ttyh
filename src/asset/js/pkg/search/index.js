@@ -30,22 +30,28 @@ export default class SearchPkgPage extends Component {
 
   componentWillMount() {
     let filters = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${PAGE_TYPE}`));
-
-    let m = (a, b) => {
-      return a.id;
+    let r = {
+      fromCity: this.state.qs.fromCity,
+      toCity: this.state.qs.toCity,
     };
 
-    let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
-    let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
-    let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
+    if (filters) {
+      let m = (a, b) => {
+        return a.id;
+      };
 
-    this.setState({
-      startPoint: this.state.qs.startPoint,
-      endPoint: this.state.qs.endPoint,
-      truckTypeFlag: truckTypeFlag,
-      loadLimitFlag: loadLimitFlag,
-      truckLengthFlag: truckLengthFlag
-    });
+      let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
+      let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
+      let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
+
+      $.extend(r, {
+        truckTypeFlag: truckTypeFlag,
+        loadLimitFlag: loadLimitFlag,
+        truckLengthFlag: truckLengthFlag
+      });
+    }
+
+    this.setState(r);
   }
 
   componentDidMount() {
@@ -53,11 +59,11 @@ export default class SearchPkgPage extends Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/pkg_search',
+        url: '/mvc/searchProductsForH5',
         type: 'GET',
         data: {
-          fromCity: this.state.startPoint,
-          toCity: this.state.endPoint,
+          fromCity: this.state.fromCity,
+          toCity: this.state.toCity,
           truckTypeFlag: this.state.truckTypeFlag,
           loadLimitFlag: this.state.loadLimitFlag,
           truckLengthFlag: this.state.truckLengthFlag
@@ -67,7 +73,7 @@ export default class SearchPkgPage extends Component {
       });
     }).then((res) => {
       this.setState({
-        pkgs: res.pkgs
+        pkgs: res.data
       });
     }).catch(() => {
       this.refs.poptip.warn('查询货源失败,请重试');
@@ -95,8 +101,14 @@ export default class SearchPkgPage extends Component {
       return !!arg;
     });
 
+    let val = selected.join(' ');
+
+    if (val === '不限') {
+      val = '';
+    }
+
     this.setState({
-      [this.state.citySelectorField]: selected.join(' ')
+      [this.state.citySelectorField]: val
     }, () => {
       let url = location.href.split('?')[0].split('#')[0];
       let field = this.state.citySelectorField;
@@ -133,13 +145,13 @@ export default class SearchPkgPage extends Component {
     return (
       <div className="search-pkg-page">
         <ul className="filters row">
-          <li onClick={this.toggleCitySelector.bind(this, 'startPoint')}>
+          <li onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
             <a href="javascript:void(0)">
               <i className="icon icon-start-point off s20"></i>
               <span>出发地点</span>
             </a>
           </li>
-          <li onClick={this.toggleCitySelector.bind(this, 'endPoint')}>
+          <li onClick={this.toggleCitySelector.bind(this, 'toCity')}>
             <a href="javascript:void(0)">
               <i className="icon icon-end-point off s20"></i>
               <span>到达地点</span>

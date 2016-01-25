@@ -1,0 +1,37 @@
+@import '../../less/global/site.variable';
+
+.certified-tag {
+  position: relative;
+  padding-bottom: 5px;
+  width: 18px;
+  text-align: center;
+  box-sizing: border-box;
+
+  &.off {
+    background-color: @c_grey;
+  }
+
+  &:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    content: '';
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid @white;
+  }
+}
+
+.certified-tags {
+  text-align: center;
+}
+
+.certified-tags > * {
+  margin-right: 3px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}

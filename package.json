@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/dmccer/ttyh#readme",
   "dependencies": {
+    "array.prototype.findindex": "^1.0.0",
     "classnames": "^2.2.1",
     "iscroll": "^5.1.3",
     "lodash": "^3.10.1",
