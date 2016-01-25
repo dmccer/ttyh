@@ -8,9 +8,9 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import querystring from 'querystring';
 import Promise from 'promise';
 
+import LoadMore from '../../load-more/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
@@ -19,21 +19,26 @@ const PKG_SEARCH = 'pkg-search';
 
 export default class TodayPkgListPage extends Component {
   state = {
-    qs: querystring.parse(location.search.substring(1))
+    pageIndex: 0,
+    pageSize: 20,
+    pkgs: []
   };
 
   constructor() {
     super();
   }
 
-  componentWillMount() {
-    this.setState({
-      fromCity: this.state.qs.fromCity,
-      toCity: this.state.qs.toCity,
+  componentDidMount() {
+    this.query();
+
+    LoadMore.init(() => {
+      if (!this.state.over) {
+        this.query();
+      }
     });
   }
 
-  componentDidMount() {
+  query() {
     this.refs.loading.show('加载中...');
 
     new Promise((resolve, reject) => {
@@ -41,15 +46,35 @@ export default class TodayPkgListPage extends Component {
         url: '/mvc/searchProductsForH5',
         type: 'GET',
         data: {
-          fromCity: this.state.fromCity,
-          toCity: this.state.toCity
+          pageIndex: this.state.pageIndex,
+          pageSize: this.state.pageSize
         },
         success: resolve,
         error: reject
       });
     }).then((res) => {
+      let pkgs = this.state.pkgs;
+
+      if (!res.data || !res.data.length) {
+        if (!pkgs.length) {
+          // 空列表，没有数据
+          return;
+        }
+
+        this.refs.poptip.info('没有更多了');
+
+        this.setState({
+          over: true
+        });
+
+        return;
+      }
+
+      pkgs = pkgs.concat(res.data);
+
       this.setState({
-        pkgs: res.data
+        pkgs: pkgs,
+        pageIndex: this.state.pageIndex + 1
       });
     }).catch(() => {
       this.refs.poptip.warn('查询货源失败,请重试');

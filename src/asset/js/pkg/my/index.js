@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
 
+import LoadMore from '../../load-more/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import PkgItem from '../item/';

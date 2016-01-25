@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
 
+import LoadMore from '../../load-more/';
 import CitySelector from '../../city-selector/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
@@ -21,7 +22,10 @@ const PAGE_TYPE = 'pkg';
 
 export default class SearchPkgPage extends Component {
   state = {
-    qs: querystring.parse(location.search.substring(1))
+    qs: querystring.parse(location.search.substring(1)),
+    pageIndex: 0,
+    pageSize: 20,
+    pkgs: []
   };
 
   constructor() {
@@ -55,6 +59,16 @@ export default class SearchPkgPage extends Component {
   }
 
   componentDidMount() {
+    this.query(this.state.pageIndex);
+
+    LoadMore.init(() => {
+      if (!this.state.over) {
+        this.query(this.state.pageIndex);
+      }
+    });
+  }
+
+  query() {
     this.refs.loading.show('加载中...');
 
     new Promise((resolve, reject) => {
@@ -66,14 +80,36 @@ export default class SearchPkgPage extends Component {
           toCity: this.state.toCity,
           truckTypeFlag: this.state.truckTypeFlag,
           loadLimitFlag: this.state.loadLimitFlag,
-          truckLengthFlag: this.state.truckLengthFlag
+          truckLengthFlag: this.state.truckLengthFlag,
+          pageSize: this.state.pageSize,
+          pageIndex: this.state.pageIndex
         },
         success: resolve,
         error: reject
       });
     }).then((res) => {
+      let pkgs = this.state.pkgs;
+
+      if (!res.data || !res.data.length) {
+        if (!pkgs.length) {
+          // 空列表，没有数据
+          return;
+        }
+
+        this.refs.poptip.info('没有更多了');
+
+        this.setState({
+          over: true
+        });
+
+        return;
+      }
+
+      pkgs = pkgs.concat(res.data);
+
       this.setState({
-        pkgs: res.data
+        pkgs: pkgs,
+        pageIndex: this.state.pageIndex + 1
       });
     }).catch(() => {
       this.refs.poptip.warn('查询货源失败,请重试');
