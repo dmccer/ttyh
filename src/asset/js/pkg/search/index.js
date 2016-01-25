@@ -92,7 +92,7 @@ export default class SearchPkgPage extends Component {
     this.setState({
       citySelectorTop: top,
       citySelectorField: field,
-      showCitySelector: true
+      showCitySelector: !this.state.showCitySelector
     });
   }
 

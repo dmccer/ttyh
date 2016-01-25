@@ -183,12 +183,12 @@ export default class PkgPubPage extends React.Component {
     e.stopPropagation();
 
     let offset = $(e.target).offset();
-    let top = offset.top + offset.height;
+    let top = offset.top + offset.height - 1;
 
     this.setState({
       citySelectorTop: top,
       citySelectorField: field,
-      showCitySelector: true
+      showCitySelector: !this.state.showCitySelector
     });
   }
 
@@ -197,6 +197,10 @@ export default class PkgPubPage extends React.Component {
    * @param  {String} province 省份
    */
   handleSelectProvince(province) {
+    if (province === '不限') {
+      return;
+    }
+
     this.setState({
       [this.state.citySelectorField]: province
     }, () => {
