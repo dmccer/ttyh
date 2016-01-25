@@ -34,12 +34,12 @@ export default class MyPkgPage extends Component {
   }
 
   renderPkgList() {
+    // <div className="all-recommend-truck">
+    //   <a href="#">一键查看全部推荐车源</a>
+    // </div>
     if (this.state.pkgs.length) {
       return (
         <div className="my-pkg">
-          <div className="all-recommend-truck">
-            <a href="#">一键查看全部推荐车源</a>
-          </div>
           <div className="pkg-list">
             <PkgItem />
             <PkgItem />

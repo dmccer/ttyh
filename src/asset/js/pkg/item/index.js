@@ -12,6 +12,9 @@ export default class PkgItem extends Component {
   }
 
   render() {
+    // <a href="#" className="recommend">
+    //   <i className="flag orange">3 推荐 >></i>
+    // </a>
     return (
       <div className="pkg-item">
         <div className="title">
@@ -31,9 +34,6 @@ export default class PkgItem extends Component {
             <span>7米</span>
             <span>冷藏车</span>
           </p>
-          <a href="#" className="recommend">
-            <i className="flag orange">3 推荐 >></i>
-          </a>
         </div>
         <div className="extra">
           <ul className="actions">

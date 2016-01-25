@@ -1,5 +1,7 @@
 /**
  * 发布货源备注填写和选择页面
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
  */
 import '../../../../less/global/global.less';
 import '../../../../less/global/form.less';
@@ -8,53 +10,52 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import Promise from 'promise';
+
+import Poptip from '../../../poptip/';
+import Loading from '../../../loading/';
+
+const MEMO = 'pkg-pub-memo';
 
 export default class PkgPubMemoPage extends React.Component {
-  state = {};
+  state = {
+    memos: []
+  };
 
   constructor() {
     super();
   }
 
-  componentWillMount() {
-    let memo = localStorage.getItem('memo');
-    let memos = [
-      {
-        name: '价格急走',
-        id: 1
-      }, {
-        name: '货主在等',
-        id: 2
-      }, {
-        name: '免过路费',
-        id: 3
-      }, {
-        name: '一装二卸',
-        id: 4
-      }, {
-        name: '二装二卸',
-        id: 5
-      }, {
-        name: '今订明装',
-        id: 6
-      }, {
-        name: '下雨也装',
-        id: 7
-      }, {
-        name: '卸车结款',
-        id: 8
-      }, {
-        name: '价格面议',
-        id: 9
-      }, {
-        name: '随到随装',
-        id: 10
-      }
-    ];
+  componentDidMount() {
+    new Promise((resolve, reject) => {
+      this.refs.loading.show('加载中...');
 
-    this.setState({
-      memo: memo,
-      memos: memos
+      $.ajax({
+        url: '/mvc/v2/getProductMemo',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
+    })
+    .then((res) => {
+      let memo = localStorage.getItem(MEMO);
+      let memos = res.productMemoList.map((memo) => {
+        return {
+          name: memo,
+          id: memo
+        };
+      });
+
+      this.setState({
+        memo: memo,
+        memos: memos
+      });
+    })
+    .catch(() => {
+      this.refs.poptip.warn('加载备注列表失败,请重试');
+    })
+    .done(() => {
+      this.refs.loading.close();
     });
   }
 
@@ -65,7 +66,7 @@ export default class PkgPubMemoPage extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    localStorage.setItem('memo', this.state.memo);
+    localStorage.setItem(MEMO, this.state.memo);
     history.back();
   }
 
@@ -112,6 +113,8 @@ export default class PkgPubMemoPage extends React.Component {
           {list}
         </div>
         <button className="btn block teal" type="submit">确定</button>
+        <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </form>
     );
   }

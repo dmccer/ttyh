@@ -321,6 +321,11 @@ export default class PkgPubPage extends React.Component {
     }
   }
 
+  /**
+   * 处理数字型字段值修改
+   * @param  {String} field 字段名
+   * @param  {ChangeEvent} e
+   */
   handleNumChange(field: string, e: Object) {
     this.setState({
       [field]: $.trim(e.target.value).replace(/[^\d\.]+/g, '')
@@ -329,6 +334,10 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  /**
+   * 若有 memo, 则展示 memo, 并高亮，
+   * 若无 memo, 则模拟 placeholder
+   */
   renderMemo() {
     if (this.state.memo) {
       return (

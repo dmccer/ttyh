@@ -306,6 +306,10 @@ module.exports = {
         target: 'http://121.42.222.222:85',
         secure: false
       },
+      '/mvc/searchProductsForH5': {
+        target: 'http://121.42.200.139',
+        secure: false
+      },
       '/api*': {
         target: 'http://o.dp:3000',
         // target: 'http://m.ttyhuo.com',

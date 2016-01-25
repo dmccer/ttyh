@@ -14,13 +14,16 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
 
+import ReadableTime from '../../bbs/readable-time/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
 export default class PkgDetailPage extends Component {
   state = {
     qs: querystring.parse(location.search.substring(1)),
-    pkg: {}
+    pkg: {
+      product: {}
+    }
   };
 
   constructor() {
@@ -31,10 +34,10 @@ export default class PkgDetailPage extends Component {
     this.refs.loading.show('加载中...')
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/pkg_detail',
+        url: '/mvc/searchProductsForH5',
         type: 'GET',
         data: {
-          id: this.state.qs.pid
+          productIDs: this.state.qs.pid
         },
         success: resolve,
         error: reject
@@ -57,10 +60,7 @@ export default class PkgDetailPage extends Component {
       <section className="pkg-detail-page">
         <h2 className="subtitle">
           <span>货源详情</span>
-          <span className="pub-time">
-            <i className="icon s12 icon-clock"></i>
-            1小时前发布
-          </span>
+          <ReadableTime time={pkg.product.createTime} />
         </h2>
         <div className="field-group">
           <div className="field">
@@ -69,7 +69,7 @@ export default class PkgDetailPage extends Component {
               <input
                 type="text"
                 disabled="disabled"
-                value={pkg.startPoint} />
+                value={pkg.product.fromCity} />
             </div>
           </div>
           <div className="field">
@@ -78,7 +78,7 @@ export default class PkgDetailPage extends Component {
               <input
                 type="text"
                 disabled="disabled"
-                value={pkg.endPoint} />
+                value={pkg.product.toCity} />
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default class PkgDetailPage extends Component {
               <input
                 type="text"
                 disabled="disabled"
-                value={`${pkg.pkgType} ${pkg.pkgWeight}吨`} />
+                value={`${pkg.product.title || ''} ${pkg.product.pkgWeight != null ? (pkg.product.pkgWeight + '吨') : ''}`} />
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default class PkgDetailPage extends Component {
               <input
                 type="text"
                 disabled="disabled"
-                value={`${pkg.truckType} ${pkg.load}吨 ${pkg.truckLength}米`} />
+                value={`${pkg.product.truckTypeStr || ''} ${pkg.product.loadLimit != null ? (pkg.product.loadLimit + '吨') : ''} ${pkg.product.truckLength != null ? (pkg.product.truckLength + '米') : ''}`} />
             </div>
           </div>
         </div>
@@ -113,9 +113,9 @@ export default class PkgDetailPage extends Component {
           <div className="field memo-field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              <span className="memo">{pkg.memo}</span>
+              <span className="memo">{pkg.product.memo}</span>
               <span className="contact-count">
-                <b>{pkg.contactCount}</b>
+                <b>{pkg.product.contactCount}</b>
                 位车主联系过该货源
               </span>
             </div>
@@ -131,7 +131,7 @@ export default class PkgDetailPage extends Component {
             </div>
           </div>
           <div className="account-col">
-            <span>神穿越</span>
+            <span>{pkg.providerUserName}</span>
             <i className="certified-tag flag teal off">实</i>
             <i className="certified-tag flag orange">公</i>
           </div>
@@ -144,7 +144,7 @@ export default class PkgDetailPage extends Component {
           </div>
         </div>
         <div className="fixed-holder"></div>
-        <a href={`tel:${pkg.tel}`} className="call-btn">
+        <a href={`tel:${pkg.product.provideUserMobileNo}`} className="call-btn">
           <i className="icon icon-call"></i>
           <span>电话联系</span>
         </a>

@@ -16,6 +16,8 @@ import Poptip from '../../poptip/';
 
 const PKG_SEARCH = 'pkg-search';
 const CITY_SELECTOR_PREFIX = 'trucker_';
+const SEARCH_FILTER_PREFIX = 'search_filter_';
+const PAGE_TYPE = 'pkg';
 
 export default class SearchPkgPage extends Component {
   state = {
@@ -27,9 +29,22 @@ export default class SearchPkgPage extends Component {
   }
 
   componentWillMount() {
+    let filters = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${PAGE_TYPE}`));
+
+    let m = (a, b) => {
+      return a.id;
+    };
+
+    let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
+    let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
+    let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
+
     this.setState({
       startPoint: this.state.qs.startPoint,
-      endPoint: this.state.qs.endPoint
+      endPoint: this.state.qs.endPoint,
+      truckTypeFlag: truckTypeFlag,
+      loadLimitFlag: loadLimitFlag,
+      truckLengthFlag: truckLengthFlag
     });
   }
 
@@ -42,7 +57,10 @@ export default class SearchPkgPage extends Component {
         type: 'GET',
         data: {
           fromCity: this.state.startPoint,
-          toCity: this.state.endPoint
+          toCity: this.state.endPoint,
+          truckTypeFlag: this.state.truckTypeFlag,
+          loadLimitFlag: this.state.loadLimitFlag,
+          truckLengthFlag: this.state.truckLengthFlag
         },
         success: resolve,
         error: reject
@@ -128,7 +146,7 @@ export default class SearchPkgPage extends Component {
             </a>
           </li>
           <li>
-            <a href="./search-filter.html">
+            <a href={`./search-filter.html?type=${PAGE_TYPE}`}>
               <i className="icon condition off s20"></i>
               <span>筛选</span>
             </a>
