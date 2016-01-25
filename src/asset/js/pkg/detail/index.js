@@ -15,6 +15,7 @@ import querystring from 'querystring';
 import Promise from 'promise';
 
 import Avatar from '../../avatar/';
+import AccountCertifyStatus from '../../account-certify-status/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
@@ -210,8 +211,7 @@ export default class PkgDetailPage extends Component {
           </div>
           <div className="account-col">
             <span>{pkg.providerUserName}</span>
-            <i className="certified-tag flag teal off">实</i>
-            <i className="certified-tag flag orange">公</i>
+            <AccountCertifyStatus />
           </div>
           <div className="follow-status-col">
             {this.renderFollowStatus()}

@@ -1,11 +1,16 @@
 @import '../../less/global/site.variable';
 
+.certified-tag-group {
+  display: inline-block;
+}
+
 .certified-tag {
   position: relative;
   padding-bottom: 5px;
   width: 18px;
   text-align: center;
   box-sizing: border-box;
+  margin-right: 3px;
 
   &.off {
     background-color: @c_grey;
@@ -22,14 +27,6 @@
     border-top: 9px solid transparent;
     border-bottom: 9px solid @white;
   }
-}
-
-.certified-tags {
-  text-align: center;
-}
-
-.certified-tags > * {
-  margin-right: 3px;
 
   &:last-child {
     margin-right: 0;

@@ -11,10 +11,10 @@ export default class AccountCertifyStatus extends React.Component {
 
   render() {
     return (
-      <div className="certified-tags">
+      <span className="certified-tag-group">
         <i className="certified-tag flag teal off">实</i>
         <i className="certified-tag flag orange">公</i>
-      </div>
+      </span>
     );
   }
 }

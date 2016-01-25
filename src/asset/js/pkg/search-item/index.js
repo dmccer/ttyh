@@ -36,7 +36,9 @@ export default class SearchItem extends Component {
           <div className="account">
             <Avatar img={props.provideUserImgUrl} />
             <div className="nick-name">{props.providerUserName}</div>
-            <AccountCertifyStatus />
+            <div className="certified-tags">
+              <AccountCertifyStatus />
+            </div>
           </div>
           <div className="pkg">
             <div className="title">
