@@ -28,7 +28,7 @@ export default class MyPkgPage extends Component {
     this.refs.loading.show('加载中...');
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/mvc/searchProductsForH5',
+        url: '/mvc/searchMyProductsForH5',
         type: 'GET',
         success: resolve,
         error: reject

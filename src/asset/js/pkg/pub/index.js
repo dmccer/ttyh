@@ -103,14 +103,15 @@ export default class PkgPubPage extends React.Component {
     this.refs.loading.show('发布中...');
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/pub_pkg',
+        url: '/mvc/product_add_json',
         type: 'POST',
         data: {
-          startPoint: this.state.startPoint,
-          endPoint: this.state.endPoint,
-          truckType: this.state.truckType,
-          pkgType: this.state.pkgType,
-          pkgWeight: this.state.pkgWeight,
+          fromCity: this.state.startPoint,
+          toCity: this.state.endPoint,
+          truckType: this.state.truckType.id,
+          truckLength: this.state.truckLength.id,
+          title: this.state.pkgType,
+          loadLimit: this.state.pkgWeight,
           memo: this.state.memo
         },
         success: resolve,
@@ -338,6 +339,14 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  handleStrChange(field: string, e: Object) {
+    this.setState({
+      [field]: $.trim(e.target.value)
+    }, () => {
+      this.writeDraft();
+    });
+  }
+
   /**
    * 若有 memo, 则展示 memo, 并高亮，
    * 若无 memo, 则模拟 placeholder
@@ -414,7 +423,9 @@ export default class PkgPubPage extends React.Component {
               <input
                 type="text"
                 placeholder="货物种类"
-                value={this.state.pkgType} />
+                value={this.state.pkgType}
+                onChange={this.handleStrChange.bind(this, 'pkgType')}
+              />
               <i className="icon icon-arrow"></i>
             </div>
           </div>

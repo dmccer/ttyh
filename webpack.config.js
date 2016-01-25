@@ -33,6 +33,7 @@ module.exports = {
     'pkg-search': './src/asset/js/pkg/search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
     'pkg-detail': './src/asset/js/pkg/detail/index.js',
+    'today-pkg': './src/asset/js/pkg/today-list/',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -237,6 +238,13 @@ module.exports = {
       filename: 'pkg-detail.html',
       chunks: ['pkg-detail', 'zepto', 'ved'],
       inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '今日货源列表',
+      template: './src/page/index.html',
+      filename: 'today-pkg.html',
+      chunks: ['today-pkg', 'zepto', 'ved'],
+      inject: 'body'
     })
   ],
   module: {
@@ -302,16 +310,16 @@ module.exports = {
         target: 'http://api.ttyhuo.com:83',
         secure: false
       },
-      '/mvc/searchProductsForH5': {
-        target: 'http://121.42.200.139',
-        secure: false
-      },
-      '/mvc/searchMyProductsForH5': {
-        target: 'http://121.42.200.139',
-        secure: false
-      },
+      // '/mvc/searchProductsForH5': {
+      //   target: 'http://121.42.200.139',
+      //   secure: false
+      // },
+      // '/mvc/searchMyProductsForH5': {
+      //   target: 'http://121.42.200.139',
+      //   secure: false
+      // },
       '/mvc*': {
-        target: 'http://121.42.222.222:85',
+        target: 'http://api.ttyhuo.com:85',
         secure: false
       },
       '/api*': {
