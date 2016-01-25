@@ -12,8 +12,12 @@
  */
 import fnu from 'lodash-fn';
 
+/**
+ * 上拉加载更多
+ * @type 
+ */
 let LoadMore = {
-  init: (cb, wait=500) => {
+  init: (cb, wait=100) => {
     let winH = $(window).height();
     let lastT = 0;
 
@@ -30,7 +34,7 @@ let LoadMore = {
       }
 
       lastT = t;
-    }, wait));
+    }, wait, { leading: true, trailing: true }));
   }
 }
 
