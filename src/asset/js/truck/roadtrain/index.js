@@ -13,6 +13,8 @@ import EditableMiniTruckItem from './editable-mini-truck-item/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
+const DEFAULT_TRUCK = 'default-truck';
+
 export default class RoadtrainPage extends React.Component {
   state = {
     qs: querystring.parse(location.search.substring(1)),
@@ -77,7 +79,10 @@ export default class RoadtrainPage extends React.Component {
     });
   }
 
-  handleSelect(truck) {
+  handleSelect(truck, e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
     let trucks = this.state.trucks;
 
     trucks.forEach((truck) => {
@@ -125,8 +130,9 @@ export default class RoadtrainPage extends React.Component {
       });
     }).then((res) => {
       if (res.retcode === 0) {
-        history.back();
+        localStorage.setItem(DEFAULT_TRUCK, JSON.stringify(this.state.selected));
 
+        history.back();
         return;
       }
     }).catch(() => {
