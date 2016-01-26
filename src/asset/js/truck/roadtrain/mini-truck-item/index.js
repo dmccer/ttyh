@@ -9,13 +9,16 @@ export default class MiniTruckItem extends React.Component {
 
   render() {
     let props = this.props;
-    let selected = props.default ? <i className="icon s20 icon-item-selected"></i> : null;
+    let selected = props.isDefault ? <i className="icon s20 icon-item-selected"></i> : null;
+
+    let truckLength = props.truckLength != null && parseFloat(props.truckLength) !== 0 ? `${props.truckLength}米`: '';
+    let loadLimit = props.loadLimit != null && parseFloat(props.loadLimit) !== 0 ? `${props.loadLimit}吨` : '';
 
     return (
       <div className="mini-truck-item">
         <a href="#">
-          <h3>{props.truck_owner}</h3>
-          <p>{props.license} {props.truck_type} {props.truck_length} {props.load}</p>
+          <h3>{props.dirverName}</h3>
+          <p>{props.licensePlate} {props.truckType} {truckLength} {loadLimit}</p>
           {selected}
         </a>
       </div>

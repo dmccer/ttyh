@@ -18,45 +18,129 @@ export default class TruckAddPage extends React.Component {
     super();
 
     this.state = {
-      truckType: {}
+      truckType: {},
+      truckLength: {}
     };
   }
 
-  componentWillMount() {
-    let truckTypes = [
-      {
-        name: '平板',
-        id: 1
-      }, {
-        name: '高栏',
-        id: 2
-      }, {
-        name: '厢式',
-        id: 3
-      }, {
-        name: '面包车',
-        id: 4
-      }, {
-        name: '保温',
-        id: 5
-      }, {
-        name: '冷藏',
-        id: 6
-      }, {
-        name: '危险品',
-        id: 7
-      }, {
-        name: '集装箱',
-        id: 8
-      }, {
-        name: '其他',
-        id: 9
-      }
-    ];
+  componentDidMount() {
+
+  }
+
+  /**
+   * 获取车型列表
+   * @return {Promise}
+   */
+  fetchTruckTypes() {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/getTruckType',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      let truckTypes = res.truckTypeMap;
+      truckTypes = Object.keys(truckTypes).map((key) => {
+        return {
+          name: truckTypes[key],
+          id: key
+        };
+      });
+
+      return truckTypes;
+    });
+  }
+
+  /**
+   * 获取车长列表
+   * @return {Promise}
+   */
+  fetchTruckLengths() {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/getTruckLength',
+        type: 'GET',
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      let truckLengths = res.truckLengthList;
+      truckLengths = truckLengths.map((len) => {
+        return {
+          name: len,
+          id: len
+        };
+      });
+
+      return truckLengths;
+    });
+  }
+
+  /**
+   * 处理选择车型和车长
+   */
+  handleSelectTruckType() {
+    // 若已经请求过车型和车长列表，则直接展示
+    if (this.state.truckTypes && this.state.truckLengths) {
+      this.showSelector('truckType');
+
+      return;
+    }
+
+    this.refs.loading.show('加载中...');
+
+    Promise
+      .all([this.fetchTruckTypes(), this.fetchTruckLengths()])
+      .then((res) => {
+        this.setState({
+          truckTypes: res[0],
+          truckLengths: res[1]
+        }, () => {
+          this.showSelector('truckType');
+        });
+      })
+      .catch((...args) => {
+        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
+
+        console.error(`${new Date().toLocaleString()} - 错误日志 start`)
+        console.error(args[0])
+        console.error(`-- 错误日志 end --`)
+      })
+      .done(() => {
+        this.refs.loading.close();
+      });
+  }
+
+  /**
+   * 展示车型或车长选择面板
+   * @param  {String} field 字段名，truckType 或 truckLength
+   */
+  showSelector(field) {
+    this.setState({
+      selectorItems: this.state[`${field}s`],
+      selectorField: field
+    }, () => {
+      this.refs.selector.show();
+    });
+  }
+
+  /**
+   * 选中车型或车长后存入本地
+   * 选中车型后再展示选则车长
+   */
+  handleSelectItem(item) {
+    let field = this.state.selectorField;
 
     this.setState({
-      truckTypes: truckTypes
+      [this.state.selectorField]: item
+    }, () => {
+      // this.writeDraft();
     });
+
+    if (field === 'truckType') {
+      this.showSelector('truckLength');
+    }
   }
 
   handleSubmit(e) {
@@ -74,14 +158,15 @@ export default class TruckAddPage extends React.Component {
     this.refs.loading.show('请求中...');
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/add_truck',
+        url: '/mvc/v2/insertTruck',
         type: 'POST',
         data: {
-          truck_owner: this.state.name,
-          tel: this.state.tel,
-          license: this.state.license,
-          truck_type: this.state.truckType,
-          weight: this.state.weight
+          dirverName: this.state.name,
+          dirverPoneNo: this.state.tel,
+          licensePlate: this.state.license,
+          truckType: this.state.truckType.id,
+          loadLimit: this.state.weight,
+          truckLength: this.state.truckLength.id
         },
         success: resolve,
         error: reject
@@ -89,7 +174,9 @@ export default class TruckAddPage extends React.Component {
     }).then((res) => {
       this.refs.poptip.success('添加车辆成功');
 
-      history.back();
+      if (res.retcode === 0) {
+        history.back();
+      }
     }).catch(() => {
       this.refs.poptip.warn('添加车辆失败');
     }).done(() => {
@@ -121,20 +208,20 @@ export default class TruckAddPage extends React.Component {
     return true;
   }
 
-  handleSelectItem(item) {
-    this.setState({
-      [this.state.selectorField]: item
-    });
-  }
-
-  showSelector(field, e) {
-    this.setState({
-      selectorItems: this.state[`${field}s`],
-      selectorField: field
-    });
-
-    this.refs.selector.show();
-  }
+  // handleSelectItem(item) {
+  //   this.setState({
+  //     [this.state.selectorField]: item
+  //   });
+  // }
+  //
+  // showSelector(field, e) {
+  //   this.setState({
+  //     selectorItems: this.state[`${field}s`],
+  //     selectorField: field
+  //   });
+  //
+  //   this.refs.selector.show();
+  // }
 
   handleNumChange(field: string, e: Object) {
     this.setState({
@@ -155,6 +242,11 @@ export default class TruckAddPage extends React.Component {
   }
 
   render() {
+    let truckType = this.state.truckType;
+    let truckLength = this.state.truckLength;
+
+    let truckDesc = truckType.name ? `${truckType.name} ${truckLength.name || ''}` : null;
+
     return (
       <section className="truck-add-page">
         <form className="form" onSubmit={this.handleSubmit.bind(this)}>
@@ -200,8 +292,8 @@ export default class TruckAddPage extends React.Component {
                 disabled
                 type="text"
                 placeholder="选择车型"
-                onClick={this.showSelector.bind(this, 'truckType')}
-                value={this.state.truckType.name}
+                onClick={this.handleSelectTruckType.bind(this)}
+                value={truckDesc}
               />
               <i className="icon icon-arrow"></i>
             </div>

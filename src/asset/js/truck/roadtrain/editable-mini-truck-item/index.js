@@ -116,7 +116,7 @@ export default class EditableMiniTruckItem extends React.Component {
 
   remove() {
     if (confirm('是否删除该车?')) {
-      this.props.del(this.props.id);
+      this.props.del(this.props.truckID);
 
       this.setState({
         left: 0

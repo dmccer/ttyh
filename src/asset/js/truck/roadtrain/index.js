@@ -27,14 +27,14 @@ export default class RoadtrainPage extends React.Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/my_roadtrain',
-        type: 'GET',
+        url: '/mvc/v2/getTruck',
+        type: 'POST',
         success: resolve,
         error: reject
       });
     }).then((res) => {
       this.setState({
-        trucks: res.trucks
+        trucks: res.truckList
       });
     }).catch(() => {
       this.refs.poptip.warn('加载我的车队失败');
@@ -48,10 +48,10 @@ export default class RoadtrainPage extends React.Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/del_truck',
+        url: '/mvc/v2/deleteTruck',
         type: 'POST',
         data: {
-          id: id
+          truckID: id
         },
         success: resolve,
         error: reject
