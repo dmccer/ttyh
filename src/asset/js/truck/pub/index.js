@@ -1,3 +1,8 @@
+/**
+ * 发布车源页面
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
+ */
 import '../../../less/global/global.less';
 import '../../../less/global/layout.less';
 import '../../../less/global/form.less';
@@ -8,6 +13,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import cx from 'classnames';
+import Promise from 'promise';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -25,6 +31,7 @@ export default class TruckPubPage extends React.Component {
     memo: '',
     fromCities: [],
     toCities: [],
+    selectedTruckTag: {},
     truck: JSON.parse(localStorage.getItem(DEFAULT_TRUCK)),
   }, JSON.parse(localStorage.getItem(TRUCK_PUB)) || {});
 
@@ -67,17 +74,100 @@ export default class TruckPubPage extends React.Component {
         });
       })
       .catch((...args) => {
-        console.log(args)
+        throw args[0];
+
         this.refs.poptip.warn('获取车辆标签失败,请重试');
       });
   }
 
+  format(data) {
+    let fromCities = data.fromCities;
+    let fromCitiesLen = fromCities.length;
+
+    if (fromCitiesLen > 0 && !fromCities[fromCitiesLen - 1]) {
+      fromCities.splice(fromCitiesLen - 1, 1);
+    }
+
+    let toCities = data.toCities;
+    let toCitiesLen = toCities.length;
+
+    if (toCitiesLen > 0 && !toCities[toCitiesLen - 1]) {
+      toCities.splice(toCitiesLen - 1, 1);
+    }
+
+    data.fromCities = fromCities.join().replace('-', ' ');
+    data.toCities = toCities.join().replace('-', ' ');
+
+    return data;
+  }
+
+  validate(data) {
+    if (!data.fromCities || !data.fromCities.length || !data.fromCities[0]) {
+      return '出发地址不能为空';
+    }
+
+    if (!data.toCities || !data.toCities.length || !data.toCities[0]) {
+      return '到达地址不能为空';
+    }
+
+    if (!data.truckID) {
+      return '请选择车辆';
+    }
+
+    return true;
+  }
+
+  /**
+   * 车源发布提交
+   * @param  {ClickEvent} e
+   */
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO:
-    // 提交服务器
+    let data = {
+      truckID: this.state.truck.truckID,
+      shuoshuo: this.state.memo,
+      fromCities: this.state.fromCities,
+      toCities: this.state.toCities,
+      truckTag: this.state.selectedTruckTag.id
+    };
+
+    let msg = this.validate(data);
+
+    if (msg !== true) {
+      this.refs.poptip.warn(msg);
+
+      return;
+    }
+
+    data = this.format(data);
+
+    this.refs.loading.show('请求中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/newDriverShuoShuo',
+        type: 'POST',
+        data: data,
+        success: resolve,
+        error: reject
+      })
+    }).then((res) => {
+      if (res.retcode === 0) {
+        this.refs.poptip.success('发布车源成功');
+
+        // setTimeout(() => {
+        //   history.back();
+        // }, 2000);
+
+        return;
+      }
+    }).catch(() => {
+      this.refs.poptip.warn('发布失败,请重试');
+    }).done(() => {
+      this.refs.loading.close();
+    });
   }
 
   /**
@@ -110,7 +200,7 @@ export default class TruckPubPage extends React.Component {
     let d = {
       fromCities: fromCities,
       toCities: toCities,
-      selectedTruckTags: this.state.selectedTruckTags,
+      selectedTruckTag: this.state.selectedTruckTag,
       memo: this.state.memo
     };
 
@@ -244,13 +334,18 @@ export default class TruckPubPage extends React.Component {
   }
 
   /**
-   * 处理字符串类型字段改变
-   * @param  {String} field 字段名
+   * 处理备注改变
    * @param  {ChangeEvent} e
    */
-  handleStrChange(field: string, e: Object) {
+  handleMemoChange(e: Object) {
+    let val = $.trim(e.target.value);
+
+    if (val.length > this.state.memoMaxLength) {
+      val = val.substring(0, this.state.memoMaxLength);
+    }
+
     this.setState({
-      [field]: $.trim(e.target.value)
+      memo: val
     }, () => {
       this.writeDraft();
     });
@@ -262,25 +357,8 @@ export default class TruckPubPage extends React.Component {
    * @param  {ChangeEvent} e
    */
   handleTruckTagChange(truckTag, e) {
-    let selectedTruckTags = this.state.selectedTruckTags || [];
-    let index = selectedTruckTags.indexOf(truckTag.id);
-
-    if (e.target.checked) {
-      if (index !== -1) {
-        return;
-      }
-
-      selectedTruckTags.push(truckTag.id);
-    } else {
-      if (index === -1) {
-        return;
-      }
-
-      selectedTruckTags.splice(index, 1);
-    }
-
     this.setState({
-      selectedTruckTags: selectedTruckTags
+      selectedTruckTag: truckTag
     }, () => {
       this.writeDraft();
     });
@@ -292,15 +370,17 @@ export default class TruckPubPage extends React.Component {
    */
   renderTruckTagList() {
     let truckTags = this.state.truckTags;
-    let selectedTruckTags = this.state.selectedTruckTags;
+    let selectedTruckTag = this.state.selectedTruckTag;
+
     if (truckTags && truckTags.length) {
       return truckTags.map((truckTag, index) => {
         return (
           <label key={`truck-tag-item_${index}`}>
             <input
-              type="checkbox"
+              type="radio"
+              name="truck-tag"
               value={truckTag.id}
-              checked={selectedTruckTags.indexOf(truckTag.id) !== -1}
+              checked={selectedTruckTag.id === truckTag.id}
               onChange={this.handleTruckTagChange.bind(this, truckTag)}
             />
             {truckTag.name}
@@ -407,7 +487,7 @@ export default class TruckPubPage extends React.Component {
               <textarea
                 placeholder="备注"
                 value={this.state.memo}
-                onChange={this.handleStrChange.bind(this, 'memo')}
+                onChange={this.handleMemoChange.bind(this)}
               ></textarea>
               <span className="char-count">{this.state.memo.length}/{this.state.memoMaxLength}</span>
             </div>
