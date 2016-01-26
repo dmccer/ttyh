@@ -1,5 +1,7 @@
 /**
  * 货源搜索页面
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
  */
 import '../../../less/global/global.less';
 import './index.less';
@@ -33,11 +35,13 @@ export default class SearchPkgPage extends Component {
   }
 
   componentWillMount() {
-    let filters = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${PAGE_TYPE}`));
     let r = {
       fromCity: this.state.qs.fromCity,
       toCity: this.state.qs.toCity,
     };
+
+    // 获取本地筛选条件
+    let filters = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${PAGE_TYPE}`));
 
     if (filters) {
       let m = (a, b) => {
@@ -59,7 +63,7 @@ export default class SearchPkgPage extends Component {
   }
 
   componentDidMount() {
-    this.query(this.state.pageIndex);
+    this.query();
 
     LoadMore.init(() => {
       if (!this.state.over) {
@@ -118,6 +122,11 @@ export default class SearchPkgPage extends Component {
     });
   }
 
+  /**
+   * 切换展示地址选择器
+   * @param  {String} field 设置地址字段名
+   * @param  {ClickEvent} e
+   */
   toggleCitySelector(field, e) {
     e.preventDefault();
     e.stopPropagation();
@@ -132,6 +141,10 @@ export default class SearchPkgPage extends Component {
     });
   }
 
+  /**
+   * 设置地址选择器选择的地址到 state
+   * @param {Array} args
+   */
   setCitySelectorField(args) {
     let selected = args.filter((arg) => {
       return !!arg;
@@ -157,10 +170,17 @@ export default class SearchPkgPage extends Component {
     });
   }
 
+  /**
+   * 处理完成地址选择
+   * @param  {Array} args
+   */
   handleSelectCityDone(...args) {
     this.setCitySelectorField(args);
   }
 
+  /**
+   * 取消地址选择
+   */
   handleCancelCitySelector() {
     this.setState({
       showCitySelector: false
