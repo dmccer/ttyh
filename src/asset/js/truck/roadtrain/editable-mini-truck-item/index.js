@@ -135,6 +135,7 @@ export default class EditableMiniTruckItem extends React.Component {
           onTouchStart={this.touchstart.bind(this)}
           onTouchMove={this.touchmove.bind(this)}
           onTouchEnd={this.touchend.bind(this)}
+          onClick={this.props.select}
         >
           <MiniTruckItem {...this.props}/>
         </div>

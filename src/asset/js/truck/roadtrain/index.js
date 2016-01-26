@@ -1,5 +1,6 @@
 import '../../../less/global/global.less';
 import '../../../less/global/layout.less';
+import '../../../less/global/form.less';
 import '../../../less/component/icon.less';
 import './index.less';
 
@@ -76,6 +77,21 @@ export default class RoadtrainPage extends React.Component {
     });
   }
 
+  handleSelect(truck) {
+    let trucks = this.state.trucks;
+
+    trucks.forEach((truck) => {
+      truck.isDefault = 1;
+    });
+
+    truck.isDefault = 0;
+
+    this.setState({
+      trucks: trucks,
+      selected: truck
+    });
+  }
+
   renderTruckList() {
     if (this.state.trucks.length) {
       return this.state.trucks.map((truck, index) => {
@@ -84,10 +100,40 @@ export default class RoadtrainPage extends React.Component {
             key={`truck-item_${index}`}
             {...truck}
             del={this.del.bind(this)}
+            select={this.handleSelect.bind(this, truck)}
           />
         );
       });
     }
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.refs.loading.show('请求中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/v2/setTruckDefalt',
+        type: 'POST',
+        data: {
+          truckID: this.state.selected.truckID
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      if (res.retcode === 0) {
+        history.back();
+
+        return;
+      }
+    }).catch(() => {
+      this.refs.poptip.warn('设置默认车辆失败');
+    }).done(() => {
+      this.refs.loading.close();
+    });
   }
 
   render() {
@@ -101,6 +147,10 @@ export default class RoadtrainPage extends React.Component {
             <i className="icon s20 icon-big-plus"></i>
             <span>添加车辆</span>
           </a>
+        </div>
+        <div className="fixed-holder"></div>
+        <div className="confirm-btn">
+          <button className="btn block teal" onClick={this.handleSubmit.bind(this)}>确定选择</button>
         </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
