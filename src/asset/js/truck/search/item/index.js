@@ -3,15 +3,16 @@
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
-import '../../../less/global/global.less';
-import '../../../less/component/icon.less';
-import '../../../less/global/layout.less';
-import '../../../less/component/flag.less';
+import '../../../../less/global/global.less';
+import '../../../../less/component/icon.less';
+import '../../../../less/global/layout.less';
+import '../../../../less/component/flag.less';
 import './index.less';
 
 import React, {Component} from 'react';
-import Avatar from '../../avatar/';
-import AccountCertifyStatus from '../../account-certify-status/';
+import Avatar from '../../../avatar/';
+import AccountCertifyStatus from '../../../account-certify-status/';
+import {MiniReadableTime} from '../../../bbs/readable-time/';
 
 export default class SearchItem extends Component {
   constructor() {
@@ -23,7 +24,7 @@ export default class SearchItem extends Component {
       return;
     }
 
-    location.href = `./truck-detail.html?pid=${this.props.product.productID}`;
+    location.href = `./truck-detail.html?tid=${this.props.truckID}`;
   }
 
   render() {
@@ -47,7 +48,7 @@ export default class SearchItem extends Component {
               <AccountCertifyStatus />
             </div>
           </div>
-          <div className="pkg">
+          <div className="truck">
             <div className="title">
               <i className="flag teal">{props.truckTagStr}</i>
               <span>{fromCities[0]}</span>
@@ -59,14 +60,16 @@ export default class SearchItem extends Component {
             <div className="detail">
               <p><b>{props.licensePlate} {props.truckTypeStr} {truckLength} {loadLimit}</b></p>
               <p className="extra">
-                <span>1271.1公里</span>
-                <span className="divider">|</span>
-                <span>2小时前</span>
+                {
+                  // <span>1271.1公里</span>
+                  // <span className="divider">|</span>
+                }
+                <MiniReadableTime time={props.createTime} />
               </p>
             </div>
           </div>
           <div className="tel">
-            <a ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
+            <a ref="tel" href={`tel:${props.dirverPoneNo}`} className="icon icon-call s30"></a>
           </div>
         </div>
       </div>

@@ -12,59 +12,33 @@ import querystring from 'querystring';
 import Promise from 'promise';
 
 import LoadMore from '../../load-more/';
-import CitySelector from '../../city-selector/';
+import SearchCondition from '../../condition';
 import SearchItem from './item/';
+import Log from '../../log/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 
-const PKG_SEARCH = 'pkg-search';
-const CITY_SELECTOR_PREFIX = 'trucker_';
-const SEARCH_FILTER_PREFIX = '_search_filter';
-const PAGE_TYPE = 'pkg';
+const PAGE_TYPE = 'shipper_page';
 
 export default class SearchTruckPage extends Component {
   state = {
     qs: querystring.parse(location.search.substring(1)),
     pageIndex: 0,
     pageSize: 20,
-    pkgs: []
+    trucks: []
   };
 
   constructor() {
     super();
   }
 
-  componentWillMount() {
-    let r = {
-      fromCity: this.state.qs.fromCity,
-      toCity: this.state.qs.toCity,
-    };
-
-    // 获取本地筛选条件
-    let filters = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${PAGE_TYPE}`));
-
-    if (filters) {
-      let m = (a, b) => {
-        return a.id;
-      };
-
-      let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
-      let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
-      let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
-
-      $.extend(r, {
-        truckTypeFlag: truckTypeFlag,
-        loadLimitFlag: loadLimitFlag,
-        truckLengthFlag: truckLengthFlag
-      });
-    }
-
-    this.setState(r);
+  handleSearchConditionInit(q) {
+    this.setState(q, () => {
+      this.query();
+    });
   }
 
   componentDidMount() {
-    this.query();
-
     LoadMore.init(() => {
       if (!this.state.over) {
         this.query(this.state.pageIndex);
@@ -77,7 +51,7 @@ export default class SearchTruckPage extends Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/mvc/searchProductsForH5',
+        url: '/api/truck_search',
         type: 'GET',
         data: {
           fromCity: this.state.fromCity,
@@ -92,10 +66,10 @@ export default class SearchTruckPage extends Component {
         error: reject
       });
     }).then((res) => {
-      let pkgs = this.state.pkgs;
+      let trucks = this.state.trucks;
 
-      if (!res.data || !res.data.length) {
-        if (!pkgs.length) {
+      if (!res.trucks || !res.trucks.length) {
+        if (!trucks.length) {
           // 空列表，没有数据
           return;
         }
@@ -109,81 +83,18 @@ export default class SearchTruckPage extends Component {
         return;
       }
 
-      pkgs = pkgs.concat(res.data);
+      trucks = trucks.concat(res.trucks);
 
       this.setState({
-        pkgs: pkgs,
+        trucks: trucks,
         pageIndex: this.state.pageIndex + 1
       });
-    }).catch(() => {
-      this.refs.poptip.warn('查询货源失败,请重试');
+    }).catch((err) => {
+      Log.error(err);
+
+      this.refs.poptip.warn('查询车源失败,请重试');
     }).done(() => {
       this.refs.loading.close();
-    });
-  }
-
-  /**
-   * 切换展示地址选择器
-   * @param  {String} field 设置地址字段名
-   * @param  {ClickEvent} e
-   */
-  toggleCitySelector(field, e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    let offset = $(e.currentTarget).offset();
-    let top = offset.top + offset.height;
-
-    this.setState({
-      citySelectorTop: top,
-      citySelectorField: field,
-      showCitySelector: !this.state.showCitySelector
-    });
-  }
-
-  /**
-   * 设置地址选择器选择的地址到 state
-   * @param {Array} args
-   */
-  setCitySelectorField(args) {
-    let selected = args.filter((arg) => {
-      return !!arg;
-    });
-
-    let val = selected.join(' ');
-
-    if (val === '不限') {
-      val = '';
-    }
-
-    this.setState({
-      [this.state.citySelectorField]: val
-    }, () => {
-      let url = location.href.split('?')[0].split('#')[0];
-      let field = this.state.citySelectorField;
-      let qs = querystring.stringify($.extend(this.state.qs, {
-        [`${field}`]: this.state[field]
-      }));
-
-      // 更新 url querystring
-      location.replace(`${url}?${qs}`);
-    });
-  }
-
-  /**
-   * 处理完成地址选择
-   * @param  {Array} args
-   */
-  handleSelectCityDone(...args) {
-    this.setCitySelectorField(args);
-  }
-
-  /**
-   * 取消地址选择
-   */
-  handleCancelCitySelector() {
-    this.setState({
-      showCitySelector: false
     });
   }
 
@@ -200,19 +111,15 @@ export default class SearchTruckPage extends Component {
   render() {
     return (
       <div className="search-truck-page">
-
-        <div className="pkg-list">
+        <SearchCondition
+          pageType={PAGE_TYPE}
+          init={this.handleSearchConditionInit.bind(this)}
+        />
+        <div className="truck-list">
           {this.renderItems()}
         </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
-        <CitySelector
-          on={this.state.showCitySelector}
-          top={this.state.citySelectorTop}
-          prefix={CITY_SELECTOR_PREFIX}
-          done={this.handleSelectCityDone.bind(this)}
-          onCancel={this.handleCancelCitySelector.bind(this)}
-        />
       </div>
     );
   }

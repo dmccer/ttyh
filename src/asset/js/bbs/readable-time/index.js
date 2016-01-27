@@ -66,9 +66,7 @@ export class MiniReadableTime extends React.Component {
 
   render() {
     return (
-      <div className="readable-time">
-        <span>{calcTime(this.props.time)}</span>
-      </div>
+      <span className="readable-time">{calcTime(this.props.time)}</span>
     )
   }
 }

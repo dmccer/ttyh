@@ -22,7 +22,7 @@ import CitySelector from '../../city-selector/';
 
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
-const CITY_SELECTOR_PREFIX = 'trucker_';
+const PAGE_TYPE = 'trucker_page';
 
 export default class TruckPubPage extends React.Component {
 
@@ -348,6 +348,28 @@ export default class TruckPubPage extends React.Component {
   }
 
   /**
+   * 处理选择历史地址
+   * @param  {Array} args [省份, 城市, 地区]
+   */
+  handleSelectHistory(...args) {
+    let field = this.state.citySelectorField;
+    let index = this.state.citySelectorIndex;
+    let addrs = this.state[field];
+
+    let selected = args.filter((arg) => {
+      return !!arg;
+    });
+
+    addrs[this.state.citySelectorIndex] = selected.join('-');
+
+    this.setState({
+      [field]: addrs
+    }, () => {
+      this.writeDraft();
+    });
+  }
+
+  /**
    * 处理备注改变
    * @param  {ChangeEvent} e
    */
@@ -518,10 +540,11 @@ export default class TruckPubPage extends React.Component {
         <CitySelector
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}
-          prefix={CITY_SELECTOR_PREFIX}
+          prefix={PAGE_TYPE}
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}
+          onSelectHistory={this.handleSelectHistory.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
       </section>
