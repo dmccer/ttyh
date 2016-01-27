@@ -21,7 +21,7 @@ module.exports = {
     'user-posts': './src/asset/js/bbs/post/list-user.js',
     'active-users': './src/asset/js/bbs/active-user/list.js',
     'notice': './src/asset/js/bbs/notice/index.js',
-    
+
     'pkg-pub': './src/asset/js/pkg/pub/index.js',
     'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
     'my-pkg': './src/asset/js/pkg/my/index.js',
@@ -35,6 +35,7 @@ module.exports = {
     'truck-add': './src/asset/js/truck/add/index.js',
     'my-truck': './src/asset/js/truck/my/index.js',
     'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
+    'truck-search': './src/asset/js/truck/search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
@@ -246,6 +247,13 @@ module.exports = {
       template: './src/page/index.html',
       filename: 'today-pkg.html',
       chunks: ['today-pkg', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '找车',
+      template: './src/page/index.html',
+      filename: 'truck-search.html',
+      chunks: ['truck-search', 'zepto', 'ved'],
       inject: 'body'
     })
   ],
