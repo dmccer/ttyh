@@ -16,7 +16,7 @@ import Loading from '../loading/';
 import Poptip from '../poptip/';
 import Log from '../log/';
 
-const HISTORY = 'city_selector_histories';
+const HISTORY = '_city_selector_histories';
 const ALL = '不限';
 
 export default class CitySelector extends React.Component {

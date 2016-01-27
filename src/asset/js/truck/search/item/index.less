@@ -1,0 +1,82 @@
+@import '../../../less/global/site.variable';
+
+.truck-item {
+  padding: 15px 10px;
+  border-bottom: 1px solid @c_lightGrey;
+}
+
+.account {
+  width: 62px;
+  padding-right: 10px;
+  text-align: center;
+
+  .nick-name {
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.certified-tags {
+  text-align: center;
+}
+
+.tel {
+  width: 30px;
+  vertical-align: middle;
+}
+
+.pkg {
+  .title {
+    font-size: 13px;
+    font-weight: bolder;
+    color: @c_black;
+    margin-bottom: 10px;
+
+    > span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon {
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+  }
+
+  .detail {
+    position: relative;
+
+
+
+    .memo {
+      color: @c_lightBlack;
+      margin-bottom: 15px;
+      font-size: 12px;
+    }
+
+    .extra {
+      color: @c_lightBlack;
+      font-size: 11px;
+      margin-bottom: 0;
+
+      span {
+        &:first-child {
+          padding-right: 10px;
+        }
+
+        &:last-child {
+          padding-left: 10px;
+        }
+      }
+
+      .divider {
+        color: @c_lightGrey;
+      }
+    }
+  }
+}

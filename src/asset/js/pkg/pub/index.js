@@ -17,10 +17,11 @@ import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
+import Log from '../../log/';
 
-const CITY_SELECTOR_PREFIX = 'shipper_';
 const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
+const PAGE_TYPE = 'shipper_page';
 
 export default class PkgPubPage extends React.Component {
   state = $.extend({
@@ -121,8 +122,8 @@ export default class PkgPubPage extends React.Component {
       this.refs.poptip.success('发布货源成功');
 
       // 清空发布货源草稿及备注
-      localStorage.removeItem('pkg-pub');
-      localStorage.removeItem('memo');
+      localStorage.removeItem(DRAFT);
+      localStorage.removeItem(MEMO);
 
       this.setState({
         startPoint: null,
@@ -283,12 +284,10 @@ export default class PkgPubPage extends React.Component {
           this.showSelector('truckType');
         });
       })
-      .catch((...args) => {
-        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
+      .catch((err) => {
+        Log.error(err);
 
-        console.error(`${new Date().toLocaleString()} - 错误日志 start`)
-        console.error(args[0])
-        console.error(`-- 错误日志 end --`)
+        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
       })
       .done(() => {
         this.refs.loading.close();
@@ -460,7 +459,7 @@ export default class PkgPubPage extends React.Component {
         <CitySelector
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}
-          prefix={CITY_SELECTOR_PREFIX}
+          prefix={PAGE_TYPE}
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}

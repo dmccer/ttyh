@@ -13,16 +13,16 @@ import Promise from 'promise';
 
 import LoadMore from '../../load-more/';
 import CitySelector from '../../city-selector/';
-import SearchItem from '../search-item/';
+import SearchItem from './item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 
 const PKG_SEARCH = 'pkg-search';
 const CITY_SELECTOR_PREFIX = 'trucker_';
-const SEARCH_FILTER_PREFIX = 'search_filter_';
+const SEARCH_FILTER_PREFIX = '_search_filter';
 const PAGE_TYPE = 'pkg';
 
-export default class SearchPkgPage extends Component {
+export default class SearchTruckPage extends Component {
   state = {
     qs: querystring.parse(location.search.substring(1)),
     pageIndex: 0,
@@ -188,38 +188,19 @@ export default class SearchPkgPage extends Component {
   }
 
   renderItems() {
-    let pkgs = this.state.pkgs;
+    let trucks = this.state.trucks;
 
-    if (pkgs && pkgs.length) {
-      return pkgs.map((pkg, index) => {
-        return <SearchItem key={`pkg-item_${index}`} {...pkg} />
+    if (trucks && trucks.length) {
+      return trucks.map((truck, index) => {
+        return <SearchItem key={`pkg-item_${index}`} {...truck} />
       });
     }
   }
 
   render() {
     return (
-      <div className="search-pkg-page">
-        <ul className="filters row">
-          <li onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
-            <a href="javascript:void(0)">
-              <i className="icon icon-start-point off s20"></i>
-              <span>出发地点</span>
-            </a>
-          </li>
-          <li onClick={this.toggleCitySelector.bind(this, 'toCity')}>
-            <a href="javascript:void(0)">
-              <i className="icon icon-end-point off s20"></i>
-              <span>到达地点</span>
-            </a>
-          </li>
-          <li>
-            <a href={`./search-filter.html?type=${PAGE_TYPE}`}>
-              <i className="icon condition off s20"></i>
-              <span>筛选</span>
-            </a>
-          </li>
-        </ul>
+      <div className="search-truck-page">
+
         <div className="pkg-list">
           {this.renderItems()}
         </div>
@@ -237,4 +218,4 @@ export default class SearchPkgPage extends Component {
   }
 }
 
-ReactDOM.render(<SearchPkgPage />, $('#page').get(0));
+ReactDOM.render(<SearchTruckPage />, $('#page').get(0));

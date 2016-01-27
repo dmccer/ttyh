@@ -10,7 +10,7 @@ import querystring from 'querystring';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
-const SEARCH_FILTER_PREFIX = 'search_filter_';
+const SEARCH_FILTER_SUFFIX = '_search_filter';
 
 export default class SearchFilterPage extends Component {
   state = {
@@ -112,7 +112,7 @@ export default class SearchFilterPage extends Component {
         this.fetchLoadLimit(),
         this.fetchTruckLengths()])
       .then((res) => {
-        let selected = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${pageType}`)) || {};
+        let selected = JSON.parse(localStorage.getItem(`${pageType}${SEARCH_FILTER_SUFFIX}`)) || {};
 
         this.setState($.extend(selected, {
           truckTypes: res[0],
@@ -217,7 +217,7 @@ export default class SearchFilterPage extends Component {
 
     let pageType = this.state.qs.type;
 
-    localStorage.setItem(`${SEARCH_FILTER_PREFIX}${pageType}`, JSON.stringify({
+    localStorage.setItem(`${pageType}${SEARCH_FILTER_SUFFIX}`, JSON.stringify({
       selectedLoadLimits: this.state.selectedLoadLimits,
       selectedTruckTypes: this.state.selectedTruckTypes,
       selectedTruckLengths: this.state.selectedTruckLengths

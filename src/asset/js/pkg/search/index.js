@@ -1,5 +1,5 @@
 /**
- * 货源搜索页面
+ * 货源搜索页面 - 用户角色是车主 Trucker
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
@@ -12,15 +12,12 @@ import querystring from 'querystring';
 import Promise from 'promise';
 
 import LoadMore from '../../load-more/';
-import CitySelector from '../../city-selector/';
+import SearchCondition from '../../condition/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 
-const PKG_SEARCH = 'pkg-search';
-const CITY_SELECTOR_PREFIX = 'trucker_';
-const SEARCH_FILTER_PREFIX = 'search_filter_';
-const PAGE_TYPE = 'pkg';
+const PAGE_TYPE = 'trucker_page';
 
 export default class SearchPkgPage extends Component {
   state = {
@@ -34,41 +31,17 @@ export default class SearchPkgPage extends Component {
     super();
   }
 
-  componentWillMount() {
-    let r = {
-      fromCity: this.state.qs.fromCity,
-      toCity: this.state.qs.toCity,
-    };
-
-    // 获取本地筛选条件
-    let filters = JSON.parse(localStorage.getItem(`${SEARCH_FILTER_PREFIX}${PAGE_TYPE}`));
-
-    if (filters) {
-      let m = (a, b) => {
-        return a.id;
-      };
-
-      let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
-      let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
-      let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
-
-      $.extend(r, {
-        truckTypeFlag: truckTypeFlag,
-        loadLimitFlag: loadLimitFlag,
-        truckLengthFlag: truckLengthFlag
-      });
-    }
-
-    this.setState(r);
-  }
-
   componentDidMount() {
-    this.query();
-
     LoadMore.init(() => {
       if (!this.state.over) {
         this.query(this.state.pageIndex);
       }
+    });
+  }
+
+  handleSearchConditionInit(q) {
+    this.setState(q, () => {
+      this.query();
     });
   }
 
@@ -122,71 +95,6 @@ export default class SearchPkgPage extends Component {
     });
   }
 
-  /**
-   * 切换展示地址选择器
-   * @param  {String} field 设置地址字段名
-   * @param  {ClickEvent} e
-   */
-  toggleCitySelector(field, e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    let offset = $(e.currentTarget).offset();
-    let top = offset.top + offset.height;
-
-    this.setState({
-      citySelectorTop: top,
-      citySelectorField: field,
-      showCitySelector: !this.state.showCitySelector
-    });
-  }
-
-  /**
-   * 设置地址选择器选择的地址到 state
-   * @param {Array} args
-   */
-  setCitySelectorField(args) {
-    let selected = args.filter((arg) => {
-      return !!arg;
-    });
-
-    let val = selected.join(' ');
-
-    if (val === '不限') {
-      val = '';
-    }
-
-    this.setState({
-      [this.state.citySelectorField]: val
-    }, () => {
-      let url = location.href.split('?')[0].split('#')[0];
-      let field = this.state.citySelectorField;
-      let qs = querystring.stringify($.extend(this.state.qs, {
-        [`${field}`]: this.state[field]
-      }));
-
-      // 更新 url querystring
-      location.replace(`${url}?${qs}`);
-    });
-  }
-
-  /**
-   * 处理完成地址选择
-   * @param  {Array} args
-   */
-  handleSelectCityDone(...args) {
-    this.setCitySelectorField(args);
-  }
-
-  /**
-   * 取消地址选择
-   */
-  handleCancelCitySelector() {
-    this.setState({
-      showCitySelector: false
-    });
-  }
-
   renderItems() {
     let pkgs = this.state.pkgs;
 
@@ -200,38 +108,15 @@ export default class SearchPkgPage extends Component {
   render() {
     return (
       <div className="search-pkg-page">
-        <ul className="filters row">
-          <li onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
-            <a href="javascript:void(0)">
-              <i className="icon icon-start-point off s20"></i>
-              <span>出发地点</span>
-            </a>
-          </li>
-          <li onClick={this.toggleCitySelector.bind(this, 'toCity')}>
-            <a href="javascript:void(0)">
-              <i className="icon icon-end-point off s20"></i>
-              <span>到达地点</span>
-            </a>
-          </li>
-          <li>
-            <a href={`./search-filter.html?type=${PAGE_TYPE}`}>
-              <i className="icon condition off s20"></i>
-              <span>筛选</span>
-            </a>
-          </li>
-        </ul>
+        <SearchCondition
+          pageType={PAGE_TYPE}
+          init={this.handleSearchConditionInit.bind(this)}
+        />
         <div className="pkg-list">
           {this.renderItems()}
         </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
-        <CitySelector
-          on={this.state.showCitySelector}
-          top={this.state.citySelectorTop}
-          prefix={CITY_SELECTOR_PREFIX}
-          done={this.handleSelectCityDone.bind(this)}
-          onCancel={this.handleCancelCitySelector.bind(this)}
-        />
       </div>
     );
   }
