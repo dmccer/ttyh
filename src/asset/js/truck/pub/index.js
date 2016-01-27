@@ -15,6 +15,7 @@ import querystring from 'querystring';
 import cx from 'classnames';
 import Promise from 'promise';
 
+import Log from '../../log/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import CitySelector from '../../city-selector/';
@@ -74,12 +75,17 @@ export default class TruckPubPage extends React.Component {
         });
       })
       .catch((...args) => {
-        throw args[0];
+        Log.error(args[0]);
 
         this.refs.poptip.warn('获取车辆标签失败,请重试');
       });
   }
 
+  /**
+   * 转换为服务端需要的数据格式
+   * @param  {Object} data 需要转换的数据
+   * @return {Object} 转换后的数据
+   */
   format(data) {
     let fromCities = data.fromCities;
     let fromCitiesLen = fromCities.length;
@@ -101,6 +107,11 @@ export default class TruckPubPage extends React.Component {
     return data;
   }
 
+  /**
+   * 表单字段校验
+   * @param  {Object} data 需要校验的数据
+   * @return {Mix} 校验通过返回 true, 不通过返回提示信息
+   */
   validate(data) {
     if (!data.fromCities || !data.fromCities.length || !data.fromCities[0]) {
       return '出发地址不能为空';
@@ -157,9 +168,12 @@ export default class TruckPubPage extends React.Component {
       if (res.retcode === 0) {
         this.refs.poptip.success('发布车源成功');
 
-        // setTimeout(() => {
-        //   history.back();
-        // }, 2000);
+        // 清除草稿
+        localStorage.removeItem(TRUCK_PUB);
+
+        setTimeout(() => {
+          history.back();
+        }, 2000);
 
         return;
       }

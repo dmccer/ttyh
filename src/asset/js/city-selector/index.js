@@ -14,6 +14,7 @@ import Promise from 'promise';
 import Mask from '../mask/';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
+import Log from '../log/';
 
 const HISTORY = 'city_selector_histories';
 const ALL = '不限';
@@ -79,11 +80,9 @@ export default class CitySelector extends React.Component {
         provinces: res.resultList
       });
     }).catch((err) => {
-      this.refs.poptip.warn('加载省份失败,请重试');
+      Log.error(err);
 
-      console.error(`${new Date().toLocaleString()} - 错误日志 start`)
-      console.error(err)
-      console.error(`-- 错误日志 end --`)
+      this.refs.poptip.warn('加载省份失败,请重试');
     }).done(() => {
       this.refs.loading.close();
     });
@@ -113,11 +112,9 @@ export default class CitySelector extends React.Component {
         cities: res.resultList
       });
     }).catch((err) => {
-      this.refs.poptip.warn('加载城市失败,请重试');
+      Log.error(err);
 
-      console.error(`${new Date().toLocaleString()} - 错误日志 start`)
-      console.error(err)
-      console.error(`-- 错误日志 end --`)
+      this.refs.poptip.warn('加载城市失败,请重试');
     }).done(() => {
       this.refs.loading.close();
     });
@@ -145,11 +142,9 @@ export default class CitySelector extends React.Component {
         areas: res.resultList
       });
     }).catch((err) => {
-      this.refs.poptip.warn('加载地区失败,请重试');
+      Log.error(err);
 
-      console.error(`${new Date().toLocaleString()} - 错误日志 start`)
-      console.error(err)
-      console.error(`-- 错误日志 end --`)
+      this.refs.poptip.warn('加载地区失败,请重试');
     }).done(() => {
       this.refs.loading.close();
     });
