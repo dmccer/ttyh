@@ -82,14 +82,14 @@ export default class RoadtrainPage extends React.Component {
   handleSelect(truck, e) {
     e.preventDefault();
     e.stopPropagation();
-    
+
     let trucks = this.state.trucks;
 
     trucks.forEach((truck) => {
-      truck.isDefault = 1;
+      truck.isDefault = 0;
     });
 
-    truck.isDefault = 0;
+    truck.isDefault = 1;
 
     this.setState({
       trucks: trucks,

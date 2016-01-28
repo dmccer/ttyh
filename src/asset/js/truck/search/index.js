@@ -51,7 +51,7 @@ export default class SearchTruckPage extends Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/api/truck_search',
+        url: '/mvc/searchUsersForH5',
         type: 'GET',
         data: {
           fromCity: this.state.fromCity,

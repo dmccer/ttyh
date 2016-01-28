@@ -1,3 +1,8 @@
+/**
+ * 添加车辆页面
+ *
+ * @author Kane xiaoyunhua@ttyhuo.cn
+ */
 import '../../../less/global/global.less';
 import '../../../less/global/layout.less';
 import '../../../less/global/form.less';
@@ -12,19 +17,18 @@ import Promise from 'promise';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Selector from '../../selector/';
+import Log from '../../log/';
+import {FieldChangeEnhance} from '../../enhance/field-change';
 
+@FieldChangeEnhance
 export default class TruckAddPage extends React.Component {
+  state = {
+    truckType: {},
+    truckLength: {}
+  };
+
   constructor() {
     super();
-
-    this.state = {
-      truckType: {},
-      truckLength: {}
-    };
-  }
-
-  componentDidMount() {
-
   }
 
   /**
@@ -100,12 +104,10 @@ export default class TruckAddPage extends React.Component {
           this.showSelector('truckType');
         });
       })
-      .catch((...args) => {
-        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
+      .catch((err) => {
+        Log.error(err);
 
-        console.error(`${new Date().toLocaleString()} - 错误日志 start`)
-        console.error(args[0])
-        console.error(`-- 错误日志 end --`)
+        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
       })
       .done(() => {
         this.refs.loading.close();
@@ -143,6 +145,10 @@ export default class TruckAddPage extends React.Component {
     }
   }
 
+  /**
+   * 提交车辆
+   * @param  {ClickEvent} e
+   */
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -156,16 +162,19 @@ export default class TruckAddPage extends React.Component {
     }
 
     this.refs.loading.show('请求中...');
+
     new Promise((resolve, reject) => {
+      let props = this.props;
+
       $.ajax({
         url: '/mvc/v2/insertTruck',
         type: 'POST',
         data: {
-          dirverName: this.state.name,
-          dirverPoneNo: this.state.tel,
-          licensePlate: this.state.license,
+          dirverName: props.name,
+          dirverPoneNo: props.tel,
+          licensePlate: props.license,
+          loadLimit: props.weight,
           truckType: this.state.truckType.id,
-          loadLimit: this.state.weight,
           truckLength: this.state.truckLength.id
         },
         success: resolve,
@@ -184,16 +193,22 @@ export default class TruckAddPage extends React.Component {
     });
   }
 
+  /**
+   * 必填字段校验
+   * @return {Mix} 错误提示信息 或 true
+   */
   validate() {
-    if ($.trim(this.state.name) === '') {
+    let props = this.props;
+
+    if ($.trim(props.name) === '') {
       return '司机姓名不能为空';
     }
 
-    if ($.trim(this.state.tel) === '') {
+    if ($.trim(props.tel) === '') {
       return '手机号不能为空';
     }
 
-    if ($.trim(this.state.license) === '') {
+    if ($.trim(props.license) === '') {
       return '车牌号不能为空';
     }
 
@@ -201,50 +216,22 @@ export default class TruckAddPage extends React.Component {
       return '车型不能为空';
     }
 
-    if ($.trim(this.state.weight) === '') {
+    if ($.trim(this.state.truckLength) === '') {
+      return '车长不能为空';
+    }
+
+    if ($.trim(props.weight) === '') {
       return '载重不能为空';
     }
 
     return true;
   }
 
-  // handleSelectItem(item) {
-  //   this.setState({
-  //     [this.state.selectorField]: item
-  //   });
-  // }
-  //
-  // showSelector(field, e) {
-  //   this.setState({
-  //     selectorItems: this.state[`${field}s`],
-  //     selectorField: field
-  //   });
-  //
-  //   this.refs.selector.show();
-  // }
-
-  handleNumChange(field: string, e: Object) {
-    this.setState({
-      [field]: $.trim(e.target.value).replace(/[^\d\.]+/g, '')
-    });
-  }
-
-  handleTelChange(e: Object) {
-    this.setState({
-      tel: $.trim(e.target.value).replace(/[^\d]+/g, '')
-    });
-  }
-
-  handleStrChange(field: string, e: Object) {
-    this.setState({
-      [field]: $.trim(e.target.value)
-    });
-  }
-
   render() {
+    let props = this.props;
+
     let truckType = this.state.truckType;
     let truckLength = this.state.truckLength;
-
     let truckDesc = truckType.name ? `${truckType.name} ${truckLength.name || ''}` : null;
 
     return (
@@ -257,8 +244,8 @@ export default class TruckAddPage extends React.Component {
                 <input
                   type="text"
                   placeholder="输入司机姓名"
-                  value={this.state.name}
-                  onChange={this.handleStrChange.bind(this, 'name')}
+                  value={props.name}
+                  onChange={props.handleStrChange.bind(this, 'name')}
                 />
               </div>
             </div>
@@ -268,8 +255,8 @@ export default class TruckAddPage extends React.Component {
                 <input
                   type="tel"
                   placeholder="输入手机号码"
-                  value={this.state.tel}
-                  onChange={this.handleTelChange.bind(this)}
+                  value={props.tel}
+                  onChange={props.handleMobileNoChange.bind(this, 'tel')}
                 />
               </div>
             </div>
@@ -280,8 +267,8 @@ export default class TruckAddPage extends React.Component {
               <input
                 type="text"
                 placeholder="输入车牌号"
-                value={this.state.license}
-                onChange={this.handleStrChange.bind(this, 'license')}
+                value={props.license}
+                onChange={props.handleStrChange.bind(this, 'license')}
               />
             </div>
           </div>
@@ -304,8 +291,8 @@ export default class TruckAddPage extends React.Component {
               <input
                 type="text"
                 placeholder="输入载重"
-                value={this.state.weight}
-                onChange={this.handleNumChange.bind(this, 'weight')}
+                value={props.weight}
+                onChange={props.handleFloatChange.bind(this, 'weight')}
               />
               <span className="unit">吨</span>
             </div>
