@@ -135,6 +135,7 @@ export default class PkgPubPage extends React.Component {
       });
 
       // TODO: 跳转到我的货源列表页面
+      history.back();
     }).catch(() => {
       this.refs.poptip.error('发布货源失败');
     }).done(() => {

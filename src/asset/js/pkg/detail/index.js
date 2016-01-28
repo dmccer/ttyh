@@ -134,7 +134,7 @@ export default class PkgDetailPage extends Component {
       let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
 
-      truckDesc = `${product.truckTypeStr} ${loadLimit} ${truckLength}`;
+      truckDesc = `${product.truckTypeStr || ''} ${loadLimit} ${truckLength}`;
     }
 
     return (
@@ -211,7 +211,11 @@ export default class PkgDetailPage extends Component {
           </div>
           <div className="account-col">
             <span>{pkg.providerUserName}</span>
-            <AccountCertifyStatus />
+            <AccountCertifyStatus
+              type='shipper'
+              realNameCertified={pkg.provideUserSfzVerify}
+              companyCertified={pkg.provideUserCompanyVerify}
+            />
           </div>
           <div className="follow-status-col">
             {this.renderFollowStatus()}

@@ -32,7 +32,6 @@ export default class MyPkgPage extends Component {
 
   /**
    * 获取我发布的货源列表
-   * @return {[type]} [description]
    */
   fetchMyPkgs() {
     this.refs.loading.show('加载中...');
@@ -74,7 +73,7 @@ export default class MyPkgPage extends Component {
         url: '/mvc/product_refresh_json',
         type: 'POST',
         data: {
-          productID: pkg.productID
+          productID: pkg.product.productID
         },
         success: resolve,
         error: reject
@@ -83,8 +82,11 @@ export default class MyPkgPage extends Component {
       if (res.retcode === 0) {
         this.refs.poptip.success('重新发布成功');
 
+        this.fetchMyPkgs();
         return;
       }
+
+      this.refs.poptip.warn(res.msg);
     }).catch((err) => {
       Log.error(err);
 
@@ -110,7 +112,7 @@ export default class MyPkgPage extends Component {
         url: '/mvc/product_disable_batch_forH5',
         type: 'POST',
         data: {
-          productIDs: pkg.productID
+          productIDs: pkg.product.productID
         },
         success: resolve,
         error: reject
@@ -118,9 +120,12 @@ export default class MyPkgPage extends Component {
     }).then((res) => {
       if (res.retcode === 0) {
         this.refs.poptip.success('删除货源成功');
+        this.fetchMyPkgs();
 
         return;
       }
+
+      this.refs.poptip.warn(res.msg);
     }).catch((err) => {
       Log.error(err);
 

@@ -2,19 +2,43 @@ import '../../less/component/flag.less';
 import './index.less';
 
 import React from 'react';
-import classNames from 'classnames';
+import cx from 'classnames';
 
 export default class AccountCertifyStatus extends React.Component {
+
+  static defaultProps = {
+    realNameCertified: false,
+    companyCertified: false,
+    driverCertified: false
+  };
+
   constructor() {
     super();
   }
 
   render() {
-    return (
-      <span className="certified-tag-group">
-        <i className="certified-tag flag teal off">实</i>
-        <i className="certified-tag flag orange">公</i>
-      </span>
-    );
+    let props = this.props;
+
+    if (!props.type) {
+      throw new Error('AccountCertifyStatus Component props 缺少 type 参数');
+    }
+
+    if (props.type === 'shipper') {
+      return (
+        <span className="certified-tag-group">
+          <i className={cx('certified-tag flag purple', !props.realNameCertified && 'off' || '')}>实</i>
+          <i className={cx('certified-tag flag blue', !props.companyCertified && 'off' || '')}>公</i>
+        </span>
+      );
+    }
+
+    if (props.type === 'trucker') {
+      return (
+        <span className="certified-tag-group">
+          <i className={cx('certified-tag flag purple', !props.realNameCertified && 'off' || '')}>实</i>
+          <i className={cx('certified-tag flag green', !props.driverCertified && 'off' || '')}>车</i>
+        </span>
+      );
+    }
   }
 }

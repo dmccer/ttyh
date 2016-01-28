@@ -16,6 +16,7 @@ import SearchCondition from '../../condition/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import Log from '../../log/';
 
 const PAGE_TYPE = 'trucker_page';
 
@@ -88,7 +89,9 @@ export default class SearchPkgPage extends Component {
         pkgs: pkgs,
         pageIndex: this.state.pageIndex + 1
       });
-    }).catch(() => {
+    }).catch((err) => {
+      Log.error(err);
+
       this.refs.poptip.warn('查询货源失败,请重试');
     }).done(() => {
       this.refs.loading.close();
