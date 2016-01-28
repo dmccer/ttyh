@@ -13,6 +13,7 @@ import React, {Component} from 'react';
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import PkgItemDesc from '../item-desc/';
+import {MiniReadableTime} from '../../bbs/readable-time/';
 
 export default class SearchItem extends Component {
   constructor() {
@@ -25,6 +26,10 @@ export default class SearchItem extends Component {
     }
 
     location.href = `./pkg-detail.html?pid=${this.props.product.productID}`;
+  }
+
+  hanldleMakeCall() {
+    _hmt.push(['_trackEvent', '货源', '列表打电话', this.props.product.provideUserMobileNo]);
   }
 
   render() {
@@ -54,14 +59,16 @@ export default class SearchItem extends Component {
               <PkgItemDesc {...props.product} />
               <p className="memo">{props.product.memo}</p>
               <p className="extra">
-                <span>1271.1公里</span>
-                <span className="divider">|</span>
-                <span>2小时前</span>
+                {
+                  // <span>1271.1公里</span>
+                  // <span className="divider">|</span>
+                }
+                <MiniReadableTime time={props.product.createTime} />
               </p>
             </div>
           </div>
           <div className="tel">
-            <a ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
+            <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
           </div>
         </div>
       </div>

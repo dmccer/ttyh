@@ -24,6 +24,7 @@ import querystring from 'querystring';
 import Promise from 'promise';
 
 import CitySelector from '../city-selector/';
+import FixedHolder from '../fixed-holder/';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
 
@@ -199,6 +200,7 @@ export default class SearchCondition extends Component {
             </a>
           </li>
         </ul>
+        <FixedHolder height="41" />
         <CitySelector
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}

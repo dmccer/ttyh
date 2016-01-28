@@ -152,6 +152,8 @@ export default class TruckPubPage extends React.Component {
       return;
     }
 
+    _hmt.push(['_trackEvent', '车源', '发布', new Date().toLocaleString()]);
+
     data = this.format(data);
 
     this.refs.loading.show('请求中...');
@@ -166,6 +168,8 @@ export default class TruckPubPage extends React.Component {
       })
     }).then((res) => {
       if (res.retcode === 0) {
+        _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布成功', 2]);
+
         this.refs.poptip.success('发布车源成功');
 
         // 清除草稿
@@ -178,6 +182,8 @@ export default class TruckPubPage extends React.Component {
         return;
       }
     }).catch(() => {
+      _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布失败', 2]);
+      
       this.refs.poptip.warn('发布失败,请重试');
     }).done(() => {
       this.refs.loading.close();

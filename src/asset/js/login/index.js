@@ -48,6 +48,8 @@ export default class Login extends React.Component {
       return;
     }
 
+    _hmt.push(['_trackEvent', '登录/注册', '点击登录/注册', new Date().toLocaleString()]);
+
     if (this.state.tip) {
       this.refs.poptip.warn(this.state.tip);
       return;
@@ -94,6 +96,8 @@ export default class Login extends React.Component {
       data: data,
       success: (res) => {
         if (res.viewName === 'user/home') {
+          _hmt.push(['_setCustomVar', 1, 'login', '登录成功', 2]);
+
           this.refs.loading.close();
           this.refs.poptip.success('登录成功');
 
@@ -111,6 +115,8 @@ export default class Login extends React.Component {
 
           return;
         }
+
+        _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
 
         let msg;
 
@@ -135,6 +141,8 @@ export default class Login extends React.Component {
         });
       },
       error: () => {
+        _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
+        
         this.refs.loading.close();
         this.refs.poptip.error('系统异常');
 
@@ -176,6 +184,8 @@ export default class Login extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
+    _hmt.push(['_trackEvent', '登录/注册', '点击获取验证码', new Date().toLocaleString()]);
+
     if (!this.validateTel()) {
       return;
     }
@@ -209,6 +219,8 @@ export default class Login extends React.Component {
         this.refs.loading.close();
 
         if (res.viewName === 'user/home') {
+          _hmt.push(['_setCustomVar', 1, 'login', '自动登录', 2]);
+
           let qs = querystring.stringify({
             uid: res.loggedUser.userID
           });
@@ -222,6 +234,8 @@ export default class Login extends React.Component {
         }
 
         if (res.viewName === 'user/login/confirm') {
+          _hmt.push(['_setCustomVar', 1, 'post_verify_code', '成功', 2]);
+
           this.refs.poptip.success('验证码发送成功');
 
           this.setState({
@@ -233,6 +247,8 @@ export default class Login extends React.Component {
         }
 
         if (res.viewName === 'user/register') {
+          _hmt.push(['_setCustomVar', 1, 'post_verify_code', '成功', 2]);
+
           this.refs.poptip.success('验证码发送成功');
 
           this.setState({
@@ -242,6 +258,8 @@ export default class Login extends React.Component {
 
           return;
         }
+
+        _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
 
         let msg;
 
@@ -258,8 +276,9 @@ export default class Login extends React.Component {
         this.refs.poptip.warn(msg);
       },
       error: () => {
-        this.refs.loading.close();
+        _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
 
+        this.refs.loading.close();
         this.refs.poptip.error('系统异常')
       }
     });

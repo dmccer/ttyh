@@ -15,9 +15,10 @@ import Promise from 'promise';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import Log from '../../log/';
 import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
-import Log from '../../log/';
+import FixedHolder from '../../fixed-holder/';
 
 const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
@@ -101,6 +102,8 @@ export default class PkgPubPage extends React.Component {
       return;
     }
 
+    _hmt.push(['_trackEvent', '货源', '发布', new Date().toLocaleString()]);
+
     this.refs.loading.show('发布中...');
     new Promise((resolve, reject) => {
       $.ajax({
@@ -119,6 +122,13 @@ export default class PkgPubPage extends React.Component {
         error: reject
       });
     }).then((res) => {
+      if (!res.retcode === 0) {
+        this.refs.poptip.warn('发布货源失败');
+        return;
+      }
+
+      _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布成功', 2]);
+
       this.refs.poptip.success('发布货源成功');
 
       // 清空发布货源草稿及备注
@@ -137,6 +147,8 @@ export default class PkgPubPage extends React.Component {
       // TODO: 跳转到我的货源列表页面
       history.back();
     }).catch(() => {
+      _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布失败', 2]);
+
       this.refs.poptip.error('发布货源失败');
     }).done(() => {
       this.refs.loading.close();
@@ -449,12 +461,12 @@ export default class PkgPubPage extends React.Component {
             </div>
           </div>
         </div>
+        <FixedHolder height="70" />
         <button
           className="btn block teal pub-btn"
           type="submit"
           onClick={this.handleSubmit.bind(this)}
         >发布</button>
-        <div className="fixed-holder"></div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <CitySelector

@@ -16,6 +16,7 @@ import Poptip from '../../poptip/';
 import PkgItem from '../item/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 import Log from '../../log/';
+import FixedHolder from '../../fixed-holder/';
 
 export default class MyPkgPage extends Component {
   state = {
@@ -189,6 +190,7 @@ export default class MyPkgPage extends Component {
       <div className="my-pkg-page">
         {this.renderEmpty()}
         {this.renderPkgList()}
+        <FixedHolder height="70" />
         <a href="./pkg-pub.html" className="pub-btn">发布</a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />

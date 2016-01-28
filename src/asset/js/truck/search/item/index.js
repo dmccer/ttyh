@@ -27,6 +27,10 @@ export default class SearchItem extends Component {
     location.href = `./truck-detail.html?tid=${this.props.truckID}`;
   }
 
+  hanldleMakeCall() {
+    _hmt.push(['_trackEvent', '车源', '列表打电话', this.props.driverPoneNo]);
+  }
+
   render() {
     let props = this.props;
 
@@ -73,7 +77,7 @@ export default class SearchItem extends Component {
             </div>
           </div>
           <div className="tel">
-            <a ref="tel" href={`tel:${props.dirverPoneNo}`} className="icon icon-call s30"></a>
+            <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${props.driverPoneNo}`} className="icon icon-call s30"></a>
           </div>
         </div>
       </div>
