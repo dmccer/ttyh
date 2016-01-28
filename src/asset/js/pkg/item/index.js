@@ -17,9 +17,7 @@ export default class PkgItem extends Component {
   render() {
     let props = this.props;
     let pkg = this.props.product || {};
-    // <a href="#" className="recommend">
-    //   <i className="flag orange">3 推荐 >></i>
-    // </a>
+
     return (
       <div className="pkg-item">
         <div className="title">
@@ -29,12 +27,15 @@ export default class PkgItem extends Component {
         </div>
         <div className="detail">
           <PkgItemDesc {...pkg} />
+          <a href="#" className="recommend">
+            <i className="flag orange">3 推荐 >></i>
+          </a>
         </div>
         <div className="extra">
           <ul className="actions">
-            <li><a href="#">重新发布</a></li>
-            <li><a href="#">详情</a></li>
-            <li><a href="#">删除</a></li>
+            <li onClick={props.repub}><a href="#">重新发布</a></li>
+            <li><a href={`./pkg-detail.html?pid=${props.productID}`}>详情</a></li>
+            <li onClick={props.del}><a href="#">删除</a></li>
           </ul>
           <div><ReadableTime time={pkg.createTime}/>发布</div>
         </div>

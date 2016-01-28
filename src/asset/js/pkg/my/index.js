@@ -15,6 +15,7 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import PkgItem from '../item/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
+import Log from '../../log/';
 
 export default class MyPkgPage extends Component {
   state = {
@@ -26,7 +27,16 @@ export default class MyPkgPage extends Component {
   }
 
   componentDidMount() {
+    this.fetchMyPkgs();
+  }
+
+  /**
+   * 获取我发布的货源列表
+   * @return {[type]} [description]
+   */
+  fetchMyPkgs() {
     this.refs.loading.show('加载中...');
+
     new Promise((resolve, reject) => {
       $.ajax({
         url: '/mvc/searchMyProductsForH5',
@@ -48,6 +58,82 @@ export default class MyPkgPage extends Component {
     });
   }
 
+  /**
+   * 重新发布货源
+   * @param  {Object} pkg 货源对象
+   * @param  {ClickEvent} e
+   */
+  repub(pkg, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.refs.loading.show('发布中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/product_refresh_json',
+        type: 'POST',
+        data: {
+          productID: pkg.productID
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      if (res.retcode === 0) {
+        this.refs.poptip.success('重新发布成功');
+
+        return;
+      }
+    }).catch((err) => {
+      Log.error(err);
+
+      this.refs.poptip.warn('重新发布失败');
+    }).done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  /**
+   * 删除货源
+   * @param  {Object} pkg 货源对象
+   * @param  {ClickEvent} e
+   */
+  del(pkg, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.refs.loading.show('请求中...');
+
+    new Promise((resolve, reject) => {
+      $.ajax({
+        url: '/mvc/product_disable_batch_forH5',
+        type: 'POST',
+        data: {
+          productIDs: pkg.productID
+        },
+        success: resolve,
+        error: reject
+      });
+    }).then((res) => {
+      if (res.retcode === 0) {
+        this.refs.poptip.success('删除货源成功');
+
+        return;
+      }
+    }).catch((err) => {
+      Log.error(err);
+
+      this.refs.poptip.warn('删除货源失败');
+    }).done(() => {
+      this.refs.loading.close();
+    });
+  }
+
+  /**
+   * 展示货源为空时的提示界面
+   * @return {Element}
+   */
   renderEmpty() {
     if (!this.state.pkgs.length) {
       return (
@@ -61,17 +147,30 @@ export default class MyPkgPage extends Component {
     }
   }
 
+  /**
+   * 展示货源列表
+   * @return {Element}
+   */
   renderPkgList() {
-    // <div className="all-recommend-truck">
-    //   <a href="#">一键查看全部推荐车源</a>
-    // </div>
     if (this.state.pkgs.length) {
       let pkgs = this.state.pkgs.map((pkg, index) => {
-        return <PkgItem {...pkg} key={`pkg-item_${index}`} />;
+        return (
+          <PkgItem
+            {...pkg}
+            key={`pkg-item_${index}`}
+            repub={this.repub.bind(this, pkg)}
+            del={this.del.bind(this, pkg)}
+          />
+        );
       });
 
       return (
         <div className="my-pkg">
+          {
+            // <div className="all-recommend-truck">
+            //   <a href="#">一键查看全部推荐车源</a>
+            // </div>
+          }
           <div className="pkg-list">
             {pkgs}
           </div>
@@ -85,7 +184,7 @@ export default class MyPkgPage extends Component {
       <div className="my-pkg-page">
         {this.renderEmpty()}
         {this.renderPkgList()}
-        <a className="pub-btn">发布</a>
+        <a href="./pkg-pub.html" className="pub-btn">发布</a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
       </div>

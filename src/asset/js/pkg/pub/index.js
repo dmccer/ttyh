@@ -104,7 +104,7 @@ export default class PkgPubPage extends React.Component {
     this.refs.loading.show('发布中...');
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/mvc/product_add_json',
+        url: '/mvc/product_addNew_json',
         type: 'POST',
         data: {
           fromCity: this.state.startPoint,
