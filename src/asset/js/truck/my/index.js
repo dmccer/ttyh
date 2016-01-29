@@ -96,6 +96,10 @@ export default class MyTruckPage extends Component {
    * @param  {ClickEvent} e
    */
   del(truck, e) {
+    if (!confirm('确认删除该条车源?')) {
+      return;
+    }
+
     e.preventDefault();
     e.stopPropagation();
 

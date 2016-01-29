@@ -103,6 +103,10 @@ export default class MyPkgPage extends Component {
    * @param  {ClickEvent} e
    */
   del(pkg, e) {
+    if (!confirm('确认删除该条货源?')) {
+      return;
+    }
+
     e.preventDefault();
     e.stopPropagation();
 
