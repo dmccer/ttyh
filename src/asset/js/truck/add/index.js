@@ -122,7 +122,7 @@ export default class TruckAddPage extends React.Component {
 
     let truckType = props.truckType;
     let truckLength = props.truckLength;
-    let truckDesc = truckType.name ? `${truckType.name} ${truckLength.name || ''}` : null;
+    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name && (truckLength.name + '米') || ''}` : null;
 
     return (
       <section className="truck-add-page">

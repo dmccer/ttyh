@@ -71,7 +71,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
    * 处理选择车型和车长
    */
   handleSelectTruckType(cb: Function) {
-    this.cb = cb;
+    this.cb = typeof cb === 'function' ? cb : () => {};
 
     // 若已经请求过车型和车长列表，则直接展示
     if (this.state.truckTypes && this.state.truckLengths) {
@@ -121,6 +121,16 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
    */
   handleSelectItem(item) {
     let field = this.state.selectorField;
+
+    if (field === 'truckLength' && item.id === '其他') {
+      let val = prompt('请输入车长');
+      val = $.trim(val).replace(/[^\d\.]/g, '');
+      
+      item = {
+        name: val,
+        id: val
+      };
+    }
 
     this.setState({
       [this.state.selectorField]: item

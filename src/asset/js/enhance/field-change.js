@@ -33,10 +33,13 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     super(props);
   }
 
+  noop() {}
+
   // 纯数字字符串或整数
   handleIntegerChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
+      cb = this.noop;
     }
 
     this.setState({
@@ -48,17 +51,19 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleFloatChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
+      cb = this.noop;
     }
 
     this.setState({
       [field]: $.trim(e.target.value).replace(/[^\d\.]/g, '')
-    }, cb)
+    }, cb )
   }
 
   // 字符串
   handleStrChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
+      cb = this.noop;
     }
 
     this.setState({
@@ -70,6 +75,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleMobileNoChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
+      cb = this.noop;
     }
 
     this.setState({

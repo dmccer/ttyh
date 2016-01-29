@@ -33,11 +33,12 @@ export default class SearchItem extends Component {
 
   render() {
     let props = this.props;
+    let truck = props.userWithLatLng;
 
-    let truckLength = props.truckLength != null && parseFloat(props.truckLength) !== 0 ? `${props.truckLength}米`: '';
-    let loadLimit = props.loadLimit != null && parseFloat(props.loadLimit) !== 0 ? `${props.loadLimit}吨` : '';
-    let fromCities = props.fromCities.split(',');
-    let toCities = props.toCities.split(',');
+    let truckLength = truck.truckLength != null && parseFloat(truck.truckLength) !== 0 ? `${truck.truckLength}米`: '';
+    let loadLimit = truck.loadLimit != null && parseFloat(truck.loadLimit) !== 0 ? `${truck.loadLimit}吨` : '';
+    let fromCities = (truck.fromCities || '').split(',');
+    let toCities = (truck.toCities || '').split(',');
 
     let fromCitiesNum = fromCities.length > 1 ? <b>({fromCities.length})</b> : null;
     let toCitiesNum = toCities.length > 1 ? <b>({toCities.length})</b> : null;
@@ -46,13 +47,13 @@ export default class SearchItem extends Component {
       <div className="truck-item" onClick={this.detail.bind(this)}>
         <div className="row">
           <div className="account">
-            <Avatar img={props.provideUserImgUrl} />
-            <div className="nick-name">{props.providerUserName}</div>
+            <Avatar img={truck.faceImgUrl} />
+            <div className="nick-name">{truck.userName}</div>
             <div className="certified-tags">
               <AccountCertifyStatus
                 type='trucker'
-                realNameCertified={props.provideUserSfzVerify}
-                driverCertified={props.provideUserDriverVerify}
+                realNameCertified={truck.sfzVerify}
+                driverCertified={truck.driverVerify}
               />
             </div>
           </div>

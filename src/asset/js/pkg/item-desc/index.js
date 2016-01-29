@@ -32,7 +32,7 @@ export default class PkgItemDesc extends Component {
     let props = this.props;
 
     let truckLength = props.truckLength != null && parseFloat(props.truckLength) ? <span>{props.truckLength}米</span> : null;
-    let truckType = props.truckType != null && parseFloat(props.truckType) ? <span>{props.truckType}</span> : null;
+    let truckType = props.truckType != null && parseInt(props.truckType) ? <span>{props.truckTypeStr}</span> : null;
 
     if (truckLength == null && truckType == null) {
       return;

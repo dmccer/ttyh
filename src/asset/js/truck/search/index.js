@@ -68,7 +68,7 @@ export default class SearchTruckPage extends Component {
     }).then((res) => {
       let trucks = this.state.trucks;
 
-      if (!res.trucks || !res.trucks.length) {
+      if (!res.data || !res.data.length) {
         if (!trucks.length) {
           // 空列表，没有数据
           return;
@@ -83,7 +83,7 @@ export default class SearchTruckPage extends Component {
         return;
       }
 
-      trucks = trucks.concat(res.trucks);
+      trucks = trucks.concat(res.data);
 
       this.setState({
         trucks: trucks,

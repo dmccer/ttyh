@@ -281,7 +281,7 @@ export default class PkgPubPage extends React.Component {
     let truckType = props.truckType;
     let truckLength = props.truckLength;
 
-    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name || ''}` : null;
+    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name && (truckLength.name + '米') || ''}` : null;
 
     return (
       <section className="pkg-pub">
@@ -348,7 +348,7 @@ export default class PkgPubPage extends React.Component {
             <div className="control">
               <input
                 type="text"
-                placeholder="货重"
+                placeholder="货重(单位: 吨)"
                 value={props.pkgWeight}
                 onChange={props.handleFloatChange.bind(this, 'pkgWeight', this.writeDraft.bind(this))}
               />

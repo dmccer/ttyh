@@ -15,6 +15,7 @@ import Poptip from '../../poptip/';
 import Log from '../../log/';
 import TruckItem from '../item/';
 import truckPNG from '../../../img/app/truck@3x.png';
+import FixedHolder from '../../fixed-holder/';
 
 export default class MyTruckPage extends Component {
   state = {
@@ -179,6 +180,7 @@ export default class MyTruckPage extends Component {
       <div className="my-truck-page">
         {this.renderEmpty()}
         {this.renderTruckList()}
+        <FixedHolder height="70" />
         <a href="./truck-pub.html" className="pub-btn">发布</a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
