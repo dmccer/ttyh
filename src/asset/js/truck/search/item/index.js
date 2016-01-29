@@ -24,11 +24,11 @@ export default class SearchItem extends Component {
       return;
     }
 
-    location.href = `./truck-detail.html?tid=${this.props.truckID}`;
+    location.href = `./truck-detail.html?tid=${this.props.userWithLatLng.routeID}`;
   }
 
   hanldleMakeCall() {
-    _hmt.push(['_trackEvent', '车源', '列表打电话', this.props.driverPoneNo]);
+    _hmt.push(['_trackEvent', '车源', '列表打电话', this.props.userWithLatLng.mobileNo]);
   }
 
   render() {
@@ -59,7 +59,7 @@ export default class SearchItem extends Component {
           </div>
           <div className="truck">
             <div className="title">
-              <i className="flag teal">{props.truckTagStr}</i>
+              <i className="flag teal">{truck.truckTagStr}</i>
               <span>{fromCities[0]}</span>
               {fromCitiesNum}
               <i className="icon icon-target"></i>
@@ -67,18 +67,19 @@ export default class SearchItem extends Component {
               <b>{toCitiesNum}</b>
             </div>
             <div className="detail">
-              <p><b>{props.licensePlate} {props.truckTypeStr} {truckLength} {loadLimit}</b></p>
+              <p className="memo">{truck.truckStatusMsg}</p>
+              <p className="truck-desc"><b>{truck.licensePlate} {truck.truckTypeStr} {truckLength} {loadLimit}</b></p>
               <p className="extra">
                 {
                   // <span>1271.1公里</span>
                   // <span className="divider">|</span>
                 }
-                <MiniReadableTime time={props.createTime} />
+                <MiniReadableTime time={truck.orderByTime} />
               </p>
             </div>
           </div>
           <div className="tel">
-            <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${props.driverPoneNo}`} className="icon icon-call s30"></a>
+            <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${truck.mobileNo}`} className="icon icon-call s30"></a>
           </div>
         </div>
       </div>

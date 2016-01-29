@@ -11,17 +11,15 @@ import ReactDOM from 'react-dom';
 import Promise from 'promise';
 
 import LoadMore from '../../load-more/';
-import SearchItem from '../search-item/';
+import SearchItem from '../search/item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 
-const PKG_SEARCH = 'pkg-search';
-
-export default class TodayPkgListPage extends Component {
+export default class TodayTruckListPage extends Component {
   state = {
     pageIndex: 0,
     pageSize: 20,
-    pkgs: []
+    rtrucks: []
   };
 
   constructor() {
@@ -43,7 +41,7 @@ export default class TodayPkgListPage extends Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/mvc/todayRecommendProductsForH5',
+        url: '/mvc/todayRecommendUsersForH5',
         type: 'GET',
         data: {
           pageIndex: this.state.pageIndex,
@@ -53,10 +51,10 @@ export default class TodayPkgListPage extends Component {
         error: reject
       });
     }).then((res) => {
-      let pkgs = this.state.pkgs;
+      let rtrucks = this.state.rtrucks;
 
       if (!res.data || !res.data.length) {
-        if (!pkgs.length) {
+        if (!rtrucks.length) {
           // 空列表，没有数据
           return;
         }
@@ -70,10 +68,10 @@ export default class TodayPkgListPage extends Component {
         return;
       }
 
-      pkgs = pkgs.concat(res.data);
+      rtrucks = rtrucks.concat(res.data);
 
       this.setState({
-        pkgs: pkgs,
+        rtrucks: rtrucks,
         pageIndex: this.state.pageIndex + 1
       });
     }).catch(() => {
@@ -84,19 +82,19 @@ export default class TodayPkgListPage extends Component {
   }
 
   renderItems() {
-    let pkgs = this.state.pkgs;
+    let rtrucks = this.state.rtrucks;
 
-    if (pkgs && pkgs.length) {
-      return pkgs.map((pkg, index) => {
-        return <SearchItem key={`pkg-item_${index}`} {...pkg} />
+    if (rtrucks && rtrucks.length) {
+      return rtrucks.map((rtruck, index) => {
+        return <SearchItem key={`pkg-item_${index}`} {...rtruck} />
       });
     }
   }
 
   render() {
     return (
-      <div className="search-pkg-page">
-        <div className="pkg-list">
+      <div className="search-truck-page">
+        <div className="truck-list">
           {this.renderItems()}
         </div>
         <Loading ref="loading" />
@@ -106,4 +104,4 @@ export default class TodayPkgListPage extends Component {
   }
 }
 
-ReactDOM.render(<TodayPkgListPage />, $('#page').get(0));
+ReactDOM.render(<TodayTruckListPage />, $('#page').get(0));

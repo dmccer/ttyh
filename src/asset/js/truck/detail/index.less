@@ -5,27 +5,27 @@ body {
   background-color: @white;
 }
 
-.certified-tag {
-  position: relative;
-  padding-bottom: 5px;
-  width: 18px;
-  text-align: center;
-  box-sizing: border-box;
+.capsule {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 5px 10px;
+  font-size: 13px;
+  color: @c_black;
+  border: 1px solid;
+  border-radius: 30px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 
-  &.off {
-    background-color: @c_grey;
+  &:last-child {
+    margin-right: 0;
   }
 
-  &:after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    display: block;
-    content: '';
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid @white;
+  &.teal {
+    border-color: @c_teal;
+  }
+
+  &.purple {
+    border-color: @c_purple;
   }
 }
 
@@ -39,47 +39,46 @@ body {
   padding-top: 10px;
   margin-bottom: 15px;
   margin-top: 0;
+
+  &.header {
+    margin-bottom: 5px;
+  }
+
+  .flag {
+    float: right;
+  }
+
+  .pub-time {
+    float: right;
+  }
 }
 
-.pub-time {
-  float: right;
+.lines .field {
+  &:last-child {
+    padding-bottom: 5px;
+  }
 }
 
 .field, .memo-field {
   position: relative;
-  height: 50px;
   box-sizing: border-box;
   background-color: @white;
 
   > label {
     display: block;
     float: left;
-    height: 100%;
     padding-left: 15px;
     padding-right: 15px;
     text-align: center;
 
-    b {
-      display: inline-block;
-      color: @c_teal;
-      vertical-align: middle;
-      margin-left: -10px;
-      margin-top: 15px;
-      margin-right: 5px;
-    }
-
     i {
-      margin-top: 15px;
+      margin-top: 5px;
     }
   }
 
   &:last-child {
     border-bottom: 1px solid @c_lightGrey;
-
-    .control input,
-    .control .input-holder {
-      border-bottom: none;
-    }
+    padding-bottom: 15px;
   }
 
   .control {
@@ -108,9 +107,22 @@ body {
   }
 }
 
-.truck-field .control input {
-  color: @c_lightBlack;
+.truck-desc {
+  color: @c_black;
+  font-size: 16px;
+
+  p {
+    margin-bottom: 10px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
+
+// .truck-field .control input {
+//   color: @c_lightBlack;
+// }
 
 .memo-field {
   height: auto;
@@ -118,7 +130,6 @@ body {
   .memo {
     display: block;
     width: 100%;
-    height: 2.5em;
     padding-left: 5px;
     box-sizing: border-box;
     font-size: 13px;
@@ -126,6 +137,12 @@ body {
     overflow: hidden;
     padding-right: 10px;
     margin-bottom: 10px;
+
+    .memo-toggler {
+      color: @c_teal;
+      float: right;
+      text-decoration: underline;
+    }
   }
 
   .contact-count {
@@ -221,8 +238,4 @@ a.call-btn {
   color: @white;
   background-color: @c_teal;
   font-size: 16px;
-}
-
-.fixed-holder {
-  height: 50px;
 }

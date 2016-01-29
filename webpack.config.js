@@ -37,6 +37,8 @@ module.exports = {
     'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
     'truck-search': './src/asset/js/truck/search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
+    'truck-detail': './src/asset/js/truck/detail/index.js',
+    'today-truck': './src/asset/js/truck/today-list/',
     'lib-react': ['react', 'react-dom'],
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -255,7 +257,21 @@ module.exports = {
       filename: 'truck-search.html',
       chunks: ['truck-search', 'zepto', 'ved'],
       inject: 'body'
-    })
+    }),
+    new HtmlWebpackPlugin({
+      title: '车源详情',
+      template: './src/page/index.html',
+      filename: 'truck-detail.html',
+      chunks: ['truck-detail', 'zepto', 'ved'],
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '今日车源列表',
+      template: './src/page/index.html',
+      filename: 'today-truck.html',
+      chunks: ['today-truck', 'zepto', 'ved'],
+      inject: 'body'
+    }),
   ],
   module: {
     preLoaders: [{

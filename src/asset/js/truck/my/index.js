@@ -69,7 +69,7 @@ export default class MyTruckPage extends Component {
 
     new Promise((resolve, reject) => {
       $.ajax({
-        url: '/mvc/v2/releaseTruck',
+        url: '/mvc/v2/routeinfo_refresh_json',
         type: 'POST',
         data: {
           routeID: truck.routeID

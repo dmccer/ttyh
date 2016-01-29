@@ -18,6 +18,7 @@ import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import FixedHolder from '../../fixed-holder/';
 
 export default class PkgDetailPage extends Component {
   state = {
@@ -68,6 +69,12 @@ export default class PkgDetailPage extends Component {
       });
     })
     .then((res) => {
+      if (res.errMsg) {
+        this.refs.poptip.warn(res.errMsg);
+
+        return;
+      }
+      
       let pkg = this.state.pkg;
       pkg.alreadyFavorite = true;
 
@@ -109,6 +116,31 @@ export default class PkgDetailPage extends Component {
     );
   }
 
+  toggleMore() {
+    this.setState({
+      showMore: !this.state.showMore
+    });
+  }
+
+  renderMemo(memo) {
+    if ($.trim(memo) === '') {
+      return (<span className="memo">暂无</span>);
+    }
+
+    if (memo.length <= 30) {
+      return <span className="memo">{memo}</span>;
+    }
+
+    let r = this.state.showMore ? memo : `${memo.substring(0, 30)}...`;
+
+    return (
+      <span className="memo">
+       <span>{r}</span>
+       <a href="javascript:void(0)" className="memo-toggler" onClick={this.toggleMore.bind(this)}>{this.state.showMore ? '收起' : '更多'}</a>
+      </span>
+    );
+  }
+
   render() {
     let pkg = this.state.pkg;
     let product = pkg.product;
@@ -127,8 +159,8 @@ export default class PkgDetailPage extends Component {
     let truckDesc;
 
     if ($.trim(product.truckTypeStr) == '' &&
-      (parseFloat(product.loadLimit) === 0 || product.loadLimit != null) &&
-      (parseFloat(product.truckLength) === 0 || product.truckLength != null)) {
+      (parseFloat(product.loadLimit) === 0 || product.loadLimit == null) &&
+      (parseFloat(product.truckLength) === 0 || product.truckLength == null)) {
       truckDesc = '暂无';
     } else {
       let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
@@ -197,11 +229,13 @@ export default class PkgDetailPage extends Component {
           <div className="field memo-field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              <span className="memo">{pkg.product.description || '暂无'}</span>
-              <span className="contact-count">
-                <b>{pkg.product.contactCount}</b>
-                位车主联系过该货源
-              </span>
+              {this.renderMemo(pkg.product.description)}
+              {
+                // <span className="contact-count">
+                //   <b>{pkg.product.contactCount}</b>
+                //   位车主联系过该货源
+                // </span>
+              }
             </div>
           </div>
         </div>
@@ -221,7 +255,7 @@ export default class PkgDetailPage extends Component {
             {this.renderFollowStatus()}
           </div>
         </div>
-        <div className="fixed-holder"></div>
+        <FixedHolder height="50" />
         <a href={`tel:${pkg.product.provideUserMobileNo}`} className="call-btn">
           <i className="icon icon-call"></i>
           <span>电话联系</span>
