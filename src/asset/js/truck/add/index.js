@@ -21,6 +21,11 @@ import Log from '../../log/';
 import {FieldChangeEnhance} from '../../enhance/field-change';
 import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
 
+const ERR_MSG = {
+  1001: '没有找到用户',
+  1002: '您没有登录'
+};
+
 @FieldChangeEnhance
 @SelectTruckTypeEnhance
 export default class TruckAddPage extends React.Component {
@@ -67,7 +72,7 @@ export default class TruckAddPage extends React.Component {
       });
     }).then((res) => {
       if (res.retcode !== 0) {
-        this.refs.poptip.success('添加车辆失败');
+        this.refs.poptip.warn(ERR_MSG[res.retcode]);
 
         return;
       }

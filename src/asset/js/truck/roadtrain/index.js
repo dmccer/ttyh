@@ -12,8 +12,23 @@ import Promise from 'promise';
 import EditableMiniTruckItem from './editable-mini-truck-item/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import Log from '../../log/';
 
 const DEFAULT_TRUCK = 'default-truck';
+const ERR_MSG_GET_TRUCK = {
+  1001: '您没有登录',
+  1002: '您没有登录'
+};
+const ERR_MSG_DEL = {
+  1001: '请选择车辆',
+  1003: '您没有登录'
+}
+const ERR_MSG_SET_DEFAULT = {
+  1001: '您没有登录',
+  1002: '您没有登录',
+  1003: '设置默认失败',
+  1004: '设置默认失败'
+}
 
 export default class RoadtrainPage extends React.Component {
   state = {
@@ -36,10 +51,18 @@ export default class RoadtrainPage extends React.Component {
         error: reject
       });
     }).then((res) => {
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG_GET_TRUCK[res.retcode]);
+
+        return;
+      }
+
       this.setState({
         trucks: res.truckList
       });
-    }).catch(() => {
+    }).catch((err) => {
+      Log.error(err);
+
       this.refs.poptip.warn('加载我的车队失败');
     }).done(() => {
       this.refs.loading.close();
@@ -60,6 +83,12 @@ export default class RoadtrainPage extends React.Component {
         error: reject
       });
     }).then((res) => {
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG_DEL[res.retcode]);
+
+        return;
+      }
+
       this.refs.poptip.success('删除车辆成功');
 
       let trucks = this.state.trucks;
@@ -72,7 +101,9 @@ export default class RoadtrainPage extends React.Component {
       this.setState({
         trucks: trucks
       });
-    }).catch(() => {
+    }).catch((err) => {
+      Log.error(err);
+
       this.refs.poptip.warn('删除车辆失败，请重试');
     }).done(() => {
       this.refs.loading.close();
@@ -129,13 +160,16 @@ export default class RoadtrainPage extends React.Component {
         error: reject
       });
     }).then((res) => {
-      if (res.retcode === 0) {
-        localStorage.setItem(DEFAULT_TRUCK, JSON.stringify(this.state.selected));
-
-        history.back();
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG_SET_DEFAULT[res.retcode]);
         return;
       }
-    }).catch(() => {
+
+      localStorage.setItem(DEFAULT_TRUCK, JSON.stringify(this.state.selected));
+      history.back();
+    }).catch((err) => {
+      Log.error(err);
+
       this.refs.poptip.warn('设置默认车辆失败');
     }).done(() => {
       this.refs.loading.close();

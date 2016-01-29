@@ -23,6 +23,11 @@ import CitySelector from '../../city-selector/';
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
 const PAGE_TYPE = 'trucker_page';
+const ERR_MSG = {
+  1001: '请选择车辆',
+  1002: '您没有登录',
+  1002: '您没有登录'
+};
 
 export default class TruckPubPage extends React.Component {
 
@@ -145,19 +150,14 @@ export default class TruckPubPage extends React.Component {
     };
 
     let msg = this.validate(data);
-
     if (msg !== true) {
       this.refs.poptip.warn(msg);
-
       return;
     }
 
     _hmt.push(['_trackEvent', '车源', '发布', new Date().toLocaleString()]);
-
     data = this.format(data);
-
     this.refs.loading.show('请求中...');
-
     new Promise((resolve, reject) => {
       $.ajax({
         url: '/mvc/v2/newDriverShuoShuo',
@@ -167,23 +167,23 @@ export default class TruckPubPage extends React.Component {
         error: reject
       })
     }).then((res) => {
-      if (res.retcode === 0) {
-        _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布成功', 2]);
-
-        this.refs.poptip.success('发布车源成功');
-
-        // 清除草稿
-        localStorage.removeItem(TRUCK_PUB);
-
-        setTimeout(() => {
-          history.back();
-        }, 2000);
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG[res.retcode]);
 
         return;
       }
-    }).catch(() => {
+
+      _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布成功', 2]);
+      this.refs.poptip.success('发布车源成功');
+      // 清除草稿
+      localStorage.removeItem(TRUCK_PUB);
+      setTimeout(() => {
+        history.back();
+      }, 2000);
+    }).catch((err) => {
       _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布失败', 2]);
-      
+
+      Log.error(err);
       this.refs.poptip.warn('发布失败,请重试');
     }).done(() => {
       this.refs.loading.close();

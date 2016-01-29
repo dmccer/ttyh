@@ -18,6 +18,13 @@ import pkgPNG from '../../../img/app/pkg@3x.png';
 import Log from '../../log/';
 import FixedHolder from '../../fixed-holder/';
 
+const ERR_MSG_REPUB = {
+  1001: '您没有登录',
+  1002: '您没有登录',
+  1003: '未找到要重新发布的车源',
+  1004: '重新发布失败'
+};
+
 export default class MyPkgPage extends Component {
   state = {
     pkgs: []
@@ -80,14 +87,13 @@ export default class MyPkgPage extends Component {
         error: reject
       });
     }).then((res) => {
-      if (res.retcode === 0) {
-        this.refs.poptip.success('重新发布成功');
-
-        this.fetchMyPkgs();
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG_REPUB[res.retcode]);
         return;
       }
 
-      this.refs.poptip.warn(res.msg);
+      this.refs.poptip.success('重新发布成功');
+      this.fetchMyPkgs();
     }).catch((err) => {
       Log.error(err);
 

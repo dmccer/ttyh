@@ -29,7 +29,7 @@ export default class SearchItem extends Component {
   }
 
   hanldleMakeCall() {
-    _hmt.push(['_trackEvent', '货源', '列表打电话', this.props.product.provideUserMobileNo]);
+    _hmt.push(['_trackEvent', '货源', '列表打电话', this.props.product.provideUserMobileNo || '']);
   }
 
   render() {

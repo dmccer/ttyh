@@ -28,7 +28,7 @@ export default class SearchItem extends Component {
   }
 
   hanldleMakeCall() {
-    _hmt.push(['_trackEvent', '车源', '列表打电话', this.props.userWithLatLng.mobileNo]);
+    _hmt.push(['_trackEvent', '车源', '列表打电话', this.props.userWithLatLng.mobileNo || '']);
   }
 
   render() {

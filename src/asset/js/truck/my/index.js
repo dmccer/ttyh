@@ -17,6 +17,19 @@ import TruckItem from '../item/';
 import truckPNG from '../../../img/app/truck@3x.png';
 import FixedHolder from '../../fixed-holder/';
 
+const ERR_MSG_REPUB = {
+  1001: '您没有登录',
+  1002: '您没有登录',
+  1003: '未找到要重新发布的车源',
+  1004: '重新发布失败'
+};
+
+const ERR_MSG_DEL = {
+  1001: '您没有登录',
+  1002: '您没有登录',
+  1003: '删除车源失败'
+};
+
 export default class MyTruckPage extends Component {
   state = {
     trucks: []
@@ -78,9 +91,12 @@ export default class MyTruckPage extends Component {
         error: reject
       });
     }).then((res) => {
-      if (res.retcode === 0) {
-        this.fetchTruckList();
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG_REPUB[res.retcode]);
+        return;
       }
+
+      this.fetchTruckList();
     }).catch((err) => {
       Log.error(err);
 
@@ -116,9 +132,12 @@ export default class MyTruckPage extends Component {
         error: reject
       });
     }).then((res) => {
-      if (res.retcode === 0) {
-        this.fetchTruckList();
+      if (res.retcode !== 0) {
+        this.refs.poptip.warn(ERR_MSG_DEL[res.retcode]);
+        return;
       }
+
+      this.fetchTruckList();
     }).catch((err) => {
       Log.error(err);
 
