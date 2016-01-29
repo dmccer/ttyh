@@ -34,31 +34,47 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   }
 
   // 纯数字字符串或整数
-  handleIntegerChange(field: String, e: Object) {
+  handleIntegerChange(field: String, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+    }
+
     this.setState({
       [field]: $.trim(e.target.value).replace(/[^\d]/g, '')
-    });
+    }, cb);
   }
 
   // 小数或整数
-  handleFloatChange(field: String, e: Object) {
+  handleFloatChange(field: String, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+    }
+
     this.setState({
       [field]: $.trim(e.target.value).replace(/[^\d\.]/g, '')
-    })
+    }, cb)
   }
 
   // 字符串
-  handleStrChange(field: String, e: Object) {
+  handleStrChange(field: String, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+    }
+
     this.setState({
       [field]: $.trim(e.target.value)
-    });
+    }, cb);
   }
 
   // 手机号
-  handleMobileNoChange(field: String, e: Object) {
+  handleMobileNoChange(field: String, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+    }
+
     this.setState({
       [field]: $.trim(e.target.value).replace(/[^\d]/g, '').substring(0, 11)
-    });
+    }, cb);
   }
 
   render() {

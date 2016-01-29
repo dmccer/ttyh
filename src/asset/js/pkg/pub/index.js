@@ -1,5 +1,5 @@
 /**
- * 发布货源页面
+ * 发布货源页面 ./pkg-pub.html
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
@@ -19,72 +19,25 @@ import Log from '../../log/';
 import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
 import FixedHolder from '../../fixed-holder/';
+import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
+import {FieldChangeEnhance} from '../../enhance/field-change';
 
 const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
 const PAGE_TYPE = 'shipper_page';
 
+@FieldChangeEnhance
+@SelectTruckTypeEnhance
 export default class PkgPubPage extends React.Component {
+  static defaultProps = JSON.parse(localStorage.getItem(DRAFT)) || {};
+
   state = $.extend({
     qs: querystring.parse(location.search.substring(1)),
-    truckType: {},
-    truckLength: {}
-  }, JSON.parse(localStorage.getItem(DRAFT)) || {}, {
     memo: localStorage.getItem(MEMO)
   });
 
-  constructor() {
-    super();
-  }
-
-  /**
-   * 获取车型列表
-   * @return {Promise}
-   */
-  fetchTruckTypes() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckType',
-        type: 'GET',
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckTypes = res.truckTypeMap;
-      truckTypes = Object.keys(truckTypes).map((key) => {
-        return {
-          name: truckTypes[key],
-          id: key
-        };
-      });
-
-      return truckTypes;
-    });
-  }
-
-  /**
-   * 获取车长列表
-   * @return {Promise}
-   */
-  fetchTruckLengths() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckLength',
-        type: 'GET',
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckLengths = res.truckLengthList;
-      truckLengths = truckLengths.map((len) => {
-        return {
-          name: len,
-          id: len
-        };
-      });
-
-      return truckLengths;
-    });
+  constructor(props) {
+    super(props);
   }
 
   /**
@@ -105,25 +58,29 @@ export default class PkgPubPage extends React.Component {
     _hmt.push(['_trackEvent', '货源', '发布', new Date().toLocaleString()]);
 
     this.refs.loading.show('发布中...');
+
     new Promise((resolve, reject) => {
+      let props = this.props;
+
       $.ajax({
         url: '/mvc/product_addNew_json',
         type: 'POST',
         data: {
           fromCity: this.state.startPoint,
           toCity: this.state.endPoint,
-          truckType: this.state.truckType.id,
-          truckLength: this.state.truckLength.id,
-          title: this.state.pkgType,
-          loadLimit: this.state.pkgWeight,
+          truckType: props.truckType.id,
+          truckLength: props.truckLength.id,
+          title: props.pkgType,
+          loadLimit: props.pkgWeight,
           memo: this.state.memo
         },
         success: resolve,
         error: reject
       });
     }).then((res) => {
-      if (!res.retcode === 0) {
+      if (res.retcode !== 0) {
         this.refs.poptip.warn('发布货源失败');
+
         return;
       }
 
@@ -159,6 +116,8 @@ export default class PkgPubPage extends React.Component {
    * 校验必填字段
    */
   validate() {
+    let props = this.props;
+
     if ($.trim(this.state.startPoint) === '') {
       return '出发地址不能为空';
     }
@@ -167,8 +126,12 @@ export default class PkgPubPage extends React.Component {
       return '到达地址不能为空';
     }
 
-    if ($.trim(this.state.truckType) === '') {
+    if (!props.truckType || $.trim(props.truckType.id) === '') {
       return '车型不能为空';
+    }
+
+    if (!props.truckLength || $.trim(props.truckLength.id) === '') {
+      return '车长不能为空';
     }
 
     return true;
@@ -178,13 +141,15 @@ export default class PkgPubPage extends React.Component {
    * 写入草稿
    */
   writeDraft() {
+    let props = this.props;
+
     localStorage.setItem(DRAFT, JSON.stringify({
-      truckType: this.state.truckType,
-      truckLength: this.state.truckLength,
-      pkgType: this.state.pkgType,
+      truckType: props.truckType,
+      truckLength: props.truckLength,
+      pkgType: props.pkgType,
       startPoint: this.state.startPoint,
       endPoint: this.state.endPoint,
-      pkgWeight: this.state.pkgWeight
+      pkgWeight: props.pkgWeight
     }));
   }
 
@@ -275,70 +240,6 @@ export default class PkgPubPage extends React.Component {
   }
 
   /**
-   * 处理选择车型和车长
-   */
-  handleSelectTruckType() {
-    // 若已经请求过车型和车长列表，则直接展示
-    if (this.state.truckTypes && this.state.truckLengths) {
-      this.showSelector('truckType');
-
-      return;
-    }
-
-    this.refs.loading.show('加载中...');
-
-    Promise
-      .all([this.fetchTruckTypes(), this.fetchTruckLengths()])
-      .then((res) => {
-        this.setState({
-          truckTypes: res[0],
-          truckLengths: res[1]
-        }, () => {
-          this.showSelector('truckType');
-        });
-      })
-      .catch((err) => {
-        Log.error(err);
-
-        this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
-      })
-      .done(() => {
-        this.refs.loading.close();
-      });
-  }
-
-  /**
-   * 展示车型或车长选择面板
-   * @param  {String} field 字段名，truckType 或 truckLength
-   */
-  showSelector(field) {
-    this.setState({
-      selectorItems: this.state[`${field}s`],
-      selectorField: field
-    }, () => {
-      this.refs.selector.show();
-    });
-  }
-
-  /**
-   * 选中车型或车长后存入本地
-   * 选中车型后再展示选则车长
-   */
-  handleSelectItem(item) {
-    let field = this.state.selectorField;
-
-    this.setState({
-      [this.state.selectorField]: item
-    }, () => {
-      this.writeDraft();
-    });
-
-    if (field === 'truckType') {
-      this.showSelector('truckLength');
-    }
-  }
-
-  /**
    * 处理数字型字段值修改
    * @param  {String} field 字段名
    * @param  {ChangeEvent} e
@@ -376,10 +277,11 @@ export default class PkgPubPage extends React.Component {
   }
 
   render() {
-    let truckType = this.state.truckType;
-    let truckLength = this.state.truckLength;
+    let props = this.props;
+    let truckType = props.truckType;
+    let truckLength = props.truckLength;
 
-    let truckDesc = truckType.name ? `${truckType.name} ${truckLength.name || ''}` : null;
+    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name || ''}` : null;
 
     return (
       <section className="pkg-pub">
@@ -424,7 +326,7 @@ export default class PkgPubPage extends React.Component {
                 type="text"
                 disabled="disabled"
                 placeholder="选择车型"
-                onClick={this.handleSelectTruckType.bind(this)}
+                onClick={props.handleSelectTruckType.bind(this,  this.writeDraft.bind(this))}
                 value={truckDesc} />
               <i className="icon icon-arrow"></i>
             </div>
@@ -435,8 +337,8 @@ export default class PkgPubPage extends React.Component {
               <input
                 type="text"
                 placeholder="货物种类"
-                value={this.state.pkgType}
-                onChange={this.handleStrChange.bind(this, 'pkgType')}
+                value={props.pkgType}
+                onChange={props.handleStrChange.bind(this, 'pkgType', this.writeDraft.bind(this))}
               />
               <i className="icon icon-arrow"></i>
             </div>
@@ -447,8 +349,8 @@ export default class PkgPubPage extends React.Component {
               <input
                 type="text"
                 placeholder="货重"
-                value={this.state.pkgWeight}
-                onChange={this.handleNumChange.bind(this, 'pkgWeight')}
+                value={props.pkgWeight}
+                onChange={props.handleFloatChange.bind(this, 'pkgWeight', this.writeDraft.bind(this))}
               />
               <i className="icon icon-arrow"></i>
             </div>
@@ -479,10 +381,6 @@ export default class PkgPubPage extends React.Component {
           onSelectHistory={this.handleSelectHistory.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
-        <Selector
-          ref="selector"
-          items={this.state.selectorItems}
-          select={this.handleSelectItem.bind(this)} />
       </section>
     );
   }
