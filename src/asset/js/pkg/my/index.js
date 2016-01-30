@@ -127,7 +127,10 @@ export default class MyPkgPage extends Component {
       }
 
       this.refs.poptip.success('重新发布成功');
-      this.fetchMyPkgs(true);
+
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     }).catch((err) => {
       Log.error(err);
 
@@ -165,7 +168,9 @@ export default class MyPkgPage extends Component {
     }).then((res) => {
       if (res.retcode === 0) {
         this.refs.poptip.success('删除货源成功');
-        this.fetchMyPkgs(true);
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
 
         return;
       }

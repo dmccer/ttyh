@@ -132,7 +132,10 @@ export default class MyTruckPage extends Component {
       }
 
       this.refs.poptip.success('重新发布成功');
-      this.fetchTruckList(true);
+      
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     }).catch((err) => {
       Log.error(err);
 
@@ -175,7 +178,10 @@ export default class MyTruckPage extends Component {
       }
 
       this.refs.poptip.success('删除成功');
-      this.fetchTruckList(true);
+
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     }).catch((err) => {
       Log.error(err);
 
