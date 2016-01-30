@@ -198,13 +198,13 @@ export default class TruckDetailPage extends Component {
        </h2>
        <div className="field-group lines">
          <div className="field">
-           <label><i className="icon icon-start-point s20"></i></label>
+           <label><i className="icon icon-start-point on s20"></i></label>
            <div className="control">
               {this.renderCities(fromCities, 'teal')}
            </div>
          </div>
          <div className="field">
-           <label><i className="icon icon-end-point s20"></i></label>
+           <label><i className="icon icon-end-point on s20"></i></label>
            <div className="control">
             {this.renderCities(toCities, 'purple')}
            </div>
