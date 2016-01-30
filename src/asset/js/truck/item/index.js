@@ -38,7 +38,7 @@ export default class TruckItem extends Component {
         <div className="detail">
           <div className="row">
             <div className="truck-desc-col">
-              <p className="truck-desc">{rTruckDetail.truckInfo.memo}</p>
+              <p className="truck-desc">{rTruckDetail.truckStatusMsg || ''}</p>
             </div>
             {
               // <div className="recommend-col">

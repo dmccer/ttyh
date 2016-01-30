@@ -56,9 +56,9 @@ export default class SearchTruckPage extends Component {
         data: {
           fromCity: this.state.fromCity,
           toCity: this.state.toCity,
-          truckTypeFlag: this.state.truckTypeFlag,
-          loadLimitFlag: this.state.loadLimitFlag,
-          truckLengthFlag: this.state.truckLengthFlag,
+          truckTypeFlags: this.state.truckTypeFlag,
+          loadLimitFlags: this.state.loadLimitFlag,
+          truckLengthFlags: this.state.truckLengthFlag,
           pageSize: this.state.pageSize,
           pageIndex: this.state.pageIndex
         },
