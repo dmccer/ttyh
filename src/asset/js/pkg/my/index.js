@@ -9,6 +9,7 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
+import querystring from 'querystring';
 
 import LoadMore from '../../load-more/';
 import Loading from '../../loading/';
@@ -27,6 +28,9 @@ const ERR_MSG_REPUB = {
 
 export default class MyPkgPage extends Component {
   state = {
+    qs: querystring.parse(location.search.substring(1)),
+    pageIndex: 0,
+    pageSize: 15,
     pkgs: []
   };
 
@@ -35,26 +39,56 @@ export default class MyPkgPage extends Component {
   }
 
   componentDidMount() {
+    LoadMore.init(() => {
+      if (!this.state.over) {
+        this.fetchMyPkgs(this.state.pageIndex);
+      }
+    });
+
     this.fetchMyPkgs();
   }
 
   /**
    * 获取我发布的货源列表
    */
-  fetchMyPkgs() {
+  fetchMyPkgs(slient) {
     this.refs.loading.show('加载中...');
 
     new Promise((resolve, reject) => {
       $.ajax({
         url: '/mvc/searchMyProductsForH5',
         type: 'GET',
+        data: {
+          pageSize: this.state.pageSize,
+          pageIndex: this.state.pageIndex
+        },
         success: resolve,
         error: reject
       });
     })
     .then((res) => {
+      let pkgs = this.state.pkgs;
+
+      if (!res.data || !res.data.length) {
+        if (!pkgs.length || slient) {
+          // 空列表，没有数据
+          return;
+        }
+
+        this.refs.poptip.info('没有更多了');
+
+        this.setState({
+          over: true
+        });
+
+        return;
+      }
+
+      pkgs = pkgs.concat(res.data);
+
       this.setState({
-        pkgs: res.data
+        pkgs: pkgs,
+        pageIndex: this.state.pageIndex + 1
       });
     })
     .catch(() => {
@@ -93,7 +127,7 @@ export default class MyPkgPage extends Component {
       }
 
       this.refs.poptip.success('重新发布成功');
-      this.fetchMyPkgs();
+      this.fetchMyPkgs(true);
     }).catch((err) => {
       Log.error(err);
 
@@ -131,7 +165,7 @@ export default class MyPkgPage extends Component {
     }).then((res) => {
       if (res.retcode === 0) {
         this.refs.poptip.success('删除货源成功');
-        this.fetchMyPkgs();
+        this.fetchMyPkgs(true);
 
         return;
       }

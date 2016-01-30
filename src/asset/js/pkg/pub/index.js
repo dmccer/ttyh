@@ -134,6 +134,10 @@ export default class PkgPubPage extends React.Component {
       return '车长不能为空';
     }
 
+    if (parseFloat(props.weight) > 9999) {
+      return '载重不能超过9999吨';
+    }
+
     return true;
   }
 
@@ -309,7 +313,7 @@ export default class PkgPubPage extends React.Component {
         <h2 className="subtitle"><b>*</b>地址信息</h2>
         <div className="field-group">
           <div className="field">
-            <label><i className="icon icon-start-point s20"></i></label>
+            <label><i className="icon icon-start-point on s20"></i></label>
             <div
               ref="fromCityField"
               className="control"
@@ -323,7 +327,7 @@ export default class PkgPubPage extends React.Component {
             </div>
           </div>
           <div className="field">
-            <label><i className="icon icon-end-point s20"></i></label>
+            <label><i className="icon icon-end-point on s20"></i></label>
             <div
               ref="toCityField"
               className="control"

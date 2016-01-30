@@ -41,7 +41,7 @@ export default class SearchTruckPage extends Component {
   componentDidMount() {
     LoadMore.init(() => {
       if (!this.state.over) {
-        this.query(this.state.pageIndex);
+        this.query();
       }
     });
   }

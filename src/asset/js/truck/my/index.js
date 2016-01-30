@@ -9,7 +9,9 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
+import querystring from 'querystring';
 
+import LoadMore from '../../load-more/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Log from '../../log/';
@@ -32,6 +34,9 @@ const ERR_MSG_DEL = {
 
 export default class MyTruckPage extends Component {
   state = {
+    qs: querystring.parse(location.search.substring(1)),
+    pageIndex: 0,
+    pageSize: 15,
     trucks: []
   };
 
@@ -40,25 +45,55 @@ export default class MyTruckPage extends Component {
   }
 
   componentDidMount() {
+    LoadMore.init(() => {
+      if (!this.state.over) {
+        this.fetchTruckList();
+      }
+    });
+
     this.fetchTruckList();
   }
 
   /**
    * 获取我的车源列表
    */
-  fetchTruckList() {
+  fetchTruckList(slient) {
     this.refs.loading.show('加载中...');
 
     new Promise((resolve, reject) => {
       $.ajax({
         url: '/mvc/v2/getRouteList',
         type: 'GET',
+        data: {
+          pageSize: this.state.pageSize,
+          pageIndex: this.state.pageIndex
+        },
         success: resolve,
         error: reject
       });
     }).then((res) => {
+      let trucks = this.state.trucks;
+
+      if (!res.routeInfos || !res.routeInfos.length) {
+        if (!trucks.length || slient) {
+          // 空列表，没有数据
+          return;
+        }
+
+        this.refs.poptip.info('没有更多了');
+
+        this.setState({
+          over: true
+        });
+
+        return;
+      }
+
+      trucks = trucks.concat(res.routeInfos);
+
       this.setState({
-        trucks: res.routeInfos
+        trucks: trucks,
+        pageIndex: this.state.pageIndex + 1
       });
     }).catch((err) => {
       Log.error(err);
@@ -96,7 +131,8 @@ export default class MyTruckPage extends Component {
         return;
       }
 
-      this.fetchTruckList();
+      this.refs.poptip.success('重新发布成功');
+      this.fetchTruckList(true);
     }).catch((err) => {
       Log.error(err);
 
@@ -134,10 +170,12 @@ export default class MyTruckPage extends Component {
     }).then((res) => {
       if (res.retcode !== 0) {
         this.refs.poptip.warn(ERR_MSG_DEL[res.retcode]);
+
         return;
       }
 
-      this.fetchTruckList();
+      this.refs.poptip.success('删除成功');
+      this.fetchTruckList(true);
     }).catch((err) => {
       Log.error(err);
 

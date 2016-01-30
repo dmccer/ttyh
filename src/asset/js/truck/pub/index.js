@@ -255,7 +255,7 @@ export default class TruckPubPage extends React.Component {
 
       return;
     }
-    
+
     // 点击非当前地址选择器
     this.setState({
       showCitySelector: true
@@ -527,16 +527,16 @@ export default class TruckPubPage extends React.Component {
       }
 
       if (index === 0) {
-        icon = <i className={cx('icon s20', labelIcon)}></i>;
+        icon = <i className={cx('icon on s20', labelIcon)}></i>;
       }
 
       return (
         <div
-          ref={`${listName}AddrField${index}`}
           className="field"
           key={`addr-selector-item_${field}_${index}`}>
           <label>{icon}</label>
           <div
+            ref={`${listName}AddrField${index}`}
             className="control"
             onClick={this.toggleCitySelector.bind(this, listName, index)}>
             <input

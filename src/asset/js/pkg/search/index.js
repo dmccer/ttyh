@@ -35,7 +35,7 @@ export default class SearchPkgPage extends Component {
   componentDidMount() {
     LoadMore.init(() => {
       if (!this.state.over) {
-        this.query(this.state.pageIndex);
+        this.query();
       }
     });
   }

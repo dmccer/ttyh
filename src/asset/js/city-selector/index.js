@@ -361,8 +361,15 @@ export default class CitySelector extends React.Component {
   }
 
   render() {
-    let height = $(window).height() - this.state.top;
+    let winH = $(window).height();
     let top = this.state.top;
+    let height = winH - top;
+
+    if (height < 292) {
+      top = 0;
+      height = winH;
+    }
+    
     let cxs = cx('city-selector', this.state.on ? 'on' : '');
 
     return (
