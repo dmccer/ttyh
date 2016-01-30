@@ -43,6 +43,8 @@ export default class SearchItem extends Component {
     let fromCitiesNum = fromCities.length > 1 ? <b>({fromCities.length})</b> : null;
     let toCitiesNum = toCities.length > 1 ? <b>({toCities.length})</b> : null;
 
+    let truckTag = truck.truckTagStr ? <i className="flag teal">{truck.truckTagStr}</i> : null;
+
     return (
       <div className="truck-item" onClick={this.detail.bind(this)}>
         <div className="row">
@@ -59,7 +61,7 @@ export default class SearchItem extends Component {
           </div>
           <div className="truck">
             <div className="title">
-              <i className="flag teal">{truck.truckTagStr}</i>
+              {truckTag}
               <span>{fromCities[0]}</span>
               {fromCitiesNum}
               <i className="icon icon-target"></i>
