@@ -117,17 +117,47 @@ export default class SearchCondition extends Component {
    * @param  {ClickEvent} e
    */
   toggleCitySelector(field, e) {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-    let offset = $(e.currentTarget).offset();
-    let top = offset.top + offset.height;
+    let state = this.state;
+    let cs = this.refs.citySelector;
+    let top = this.getCitySelectorTop(this.refs[`${field}Field`]);
+    this.setState({
+      citySelectorField: field
+    });
+
+    if (field === state.citySelectorField) {
+      this.setState({
+        showCitySelector: !state.showCitySelector
+      });
+
+      if (state.showCitySelector) {
+        cs.clear();
+        cs.close();
+
+        return;
+      }
+
+      cs.show();
+
+      return;
+    }
 
     this.setState({
-      citySelectorTop: top,
-      citySelectorField: field,
-      showCitySelector: !this.state.showCitySelector
+      showCitySelector: true
     });
+
+    cs.clear();
+    cs.show(top);
+  }
+
+  getCitySelectorTop(target) {
+    let offset = $(target).offset();
+
+    return offset.top + offset.height - 1;
   }
 
   /**
@@ -166,28 +196,23 @@ export default class SearchCondition extends Component {
     this.setCitySelectorField(args);
   }
 
-  /**
-   * 取消地址选择
-   */
-  handleCancelCitySelector() {
-    this.setState({
-      showCitySelector: false
-    });
-  }
-
   render() {
     let props = this.props;
 
     return (
       <div className="search-condition">
         <ul className="filters row">
-          <li onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
+          <li
+            ref="fromCityField"
+            onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
             <a href="javascript:void(0)">
               <i className="icon icon-start-point off s20"></i>
               <span>出发地点</span>
             </a>
           </li>
-          <li onClick={this.toggleCitySelector.bind(this, 'toCity')}>
+          <li
+            ref="toCityField"
+            onClick={this.toggleCitySelector.bind(this, 'toCity')}>
             <a href="javascript:void(0)">
               <i className="icon icon-end-point off s20"></i>
               <span>到达地点</span>
@@ -202,11 +227,9 @@ export default class SearchCondition extends Component {
         </ul>
         <FixedHolder height="41" />
         <CitySelector
-          on={this.state.showCitySelector}
-          top={this.state.citySelectorTop}
+          ref="citySelector"
           prefix={props.pageType}
           done={this.handleSelectCityDone.bind(this)}
-          onCancel={this.handleCancelCitySelector.bind(this)}
         />
       </div>
     );

@@ -119,6 +119,10 @@ export default class TruckAddPage extends React.Component {
       return '载重不能为空';
     }
 
+    if (parseFloat(props.weight) > 9999) {
+      return '载重不能超过9999吨';
+    }
+
     return true;
   }
 
@@ -127,7 +131,7 @@ export default class TruckAddPage extends React.Component {
 
     let truckType = props.truckType;
     let truckLength = props.truckLength;
-    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name && (truckLength.name + '米') || ''}` : null;
+    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name}` : null;
 
     return (
       <section className="truck-add-page">

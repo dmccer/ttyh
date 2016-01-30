@@ -93,7 +93,7 @@ export default class RoadtrainPage extends React.Component {
 
       let trucks = this.state.trucks;
       let truck = trucks.find((truck) => {
-        return truck.id === id;
+        return truck.truckID === id;
       });
 
       trucks.splice(trucks.indexOf(truck), 1);

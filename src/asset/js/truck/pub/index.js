@@ -235,26 +235,46 @@ export default class TruckPubPage extends React.Component {
    * @param  {ClickEvent} e
    */
   toggleCitySelector(field, index, e) {
-    let offset = $(e.target).offset();
-    let top = offset.top + offset.height - 1;
+    let state = this.state;
+    let cs = this.refs.citySelector;
+    let top = this.getCitySelectorTop(this.refs[`${field}AddrField${index}`]);
+    this.setCityField(field, index);
 
-    let show = this.state.showCitySelector;
-    let toShow = !show;
+    if (field === state.citySelectorField && index === state.citySelectorIndex) {
+      this.setState({
+        showCitySelector: !state.showCitySelector
+      });
 
-    // 当地址选择器展示的时候，点击非当前字段触发 toggleCitySelector 时，不能关闭地址选择器
-    if ((field !== this.state.citySelectorField || index !== this.state.citySelectorIndex) && this.state.showCitySelector) {
-      toShow = true;
-    }
+      if (state.showCitySelector) {
+        cs.close();
 
-    this.setState({
-      citySelectorTop: top,
-      citySelectorField: field,
-      citySelectorIndex: index,
-      showCitySelector: toShow
-    }, () => {
-      if (show) {
-        this.refs.citySelector.close();
+        return;
       }
+
+      cs.show();
+
+      return;
+    }
+    
+    // 点击非当前地址选择器
+    this.setState({
+      showCitySelector: true
+    });
+
+    cs.clear();
+    cs.show(top);
+  }
+
+  getCitySelectorTop(target) {
+    let offset = $(target).offset();
+
+    return offset.top + offset.height - 1;
+  }
+
+  setCityField(field, index) {
+    this.setState({
+      citySelectorField: field,
+      citySelectorIndex: index
     });
   }
 
@@ -274,6 +294,17 @@ export default class TruckPubPage extends React.Component {
       [field]: addrs
     }, () => {
       this.writeDraft();
+
+      let index = addrs.length - 1;
+      let top = this.getCitySelectorTop(this.refs[`${field}AddrField${index}`]);
+      let cs = this.refs.citySelector;
+      this.setCityField(field, index);
+      cs.clear();
+      cs.show(top);
+
+      this.setState({
+        showCitySelector: true
+      });
     });
   }
 
@@ -296,6 +327,14 @@ export default class TruckPubPage extends React.Component {
       [field]: addrs
     }, () => {
       this.writeDraft();
+
+      let top = this.getCitySelectorTop(this.refs[`${field}AddrField${index}`]);
+      let cs = this.refs.citySelector;
+      cs.close();
+
+      this.setState({
+        showCitySelector: false
+      });
     });
   }
 
@@ -353,15 +392,6 @@ export default class TruckPubPage extends React.Component {
       [field]: addrs
     }, () => {
       this.writeDraft();
-    });
-  }
-
-  /**
-   * 取消地址选择
-   */
-  handleCancelCitySelector() {
-    this.setState({
-      showCitySelector: false
     });
   }
 
@@ -501,7 +531,10 @@ export default class TruckPubPage extends React.Component {
       }
 
       return (
-        <div className="field" key={`addr-selector-item_${field}_${index}`}>
+        <div
+          ref={`${listName}AddrField${index}`}
+          className="field"
+          key={`addr-selector-item_${field}_${index}`}>
           <label>{icon}</label>
           <div
             className="control"
@@ -557,14 +590,11 @@ export default class TruckPubPage extends React.Component {
         <Poptip ref="poptip" />
         <CitySelector
           ref="citySelector"
-          on={this.state.showCitySelector}
-          top={this.state.citySelectorTop}
           prefix={PAGE_TYPE}
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}
           onSelectHistory={this.handleSelectHistory.bind(this)}
-          onCancel={this.handleCancelCitySelector.bind(this)}
         />
       </section>
     );

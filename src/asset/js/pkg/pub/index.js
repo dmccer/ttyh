@@ -159,22 +159,47 @@ export default class PkgPubPage extends React.Component {
    * @param  {ClickEvent} e
    */
   toggleCitySelector(field, e) {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-    // 当地址选择器展示的时候，点击非当前字段触发 toggleCitySelector 时，不能关闭地址选择器
-    if (field !== this.state.citySelectorField && this.state.showCitySelector) {
+    let state = this.state;
+    let cs = this.refs.citySelector;
+    let top = this.getCitySelectorTop(this.refs[`${field}Field`]);
+    this.setState({
+      citySelectorField: field
+    });
+
+    if (field === state.citySelectorField) {
+      this.setState({
+        showCitySelector: !state.showCitySelector
+      });
+
+      if (state.showCitySelector) {
+        cs.clear();
+        cs.close();
+
+        return;
+      }
+
+      cs.show();
+
       return;
     }
 
-    let offset = $(e.target).offset();
-    let top = offset.top + offset.height - 1;
-
     this.setState({
-      citySelectorTop: top,
-      citySelectorField: field,
-      showCitySelector: !this.state.showCitySelector
+      showCitySelector: true
     });
+
+    cs.clear();
+    cs.show(top);
+  }
+
+  getCitySelectorTop(target) {
+    let offset = $(target).offset();
+
+    return offset.top + offset.height - 1;
   }
 
   /**
@@ -236,15 +261,6 @@ export default class PkgPubPage extends React.Component {
   }
 
   /**
-   * 取消选择地址
-   */
-  handleCancelCitySelector() {
-    this.setState({
-      showCitySelector: false
-    });
-  }
-
-  /**
    * 处理数字型字段值修改
    * @param  {String} field 字段名
    * @param  {ChangeEvent} e
@@ -295,6 +311,7 @@ export default class PkgPubPage extends React.Component {
           <div className="field">
             <label><i className="icon icon-start-point s20"></i></label>
             <div
+              ref="fromCityField"
               className="control"
               onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
               <input
@@ -308,6 +325,7 @@ export default class PkgPubPage extends React.Component {
           <div className="field">
             <label><i className="icon icon-end-point s20"></i></label>
             <div
+              ref="toCityField"
               className="control"
               onClick={this.toggleCitySelector.bind(this, 'toCity')}>
               <input
@@ -378,14 +396,11 @@ export default class PkgPubPage extends React.Component {
         <Poptip ref="poptip" />
         <CitySelector
           ref="citySelector"
-          on={this.state.showCitySelector}
-          top={this.state.citySelectorTop}
           prefix={PAGE_TYPE}
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}
           onSelectHistory={this.handleSelectHistory.bind(this)}
-          onCancel={this.handleCancelCitySelector.bind(this)}
         />
       </section>
     );

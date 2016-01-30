@@ -44,6 +44,13 @@ export default class CitySelector extends React.Component {
     super();
   }
 
+  show(top: String) {
+    this.setState({
+      top: top,
+      on: true
+    });
+  }
+
   componentDidMount() {
     // 若获取过省份列表，则直接展示，无须再次请求
     if (this.state.provinces && this.state.provinces.length) {
@@ -283,7 +290,10 @@ export default class CitySelector extends React.Component {
    */
   close() {
     this.clear();
-    this.props.onCancel();
+
+    this.setState({
+      on: false
+    });
   }
 
   /**
@@ -351,9 +361,9 @@ export default class CitySelector extends React.Component {
   }
 
   render() {
-    let height = $(window).height() - this.props.top;
-    let top = this.props.top;
-    let cxs = cx('city-selector', this.props.on ? 'on' : '');
+    let height = $(window).height() - this.state.top;
+    let top = this.state.top;
+    let cxs = cx('city-selector', this.state.on ? 'on' : '');
 
     return (
       <section
