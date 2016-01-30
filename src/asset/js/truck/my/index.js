@@ -85,7 +85,7 @@ export default class MyTruckPage extends Component {
         url: '/mvc/v2/routeinfo_refresh_json',
         type: 'POST',
         data: {
-          routeID: truck.routeID
+          routeID: truck.userWithLatLng.routeID
         },
         success: resolve,
         error: reject
@@ -126,7 +126,7 @@ export default class MyTruckPage extends Component {
         url: '/mvc/v2/closeTruck',
         type: 'POST',
         data: {
-          routeID: truck.routeID
+          routeID: truck.userWithLatLng.routeID
         },
         success: resolve,
         error: reject
