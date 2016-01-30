@@ -130,7 +130,8 @@
   &.icon-target,
   &.icon-call,
   &.icon-del-addr,
-  &.icon-add-addr, {
+  &.icon-add-addr,
+  &.icon-filter {
     background-size: 100% 100%;
     background-repeat: no-repeat;
 
@@ -297,10 +298,18 @@
     background-image: url('../../img/2x/right.png');
   }
   &.icon-start-point {
-    background-image: url('../../img/app/chufa-40@3x.png');
+    background-image: url('../../img/app/chufa-off-30@3x.png');
+
+    &.on {
+      background-image: url('../../img/app/chufa-40@3x.png');
+    }
   }
   &.icon-end-point {
-    background-image: url('../../img/app/daoda-40@3x.png');
+    background-image: url('../../img/app/daoda-off-30@3x.png');
+
+    &.on {
+      background-image: url('../../img/app/daoda-40@3x.png');
+    }
   }
   &.icon-truck-type {
     background-image: url('../../img/app/chexing-lv-40@3x.png');
@@ -333,5 +342,8 @@
   }
   &.icon-add-addr {
     background-image: url('../../img/app/add-40@3x.png');
+  }
+  &.icon-filter {
+    background-image: url('../../img/app/shaixuan-off-30@3x.png');
   }
 }

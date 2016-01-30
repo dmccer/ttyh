@@ -22,6 +22,7 @@ import './index.less';
 import React, {Component} from 'react';
 import querystring from 'querystring';
 import Promise from 'promise';
+import cx from 'classnames';
 
 import CitySelector from '../city-selector/';
 import FixedHolder from '../fixed-holder/';
@@ -198,29 +199,33 @@ export default class SearchCondition extends Component {
 
   render() {
     let props = this.props;
+    let fromCity = this.state.showCitySelector && this.state.citySelectorField === 'fromCity' ? 'on' : '';
+    let toCity = this.state.showCitySelector && this.state.citySelectorField === 'toCity' ? 'on' : '';
 
     return (
       <div className="search-condition">
         <ul className="filters row">
           <li
+            className={fromCity}
             ref="fromCityField"
             onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
             <a href="javascript:void(0)">
-              <i className="icon icon-start-point off s20"></i>
+              <i className={cx('icon icon-start-point s18', fromCity)}></i>
               <span>出发地点</span>
             </a>
           </li>
           <li
+            className={toCity}
             ref="toCityField"
             onClick={this.toggleCitySelector.bind(this, 'toCity')}>
             <a href="javascript:void(0)">
-              <i className="icon icon-end-point off s20"></i>
+              <i className={cx('icon icon-end-point s18', toCity)}></i>
               <span>到达地点</span>
             </a>
           </li>
           <li>
             <a href={`./search-filter.html?type=${props.pageType}`}>
-              <i className="icon condition off s20"></i>
+              <i className="icon icon-filter off s18"></i>
               <span>筛选</span>
             </a>
           </li>
