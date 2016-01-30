@@ -238,11 +238,23 @@ export default class TruckPubPage extends React.Component {
     let offset = $(e.target).offset();
     let top = offset.top + offset.height - 1;
 
+    let show = this.state.showCitySelector;
+    let toShow = !show;
+
+    // 当地址选择器展示的时候，点击非当前字段触发 toggleCitySelector 时，不能关闭地址选择器
+    if ((field !== this.state.citySelectorField || index !== this.state.citySelectorIndex) && this.state.showCitySelector) {
+      toShow = true;
+    }
+
     this.setState({
       citySelectorTop: top,
       citySelectorField: field,
       citySelectorIndex: index,
-      showCitySelector: !this.state.showCitySelector
+      showCitySelector: toShow
+    }, () => {
+      if (show) {
+        this.refs.citySelector.close();
+      }
     });
   }
 
@@ -544,6 +556,7 @@ export default class TruckPubPage extends React.Component {
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <CitySelector
+          ref="citySelector"
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}
           prefix={PAGE_TYPE}

@@ -19,7 +19,8 @@ const MEMO = 'pkg-pub-memo';
 
 export default class PkgPubMemoPage extends React.Component {
   state = {
-    memos: []
+    memos: [],
+    memoMaxLength: 80
   };
 
   constructor() {
@@ -60,6 +61,24 @@ export default class PkgPubMemoPage extends React.Component {
   }
 
   /**
+   * 处理备注改变
+   * @param  {ChangeEvent} e
+   */
+  handleMemoChange(e: Object) {
+    let val = $.trim(e.target.value);
+
+    if (val.length > this.state.memoMaxLength) {
+      val = val.substring(0, this.state.memoMaxLength);
+    }
+
+    this.setState({
+      memo: val
+    }, () => {
+      localStorage.setItem('memo', this.state.memo);
+    });
+  }
+
+  /**
    * 提交备注
    */
   handleSubmit(e) {
@@ -79,17 +98,6 @@ export default class PkgPubMemoPage extends React.Component {
     });
   }
 
-  /**
-   * 处理备注内容改变
-   */
-  handleStrChange(field: string, e: Object) {
-    this.setState({
-      [field]: $.trim(e.target.value)
-    }, () => {
-      localStorage.setItem('memo', this.state.memo);
-    });
-  }
-
   render() {
     let list = this.state.memos.map((memo) => {
       return (
@@ -106,7 +114,7 @@ export default class PkgPubMemoPage extends React.Component {
           <textarea
             placeholder="添加备注"
             value={this.state.memo}
-            onChange={this.handleStrChange.bind(this, 'memo')}
+            onChange={this.handleMemoChange.bind(this)}
           ></textarea>
         </div>
         <div className="memo-tag-list">

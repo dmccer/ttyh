@@ -74,7 +74,7 @@ export default class PkgDetailPage extends Component {
 
         return;
       }
-      
+
       let pkg = this.state.pkg;
       pkg.alreadyFavorite = true;
 
@@ -166,7 +166,7 @@ export default class PkgDetailPage extends Component {
       let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
 
-      truckDesc = `${product.truckTypeStr || ''} ${loadLimit} ${truckLength}`;
+      truckDesc = `${product.truckTypeStr || ''} ${truckLength} ${loadLimit}`;
     }
 
     return (

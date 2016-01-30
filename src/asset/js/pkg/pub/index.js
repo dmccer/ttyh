@@ -34,7 +34,7 @@ export default class PkgPubPage extends React.Component {
   state = $.extend({
     qs: querystring.parse(location.search.substring(1)),
     memo: localStorage.getItem(MEMO)
-  });
+  }, JSON.parse(localStorage.getItem(DRAFT)) || {});
 
   constructor(props) {
     super(props);
@@ -118,11 +118,11 @@ export default class PkgPubPage extends React.Component {
   validate() {
     let props = this.props;
 
-    if ($.trim(this.state.startPoint) === '') {
+    if ($.trim(this.state.fromCity) === '') {
       return '出发地址不能为空';
     }
 
-    if ($.trim(this.state.endPoint) === '') {
+    if ($.trim(this.state.toCity) === '') {
       return '到达地址不能为空';
     }
 
@@ -147,8 +147,8 @@ export default class PkgPubPage extends React.Component {
       truckType: props.truckType,
       truckLength: props.truckLength,
       pkgType: props.pkgType,
-      startPoint: this.state.startPoint,
-      endPoint: this.state.endPoint,
+      fromCity: this.state.fromCity,
+      toCity: this.state.toCity,
       pkgWeight: props.pkgWeight
     }));
   }
@@ -161,6 +161,11 @@ export default class PkgPubPage extends React.Component {
   toggleCitySelector(field, e) {
     e.preventDefault();
     e.stopPropagation();
+
+    // 当地址选择器展示的时候，点击非当前字段触发 toggleCitySelector 时，不能关闭地址选择器
+    if (field !== this.state.citySelectorField && this.state.showCitySelector) {
+      return;
+    }
 
     let offset = $(e.target).offset();
     let top = offset.top + offset.height - 1;
@@ -281,7 +286,7 @@ export default class PkgPubPage extends React.Component {
     let truckType = props.truckType;
     let truckLength = props.truckLength;
 
-    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name && (truckLength.name + '米') || ''}` : null;
+    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name || ''}` : null;
 
     return (
       <section className="pkg-pub">
@@ -291,12 +296,12 @@ export default class PkgPubPage extends React.Component {
             <label><i className="icon icon-start-point s20"></i></label>
             <div
               className="control"
-              onClick={this.toggleCitySelector.bind(this, 'startPoint')}>
+              onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
               <input
                 type="text"
                 disabled="disabled"
                 placeholder="请选择出发地址"
-                value={this.state.startPoint} />
+                value={this.state.fromCity} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -304,12 +309,12 @@ export default class PkgPubPage extends React.Component {
             <label><i className="icon icon-end-point s20"></i></label>
             <div
               className="control"
-              onClick={this.toggleCitySelector.bind(this, 'endPoint')}>
+              onClick={this.toggleCitySelector.bind(this, 'toCity')}>
               <input
                 type="text"
                 disabled="disabled"
                 placeholder="请选择到达地址"
-                value={this.state.endPoint} />
+                value={this.state.toCity} />
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -372,6 +377,7 @@ export default class PkgPubPage extends React.Component {
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <CitySelector
+          ref="citySelector"
           on={this.state.showCitySelector}
           top={this.state.citySelectorTop}
           prefix={PAGE_TYPE}

@@ -58,7 +58,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       let truckLengths = res.truckLengthList;
       truckLengths = truckLengths.map((len) => {
         return {
-          name: len,
+          name: len !== '其他' ? `${len}米` : len,
           id: len
         };
       });
@@ -125,7 +125,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
     if (field === 'truckLength' && item.id === '其他') {
       let val = prompt('请输入车长');
       val = $.trim(val).replace(/[^\d\.]/g, '');
-      
+
       item = {
         name: val,
         id: val

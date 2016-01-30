@@ -180,7 +180,7 @@ export default class TruckDetailPage extends Component {
      let loadLimit = rtruckDetail.loadLimit != null && parseFloat(rtruckDetail.loadLimit) != 0 ? `${rtruckDetail.loadLimit}吨` : '';
      let truckLength = rtruckDetail.truckLength != null && parseInt(rtruckDetail.truckLength) != 0 ? `${rtruckDetail.truckLength}米` : '';
 
-     truckDesc = `${rtruckDetail.truckTypeStr} ${loadLimit} ${truckLength}`;
+     truckDesc = `${rtruckDetail.truckTypeStr} ${truckLength} ${loadLimit}`;
    }
 
    return (

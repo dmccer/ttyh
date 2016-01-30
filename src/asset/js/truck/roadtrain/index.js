@@ -51,7 +51,7 @@ export default class RoadtrainPage extends React.Component {
         error: reject
       });
     }).then((res) => {
-      if (res.retcode !== 0) {
+      if (res.retcode != 0) {
         this.refs.poptip.warn(ERR_MSG_GET_TRUCK[res.retcode]);
 
         return;
