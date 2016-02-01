@@ -14,6 +14,7 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import cx from 'classnames';
 import Promise from 'promise';
+import keys from 'lodash/object/keys';
 
 import Log from '../../log/';
 import Poptip from '../../poptip/';
@@ -23,10 +24,11 @@ import CitySelector from '../../city-selector/';
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
 const PAGE_TYPE = 'trucker_page';
+const ALL = '不限';
 const ERR_MSG = {
   1001: '请选择车辆',
   1002: '您没有登录',
-  1002: '您没有登录'
+  1003: '您没有登录'
 };
 
 export default class TruckPubPage extends React.Component {
@@ -38,7 +40,7 @@ export default class TruckPubPage extends React.Component {
     fromCities: [],
     toCities: [],
     selectedTruckTag: {},
-    truck: JSON.parse(localStorage.getItem(DEFAULT_TRUCK)),
+    truck: JSON.parse(localStorage.getItem(DEFAULT_TRUCK))
   }, JSON.parse(localStorage.getItem(TRUCK_PUB)) || {});
 
   constructor() {
@@ -60,7 +62,7 @@ export default class TruckPubPage extends React.Component {
     }).then((res) => {
       delete res.truckTagList['0'];
 
-      let truckTagListKeys = Object.keys(res.truckTagList);
+      let truckTagListKeys = keys(res.truckTagList);
       let truckTagList = truckTagListKeys.map((key) => {
         return {
           name: res.truckTagList[key],
@@ -80,8 +82,8 @@ export default class TruckPubPage extends React.Component {
           truckTags: truckTagList
         });
       })
-      .catch((...args) => {
-        Log.error(args[0]);
+      .catch((err) => {
+        Log.error(err);
 
         this.refs.poptip.warn('获取车辆标签失败,请重试');
       });
@@ -166,7 +168,7 @@ export default class TruckPubPage extends React.Component {
         data: data,
         success: resolve,
         error: reject
-      })
+      });
     }).then((res) => {
       if (res.retcode !== 0) {
         this.refs.poptip.warn(ERR_MSG[res.retcode]);
@@ -176,6 +178,7 @@ export default class TruckPubPage extends React.Component {
 
       _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布成功', 2]);
       this.refs.poptip.success('发布车源成功');
+
       // 清除草稿
       localStorage.removeItem(TRUCK_PUB);
       setTimeout(() => {
@@ -242,26 +245,16 @@ export default class TruckPubPage extends React.Component {
     this.setCityField(field, index);
 
     if (field === state.citySelectorField && index === state.citySelectorIndex) {
-      this.setState({
-        showCitySelector: !state.showCitySelector
-      });
-
       if (state.showCitySelector) {
         cs.close();
-
         return;
       }
 
       cs.show();
-
       return;
     }
 
     // 点击非当前地址选择器
-    this.setState({
-      showCitySelector: true
-    });
-
     cs.clear();
     cs.show(top);
   }
@@ -347,7 +340,7 @@ export default class TruckPubPage extends React.Component {
     let field = this.state.citySelectorField;
     let addrs = this.state[field];
 
-    if (province === '不限') {
+    if (province === ALL) {
       province = null;
     }
 
@@ -365,6 +358,10 @@ export default class TruckPubPage extends React.Component {
    * @param  {String} city 城市值
    */
   handleSelectCity(city) {
+    if (city === ALL) {
+      return;
+    }
+
     let field = this.state.citySelectorField;
     let index = this.state.citySelectorIndex;
     let addrs = this.state[field];
@@ -383,6 +380,10 @@ export default class TruckPubPage extends React.Component {
    * @param  {String} area 区
    */
   handleSelectArea(area) {
+    if (area === ALL) {
+      return;
+    }
+
     let field = this.state.citySelectorField;
     let index = this.state.citySelectorIndex;
     let addrs = this.state[field];
@@ -415,6 +416,18 @@ export default class TruckPubPage extends React.Component {
       [field]: addrs
     }, () => {
       this.writeDraft();
+    });
+  }
+
+  handleCloseCitySelector() {
+    this.setState({
+      showCitySelector: false
+    });
+  }
+
+  handleShowCitySelector() {
+    this.setState({
+      showCitySelector: true
     });
   }
 
@@ -567,7 +580,7 @@ export default class TruckPubPage extends React.Component {
         <ul className="truck-list">
           <li>{this.renderSelectedTruck()}</li>
         </ul>
-        <h2 className="subtitle"><b>*</b>备注</h2>
+        <h2 className="subtitle">备注</h2>
         <div className="field-group">
           <div className="field memo">
             <label><i className="icon icon-memo s20"></i></label>
@@ -596,6 +609,8 @@ export default class TruckPubPage extends React.Component {
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}
           onSelectHistory={this.handleSelectHistory.bind(this)}
+          onClose={this.handleCloseCitySelector.bind(this)}
+          onShow={this.handleShowCitySelector.bind(this)}
         />
       </section>
     );

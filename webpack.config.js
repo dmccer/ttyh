@@ -327,7 +327,7 @@ module.exports = {
     hot: true,
     inline: true,
     proxy: {
-      '/mvc/bbs*': {
+      '/api/bbs*': {
         // target: 'http://o.dp:3000',
         target: 'http://api.ttyhuo.com:83',
         secure: false
@@ -336,27 +336,19 @@ module.exports = {
         target: 'http://api.ttyhuo.com:83',
         secure: false
       },
-      // '/mvc/searchProductsForH5': {
-      //   target: 'http://121.42.200.139',
-      //   secure: false
-      // },
-      // '/mvc/searchMyProductsForH5': {
-      //   target: 'http://121.42.200.139',
-      //   secure: false
-      // },
       '/mvc*': {
         target: 'http://api.ttyhuo.com:85',
         secure: false
-      },
-      '/api*': {
-        target: 'http://o.dp:3000',
-        // target: 'http://m.ttyhuo.com',
-        secure: false
-      },
-      '/*.jsp*': {
-        target: 'http://m.ttyhuo.com/bbs',
-        secure: false
       }
+      // '/api*': {
+      //   target: 'http://o.dp:3000',
+      //   // target: 'http://m.ttyhuo.com',
+      //   secure: false
+      // },
+      // '/*.jsp*': {
+      //   target: 'http://m.ttyhuo.com/bbs',
+      //   secure: false
+      // }
     }
   }
 };

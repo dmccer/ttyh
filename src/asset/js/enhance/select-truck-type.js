@@ -129,7 +129,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       val = $.trim(val).replace(/[^\d\.]/g, '');
 
       item = {
-        name: val,
+        name: `${val}米`,
         id: val
       };
     }

@@ -10,10 +10,12 @@ import '../../../less/component/flag.less';
 import './index.less';
 
 import React, {Component} from 'react';
+
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import PkgItemDesc from '../item-desc/';
 import {MiniReadableTime} from '../../bbs/readable-time/';
+
 
 export default class SearchItem extends Component {
   constructor() {
@@ -36,7 +38,7 @@ export default class SearchItem extends Component {
     let props = this.props;
 
     return (
-      <div className="pkg-item" onClick={this.detail.bind(this)}>
+      <div className="pkg-item" onTouchTap={this.detail.bind(this)}>
         <div className="row">
           <div className="account">
             <Avatar img={props.provideUserImgUrl} />

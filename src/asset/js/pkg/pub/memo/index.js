@@ -86,7 +86,7 @@ export default class PkgPubMemoPage extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    localStorage.setItem(MEMO, this.state.memo);
+    localStorage.setItem(MEMO, this.state.memo || '');
     history.back();
   }
 

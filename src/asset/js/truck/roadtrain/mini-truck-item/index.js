@@ -17,7 +17,7 @@ export default class MiniTruckItem extends React.Component {
     return (
       <div className="mini-truck-item">
         <a href="#">
-          <h3>{props.dirverName}</h3>
+          <h3>{props.dirverName || '佚名'}</h3>
           <p>{props.licensePlate} {props.truckType} {truckLength} {loadLimit}</p>
           {selected}
         </a>

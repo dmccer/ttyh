@@ -28,6 +28,7 @@ import CitySelector from '../city-selector/';
 import FixedHolder from '../fixed-holder/';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
+const ALL = '不限';
 
 export default class SearchCondition extends Component {
   static defaultProps = {
@@ -156,9 +157,11 @@ export default class SearchCondition extends Component {
   }
 
   getCitySelectorTop(target) {
-    let offset = $(target).offset();
+    let $target = $(target);
+    let pos = $target.position();
+    let h = $target.height();
 
-    return offset.top + offset.height - 1;
+    return pos.top + h - 1;
   }
 
   /**
@@ -167,14 +170,10 @@ export default class SearchCondition extends Component {
    */
   setCitySelectorField(args) {
     let selected = args.filter((arg) => {
-      return !!arg;
+      return !!arg && arg !== ALL;
     });
 
     let val = selected.join(' ');
-
-    if (val === '不限') {
-      val = '';
-    }
 
     this.setState({
       [this.state.citySelectorField]: val
@@ -195,6 +194,15 @@ export default class SearchCondition extends Component {
    */
   handleSelectCityDone(...args) {
     this.setCitySelectorField(args);
+  }
+
+  /**
+   * 处理取消选择
+   */
+  handleCancelSelectCity() {
+    this.setState({
+      showCitySelector: false
+    });
   }
 
   render() {
@@ -235,6 +243,7 @@ export default class SearchCondition extends Component {
           ref="citySelector"
           prefix={props.pageType}
           done={this.handleSelectCityDone.bind(this)}
+          onCancel={this.handleCancelSelectCity.bind(this)}
         />
       </div>
     );

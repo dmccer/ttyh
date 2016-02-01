@@ -6,6 +6,9 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
 import querystring from 'querystring';
+import keys from 'lodash/object/keys';
+import find from 'lodash/collection/find';
+import findIndex from 'lodash/array/findIndex';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -36,7 +39,7 @@ export default class SearchFilterPage extends Component {
       });
     }).then((res) => {
       let truckTypes = res.truckTypeMap;
-      truckTypes = Object.keys(truckTypes).map((key) => {
+      truckTypes = keys(truckTypes).map((key) => {
         return {
           name: truckTypes[key],
           id: key
@@ -62,7 +65,7 @@ export default class SearchFilterPage extends Component {
       });
     }).then((res) => {
       let searchLengths = res.searchLengthList;
-      searchLengths = Object.keys(searchLengths).map((key) => {
+      searchLengths = keys(searchLengths).map((key) => {
         return {
           name: searchLengths[key],
           id: key
@@ -89,7 +92,7 @@ export default class SearchFilterPage extends Component {
     }).then((res) => {
       let loadLimits = res.loadLimitList;
 
-      loadLimits = Object.keys(loadLimits).map((key) => {
+      loadLimits = keys(loadLimits).map((key) => {
         return {
           name: loadLimits[key],
           id: key
@@ -123,7 +126,8 @@ export default class SearchFilterPage extends Component {
           truckLengths: res[2]
         }));
       })
-      .catch(() => {
+      .catch((err) => {
+        alert(err.message)
         this.refs.poptip.warn('获取车型、载重、车长失败, 请重试');
       })
       .done(() => {
@@ -138,7 +142,7 @@ export default class SearchFilterPage extends Component {
   renderTruckTypeList() {
     if (this.state.truckTypes && this.state.truckTypes.length) {
       return this.state.truckTypes.map((truckType) => {
-        let has = this.state.selectedTruckTypes.find((selectedTruckType) => {
+        let has = find(this.state.selectedTruckTypes, (selectedTruckType) => {
           return selectedTruckType.id === truckType.id;
         });
 
@@ -159,7 +163,7 @@ export default class SearchFilterPage extends Component {
 
     if (list && list.length) {
       return list.map((item) => {
-        let has = this.state.selectedLoadLimits.find((loadLimit) => {
+        let has = find(this.state.selectedLoadLimits, (loadLimit) => {
           return loadLimit.id === item.id;
         });
 
@@ -180,7 +184,7 @@ export default class SearchFilterPage extends Component {
 
     if (list && list.length) {
       return list.map((item) => {
-        let has = this.state.selectedTruckLengths.find((truckLength) => {
+        let has = find(this.state.selectedTruckLengths, (truckLength) => {
           return truckLength.id === item.id;
         });
 
@@ -199,7 +203,7 @@ export default class SearchFilterPage extends Component {
   handleSelectItem(field, item) {
     let selected = this.state[field];
 
-    let index = selected.findIndex((s) => {
+    let index = findIndex(selected , (s) => {
       return s.id === item.id
     });
 

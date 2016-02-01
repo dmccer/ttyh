@@ -8,6 +8,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
+import find from 'lodash/collection/find';
 
 import EditableMiniTruckItem from './editable-mini-truck-item/';
 import Poptip from '../../poptip/';
@@ -92,7 +93,7 @@ export default class RoadtrainPage extends React.Component {
       this.refs.poptip.success('删除车辆成功');
 
       let trucks = this.state.trucks;
-      let truck = trucks.find((truck) => {
+      let truck = find(trucks, (truck) => {
         return truck.truckID === id;
       });
 

@@ -36,6 +36,7 @@
     "react-dom": "^0.14.3",
     "react-iscroll": "^1.0.0-beta1",
     "react-slick": "^0.9.3",
+    "react-tap-event-plugin": "^0.2.2",
     "slick-carousel": "^1.5.9",
     "zepto": "https://github.com/madrobby/zepto/tarball/v1.1.6"
   },

@@ -25,6 +25,7 @@ import {FieldChangeEnhance} from '../../enhance/field-change';
 const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
 const PAGE_TYPE = 'shipper_page';
+const ALL = '不限';
 
 @FieldChangeEnhance
 @SelectTruckTypeEnhance
@@ -176,25 +177,16 @@ export default class PkgPubPage extends React.Component {
     });
 
     if (field === state.citySelectorField) {
-      this.setState({
-        showCitySelector: !state.showCitySelector
-      });
-
       if (state.showCitySelector) {
         cs.clear();
         cs.close();
 
         return;
       }
-
       cs.show();
 
       return;
     }
-
-    this.setState({
-      showCitySelector: true
-    });
 
     cs.clear();
     cs.show(top);
@@ -211,8 +203,9 @@ export default class PkgPubPage extends React.Component {
    * @param  {String} province 省份
    */
   handleSelectProvince(province) {
-    if (province === '不限') {
-      return;
+    if (province === ALL) {
+      // 清空之前选的值
+      province = null;
     }
 
     this.setState({
@@ -227,6 +220,10 @@ export default class PkgPubPage extends React.Component {
    * @param  {String} city 城市
    */
   handleSelectCity(city) {
+    if (city === ALL) {
+      return;
+    }
+
     let field = this.state.citySelectorField;
 
     this.setState({
@@ -241,6 +238,10 @@ export default class PkgPubPage extends React.Component {
    * @param  {String} area 地区
    */
   handleSelectArea(area) {
+    if (area === ALL) {
+      return;
+    }
+
     let field = this.state.citySelectorField;
 
     this.setState({
@@ -261,6 +262,18 @@ export default class PkgPubPage extends React.Component {
 
     this.setState({
       [this.state.citySelectorField]: selected.join('-')
+    });
+  }
+
+  handleCloseCitySelector() {
+    this.setState({
+      showCitySelector: false
+    });
+  }
+
+  handleShowCitySelector() {
+    this.setState({
+      showCitySelector: true
     });
   }
 
@@ -405,6 +418,8 @@ export default class PkgPubPage extends React.Component {
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}
           onSelectHistory={this.handleSelectHistory.bind(this)}
+          onClose={this.handleCloseCitySelector.bind(this)}
+          onShow={this.handleShowCitySelector.bind(this)}
         />
       </section>
     );

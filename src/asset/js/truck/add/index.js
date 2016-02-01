@@ -103,6 +103,10 @@ export default class TruckAddPage extends React.Component {
       return '手机号不能为空';
     }
 
+    if ($.trim(props.license) === '') {
+      return '车牌号不能为空';
+    }
+
     if (!/^[\u4E00-\u9FA5]{1}[A-Z0-9]{6}$/.test($.trim(props.license))) {
       return '车牌号格式不正确';
     }

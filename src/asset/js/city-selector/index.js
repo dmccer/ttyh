@@ -10,11 +10,18 @@ import cx from 'classnames';
 import ReactIScroll from 'react-iscroll';
 import IScroll from 'iscroll/build/iscroll-lite';
 import Promise from 'promise';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
+import find from 'lodash/collection/find';
 import Mask from '../mask/';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
 import Log from '../log/';
+
+// 因为 iscroll 禁用了 click 事件，
+// 若启用 iscroll click, 会对其他默认滚动列表，滚动时触发 click
+// 启用 tap 事件
+injectTapEventPlugin();
 
 const HISTORY = '_city_selector_histories';
 const ALL = '不限';
@@ -23,13 +30,16 @@ export default class CitySelector extends React.Component {
   static defaultProps = {
     options: {
       mouseWheel: true,
-      click: true,
+      // click: true,
       scrollbars: true
     },
     onSelectHistory: () => {},
     onSelectArea: () => {},
     onSelectCity: () => {},
     onSelectProvince: () => {},
+    onCancel: () => {},
+    onClose: () => {},
+    onShow: () => {},
     done: () => {}
   };
 
@@ -49,6 +59,8 @@ export default class CitySelector extends React.Component {
       top: top,
       on: true
     });
+
+    this.props.onShow();
   }
 
   componentDidMount() {
@@ -185,17 +197,16 @@ export default class CitySelector extends React.Component {
    * 处理选择地区
    */
   select_area(area) {
-    if (area === ALL) {
-      this.done();
-
-      return;
-    }
-
-
     this.setState({
       area: area
     }, () => {
       this.props.onSelectArea(area, this.state.city, this.state.province);
+
+      if (area === ALL) {
+        this.done();
+
+        return;
+      }
 
       this.done();
     });
@@ -205,16 +216,16 @@ export default class CitySelector extends React.Component {
    * 处理选择城市
    */
   select_city(city) {
-    if (city === ALL) {
-      this.done();
-
-      return;
-    }
-
     this.setState({
       city: city
     }, () => {
       this.props.onSelectCity(city, this.state.province);
+
+      if (city === ALL) {
+        this.done();
+
+        return;
+      }
 
       this.fetchAreas();
     });
@@ -230,8 +241,6 @@ export default class CitySelector extends React.Component {
       this.props.onSelectProvince(province);
 
       if (province === ALL) {
-        this.close();
-
         this.done();
         return;
       }
@@ -246,14 +255,18 @@ export default class CitySelector extends React.Component {
    * 完成地址选择
    */
   done() {
+    let province = this.state.province;
+    let city = this.state.city;
+    let area = this.state.area;
+
     // 若有选择，则写入历史记录
     if (this.state.province && this.state.province !== '不限') {
       let histories = this.state.historyCities;
 
-      let has = histories.find((item) => {
-        return item.province === this.state.province &&
-          item.city === this.state.city &&
-          item.area === this.state.area;
+      let has = find(histories, (item) => {
+        return item.province === province &&
+          item.city === city &&
+          item.area === area;
       });
 
       if (!has) {
@@ -265,15 +278,15 @@ export default class CitySelector extends React.Component {
 
         copy.unshift({
           province: this.state.province,
-          city: this.state.city,
-          area: this.state.area
+          city: city === ALL ? null : city,
+          area: area === ALL ? null : area
         });
 
         localStorage.setItem(`${this.props.prefix}${HISTORY}`, JSON.stringify(copy));
       }
     }
 
-    this.props.done(this.state.province, this.state.city, this.state.area);
+    this.props.done(province, city, area);
     this.close();
   }
 
@@ -297,6 +310,8 @@ export default class CitySelector extends React.Component {
     this.setState({
       on: false
     });
+
+    this.props.onClose();
   }
 
   /**
@@ -308,6 +323,8 @@ export default class CitySelector extends React.Component {
     }
 
     this.close();
+
+    this.props.onCancel();
   }
 
   /**
@@ -358,7 +375,7 @@ export default class CitySelector extends React.Component {
   renderItem(list, field) {
     return list.map((item, index) => {
       return (
-        <li key={`${field}_${item}`} onClick={this[`select_${field}`].bind(this, item)}>{item}</li>
+        <li key={`${field}_${item}`} onTouchEnd={this[`select_${field}`].bind(this, item)}>{item}</li>
       );
     });
   }
@@ -382,7 +399,7 @@ export default class CitySelector extends React.Component {
           height: height + "px",
           top: top + "px"
         }}
-        onClick={this.cancel.bind(this)}>
+        onTouchEnd={this.cancel.bind(this)}>
         <div className="inner">
           {this.renderHistory()}
           <div className="cities">
