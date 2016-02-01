@@ -111,8 +111,14 @@ export default class Login extends React.Component {
             token: res.token
           }));
 
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
 
+          if (this.state.qs.page) {
+            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`);
+
+            return;
+          }
+
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
           return;
         }
 
@@ -142,7 +148,7 @@ export default class Login extends React.Component {
       },
       error: () => {
         _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
-        
+
         this.refs.loading.close();
         this.refs.poptip.error('系统异常');
 
