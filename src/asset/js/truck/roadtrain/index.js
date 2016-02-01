@@ -10,7 +10,7 @@ import querystring from 'querystring';
 import Promise from 'promise';
 import find from 'lodash/collection/find';
 
-import EditableMiniTruckItem from './editable-mini-truck-item/';
+import MiniTruckItem from './mini-truck-item/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Log from '../../log/';
@@ -138,7 +138,7 @@ export default class RoadtrainPage extends React.Component {
     if (this.state.trucks.length) {
       return this.state.trucks.map((truck, index) => {
         return (
-          <EditableMiniTruckItem
+          <MiniTruckItem
             key={`truck-item_${index}`}
             {...truck}
             del={this.del.bind(this)}
