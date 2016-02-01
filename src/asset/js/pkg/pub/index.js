@@ -101,9 +101,10 @@ export default class PkgPubPage extends React.Component {
         pkgWeight: null,
         memo: null
       });
-
-      // TODO: 跳转到我的货源列表页面
-      history.back();
+      
+      setTimeout(() => {
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-pkg.html?' + qs);
+      }, 2000);
     }).catch(() => {
       _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布失败', 2]);
 

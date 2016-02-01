@@ -9,11 +9,14 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoadMore from '../../load-more/';
 import SearchItem from '../search/item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+
+injectTapEventPlugin();
 
 export default class TodayTruckListPage extends Component {
   state = {

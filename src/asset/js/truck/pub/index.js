@@ -181,8 +181,9 @@ export default class TruckPubPage extends React.Component {
 
       // 清除草稿
       localStorage.removeItem(TRUCK_PUB);
+
       setTimeout(() => {
-        history.back();
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-truck.html?' + qs);
       }, 2000);
     }).catch((err) => {
       _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布失败', 2]);

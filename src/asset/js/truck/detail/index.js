@@ -87,13 +87,13 @@ export default class TruckDetailPage extends Component {
      }
 
      let rtruck = this.state.rtruck;
-     rtruck.alreadyFavorite = true;
+     rtruck.userWithLatLng.alreadyFavorite = true;
 
      this.setState({
        rtruck: rtruck
+     }, () => {
+       this.refs.poptip.success('关注成功');
      });
-
-     this.refs.poptip.success('关注成功');
    })
    .catch((err) => {
      Log.error(err);

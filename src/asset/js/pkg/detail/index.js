@@ -81,9 +81,9 @@ export default class PkgDetailPage extends Component {
 
       this.setState({
         pkg: pkg
+      }, () => {
+        this.refs.poptip.success('关注成功');
       });
-
-      this.refs.poptip.success('关注成功');
     })
     .catch(() => {
       this.refs.poptip.success('关注失败');
