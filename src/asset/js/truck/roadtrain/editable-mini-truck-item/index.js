@@ -26,13 +26,15 @@ export default class EditableMiniTruckItem extends React.Component {
   render() {
     let props = this.props;
 
+    // {
+    //   left: props.left + 'px'
+    // }
+
     return (
       <div className="editable-mini-truck-item">
         <div
           className="mini-truck-item-container"
-          style={{
-            left: props.left + 'px'
-          }}
+          style={props.transformStyle}
           onTouchStart={props.touchstart}
           onTouchMove={props.touchmove}
           onTouchEnd={props.touchend}

@@ -64,7 +64,19 @@ export var TouchLeftEnhance = ComposedComponent => class extends React.Component
     });
   }
 
+  transformLeft(left) {
+    this.setState({
+      posStyle: {
+        WebkitTransform: `translate3d(${left}px, 0px, 0px)`,
+        transform: `translate3d(${left}px, 0px, 0px)`,
+        msTransform: `translateX(${left}px)`
+      }
+    });
+  }
+
   reset() {
+    this.transformLeft(0);
+
     this.setState({
       left: 0
     });
@@ -132,6 +144,8 @@ export var TouchLeftEnhance = ComposedComponent => class extends React.Component
       touches: touches,
       left: nextLeft
     });
+
+    this.transformLeft(nextLeft);
   }
 
   touchend(e) {
@@ -152,6 +166,7 @@ export var TouchLeftEnhance = ComposedComponent => class extends React.Component
       this.setState({
         left: 0
       });
+      this.transformLeft(0);
 
       return;
     }
@@ -161,6 +176,8 @@ export var TouchLeftEnhance = ComposedComponent => class extends React.Component
         left: -this.state.maxLeft
       });
 
+      this.transformLeft(-this.state.maxLeft);
+
       return;
     }
   }
@@ -169,6 +186,7 @@ export var TouchLeftEnhance = ComposedComponent => class extends React.Component
     return <ComposedComponent
       {...this.props}
       left={this.state.left}
+      transformStyle={this.state.posStyle}
       touchstart={this.touchstart.bind(this)}
       touchmove={this.touchmove.bind(this)}
       touchend={this.touchend.bind(this)}

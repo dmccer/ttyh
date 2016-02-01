@@ -230,7 +230,7 @@ export default class PkgDetailPage extends Component {
           <div className="field memo-field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              {this.renderMemo(pkg.product.description)}
+              {this.renderMemo(pkg.product.memo)}
               {
                 // <span className="contact-count">
                 //   <b>{pkg.product.contactCount}</b>

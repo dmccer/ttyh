@@ -69,6 +69,8 @@ export default class PkgPubMemoPage extends React.Component {
     let val = $.trim(e.target.value);
 
     if (val.length > this.state.memoMaxLength) {
+      this.refs.poptip.warn('只能输入80个字符');
+
       val = val.substring(0, this.state.memoMaxLength);
     }
 
@@ -94,8 +96,15 @@ export default class PkgPubMemoPage extends React.Component {
    * 选择备注标签
    */
   handleSelectMemo(memo) {
+    let s = this.state.memo && `${this.state.memo},${memo.name}` || memo.name;
+
+    if (s.length > this.state.memoMaxLength) {
+      this.refs.poptip.warn('只能输入80个字符');
+      return;
+    }
+
     this.setState({
-      memo: this.state.memo && `${this.state.memo},${memo.name}` || memo.name
+      memo: s
     });
   }
 
