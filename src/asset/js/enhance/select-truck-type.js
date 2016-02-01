@@ -6,6 +6,8 @@
  */
 import React, {Component} from 'react';
 import Promise from 'promise';
+import keys from 'lodash/object/keys';
+
 import Selector from '../selector/';
 import Poptip from '../poptip/';
 import Loading from '../loading/';
@@ -32,7 +34,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       });
     }).then((res) => {
       let truckTypes = res.truckTypeMap;
-      truckTypes = Object.keys(truckTypes).map((key) => {
+      truckTypes = keys(truckTypes).map((key) => {
         return {
           name: truckTypes[key],
           id: key

@@ -148,13 +148,13 @@ export default class PkgDetailPage extends Component {
 
     let pkgDesc;
 
-    if (product.title == null && product.pkgWeight == null) {
+    if (product.title == null && (parseFloat(product.loadLimit) === 0 || product.loadLimit == null)) {
       pkgDesc = '暂无';
     } else {
       let title = product.title && product.title || '';
-      let pkgWeight = product.pkgWeight && `${product.pkgWeight}吨` || '';
+      let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
 
-      pkgDesc = `${title} ${pkgWeight}`;
+      pkgDesc = `${title} ${loadLimit}`;
     }
 
     let truckDesc;
@@ -164,10 +164,8 @@ export default class PkgDetailPage extends Component {
       (parseFloat(product.truckLength) === 0 || product.truckLength == null)) {
       truckDesc = '暂无';
     } else {
-      let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
-
-      truckDesc = `${product.truckTypeStr || ''} ${truckLength} ${loadLimit}`;
+      truckDesc = `${product.truckTypeStr || ''} ${truckLength}`;
     }
 
     return (
