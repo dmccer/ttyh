@@ -338,7 +338,7 @@ export default class CitySelector extends React.Component {
         return (
           <li
             key={`history_${index}`}
-            onClick={this.select_history.bind(this, item)}
+            onTouchTap={this.select_history.bind(this, item)}
           >{item.area || item.city || item.province}</li>
         );
       });
@@ -375,7 +375,7 @@ export default class CitySelector extends React.Component {
   renderItem(list, field) {
     return list.map((item, index) => {
       return (
-        <li key={`${field}_${item}`} onTouchEnd={this[`select_${field}`].bind(this, item)}>{item}</li>
+        <li key={`${field}_${item}`} onTouchTap={this[`select_${field}`].bind(this, item)}>{item}</li>
       );
     });
   }
@@ -399,7 +399,7 @@ export default class CitySelector extends React.Component {
           height: height + "px",
           top: top + "px"
         }}
-        onTouchEnd={this.cancel.bind(this)}>
+        onTouchTap={this.cancel.bind(this)}>
         <div className="inner">
           {this.renderHistory()}
           <div className="cities">

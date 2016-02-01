@@ -145,7 +145,7 @@ export default class TruckPubPage extends React.Component {
     e.stopPropagation();
 
     let data = {
-      truckID: this.state.truck.truckID,
+      truckID: this.state.truck && this.state.truck.truckID,
       shuoshuo: this.state.memo,
       fromCities: this.state.fromCities,
       toCities: this.state.toCities,

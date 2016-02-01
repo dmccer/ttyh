@@ -58,8 +58,13 @@ export default class RoadtrainPage extends React.Component {
         return;
       }
 
+      let selected = find(res.truckList, (truck) => {
+        return truck.isDefault === 1;
+      });
+
       this.setState({
-        trucks: res.truckList
+        trucks: res.truckList,
+        selected: selected
       });
     }).catch((err) => {
       Log.error(err);
@@ -155,7 +160,7 @@ export default class RoadtrainPage extends React.Component {
         url: '/mvc/v2/setTruckDefalt',
         type: 'POST',
         data: {
-          truckID: this.state.selected.truckID
+          truckID: this.state.selected && this.state.selected.truckID
         },
         success: resolve,
         error: reject

@@ -67,8 +67,8 @@ export default class PkgPubPage extends React.Component {
         url: '/mvc/product_addNew_json',
         type: 'POST',
         data: {
-          fromCity: this.state.startPoint,
-          toCity: this.state.endPoint,
+          fromCity: this.state.fromCity,
+          toCity: this.state.toCity,
           truckType: props.truckType.id,
           truckLength: props.truckLength.id,
           title: props.pkgType,

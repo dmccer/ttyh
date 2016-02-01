@@ -60,7 +60,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       let truckLengths = res.truckLengthList;
       truckLengths = truckLengths.map((len) => {
         return {
-          name: len !== '其他' ? `${len}米` : len,
+          name: len !== '自定义' ? `${len}米` : len,
           id: len
         };
       });
@@ -124,9 +124,14 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
   handleSelectItem(item) {
     let field = this.state.selectorField;
 
-    if (field === 'truckLength' && item.id === '其他') {
+    if (field === 'truckLength' && item.id === '自定义') {
       let val = prompt('请输入车长');
       val = $.trim(val).replace(/[^\d\.]/g, '');
+
+      if (val === '') {
+        this.refs.poptip.warn('车长不能为空');
+        return;
+      }
 
       item = {
         name: `${val}米`,
