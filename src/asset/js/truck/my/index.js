@@ -64,6 +64,7 @@ export default class MyTruckPage extends Component {
       $.ajax({
         url: '/mvc/v2/getRouteList',
         type: 'GET',
+        cache: false,
         data: {
           pageSize: this.state.pageSize,
           pageIndex: this.state.pageIndex
@@ -132,7 +133,7 @@ export default class MyTruckPage extends Component {
       }
 
       this.refs.poptip.success('重新发布成功');
-      
+
       setTimeout(() => {
         location.reload();
       }, 2000);

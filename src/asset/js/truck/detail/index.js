@@ -41,6 +41,7 @@ export default class TruckDetailPage extends Component {
      $.ajax({
        url: '/mvc/searchUsersForH5',
        type: 'GET',
+       cache: false,
        data: {
          routeIDs: this.state.qs.tid
        },

@@ -26,6 +26,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       $.ajax({
         url: '/mvc/v2/getTruckType',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });
@@ -51,6 +52,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       $.ajax({
         url: '/mvc/v2/getTruckLength',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });

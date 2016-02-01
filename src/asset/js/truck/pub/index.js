@@ -53,6 +53,7 @@ export default class TruckPubPage extends React.Component {
       $.ajax({
         url: '/mvc/v2/getTruckTag',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });

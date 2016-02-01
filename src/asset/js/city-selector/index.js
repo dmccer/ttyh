@@ -79,6 +79,7 @@ export default class CitySelector extends React.Component {
       $.ajax({
         url: '/mvc/v2/getCitys',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });
@@ -108,6 +109,7 @@ export default class CitySelector extends React.Component {
       $.ajax({
         url: '/mvc/v2/getCitys',
         type: 'GET',
+        cache: false,
         data: {
           cityIndex: this.getIndex('province', 'provinces')
         },
@@ -137,6 +139,7 @@ export default class CitySelector extends React.Component {
       $.ajax({
         url: '/mvc/v2/getCitys',
         type: 'GET',
+        cache: false,
         data: {
           cityIndex: this.getIndex('province', 'provinces'),
           districtIndex: this.getIndex('city', 'cities')
@@ -369,7 +372,7 @@ export default class CitySelector extends React.Component {
       top = 0;
       height = winH;
     }
-    
+
     let cxs = cx('city-selector', this.state.on ? 'on' : '');
 
     return (

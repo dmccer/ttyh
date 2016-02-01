@@ -45,6 +45,7 @@ export default class TodayPkgListPage extends Component {
       $.ajax({
         url: '/mvc/todayRecommendProductsForH5',
         type: 'GET',
+        cache: false,
         data: {
           pageIndex: this.state.pageIndex,
           pageSize: this.state.pageSize

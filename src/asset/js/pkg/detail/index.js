@@ -38,6 +38,7 @@ export default class PkgDetailPage extends Component {
       $.ajax({
         url: '/mvc/searchProductsForH5',
         type: 'GET',
+        cache: false,
         data: {
           productIDs: this.state.qs.pid
         },

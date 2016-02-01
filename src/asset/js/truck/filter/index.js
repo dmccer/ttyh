@@ -30,6 +30,7 @@ export default class SearchFilterPage extends Component {
       $.ajax({
         url: '/mvc/v2/getTruckType',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });
@@ -55,6 +56,7 @@ export default class SearchFilterPage extends Component {
       $.ajax({
         url: '/mvc/v2/getSearchLength',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });
@@ -80,6 +82,7 @@ export default class SearchFilterPage extends Component {
       $.ajax({
         url: '/mvc/v2/getLoadLimit',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });

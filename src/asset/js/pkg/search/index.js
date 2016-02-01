@@ -53,6 +53,7 @@ export default class SearchPkgPage extends Component {
       $.ajax({
         url: '/mvc/searchProductsForH5',
         type: 'GET',
+        cache: false,
         data: {
           fromCity: this.state.fromCity,
           toCity: this.state.toCity,

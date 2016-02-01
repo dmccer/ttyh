@@ -34,6 +34,7 @@ export default class PkgPubMemoPage extends React.Component {
       $.ajax({
         url: '/mvc/v2/getProductMemo',
         type: 'GET',
+        cache: false,
         success: resolve,
         error: reject
       });

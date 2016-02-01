@@ -271,7 +271,7 @@ module.exports = {
       filename: 'today-truck.html',
       chunks: ['today-truck', 'zepto', 'ved'],
       inject: 'body'
-    }),
+    })
   ],
   module: {
     preLoaders: [{

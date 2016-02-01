@@ -53,6 +53,7 @@ export default class SearchTruckPage extends Component {
       $.ajax({
         url: '/mvc/searchUsersForH5',
         type: 'GET',
+        cache: false,
         data: {
           fromCity: this.state.fromCity,
           toCity: this.state.toCity,

@@ -43,6 +43,7 @@ export default class TodayTruckListPage extends Component {
       $.ajax({
         url: '/mvc/todayRecommendUsersForH5',
         type: 'GET',
+        cache: false,
         data: {
           pageIndex: this.state.pageIndex,
           pageSize: this.state.pageSize
