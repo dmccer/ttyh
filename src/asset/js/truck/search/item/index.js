@@ -50,7 +50,7 @@ export default class SearchItem extends Component {
         <div className="row">
           <div className="account">
             <Avatar img={truck.faceImgUrl} />
-            <div className="nick-name">{truck.userName}</div>
+            <div className="nick-name">{truck.userName && truck.userName.substring(0, 4)}</div>
             <div className="certified-tags">
               <AccountCertifyStatus
                 type='trucker'

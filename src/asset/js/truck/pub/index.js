@@ -182,8 +182,15 @@ export default class TruckPubPage extends React.Component {
       // 清除草稿
       localStorage.removeItem(TRUCK_PUB);
 
+      this.setState({
+        shuoshuo: null,
+        fromCities: [],
+        toCities: [],
+        selectedTruckTag: {}
+      });
+
       setTimeout(() => {
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-truck.html?' + qs);
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-truck.html?' + querystring.stringify(this.state.qs));
       }, 2000);
     }).catch((err) => {
       _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布失败', 2]);
@@ -554,11 +561,9 @@ export default class TruckPubPage extends React.Component {
             ref={`${listName}AddrField${index}`}
             className="control"
             onClick={this.toggleCitySelector.bind(this, listName, index)}>
-            <input
-              type="text"
-              disabled="disabled"
-              placeholder={placeholder}
-              value={addr} />
+            <span
+              className={cx('input-holder', addr && 'on' || '')}
+            >{addr || placeholder}</span>
             {action}
           </div>
         </div>

@@ -42,7 +42,7 @@ export default class SearchItem extends Component {
         <div className="row">
           <div className="account">
             <Avatar img={props.provideUserImgUrl} />
-            <div className="nick-name">{props.providerUserName}</div>
+            <div className="nick-name">{props.providerUserName && props.providerUserName.substring(0, 4)}</div>
             <div className="certified-tags">
               <AccountCertifyStatus
                 type='shipper'

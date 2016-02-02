@@ -13,6 +13,7 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
+import cx from 'classnames';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -178,13 +179,11 @@ export default class TruckAddPage extends React.Component {
           <div className="field">
             <label><b>*</b>车型</label>
             <div className="control with-arrow">
-              <input
-                disabled
-                type="text"
-                placeholder="选择车型"
+              <span
+                className={cx('input-holder', truckDesc && 'on' || '')}
                 onClick={props.handleSelectTruckType.bind(this)}
-                value={truckDesc}
-              />
+              >{truckDesc || '选择车型'}</span>
+
               <i className="icon icon-arrow"></i>
             </div>
           </div>

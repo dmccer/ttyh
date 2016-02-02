@@ -12,6 +12,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
+import cx from 'classnames';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -94,16 +95,15 @@ export default class PkgPubPage extends React.Component {
       localStorage.removeItem(MEMO);
 
       this.setState({
-        startPoint: null,
-        endPoint: null,
-        truckType: {},
-        pkgType: null,
-        pkgWeight: null,
+        fromCity: null,
+        toCity: null,
         memo: null
       });
-      
+
+      this.forceUpdate();
+
       setTimeout(() => {
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-pkg.html?' + qs);
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-pkg.html?' + querystring.stringify(this.state.qs));
       }, 2000);
     }).catch(() => {
       _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布失败', 2]);
@@ -332,11 +332,9 @@ export default class PkgPubPage extends React.Component {
               ref="fromCityField"
               className="control"
               onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
-              <input
-                type="text"
-                disabled="disabled"
-                placeholder="请选择出发地址"
-                value={this.state.fromCity} />
+              <span
+                className={cx('input-holder', this.state.fromCity && 'on' || '')}
+              >{this.state.fromCity || '请选择出发地址'}</span>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -346,11 +344,9 @@ export default class PkgPubPage extends React.Component {
               ref="toCityField"
               className="control"
               onClick={this.toggleCitySelector.bind(this, 'toCity')}>
-              <input
-                type="text"
-                disabled="disabled"
-                placeholder="请选择到达地址"
-                value={this.state.toCity} />
+              <span
+                className={cx('input-holder', this.state.toCity && 'on' || '')}
+              >{this.state.toCity || '请选择到达地址'}</span>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -363,12 +359,10 @@ export default class PkgPubPage extends React.Component {
               <i className="icon icon-truck-type s20"></i>
             </label>
             <div className="control">
-              <input
-                type="text"
-                disabled="disabled"
-                placeholder="选择车型"
+              <span
+                className={cx('input-holder', truckDesc && 'on' || '')}
                 onClick={props.handleSelectTruckType.bind(this,  this.writeDraft.bind(this))}
-                value={truckDesc} />
+              >{truckDesc || '选择车型'}</span>
               <i className="icon icon-arrow"></i>
             </div>
           </div>

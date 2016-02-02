@@ -399,7 +399,7 @@ export default class CitySelector extends React.Component {
           height: height + "px",
           top: top + "px"
         }}
-        onTouchTap={this.cancel.bind(this)}>
+        onClick={this.cancel.bind(this)}>
         <div className="inner">
           {this.renderHistory()}
           <div className="cities">

@@ -41,13 +41,29 @@ body {
     padding-right: 10px;
     overflow: hidden;
 
-    input {
+    input, .input-holder {
       display: block;
       width: 100%;
       height: 35px;
       box-sizing: border-box;
       font-size: 13px;
       margin-top: 5px;
+    }
+
+    .input-holder {
+      line-height: 35px;
+      padding-left: 10px;
+      padding-right: 10px;
+      border: 1px solid @c_lightGrey;
+      border-radius: 3px;
+      color: @c_grey;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.on {
+        color: @c_black;
+      }
     }
 
     .input_placeholder(@c_grey);
