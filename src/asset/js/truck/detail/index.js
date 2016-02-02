@@ -129,13 +129,17 @@ export default class TruckDetailPage extends Component {
  }
 
  renderCities(cities, color) {
-   if (cities.length) {
-     let cxs = `capsule ${color}`;
+   let cxs = `capsule ${color}`;
 
+   if (cities && cities.length) {
      return cities.map((city, index) => {
        return <i key={`capsule-item_${index}_${color}`} className={cxs}>{city}</i>;
      })
    }
+
+   return (
+     <i className={cxs}>暂无</i>
+   );
  }
 
  toggleMore() {
@@ -167,8 +171,8 @@ export default class TruckDetailPage extends Component {
    let rtruck = this.state.rtruck;
    let rtruckDetail = rtruck.userWithLatLng;
 
-   let fromCities = (rtruckDetail.fromCities || '').split(',');
-   let toCities = (rtruckDetail.toCities || '').split(',');
+   let fromCities = rtruckDetail.fromCities ? rtruckDetail.fromCities.split(',') : null;
+   let toCities = rtruckDetail.toCities ? rtruckDetail.toCities.split(',') : null;
 
    let truckDesc;
 

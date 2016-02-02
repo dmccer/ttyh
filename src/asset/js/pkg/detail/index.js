@@ -181,19 +181,13 @@ export default class PkgDetailPage extends Component {
           <div className="field">
             <label><i className="icon icon-start-point on s20"></i></label>
             <div className="control">
-              <input
-                type="text"
-                disabled="disabled"
-                value={pkg.product.fromCity} />
+              <span className="input-holder on">{pkg.product.fromCity}</span>
             </div>
           </div>
           <div className="field">
             <label><i className="icon icon-end-point on s20"></i></label>
             <div className="control">
-              <input
-                type="text"
-                disabled="disabled"
-                value={pkg.product.toCity} />
+              <span className="input-holder on">{pkg.product.toCity}</span>
             </div>
           </div>
         </div>
@@ -202,10 +196,7 @@ export default class PkgDetailPage extends Component {
           <div className="field">
             <label><i className="icon icon-pkg-type s20"></i></label>
             <div className="control">
-              <input
-                type="text"
-                disabled="disabled"
-                value={pkgDesc} />
+              <span className="input-holder on">{pkgDesc}</span>
             </div>
           </div>
         </div>
@@ -216,10 +207,7 @@ export default class PkgDetailPage extends Component {
               <i className="icon icon-truck-type s20"></i>
             </label>
             <div className="control">
-              <input
-                type="text"
-                disabled="disabled"
-                value={truckDesc} />
+              <span className="input-holder on">{truckDesc}</span>
             </div>
           </div>
         </div>
