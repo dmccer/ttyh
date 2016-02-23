@@ -199,7 +199,11 @@ export default class SearchCondition extends Component {
   /**
    * 处理取消选择
    */
-  handleCancelSelectCity() {
+  handleCancelSelectCity(...args) {
+    if (args.length) {
+      this.setCitySelectorField(args);
+    }
+
     this.setState({
       showCitySelector: false
     });

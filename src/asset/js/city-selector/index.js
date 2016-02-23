@@ -324,7 +324,11 @@ export default class CitySelector extends React.Component {
 
     this.close();
 
-    this.props.onCancel();
+    let province = this.state.province;
+    let city = this.state.city;
+    let area = this.state.area;
+
+    this.props.onCancel(province, city, area);
   }
 
   /**
