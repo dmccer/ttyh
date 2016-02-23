@@ -17,6 +17,7 @@ import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Log from '../../log/';
+import pkgPNG from '../../../img/app/pkg@3x.png';
 
 const PAGE_TYPE = 'trucker_page';
 
@@ -99,6 +100,23 @@ export default class SearchPkgPage extends Component {
     });
   }
 
+  /**
+   * 展示货源为空时的提示界面
+   * @return {Element}
+   */
+  renderEmpty() {
+    if (!this.state.pkgs.length) {
+      return (
+        <div className="pkg-empty-tip">
+          <div className="img-tip">
+            <img src={pkgPNG} />
+          </div>
+          <p>未找到合适货源</p>
+        </div>
+      );
+    }
+  }
+
   renderItems() {
     let pkgs = this.state.pkgs;
 
@@ -107,6 +125,8 @@ export default class SearchPkgPage extends Component {
         return <SearchItem key={`pkg-item_${index}`} {...pkg} />
       });
     }
+
+    return this.renderEmpty();
   }
 
   render() {

@@ -17,6 +17,7 @@ import SearchItem from './item/';
 import Log from '../../log/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import truckPNG from '../../../img/app/truck@3x.png';
 
 const PAGE_TYPE = 'shipper_page';
 
@@ -99,6 +100,22 @@ export default class SearchTruckPage extends Component {
     });
   }
 
+  /**
+   * 展示车源列表为空时的提示
+   */
+  renderEmpty() {
+    if (!this.state.trucks.length) {
+      return (
+        <div className="truck-empty-tip">
+          <div className="img-tip">
+            <img src={truckPNG} />
+          </div>
+          <p>未找到合适车源</p>
+        </div>
+      );
+    }
+  }
+
   renderItems() {
     let trucks = this.state.trucks;
 
@@ -107,6 +124,8 @@ export default class SearchTruckPage extends Component {
         return <SearchItem key={`pkg-item_${index}`} {...truck} />
       });
     }
+
+    return this.renderEmpty();
   }
 
   render() {
