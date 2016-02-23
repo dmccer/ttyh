@@ -15,7 +15,7 @@ import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import PkgItemDesc from '../item-desc/';
 import {MiniReadableTime} from '../../bbs/readable-time/';
-
+import JWeiXin from '../../jweixin/';
 
 export default class SearchItem extends Component {
   constructor() {
@@ -36,6 +36,7 @@ export default class SearchItem extends Component {
 
   render() {
     let props = this.props;
+    let tel = JWeiXin.isWeixinBrowser() ? null : <p>电话联系: {props.product.provideUserMobileNo}</p>
 
     return (
       <div className="pkg-item" onTouchTap={this.detail.bind(this)}>
@@ -60,6 +61,7 @@ export default class SearchItem extends Component {
             <div className="detail">
               <PkgItemDesc {...props.product} />
               <p className="memo">{props.product.memo}</p>
+              {tel}
               <p className="extra">
                 {
                   // <span>1271.1公里</span>

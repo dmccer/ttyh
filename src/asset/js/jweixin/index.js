@@ -1,4 +1,9 @@
 export default class JWeiXin {
+  static isWeixinBrowser() {
+    var ua = navigator.userAgent.toLowerCase();
+    return (/micromessenger/.test(ua)) ? true : false ;
+  }
+
   constructor(fn) {
     this.url = encodeURIComponent(location.href.split('#')[0]);
     this.fn = fn;

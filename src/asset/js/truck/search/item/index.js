@@ -13,6 +13,7 @@ import React, {Component} from 'react';
 import Avatar from '../../../avatar/';
 import AccountCertifyStatus from '../../../account-certify-status/';
 import {MiniReadableTime} from '../../../bbs/readable-time/';
+import JWeiXin from '../../../jweixin/';
 
 export default class SearchItem extends Component {
   constructor() {
@@ -65,6 +66,8 @@ export default class SearchItem extends Component {
     let truckLength = truck.truckLength != null && parseFloat(truck.truckLength) !== 0 ? `${truck.truckLength}米`: '';
     let loadLimit = truck.loadLimit != null && parseFloat(truck.loadLimit) !== 0 ? `${truck.loadLimit}吨` : '';
 
+    let tel = JWeiXin.isWeixinBrowser() ? null : <p>电话联系: {truck.mobileNo}</p>
+
     return (
       <div className="truck-item" onTouchTap={this.detail.bind(this)}>
         <div className="row">
@@ -84,6 +87,7 @@ export default class SearchItem extends Component {
             <div className="detail">
               <p className="memo">{truck.truckStatusMsg}</p>
               <p className="truck-desc"><b>{truck.licensePlate} {truck.truckTypeStr} {truckLength} {loadLimit}</b></p>
+              {tel}
               <p className="extra">
                 {
                   // <span>1271.1公里</span>

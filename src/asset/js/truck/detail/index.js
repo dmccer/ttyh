@@ -21,6 +21,7 @@ import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Log from '../../log/';
 import FixedHolder from '../../fixed-holder/';
+import JWeiXin from '../../jweixin/';
 
 export default class TruckDetailPage extends Component {
   state = {
@@ -188,6 +189,8 @@ export default class TruckDetailPage extends Component {
      truckDesc = `${rtruckDetail.truckTypeStr} ${truckLength} ${loadLimit}`;
    }
 
+   let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {rtruckDetail.mobileNo}</span>
+
    return (
      <section className="pkg-detail-page">
        <h2 className="subtitle header">
@@ -253,7 +256,7 @@ export default class TruckDetailPage extends Component {
        <FixedHolder height="50" />
        <a href={`tel:${rtruckDetail.mobileNo}`} className="call-btn">
          <i className="icon icon-call"></i>
-         <span>电话联系</span>
+         {tel}
        </a>
        <Loading ref="loading" />
        <Poptip ref="poptip" />

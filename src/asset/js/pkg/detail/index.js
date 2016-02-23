@@ -19,6 +19,7 @@ import AccountCertifyStatus from '../../account-certify-status/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import FixedHolder from '../../fixed-holder/';
+import JWeiXin from '../../jweixin/';
 
 export default class PkgDetailPage extends Component {
   state = {
@@ -168,6 +169,8 @@ export default class PkgDetailPage extends Component {
       truckDesc = `${product.truckTypeStr || ''} ${truckLength}`;
     }
 
+    let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {pkg.product.provideUserMobileNo}</span>
+
     return (
       <section className="pkg-detail-page">
         <h2 className="subtitle">
@@ -245,7 +248,7 @@ export default class PkgDetailPage extends Component {
         <FixedHolder height="50" />
         <a href={`tel:${pkg.product.provideUserMobileNo}`} className="call-btn">
           <i className="icon icon-call"></i>
-          <span>电话联系</span>
+          {tel}
         </a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
