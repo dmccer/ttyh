@@ -209,30 +209,42 @@ export default class SearchCondition extends Component {
     });
   }
 
+  getAddress(s) {
+    if ($.trim(s) === '') {
+      return;
+    }
+
+    let sArr = s.split(' ');
+    return sArr[sArr.length - 1];
+  }
+
   render() {
     let props = this.props;
-    let fromCity = this.state.showCitySelector && this.state.citySelectorField === 'fromCity' ? 'on' : '';
-    let toCity = this.state.showCitySelector && this.state.citySelectorField === 'toCity' ? 'on' : '';
+    let fromCityOn = this.state.showCitySelector && this.state.citySelectorField === 'fromCity' ? 'on' : '';
+    let toCityOn = this.state.showCitySelector && this.state.citySelectorField === 'toCity' ? 'on' : '';
+
+    let fromCity = this.getAddress(this.state.fromCity) || '出发地点';
+    let toCity = this.getAddress(this.state.toCity) || '到达地点';
 
     return (
       <div className="search-condition">
         <ul className="filters row">
           <li
-            className={fromCity}
+            className={fromCityOn}
             ref="fromCityField"
             onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
             <a href="javascript:void(0)">
               <i className={cx('icon icon-start-point s18', fromCity)}></i>
-              <span>出发地点</span>
+              <span>{fromCity}</span>
             </a>
           </li>
           <li
-            className={toCity}
+            className={toCityOn}
             ref="toCityField"
             onClick={this.toggleCitySelector.bind(this, 'toCity')}>
             <a href="javascript:void(0)">
               <i className={cx('icon icon-end-point s18', toCity)}></i>
-              <span>到达地点</span>
+              <span>{toCity}</span>
             </a>
           </li>
           <li>
