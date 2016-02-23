@@ -43,7 +43,7 @@ export default class SearchItem extends Component {
     let toCity = toCities && toCities[0] || '暂无';
 
     let fromCitiesNum = fromCities && fromCities.length > 1 ? <b>({fromCities.length})</b> : null;
-    let toCitiesNum = fromCities && toCities.length > 1 ? <b>({toCities.length})</b> : null;
+    let toCitiesNum = toCities && toCities.length > 1 ? <b>({toCities.length})</b> : null;
 
 
     return (

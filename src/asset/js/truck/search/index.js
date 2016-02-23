@@ -67,7 +67,7 @@ export default class SearchTruckPage extends Component {
         error: reject
       });
     }).then((res) => {
-      let trucks = this.state.trucks;
+      let trucks = this.state.trucks || [];
 
       if (!res.data || !res.data.length) {
         if (!trucks.length) {
