@@ -112,7 +112,7 @@ export default class ActiveUserList extends React.Component {
             <div className="col profile">
               <h2>{user.userName}</h2>
               <p>
-                <span>一周内: 发帖 <b>{user.pcount}</b></span>
+                <span>一周内: 发帖 <b>{user.fcount}</b></span>
                 <span>评论 <b>{user.rcount}</b></span>
               </p>
               <ReadableTime time={user.last_do_time} />
