@@ -34,7 +34,8 @@ const ERR_MSG_SET_DEFAULT = {
 export default class RoadtrainPage extends React.Component {
   state = {
     qs: querystring.parse(location.search.substring(1)),
-    trucks: []
+    trucks: [],
+    lastDefaultTruck: JSON.parse(localStorage.getItem(DEFAULT_TRUCK))
   };
 
   constructor() {
@@ -95,8 +96,6 @@ export default class RoadtrainPage extends React.Component {
         return;
       }
 
-      this.refs.poptip.success('删除车辆成功');
-
       let trucks = this.state.trucks;
       let truck = find(trucks, (truck) => {
         return truck.truckID === id;
@@ -107,6 +106,17 @@ export default class RoadtrainPage extends React.Component {
       this.setState({
         trucks: trucks
       });
+
+      // 删除当前选中的默认项
+      if (this.state.selected.truckID === id) {
+        this.state.selected = null;
+      }
+
+      if (this.state.lastDefaultTruck.truckID === id) {
+        localStorage.removeItem(DEFAULT_TRUCK);
+      }
+
+      this.refs.poptip.success('删除车辆成功');
     }).catch((err) => {
       Log.error(err);
 
@@ -152,6 +162,10 @@ export default class RoadtrainPage extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!this.state.selected) {
+      history.back();
+    }
 
     this.refs.loading.show('请求中...');
 
