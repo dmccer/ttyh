@@ -439,6 +439,16 @@ export default class TruckPubPage extends React.Component {
     });
   }
 
+  handleCancelCitySelector(province, city, area) {
+    if (province) {
+      this.refs.citySelector.writeHistory2Local({
+        province: province,
+        city: city == ALL ? null : city,
+        area: area == ALL ? null : area
+      });
+    }
+  }
+
   /**
    * 处理备注改变
    * @param  {ChangeEvent} e
@@ -617,6 +627,7 @@ export default class TruckPubPage extends React.Component {
           onSelectHistory={this.handleSelectHistory.bind(this)}
           onClose={this.handleCloseCitySelector.bind(this)}
           onShow={this.handleShowCitySelector.bind(this)}
+          onCancel={this.handleCancelCitySelector.bind(this)}
         />
       </section>
     );

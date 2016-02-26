@@ -200,8 +200,14 @@ export default class SearchCondition extends Component {
    * 处理取消选择
    */
   handleCancelSelectCity(...args) {
-    if (args.length) {
+    if (args.length && args[0]) {
       this.setCitySelectorField(args);
+
+      this.refs.citySelector.writeHistory2Local({
+        province: args[0],
+        city: args[1] == ALL ? null : args[1],
+        area: args[2] == ALL ? null : args[2]
+      });
     }
 
     this.setState({

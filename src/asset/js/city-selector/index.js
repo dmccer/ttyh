@@ -260,34 +260,42 @@ export default class CitySelector extends React.Component {
     let area = this.state.area;
 
     // 若有选择，则写入历史记录
-    if (this.state.province && this.state.province !== ALL) {
-      let histories = this.state.historyCities;
-
-      let has = find(histories, (item) => {
-        return item.province === province &&
-          item.city === city &&
-          item.area === area;
+    if (province && province !== ALL) {
+      this.writeHistory2Local({
+        province: province,
+        city: city === ALL ? null : city,
+        area: area === ALL ? null : area
       });
-
-      if (!has) {
-        let copy = histories.slice();
-
-        if (histories.length >= 6) {
-          copy.pop();
-        }
-
-        copy.unshift({
-          province: this.state.province,
-          city: city === ALL ? null : city,
-          area: area === ALL ? null : area
-        });
-
-        localStorage.setItem(`${this.props.prefix}${HISTORY}`, JSON.stringify(copy));
-      }
     }
 
     this.props.done(province, city, area);
     this.close();
+  }
+
+  writeHistory2Local(history) {
+    let histories = JSON.parse(localStorage.getItem(`${this.props.prefix}${HISTORY}`)) || [];
+
+    let has = find(histories, (item) => {
+      return item.province === history.province &&
+        item.city == history.city &&
+        item.area == history.area;
+    });
+
+    if (!has) {
+      let copy = histories.slice();
+
+      if (histories.length >= 6) {
+        copy.pop();
+      }
+
+      copy.unshift({
+        province: history.province,
+        city: history.city === ALL ? null : history.city,
+        area: history.area === ALL ? null : history.area
+      });
+
+      localStorage.setItem(`${this.props.prefix}${HISTORY}`, JSON.stringify(copy));
+    }
   }
 
   /**
