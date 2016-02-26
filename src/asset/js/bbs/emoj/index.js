@@ -8,6 +8,10 @@ export default class Emoj extends React.Component {
     return /\[\/f(\d+)\]/g;
   }
 
+  static BR_TAG_REG = /\n/g;
+
+  static count = 0;
+
   constructor() {
     super();
 
@@ -28,7 +32,7 @@ export default class Emoj extends React.Component {
     let m = cnt.match(Emoj.code_reg());
 
     if (!m) {
-      return cnt;
+      return <span>{Emoj.replaceLineBreak(cnt)}</span>;
     }
 
     let r = [];
@@ -39,20 +43,48 @@ export default class Emoj extends React.Component {
       let code = parseInt(s.match(/\d+/)[0], 10);
 
       if (si === 0) {
-        cnt = cnt.substring(0, s.length);
-        r.push(<Emoj key={'emoj-text-item_' + r.length} code={code} />)
+        cnt = cnt.substring(s.length);
+        r.push(<Emoj key={`emoj-text-item_${++Emoj.count}`} code={code} />)
 
         return;
       }
 
       let t = cnt.substring(0, si);
-      cnt = cnt.substring(0, t.length);
+      cnt = cnt.substring(si + s.length);
 
-      r.push(<span key={'emoj-text-item_' + r.length}>{t}</span>);
-      r.push(<Emoj key={'emoj-text-item_' + r.length} code={code} />)
+      r = r.concat(Emoj.replaceLineBreak(t));
+      r.push(<Emoj key={`emoj-text-item_${++Emoj.count}`} code={code} />)
     });
 
     return <span>{r}</span>;
+  }
+
+  static replaceLineBreak(text: String) {
+    let m = text.match(Emoj.BR_TAG_REG);
+
+    if (!m) {
+      return [<span key={`emoj-text-item_${++Emoj.count}`}>{text}</span>];
+    }
+
+    let r = [];
+
+    m.forEach((s, i) => {
+      let si = text.indexOf(s);
+
+      if (si === 0) {
+        text = text.substring(s.length);
+        r.push(<br key={`emoj-text-item_${++Emoj.count}`} />);
+        return;
+      }
+
+      let t = text.substring(0, si);
+      text = text.substring(si + s.length);
+
+      r.push(<span key={`emoj-text-item_${++Emoj.count}`}>{t}</span>);
+      r.push(<br key={`emoj-text-item_${++Emoj.count}`} />);
+    });
+
+    return r;
   }
 
   pos(code: Number) {
