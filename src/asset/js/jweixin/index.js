@@ -23,7 +23,7 @@ export default class JWeiXin {
         timestamp: data.timestamp,
         nonceStr: data.noncestr,
         signature: data.signature,
-        jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage']
+        jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage', 'onMenuShareTimeline', 'onMenuShareAppMessage']
       };
 
       wx.config(config);

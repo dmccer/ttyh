@@ -8,7 +8,7 @@ import querystring from 'querystring';
 import PostDetailItem from './post/detail';
 import Feedback from './feedback/';
 import GoTop from '../gotop/';
-
+import JWeiXin from '../jweixin/';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
 
@@ -48,6 +48,8 @@ export default class BBSDetail extends React.Component {
 
           this.setState({
             forum: forum
+          }, () => {
+            this.bindShare();
           });
         }
 
@@ -61,6 +63,30 @@ export default class BBSDetail extends React.Component {
         this.refs.loading.close();
       }
     })
+  }
+
+  bindShare() {
+    let forum = this.state.forum;
+    let logo = 'http://ttyhuo-img.b0.upaiyun.com/2016/02/23/01/33_18_upload_usericonimage_file54.png!small';
+
+    new JWeiXin(() => {
+      wx.onMenuShareTimeline({
+        title: forum.title,
+        link: location.href,
+        imgUrl: logo,
+        success: () => {},
+        cancel: () => {}
+      });
+
+      wx.onMenuShareAppMessage({
+        title: forum.title,
+        desc: forum.content,
+        link: location.href,
+        imgUrl: logo,
+        success: () => {},
+        cancel: () => {}
+      });
+    });
   }
 
   del() {
