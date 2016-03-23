@@ -247,7 +247,7 @@ module.exports = {
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      title: '今日货源列表',
+      title: '推荐货源列表',
       template: './src/page/index.html',
       filename: 'today-pkg.html',
       chunks: ['today-pkg', 'zepto'],
@@ -268,7 +268,7 @@ module.exports = {
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      title: '今日车源列表',
+      title: '推荐车源列表',
       template: './src/page/index.html',
       filename: 'today-truck.html',
       chunks: ['today-truck', 'zepto'],
