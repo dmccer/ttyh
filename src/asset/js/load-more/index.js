@@ -10,20 +10,22 @@
  *
  * LoadMore.init(cb, 800)
  */
-import fnu from 'lodash-fn';
+import debounce from 'lodash/function/debounce';
+import $ from '../helper/z';
+import EventListener from 'fbjs/lib/EventListener';
 
 /**
  * 上拉加载更多
- * @type 
+ * @type
  */
 let LoadMore = {
   init: (cb, wait=100) => {
-    let winH = $(window).height();
+    let winH = $.height(window);
     let lastT = 0;
 
-    $(window).on('scroll', fnu.debounce(() => {
-      let docH = $(document).height();
-      let t = $(window).scrollTop();
+    EventListener.listen(window, 'scroll', debounce(() => {
+      let docH = $.height(document);
+      let t = $.scrollTop(window);
 
       if (docH < winH) {
         return;
