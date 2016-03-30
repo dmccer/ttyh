@@ -22,6 +22,12 @@ import Loading from '../../loading/';
 import Log from '../../log/';
 import FixedHolder from '../../fixed-holder/';
 import JWeiXin from '../../jweixin/';
+import $ from '../../helper/z';
+import AH from '../../helper/ajax';
+import {
+  TruckUsers,
+  FollowUser
+} from '../model/';
 
 export default class TruckDetailPage extends Component {
   state = {
@@ -36,73 +42,51 @@ export default class TruckDetailPage extends Component {
   }
 
  componentDidMount() {
-   this.refs.loading.show('加载中...');
+   this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-   new Promise((resolve, reject) => {
-     $.ajax({
-       url: '/mvc/searchUsersForH5',
-       type: 'GET',
-       cache: false,
-       data: {
-         routeIDs: this.state.qs.tid
-       },
-       success: resolve,
-       error: reject
-     });
-   }).then((res) => {
-     if (res.retcode !== 0) {
-       this.refs.poptip.warn('加载车源详情失败, 请重试');
+   this.ah.one(TruckUsers, {
+     success: (res) => {
+       if (res.retcode !== 0) {
+         this.refs.poptip.warn('加载车源详情失败, 请重试');
 
-       return;
+         return;
+       }
+
+       this.setState({
+         rtruck: res.data[0]
+       });
+     },
+     error: (err) => {
+       Log.error(err);
+
+       this.refs.poptip.warn('加载货源详情失败, 请重试');
      }
-
-     this.setState({
-       rtruck: res.data[0]
-     });
-   }).catch((err) => {
-     Log.error(err);
-
-     this.refs.poptip.warn('加载货源详情失败, 请重试');
-   }).done(() => {
-     this.refs.loading.close();
-   });
+   }, this.state.qs.tid);
  }
 
  follow() {
-   this.refs.loading.show('请求中...');
+   this.ah.one(FollowUser, {
+     success: (res) => {
+       if (res.errMsg) {
+         this.refs.poptip.warn(res.errMsg);
 
-   new Promise((resolve, reject) => {
-     $.ajax({
-       url: '/mvc/followForBBS_' + this.state.rtruck.userWithLatLng.userID,
-       type: 'GET',
-       cache: false,
-       success: resolve,
-       error: reject
-     });
-   })
-   .then((res) => {
-     if (res.errMsg) {
-       this.refs.poptip.warn(res.errMsg);
+         return;
+       }
 
-       return;
+       let rtruck = this.state.rtruck;
+       rtruck.userWithLatLng.alreadyFavorite = true;
+
+       this.setState({
+         rtruck: rtruck
+       }, () => {
+         this.refs.poptip.success('关注成功');
+       });
+     },
+     error: (err) => {
+       Log.error(err);
+       this.refs.poptip.success('关注失败');
      }
-
-     let rtruck = this.state.rtruck;
-     rtruck.userWithLatLng.alreadyFavorite = true;
-
-     this.setState({
-       rtruck: rtruck
-     }, () => {
-       this.refs.poptip.success('关注成功');
-     });
-   })
-   .catch((err) => {
-     Log.error(err);
-     this.refs.poptip.success('关注失败');
-   })
-   .done(() => {
-     this.refs.loading.close();
-   });
+   }, this.state.rtruck.userWithLatLng.userID);
  }
 
  renderFollowStatus() {
@@ -265,4 +249,4 @@ export default class TruckDetailPage extends Component {
  }
 }
 
-ReactDOM.render(<TruckDetailPage />, $('#page').get(0));
+ReactDOM.render(<TruckDetailPage />, document.querySelector('.page'));
