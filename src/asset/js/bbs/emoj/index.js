@@ -2,6 +2,7 @@ import './index.less';
 
 import React from 'react';
 import emojPNG from '../../../img/qq/emoj.png';
+import $ from '../../helper/z';
 
 export default class Emoj extends React.Component {
   static code_reg() {

@@ -11,35 +11,31 @@ import Emoj from '../emoj/';
 import querystring from 'querystring';
 import ReadableTime from '../readable-time/';
 import Avatar from '../avatar/';
+import AH from '../../helper/ajax';
+import {
+  AllPublishedNotice
+} from '../model/';
 
 export default class NoticeDetail extends React.Component {
+  state = {
+    qs: querystring.parse(location.search.substring(1)),
+    imgs: []
+  };
+  
   constructor() {
     super();
-
-    this.state = {
-      qs: querystring.parse(location.search.substring(1)),
-      imgs: []
-    };
   }
 
   componentDidMount() {
-    this.refs.loading.show('加载中...');
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-    $.ajax({
-      url: '/api/bbs_v2/all_public',
-      type: 'GET',
-      cache: false,
-      success: (data) => {
-        let notice = data.bbsForumList[0];
-        notice.load = true;
+    this.ah.one(AllPublishedNotice, (data) => {
+      let notice = data.bbsForumList[0];
+      notice.load = true;
 
-        this.setState(notice);
+      this.setState(notice);
 
-        this.refs.loading.close();
-      },
-      error: () => {
-        this.refs.loading.close();
-      }
+      this.refs.loading.close();
     });
   }
 
@@ -99,4 +95,4 @@ export default class NoticeDetail extends React.Component {
   }
 }
 
-ReactDOM.render(<NoticeDetail />, $('#page').get(0));
+ReactDOM.render(<NoticeDetail />, document.querySelector('.page'));

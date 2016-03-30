@@ -11,6 +11,12 @@ import GoTop from '../gotop/';
 import JWeiXin from '../jweixin/';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
+import AH from '../helper/ajax';
+import {
+  Forum,
+  FollowUser,
+  RemoveCommend
+} from './model/';
 
 
 export default class BBSDetail extends React.Component {
@@ -28,41 +34,25 @@ export default class BBSDetail extends React.Component {
   }
 
   fetch() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(Forum, (data) => {
+      let forum;
 
-    $.ajax({
-      url: '/api/bbs_v2/show_forum',
-      type: 'GET',
-      cache: false,
-      data: {
-        id: this.state.qs.fid,
-        uid: this.state.qs.uid
-      },
-      success: (data) => {
-        let forum;
+      if (data && data.bbsForumList && data.bbsForumList.length) {
+        forum = data.bbsForumList[0];
 
-        if (data && data.bbsForumList && data.bbsForumList.length) {
-          forum = data.bbsForumList[0];
-
-          forum.imgs = forum.imgs_url && forum.imgs_url.split(';') || [];
-
-          this.setState({
-            forum: forum
-          }, () => {
-            this.bindShare();
-          });
-        }
-
-        this.refs.loading.close();
+        forum.imgs = forum.imgs_url && forum.imgs_url.split(';') || [];
 
         this.setState({
-          load: true
+          forum: forum
+        }, () => {
+          this.bindShare();
         });
-      },
-      error: () => {
-        this.refs.loading.close();
       }
-    })
+
+      this.setState({
+        load: true
+      });
+    }, this.state.qs.uid, this.state.qs.fid);
   }
 
   bindShare() {
@@ -94,47 +84,27 @@ export default class BBSDetail extends React.Component {
       return;
     }
 
-    this.refs.loading.show('请求中...');
-
-    $.ajax({
-      url: '/api/bbs/_del',
-      type: 'POST',
-      data: {
-        uid: this.state.qs.uid,
-        token: this.state.localUser && this.state.localUser.token || null,
-        fid: this.state.forum.id
-      },
+    this.ah.one(RemoveCommend, {
       success: (data) => {
-        this.refs.loading.close();
-
         this.refs.poptip.success('删除成功');
 
         setTimeout(() => {
           history.back();
         }, 3000);
       },
-      error: (xhr) => {
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
-        this.refs.loading.close();
+      error: () => {
         this.refs.poptip.success('删除失败');
       }
+    }, {
+      uid: this.state.qs.uid,
+      token: this.state.localUser && this.state.localUser.token || null,
+      fid: this.state.forum.id
     });
   }
 
   follow() {
-    this.refs.loading.show('请求中...');
-
-    $.ajax({
-      url: '/mvc/followForBBS_' + this.state.forum.uid,
-      type: 'GET',
-      cache: false,
+    this.ah.one(FollowUser, {
       success: (data) => {
-        this.refs.loading.close();
-
         if (data.errMsg) {
           this.refs.poptip.success(data.errMsg);
 
@@ -142,18 +112,14 @@ export default class BBSDetail extends React.Component {
         }
 
         this.refs.poptip.success('关注成功');
-        this.fetch();
+
+        user.follow = 1;
+        this.forceUpdate();
       },
       error: (xhr) => {
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
-        this.refs.loading.close();
-        this.refs.poptip.success('关注失败');
+        this.refs.poptip.warn('关注失败');
       }
-    });
+    }, this.state.forum.uid);
   }
 
   praise() {
@@ -188,4 +154,4 @@ export default class BBSDetail extends React.Component {
   }
 }
 
-ReactDOM.render(<BBSDetail />, $('#page').get(0));
+ReactDOM.render(<BBSDetail />, document.querySelector('.page'));

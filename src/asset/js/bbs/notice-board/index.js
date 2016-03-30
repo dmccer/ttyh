@@ -3,6 +3,10 @@ import './index.less';
 import React from 'react';
 import ReadableTime from '../readable-time/';
 import Emoj from '../emoj/';
+import AH from '../../helper/ajax';
+import {
+  AllPublishedNotice
+} from '../model/';
 
 export default class NoticeBoard extends React.Component {
   constructor() {
@@ -15,20 +19,17 @@ export default class NoticeBoard extends React.Component {
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/api/bbs/all_public',
-      type: 'GET',
-      cache: false,
-      success: (data) => {
-        let notice = data.bbsForumList[0];
-        this.setState({
-          time: notice.create_time,
-          text: notice.content,
-          id: notice.id
-        });
+    this.ah = new AH();
 
-        this.scroll();
-      }
+    this.ah.one(AllPublishedNotice, (data) => {
+      let notice = data.bbsForumList[0];
+      this.setState({
+        time: notice.create_time,
+        text: notice.content,
+        id: notice.id
+      });
+
+      this.scroll();
     });
   }
 

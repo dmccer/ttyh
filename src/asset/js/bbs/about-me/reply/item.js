@@ -5,14 +5,22 @@ import querystring from 'querystring';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
 import Avatar from '../../avatar/';
+import AH from '../../../helper/ajax';
+import {
+  ClearRemind
+} from '../../model/';
 
 export default class ReportItem extends React.Component {
+  state = {
+    qs: querystring.parse(location.search.substring(1))
+  };
+
   constructor() {
     super();
+  }
 
-    this.state = {
-      qs: querystring.parse(location.search.substring(1))
-    }
+  componentDidMount() {
+    this.ah = new AH();
   }
 
   viewForum(e) {
@@ -28,21 +36,7 @@ export default class ReportItem extends React.Component {
     let url = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
 
     if (post.remind_count !== 0) {
-      $.ajax({
-        url: '/api/bbs_v2/clear_remind',
-        type: 'POST',
-        data: {
-          id: post.id
-        },
-        success: () => {
-          location.href = url;
-        },
-        error: () => {
-          location.href = url;
-        }
-      });
-
-      return;
+      this.ah.one(ClearRemind, () => {}, post.id);
     }
 
     location.href = url;

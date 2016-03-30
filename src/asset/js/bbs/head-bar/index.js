@@ -5,6 +5,10 @@ import '../../../less/component/tab.less';
 import React from 'react';
 import classNames from 'classnames';
 import querystring from 'querystring';
+import AH from '../../helper/ajax';
+import {
+  CheckHasNewPostsOrReplies
+} from '../model/';
 
 export default class HeadBar extends React.Component {
   constructor() {
@@ -28,6 +32,8 @@ export default class HeadBar extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH();
+    
     this.checkHasNewPostsOrReplies();
 
     let tab;
@@ -92,21 +98,13 @@ export default class HeadBar extends React.Component {
 
   checkHasNewPostsOrReplies() {
     let fn = () => {
-      $.ajax({
-        url: '/api/bbs/has_remind',
-        type: 'GET',
-        cache: false,
-        data: {
-          uid: this.state.qs.uid
-        },
-        success: (data) => {
-          if (data) {
-            this.setState({
-              notice: data.comment_count !== 0
-            });
-          }
+      this.ah.one(CheckHasNewPostsOrReplies, (data) => {
+        if (data) {
+          this.setState({
+            notice: data.comment_count !== 0
+          });
         }
-      });
+      }, this.state.qs.uid);
 
       setTimeout(fn, 60*1000);
     }

@@ -1,28 +1,30 @@
 import './index.less';
 
 import React from 'react';
-import Poptip from '../../poptip/';
-import Avatar from '../avatar/';
 import querystring from 'querystring';
 
+import Poptip from '../../poptip/';
+import Avatar from '../avatar/';
+import AH from '../../helper/ajax';
+import {
+  HotUser
+} from '../model/';
+
+
 export default class Post extends React.Component {
+  state = {
+    users: [],
+    qs: querystring.parse(location.search.substring(1))
+  };
+
   constructor() {
     super();
-
-    this.state = {
-      users: [],
-      qs: querystring.parse(location.search.substring(1))
-    }
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/api/bbs_v2/hot_user',
-      type: 'GET',
-      cache: false,
-      data: {
-        uid: this.state.qs.uid
-      },
+    this.ah = new AH();
+
+    this.ah.one(HotUser, {
       success: (data) => {
         this.setState({
           users: data.bbsUserDoSortDTOList
@@ -31,7 +33,7 @@ export default class Post extends React.Component {
       error: () => {
         this.refs.poptip.warn('加载人气用户失败');
       }
-    })
+    }, this.state.qs.uid);
   }
 
   render() {

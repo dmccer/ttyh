@@ -5,8 +5,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import querystring from 'querystring';
-import fnu from 'lodash-fn';
+import debounce from 'lodash/function/debounce';
 import cookie from 'react-cookie';
+import assign from 'lodash/object/assign';
 
 import HeadBar from './head-bar/';
 import NoticeBoard from './notice-board/';
@@ -20,6 +21,14 @@ import LoginBtn from './login-btn/';
 import LoadMore from '../load-more/';
 import GoTop from '../gotop/';
 import JWeiXin from '../jweixin/';
+import $ from '../helper/z';
+import EventListener from 'fbjs/lib/EventListener';
+import AH from '../helper/ajax';
+import {
+  AllForums,
+  FollowedForums,
+  HotForums
+} from './model/';
 
 export default class BBS extends React.Component {
   constructor() {
@@ -54,15 +63,17 @@ export default class BBS extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     this.query(this.state.tab);
 
     LoadMore.init(() => {
       this.query(this.state.tab);
     });
 
-    let winH = $(window).height();
-    $(window).on('scroll', fnu.debounce(() => {
-      let t = $(window).scrollTop();
+    let winH = $.height(window);
+    EventListener.listen(window, 'scroll', debounce(() => {
+      let t = $.scrollTop(window);
       let on = t > 1.5 * winH;
 
       this.setState({
@@ -86,64 +97,42 @@ export default class BBS extends React.Component {
       return;
     }
 
-    let url;
+    let Forums, data = {
+      t: this.state.t,
+      f: f
+    };
 
     switch(q) {
       case 'all':
-        url = '/api/bbs_v2/show_all';
+        Forums = AllForums;
         break;
       case 'focus':
-        let qs = querystring.stringify({
-          token: this.state.localUser && this.state.localUser.token || null
-        });
-
-        url = '/api/bbs_v2/show_follow_forums?' + qs;
+        data.token = this.state.localUser && this.state.localUser.token || null;
+        Forums = FollowedForums;
         break;
       case 'hot':
-        url = '/api/bbs_v2/hot_forum';
+        Forums = HotForums;
         break;
     }
 
-    this.refs.loading.show('加载中...');
+    this.ah.one(Forums, (data) => {
+      if (data && data.bbsForumList && data.bbsForumList.length) {
+        this.formatForums(data.bbsForumList)
 
-    $.ajax({
-      url: url,
-      type: 'GET',
-      cache: false,
-      data: {
-        t: this.state.t,
-        f: f
-      },
-      success: (data) => {
-        this.refs.loading.close();
+        this.setState({
+          posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
+          f: f,
+          count: data.bbsForumList.length,
+          last: q
+        });
 
-        if (data && data.bbsForumList && data.bbsForumList.length) {
-          this.formatForums(data.bbsForumList)
-
-          this.setState({
-            posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
-            f: f,
-            count: data.bbsForumList.length,
-            last: q
-          });
-
-          return;
-        }
-
-        if (this.state.posts.length) {
-          this.refs.poptip.info('没有更多了');
-        }
-      },
-      error: (xhr) => {
-        this.refs.loading.close();
-
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
+        return;
       }
-    });
+
+      if (this.state.posts.length) {
+        this.refs.poptip.info('没有更多了');
+      }
+    }, data);
   }
 
   formatForums(list: Array<Object>) {
@@ -157,7 +146,7 @@ export default class BBS extends React.Component {
       tab: tab
     });
 
-    let qs = querystring.stringify($.extend({}, this.state.qs, { _bbstab: tab }));
+    let qs = querystring.stringify(assign({}, this.state.qs, { _bbstab: tab }));
     location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
   }
 
@@ -202,4 +191,4 @@ export default class BBS extends React.Component {
   }
 }
 
-ReactDOM.render(<BBS />, $('#page').get(0));
+ReactDOM.render(<BBS />, document.querySelector('.page'));

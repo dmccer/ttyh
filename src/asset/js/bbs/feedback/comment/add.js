@@ -8,6 +8,10 @@ import querystring from 'querystring';
 import ResPicker from './../../res-picker/';
 import Loading from  '../../../loading/';
 import Poptip from  '../../../poptip/';
+import AH from '../../../helper/ajax';
+import {
+  Comment
+} from '../../model/';
 
 const COMMENT_ERR = {
   1: '参数有误',
@@ -31,6 +35,10 @@ export default class CommentAdd extends React.Component {
       qs: query,
       localUser: JSON.parse(localStorage.getItem('user'))
     }
+  }
+
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
   }
 
   uploadImage(cb) {
@@ -81,24 +89,8 @@ export default class CommentAdd extends React.Component {
     });
 
     this.uploadImage((media_ids) => {
-      this.refs.loading.show('发布中...');
-
-      $.ajax({
-        url: '/api/bbs_v2/comment',
-        type: 'POST',
-        data: {
-          token: this.state.localUser && this.state.localUser.token || null,
-          uid: this.state.qs.uid,
-          pid: this.state.qs.pid,
-          id: this.state.qs.fid,
-          content: this.state.text,
-          tid: this.state.qs.tid || 1,
-          media_ids: media_ids,
-          commend_type: this.state.qs.commend_type
-        },
+      this.ah.one(Comment, {
         success: (data) => {
-          this.refs.loading.close();
-
           if (data !== 0) {
             this.refs.poptip.warn(COMMENT_ERR[data] || '发布评论失败');
 
@@ -113,22 +105,24 @@ export default class CommentAdd extends React.Component {
 
           setTimeout(() => {
             history.back();
-          }, 3000)
+          }, 1500)
         },
-        error: (xhr) => {
-          if (xhr.status === 403) {
-            let qs = querystring.stringify(this.state.qs);
-
-            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-          }
-
+        error: () => {
           this.setState({
             uploading: false
           });
 
-          this.refs.loading.close();
           this.refs.poptip.warn('发布失败');
         }
+      }, {
+        token: this.state.localUser && this.state.localUser.token || null,
+        uid: this.state.qs.uid,
+        pid: this.state.qs.pid,
+        id: this.state.qs.fid,
+        content: this.state.text,
+        tid: this.state.qs.tid || 1,
+        media_ids: media_ids,
+        commend_type: this.state.qs.commend_type
       });
     });
   }
@@ -230,4 +224,4 @@ export default class CommentAdd extends React.Component {
   }
 }
 
-ReactDOM.render(<CommentAdd />, $('#page').get(0));
+ReactDOM.render(<CommentAdd />, document.querySelector('.page'));

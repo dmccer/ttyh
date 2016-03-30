@@ -1,6 +1,10 @@
 import './index.less';
 
 import React from 'react';
+import AH from '../../../helper/ajax';
+import {
+  Topics
+} from '../../model/';
 
 export default class TopicPicker extends React.Component {
   constructor() {
@@ -12,16 +16,13 @@ export default class TopicPicker extends React.Component {
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/api/bbs/all_topic',
-      type: 'GET',
-      cache: false,
-      success: (data) => {
-        this.setState({
-          topics: data.bbsTopicList
-        });
-      }
-    })
+    this.ah = new AH();
+
+    this.ah.one(Topics, (data) => {
+      this.setState({
+        topics: data.bbsTopicList
+      });
+    });
   }
 
   pick(topic: Object, e: Object) {

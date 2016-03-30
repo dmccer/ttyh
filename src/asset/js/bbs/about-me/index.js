@@ -12,6 +12,12 @@ import Loading from  '../../loading/';
 import Poptip from  '../../poptip/';
 import GoTop from '../../gotop/';
 import JWeiXin from '../../jweixin/';
+import AH from '../../helper/ajax';
+import {
+  CheckHasNewPostsOrReplies,
+  MyForums,
+  RemoveCommend
+} from '../model/';
 
 const DEL_REPLY_ERR = {
   1: 'uid 有误',
@@ -21,28 +27,25 @@ const DEL_REPLY_ERR = {
 }
 
 export default class AboutMe extends React.Component {
+  state = {
+    qs: querystring.parse(location.search.substring(1)),
+    posts: [],
+    replies: [],
+    localUser: JSON.parse(localStorage.getItem('user')),
+    tabs: [{
+      key: 'forum',
+      text: '我的发帖'
+    }, {
+      key: 'comment',
+      text: '我的回复'
+    }],
+    f: 0,
+    t: 30,
+    count: 0
+  };
+
   constructor() {
     super();
-
-    let query = querystring.parse(location.search.substring(1));
-
-    this.state = {
-      qs: query,
-      tab: query.tab || 'forum', // all, focus, hot
-      posts: [],
-      replies: [],
-      localUser: JSON.parse(localStorage.getItem('user')),
-      tabs: [{
-        key: 'forum',
-        text: '我的发帖'
-      }, {
-        key: 'comment',
-        text: '我的回复'
-      }],
-      f: 0,
-      t: 30,
-      count: 0
-    };
 
     new JWeiXin(() => {
       this.setState({
@@ -51,7 +54,14 @@ export default class AboutMe extends React.Component {
     });
   }
 
+  componentWillMount() {
+    this.setState({
+      tab: query.tab || 'forum'
+    });
+  }
+
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
     this.query(this.state.tab);
 
     LoadMore.init(() => {
@@ -71,26 +81,11 @@ export default class AboutMe extends React.Component {
   }
 
   checkHasNewPostsOrReplies() {
-    $.ajax({
-      url: '/api/bbs/has_remind',
-      type: 'GET',
-      cache: false,
-      data: {
-        uid: this.state.qs.uid
-      },
-      success: (data) => {
-        this.state.tabs.forEach((tab) => {
-          tab.has = data[tab.key + '_count'] !== 0;
-        });
-      },
-      error: (xhr) => {
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
-      }
-    });
+    this.ah.one(CheckHasNewPostsOrReplies, (data) => {
+      this.state.tabs.forEach((tab) => {
+        tab.has = data[tab.key + '_count'] !== 0;
+      });
+    }, this.state.qs.uid);
   }
 
   format(list: Object) {
@@ -108,47 +103,28 @@ export default class AboutMe extends React.Component {
       f = 0;
     }
 
-    this.refs.loading.show('加载中...');
+    this.ah.one(MyForums, (data) => {
+      if (data && data.bbsForumList && data.bbsForumList.length) {
+        this.format(data.bbsForumList);
 
-    $.ajax({
-      url: '/api/bbs_v2/show_my_forum',
-      type: 'GET',
-      cache: false,
-      data: {
-        uid: this.state.qs.uid,
-        token: this.state.localUser && this.state.localUser.token || null,
-        t: this.state.t,
-        f: f
-      },
-      success: (data) => {
-        this.refs.loading.close();
+        this.setState({
+          posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
+          f: f,
+          count: data.bbsForumList.length,
+          last: 'forum'
+        });
 
-        if (data && data.bbsForumList && data.bbsForumList.length) {
-          this.format(data.bbsForumList);
-
-          this.setState({
-            posts: f > 0 ? this.state.posts.concat(data.bbsForumList) : data.bbsForumList,
-            f: f,
-            count: data.bbsForumList.length,
-            last: 'forum'
-          });
-
-          return;
-        }
-
-        if (this.state.posts.length) {
-          this.refs.poptip.info('没有更多了');
-        }
-      },
-      error: (xhr) => {
-        this.refs.loading.close();
-
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
+        return;
       }
+
+      if (this.state.posts.length) {
+        this.refs.poptip.info('没有更多了');
+      }
+    }, {
+      uid: this.state.qs.uid,
+      token: this.state.localUser && this.state.localUser.token || null,
+      t: this.state.t,
+      f: f
     });
   }
 
@@ -161,88 +137,51 @@ export default class AboutMe extends React.Component {
       f = 0;
     }
 
-    this.refs.loading.show('加载中...');
+    this.ah.one(MyCommends, (data) => {
+      if (data && data.bbsForumList && data.bbsForumList.length) {
+        this.format(data.bbsForumList);
 
-    $.ajax({
-      url: '/api/bbs_v2/show_my_commend',
-      type: 'GET',
-      cache: false,
-      data: {
-        uid: this.state.qs.uid,
-        token: this.state.localUser && this.state.localUser.token || null,
-        t: this.state.t,
-        f: f
-      },
-      success: (data) => {
-        this.refs.loading.close();
+        this.setState({
+          replies: f > 0 ? this.state.replies.concat(data.bbsForumList) : data.bbsForumList,
+          f: f,
+          count: data.bbsForumList.length,
+          last: 'comment'
+        });
 
-        if (data && data.bbsForumList && data.bbsForumList.length) {
-          this.format(data.bbsForumList);
-
-          this.setState({
-            replies: f > 0 ? this.state.replies.concat(data.bbsForumList) : data.bbsForumList,
-            f: f,
-            count: data.bbsForumList.length,
-            last: 'comment'
-          });
-
-          return;
-        }
-
-        if (this.state.replies.length) {
-          this.refs.poptip.info('没有更多了');
-        }
-      },
-      error: (xhr) => {
-        this.refs.loading.close();
-
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
+        return;
       }
-    })
+
+      if (this.state.replies.length) {
+        this.refs.poptip.info('没有更多了');
+      }
+    }, {
+      uid: this.state.qs.uid,
+      token: this.state.localUser && this.state.localUser.token || null,
+      t: this.state.t,
+      f: f
+    });
   }
 
   removeReply(reply: Object) {
-    this.refs.loading.show('请求中...');
+    this.ah.one(RemoveCommend, (code) => {
+      if (code == 0) {
+        this.refs.poptip.success('删除成功');
 
-    $.ajax({
-      url: '/api/bbs_v2/_del',
-      type: 'POST',
-      data: {
-        uid: this.state.qs.uid,
-        token: this.state.localUser && this.state.localUser.token || null,
-        fid: reply.id
-      },
-      success: (code) => {
-        this.refs.loading.close();
+        this.setState({
+          f: 0,
+          count: 0
+        });
 
-        if (code == 0) {
-          this.refs.poptip.success('删除成功');
+        this.queryMyReplies();
 
-          this.setState({
-            f: 0,
-            count: 0
-          });
-
-          this.queryMyReplies();
-
-          return;
-        }
-
-        this.refs.poptip.warn(DEL_REPLY_ERR[code] || '删除失败');
-      },
-      error: (xhr) => {
-        this.refs.loading.close();
-
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
+        return;
       }
+
+      this.refs.poptip.warn(DEL_REPLY_ERR[code] || '删除失败');
+    }, {
+      uid: this.state.qs.uid,
+      token: this.state.localUser && this.state.localUser.token || null,
+      fid: reply.id
     });
   }
 
@@ -281,4 +220,4 @@ export default class AboutMe extends React.Component {
   }
 }
 
-ReactDOM.render(<AboutMe />, $('#page').get(0))
+ReactDOM.render(<AboutMe />, document.querySelector('.page'))

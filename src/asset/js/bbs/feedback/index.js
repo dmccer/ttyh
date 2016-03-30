@@ -10,6 +10,12 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import LoadMore from '../../load-more/';
 import JWeiXin from '../../jweixin/';
+import AH from '../../helper/ajax';
+import {
+  Comments,
+  Praises,
+  Praise
+} from '../model/';
 
 const PRAISE_ERR = {
   1: '参数有误',
@@ -56,6 +62,8 @@ export default class Feedback extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     this.queryFeedback(this.state.tab);
 
     LoadMore.init(() => {
@@ -85,44 +93,33 @@ export default class Feedback extends React.Component {
 
     this.refs.loading.show('加载中...');
 
-    $.ajax({
-      url: '/api/bbs_v2/show_commend',
-      type: 'GET',
-      cache: false,
-      data: {
-        id: this.state.qs.fid,
-        t: this.state.t,
-        f: f
-      },
-      success: (data) => {
+    this.ah.one(Comments, (data) => {
+      this.setState({
+        load: true
+      });
+
+      if (data && data.bbsForumList && data.bbsForumList.length) {
+        let list = f > 0 ? this.state.comments.concat(data.bbsForumList) : data.bbsForumList;
+        this.formatForum(data.bbsForumList, list);
+
         this.setState({
-          load: true
+          comments: list,
+          f: f,
+          count: data.bbsForumList.length,
+          last: 'comment'
         });
 
-        this.refs.loading.close();
-
-        if (data && data.bbsForumList && data.bbsForumList.length) {
-          let list = f > 0 ? this.state.comments.concat(data.bbsForumList) : data.bbsForumList;
-          this.formatForum(data.bbsForumList, list);
-
-          this.setState({
-            comments: list,
-            f: f,
-            count: data.bbsForumList.length,
-            last: 'comment'
-          });
-
-          return;
-        }
-
-        if (this.state.comments.length) {
-          this.refs.poptip.info('没有更多了');
-        }
-      },
-      error: () => {
-        this.refs.loading.close();
+        return;
       }
-    })
+
+      if (this.state.comments.length) {
+        this.refs.poptip.info('没有更多了');
+      }
+    }, {
+      id: this.state.qs.fid,
+      t: this.state.t,
+      f: f
+    });
   }
 
   formatForum(list, all) {
@@ -136,35 +133,22 @@ export default class Feedback extends React.Component {
   }
 
   queryPraiseList() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(Praises, (data) => {
+      this.setState({
+        load: true
+      });
 
-    $.ajax({
-      url: '/api/bbs_v2/show_praise',
-      type: 'GET',
-      cache: false,
-      data: {
-        id: this.state.qs.fid,
-        f: 0,
-        t: 20
-      },
-      success: (data) => {
-        this.refs.loading.close();
-
+      if (data && data.bbsPraiseList && data.bbsPraiseList.length) {
         this.setState({
-          load: true
+          praises: data.bbsPraiseList
         });
 
-        if (data && data.bbsPraiseList && data.bbsPraiseList.length) {
-          this.setState({
-            praises: data.bbsPraiseList
-          });
-
-          return;
-        }
-      },
-      error: () => {
-        this.refs.loading.close();
+        return;
       }
+    }, {
+      id: this.state.qs.fid,
+      f: 0,
+      t: 20
     });
   }
 
@@ -183,19 +167,8 @@ export default class Feedback extends React.Component {
   }
 
   praise(forum: Object) {
-    this.refs.loading.show('请求中...');
-
-    $.ajax({
-      url: '/api/bbs_v2/praise',
-      type: 'POST',
-      data: {
-        fid: forum.id,
-        uid: this.state.qs.uid,
-        token: this.state.localUser && this.state.localUser.token || null
-      },
+    this.ah.one(Praise, {
       success: (data) => {
-        this.refs.loading.close();
-
         if (data !== 0) {
           this.refs.poptip.warn(PRAISE_ERR[data] || '点赞失败, 请重试');
 
@@ -222,17 +195,13 @@ export default class Feedback extends React.Component {
 
         this.props.onPraise();
       },
-
-      error: (xhr) => {
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
-
-        this.refs.loading.close();
+      error: () => {
         this.refs.poptip.success('点赞失败, 请重试');
       }
+    }, {
+      fid: forum.id,
+      uid: this.state.qs.uid,
+      token: this.state.localUser && this.state.localUser.token || null
     });
   }
 
