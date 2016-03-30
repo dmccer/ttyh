@@ -15,12 +15,17 @@ import ReactDOM from 'react-dom';
 import Promise from 'promise';
 import cx from 'classnames';
 
+import $ from '../../helper/z';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Selector from '../../selector/';
 import Log from '../../log/';
 import {FieldChangeEnhance} from '../../enhance/field-change';
 import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
+import AH from '../../helper/ajax';
+import {
+  AddTruck
+} from '../model/';
 
 const ERR_MSG = {
   1001: '没有找到用户',
@@ -34,6 +39,10 @@ export default class TruckAddPage extends React.Component {
 
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
   }
 
   /**
@@ -52,40 +61,31 @@ export default class TruckAddPage extends React.Component {
       return;
     }
 
-    this.refs.loading.show('请求中...');
+    let props = this.props;
 
-    new Promise((resolve, reject) => {
-      let props = this.props;
+    this.ah.one(AddTruck, {
+      success: (res) => {
+        if (res.retcode !== 0) {
+          this.refs.poptip.warn(ERR_MSG[res.retcode]);
 
-      $.ajax({
-        url: '/mvc/v2/insertTruck',
-        type: 'POST',
-        data: {
-          dirverName: props.name,
-          dirverPoneNo: props.tel,
-          licensePlate: props.license,
-          loadLimit: props.weight,
-          truckType: props.truckType.id,
-          truckLength: props.truckLength.id
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      if (res.retcode !== 0) {
-        this.refs.poptip.warn(ERR_MSG[res.retcode]);
+          return;
+        }
 
-        return;
+        this.refs.poptip.success('添加车辆成功');
+        history.back();
+      },
+      error: (err) => {
+        Log.error(err);
+
+        this.refs.poptip.warn('添加车辆失败');
       }
-
-      this.refs.poptip.success('添加车辆成功');
-      history.back();
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('添加车辆失败');
-    }).done(() => {
-      this.refs.loading.close();
+    }, {
+      dirverName: props.name,
+      dirverPoneNo: props.tel,
+      licensePlate: props.license,
+      loadLimit: props.weight,
+      truckType: props.truckType.id,
+      truckLength: props.truckLength.id
     });
   }
 
@@ -211,4 +211,4 @@ export default class TruckAddPage extends React.Component {
   }
 }
 
-ReactDOM.render(<TruckAddPage />, $('#page').get(0));
+ReactDOM.render(<TruckAddPage />, document.querySelector('.page'));
