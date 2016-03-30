@@ -13,6 +13,8 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
 import cx from 'classnames';
+import assign from 'lodash/object/assign';
+import $ from '../../helper/z';
 
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
@@ -22,6 +24,10 @@ import Selector from '../../selector/';
 import FixedHolder from '../../fixed-holder/';
 import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
 import {FieldChangeEnhance} from '../../enhance/field-change';
+import AH from '../../helper/ajax';
+import {
+  PubPkg
+} from '../model/';
 
 const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
@@ -33,13 +39,17 @@ const ALL = '不限';
 export default class PkgPubPage extends React.Component {
   static defaultProps = JSON.parse(localStorage.getItem(DRAFT)) || {};
 
-  state = $.extend({
+  state = assign({
     qs: querystring.parse(location.search.substring(1)),
     memo: localStorage.getItem(MEMO)
   }, JSON.parse(localStorage.getItem(DRAFT)) || {});
 
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
   }
 
   /**
@@ -59,58 +69,49 @@ export default class PkgPubPage extends React.Component {
 
     _hmt.push(['_trackEvent', '货源', '发布', new Date().toLocaleString()]);
 
-    this.refs.loading.show('发布中...');
+    let props = this.props;
 
-    new Promise((resolve, reject) => {
-      let props = this.props;
+    this.ah.one(PubPkg, {
+      success: (res) => {
+        if (res.retcode !== 0) {
+          this.refs.poptip.warn(`发布货源失败,${res.msg}`);
 
-      $.ajax({
-        url: '/mvc/product_addNew_json',
-        type: 'POST',
-        data: {
-          fromCity: this.state.fromCity,
-          toCity: this.state.toCity,
-          truckType: props.truckType.id,
-          truckLength: props.truckLength.id,
-          title: props.pkgType,
-          loadLimit: props.pkgWeight,
-          memo: this.state.memo
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      if (res.retcode !== 0) {
-        this.refs.poptip.warn('发布货源失败');
+          return;
+        }
 
-        return;
+        _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布成功', 2]);
+
+        this.refs.poptip.success('发布货源成功');
+
+        // 清空发布货源草稿及备注
+        localStorage.removeItem(DRAFT);
+        localStorage.removeItem(MEMO);
+
+        this.setState({
+          fromCity: null,
+          toCity: null,
+          memo: null
+        });
+
+        this.forceUpdate();
+
+        setTimeout(() => {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-pkg.html?' + querystring.stringify(this.state.qs));
+        }, 1500);
+      },
+      error: () => {
+        _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布失败', 2]);
+
+        this.refs.poptip.error('发布货源失败');
       }
-
-      _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布成功', 2]);
-
-      this.refs.poptip.success('发布货源成功');
-
-      // 清空发布货源草稿及备注
-      localStorage.removeItem(DRAFT);
-      localStorage.removeItem(MEMO);
-
-      this.setState({
-        fromCity: null,
-        toCity: null,
-        memo: null
-      });
-
-      this.forceUpdate();
-
-      setTimeout(() => {
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-pkg.html?' + querystring.stringify(this.state.qs));
-      }, 2000);
-    }).catch(() => {
-      _hmt.push(['_setCustomVar', 1, 'pub_pkg', '发布失败', 2]);
-
-      this.refs.poptip.error('发布货源失败');
-    }).done(() => {
-      this.refs.loading.close();
+    }, {
+      fromCity: this.state.fromCity,
+      toCity: this.state.toCity,
+      truckType: props.truckType.id,
+      truckLength: props.truckLength.id,
+      title: props.pkgType,
+      loadLimit: props.pkgWeight,
+      memo: this.state.memo
     });
   }
 
@@ -194,7 +195,7 @@ export default class PkgPubPage extends React.Component {
   }
 
   getCitySelectorTop(target) {
-    let offset = $(target).offset();
+    let offset = $.offset(target);
 
     return offset.top + offset.height - 1;
   }
@@ -432,4 +433,4 @@ export default class PkgPubPage extends React.Component {
   }
 }
 
-ReactDOM.render(<PkgPubPage />, $('#page').get(0));
+ReactDOM.render(<PkgPubPage />, document.querySelector('.page'));
