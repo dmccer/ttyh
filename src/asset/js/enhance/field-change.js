@@ -19,6 +19,7 @@
  *
  */
 import React from 'react';
+import $ from '../helper/z';
 
 // for validate
 // const FLOAT_REG = /^(([1-9]{1}\d*)|(0))\.\d+$/;
