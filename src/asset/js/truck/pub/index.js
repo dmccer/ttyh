@@ -15,11 +15,18 @@ import querystring from 'querystring';
 import cx from 'classnames';
 import Promise from 'promise';
 import keys from 'lodash/object/keys';
+import assign from 'lodash/object/assign';
 
+import $ from '../../helper/z';
 import Log from '../../log/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import CitySelector from '../../city-selector/';
+import AH from '../../helper/ajax';
+import {
+  TruckTags,
+  PubTruckRoute
+} from '../model/';
 
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
@@ -33,7 +40,7 @@ const ERR_MSG = {
 
 export default class TruckPubPage extends React.Component {
 
-  state = $.extend({
+  state = assign({
     qs: querystring.parse(location.search.substring(1)),
     memoMaxLength: 80,
     memo: '',
@@ -47,46 +54,36 @@ export default class TruckPubPage extends React.Component {
     super();
   }
 
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+  }
+
   /**
    * 获取车辆标签列表
    */
   fetchTruckTagList() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckTag',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      delete res.truckTagList['0'];
+    this.ah.one(TruckTags, {
+      success: (res) => {
+        delete res.truckTagList['0'];
 
-      let truckTagListKeys = keys(res.truckTagList);
-      let truckTagList = truckTagListKeys.map((key) => {
-        return {
-          name: res.truckTagList[key],
-          id: key
-        };
-      });
+        let truckTagListKeys = keys(res.truckTagList);
+        let truckTagList = truckTagListKeys.map((key) => {
+          return {
+            name: res.truckTagList[key],
+            id: key
+          };
+        });
 
-      return truckTagList;
-    });
-  }
-
-  componentWillMount() {
-    this
-      .fetchTruckTagList()
-      .then((truckTagList) => {
         this.setState({
           truckTags: truckTagList
         });
-      })
-      .catch((err) => {
+      },
+      error: (err) => {
         Log.error(err);
 
         this.refs.poptip.warn('获取车辆标签失败,请重试');
-      });
+      }
+    });
   }
 
   /**
@@ -160,46 +157,39 @@ export default class TruckPubPage extends React.Component {
 
     _hmt.push(['_trackEvent', '车源', '发布', new Date().toLocaleString()]);
     data = this.format(data);
-    this.refs.loading.show('请求中...');
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/newDriverShuoShuo',
-        type: 'POST',
-        data: data,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      if (res.retcode !== 0) {
-        this.refs.poptip.warn(ERR_MSG[res.retcode]);
 
-        return;
+    this.ah.one(PubTruckRoute, {
+      success: (res) => {
+        if (res.retcode !== 0) {
+          this.refs.poptip.warn(ERR_MSG[res.retcode]);
+
+          return;
+        }
+
+        _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布成功', 2]);
+        this.refs.poptip.success('发布车源成功');
+
+        // 清除草稿
+        localStorage.removeItem(TRUCK_PUB);
+
+        this.setState({
+          shuoshuo: null,
+          fromCities: [],
+          toCities: [],
+          selectedTruckTag: {}
+        });
+
+        setTimeout(() => {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-truck.html?' + querystring.stringify(this.state.qs));
+        }, 2000);
+      },
+      error: (err) => {
+        _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布失败', 2]);
+
+        Log.error(err);
+        this.refs.poptip.warn('发布失败,请重试');
       }
-
-      _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布成功', 2]);
-      this.refs.poptip.success('发布车源成功');
-
-      // 清除草稿
-      localStorage.removeItem(TRUCK_PUB);
-
-      this.setState({
-        shuoshuo: null,
-        fromCities: [],
-        toCities: [],
-        selectedTruckTag: {}
-      });
-
-      setTimeout(() => {
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-truck.html?' + querystring.stringify(this.state.qs));
-      }, 2000);
-    }).catch((err) => {
-      _hmt.push(['_setCustomVar', 1, 'pub_truck', '发布失败', 2]);
-
-      Log.error(err);
-      this.refs.poptip.warn('发布失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+    }, data);
   }
 
   /**
@@ -268,7 +258,7 @@ export default class TruckPubPage extends React.Component {
   }
 
   getCitySelectorTop(target) {
-    let offset = $(target).offset();
+    let offset = $.offset(target);
 
     return offset.top + offset.height - 1;
   }
@@ -634,4 +624,4 @@ export default class TruckPubPage extends React.Component {
   }
 }
 
-ReactDOM.render(<TruckPubPage />, $('#page').get(0));
+ReactDOM.render(<TruckPubPage />, document.querySelector('.page'));
