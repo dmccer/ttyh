@@ -1,3 +1,6 @@
+import Log from '../log/';
+import {GET_OPT} from '../const/fetch';
+
 export default class JWeiXin {
   static isWeixinBrowser() {
     var ua = navigator.userAgent.toLowerCase();
@@ -12,28 +15,32 @@ export default class JWeiXin {
   }
 
   config() {
-    $.getJSON(`/api/bbs_v2/jsapi?url=${this.url}`, null, (data) => {
-      if (!data) {
-        return;
-      }
+    fetch(`/api/bbs_v2/jsapi?url=${this.url}`, GET_OPT)
+      .then(res => res.json())
+      .then((data) => {
+        if (!data) {
+          return;
+        }
 
-      let config = {
-        debug: false,
-        appId: 'wx13306fcc7460426e',
-        timestamp: data.timestamp,
-        nonceStr: data.noncestr,
-        signature: data.signature,
-        jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage', 'onMenuShareTimeline', 'onMenuShareAppMessage']
-      };
+        let config = {
+          debug: false,
+          appId: 'wx13306fcc7460426e',
+          timestamp: data.timestamp,
+          nonceStr: data.noncestr,
+          signature: data.signature,
+          jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'downloadImage', 'onMenuShareTimeline', 'onMenuShareAppMessage']
+        };
 
-      wx.config(config);
+        wx.config(config);
 
-      wx.ready(this.fn);
+        wx.ready(this.fn);
 
-      wx.error((res) => {
-        alert('微信验证失败');
-        console.log('微信验证失败', res);
+        wx.error((res) => {
+          console.log('微信验证失败', res);
+        })
       })
-    });
+      .catch(err => {
+        Log.error(err);
+      });
   }
 }
