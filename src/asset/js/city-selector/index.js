@@ -17,6 +17,9 @@ import Mask from '../mask/';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
 import Log from '../log/';
+import $ from '../helper/z';
+import AH from '../helper/ajax';
+import {Cities} from './model';
 
 // 因为 iscroll 禁用了 click 事件，
 // 若启用 iscroll click, 会对其他默认滚动列表，滚动时触发 click
@@ -64,6 +67,8 @@ export default class CitySelector extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     // 若获取过省份列表，则直接展示，无须再次请求
     if (this.state.provinces && this.state.provinces.length) {
       return;
@@ -85,26 +90,15 @@ export default class CitySelector extends React.Component {
    * 获取省份列表
    */
   fetchProvinces() {
-    this.refs.loading.show('加载中...');
-
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getCitys',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        provinces: res.resultList
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载省份失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    this.ah.one(Cities, {
+      success: (res) => {
+        this.setState({
+          provinces: res.resultList
+        });
+      },
+      error: (err) => {
+        this.refs.poptip.warn('加载省份失败,请重试');
+      }
     });
   }
 
@@ -112,64 +106,33 @@ export default class CitySelector extends React.Component {
    * 获取城市列表
    */
   fetchCities() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(Cities, {
+      success: res => {
+        this.setState({
+          cities: res.resultList
+        });
+      },
+      error: err => {
 
-    new Promise((resolve, reject) => {
-      let provinces = this.state.provinces;
-      let index = provinces.indexOf(this.state.province);
-
-      $.ajax({
-        url: '/mvc/v2/getCitys',
-        type: 'GET',
-        cache: false,
-        data: {
-          cityIndex: this.getIndex('province', 'provinces')
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        cities: res.resultList
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载城市失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+        this.refs.poptip.warn('加载城市失败,请重试');
+      }
+    }, this.getIndex('province', 'provinces'));
   }
 
   /**
    * 获取地区列表
    */
   fetchAreas() {
-    this.refs.loading.show('加载中...');
-
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getCitys',
-        type: 'GET',
-        cache: false,
-        data: {
-          cityIndex: this.getIndex('province', 'provinces'),
-          districtIndex: this.getIndex('city', 'cities')
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        areas: res.resultList
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载地区失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+    this.ah.one(Cities, {
+      success: res => {
+        this.setState({
+          areas: res.resultList
+        });
+      },
+      error: err => {
+        this.refs.poptip.warn('加载地区失败,请重试');
+      }
+    }, this.getIndex('province', 'provinces'), this.getIndex('city', 'cities'));
   }
 
   componentWillReceiveProps() {
@@ -393,7 +356,7 @@ export default class CitySelector extends React.Component {
   }
 
   render() {
-    let winH = $(window).height();
+    let winH = $.height(window);
     let top = this.state.top;
     let height = winH - top;
 
