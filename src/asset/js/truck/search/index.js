@@ -18,6 +18,8 @@ import Log from '../../log/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import truckPNG from '../../../img/app/truck@3x.png';
+import AH from '../../helper/ajax';
+import {TruckUsers} from '../model/';
 
 const PAGE_TYPE = 'shipper_page';
 
@@ -40,6 +42,8 @@ export default class SearchTruckPage extends Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     LoadMore.init(() => {
       if (!this.state.over) {
         this.query();
@@ -48,55 +52,45 @@ export default class SearchTruckPage extends Component {
   }
 
   query() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(TruckUsers, {
+      success: (res) => {
+        let trucks = this.state.trucks || [];
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/searchUsersForH5',
-        type: 'GET',
-        cache: false,
-        data: {
-          fromCity: this.state.fromCity,
-          toCity: this.state.toCity,
-          truckTypeFlags: this.state.truckTypeFlag,
-          loadLimitFlags: this.state.loadLimitFlag,
-          truckLengthFlags: this.state.truckLengthFlag,
-          pageSize: this.state.pageSize,
-          pageIndex: this.state.pageIndex
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let trucks = this.state.trucks || [];
+        if (!res.data || !res.data.length) {
+          if (!trucks.length) {
+            // 空列表，没有数据
+            return;
+          }
 
-      if (!res.data || !res.data.length) {
-        if (!trucks.length) {
-          // 空列表，没有数据
+          this.refs.poptip.info('没有更多了');
+
+          this.setState({
+            over: true
+          });
+
           return;
         }
 
-        this.refs.poptip.info('没有更多了');
+        trucks = trucks.concat(res.data);
 
         this.setState({
-          over: true
+          trucks: trucks,
+          pageIndex: this.state.pageIndex + 1
         });
+      },
+      error: (err) => {
+        Log.error(err);
 
-        return;
+        this.refs.poptip.warn('查询车源失败,请重试');
       }
-
-      trucks = trucks.concat(res.data);
-
-      this.setState({
-        trucks: trucks,
-        pageIndex: this.state.pageIndex + 1
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('查询车源失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    }, {
+      fromCity: this.state.fromCity,
+      toCity: this.state.toCity,
+      truckTypeFlags: this.state.truckTypeFlag,
+      loadLimitFlags: this.state.loadLimitFlag,
+      truckLengthFlags: this.state.truckLengthFlag,
+      pageSize: this.state.pageSize,
+      pageIndex: this.state.pageIndex
     });
   }
 
@@ -145,4 +139,4 @@ export default class SearchTruckPage extends Component {
   }
 }
 
-ReactDOM.render(<SearchTruckPage />, $('#page').get(0));
+ReactDOM.render(<SearchTruckPage />, document.querySelector('.page'));
