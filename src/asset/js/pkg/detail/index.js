@@ -20,6 +20,11 @@ import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import FixedHolder from '../../fixed-holder/';
 import JWeiXin from '../../jweixin/';
+import $ from '../../helper/z';
+import AH from '../../helper/ajax';
+import {
+  PkgSearch
+} from '../model/';
 
 export default class PkgDetailPage extends Component {
   state = {
@@ -34,64 +39,44 @@ export default class PkgDetailPage extends Component {
   }
 
   componentDidMount() {
-    this.refs.loading.show('加载中...')
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/searchProductsForH5',
-        type: 'GET',
-        cache: false,
-        data: {
-          productIDs: this.state.qs.pid
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        pkg: res.data[0]
-      });
-    }).catch((...args) => {
-      console.log(args)
-      this.refs.poptip.warn('加载货源详情失败, 请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+    this.ah.one(PkgSearch, {
+      success: (res) => {
+        this.setState({
+          pkg: res.data[0]
+        });
+      },
+      error: () => {
+        this.refs.poptip.warn('加载货源详情失败, 请重试');
+      }
+    }, {
+      productIDs: this.state.qs.pid
     });
   }
 
   follow() {
-    this.refs.loading.show('请求中...');
+    this.ah.one(FollowUser, {
+      success: (res) => {
+        if (res.errMsg) {
+          this.refs.poptip.warn(res.errMsg);
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/followForBBS_' + this.state.pkg.product.provideUserID,
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    })
-    .then((res) => {
-      if (res.errMsg) {
-        this.refs.poptip.warn(res.errMsg);
+          return;
+        }
 
-        return;
+        let pkg = this.state.pkg;
+        pkg.alreadyFavorite = true;
+
+        this.setState({
+          pkg: pkg
+        }, () => {
+          this.refs.poptip.success('关注成功');
+        });
+      },
+      error: (err) => {
+        this.refs.poptip.success('关注失败');
       }
-
-      let pkg = this.state.pkg;
-      pkg.alreadyFavorite = true;
-
-      this.setState({
-        pkg: pkg
-      }, () => {
-        this.refs.poptip.success('关注成功');
-      });
-    })
-    .catch(() => {
-      this.refs.poptip.success('关注失败');
-    })
-    .done(() => {
-      this.refs.loading.close();
-    });
+    }, this.state.pkg.product.provideUserID);
   }
 
   renderFollowStatus() {
@@ -257,4 +242,4 @@ export default class PkgDetailPage extends Component {
   }
 }
 
-ReactDOM.render(<PkgDetailPage />, $('#page').get(0));
+ReactDOM.render(<PkgDetailPage />, document.querySelector('.page'));
