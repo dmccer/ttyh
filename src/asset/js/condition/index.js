@@ -23,9 +23,11 @@ import React, {Component} from 'react';
 import querystring from 'querystring';
 import Promise from 'promise';
 import cx from 'classnames';
+import assign from 'lodash/object/assign';
 
 import CitySelector from '../city-selector/';
 import FixedHolder from '../fixed-holder/';
+import $ from '../helper/z';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
 const ALL = '不限';
@@ -65,7 +67,7 @@ export default class SearchCondition extends Component {
       let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
       let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
 
-      $.extend(r, {
+      assign(r, {
         truckTypeFlag: truckTypeFlag,
         loadLimitFlag: loadLimitFlag,
         truckLengthFlag: truckLengthFlag
@@ -157,9 +159,8 @@ export default class SearchCondition extends Component {
   }
 
   getCitySelectorTop(target) {
-    let $target = $(target);
-    let pos = $target.position();
-    let h = $target.height();
+    let pos = $.position(target);
+    let h = $.height(target);
 
     return pos.top + h - 1;
   }
@@ -179,7 +180,7 @@ export default class SearchCondition extends Component {
       [this.state.citySelectorField]: val
     }, () => {
       let field = this.state.citySelectorField;
-      let qs = querystring.stringify($.extend(this.state.qs, {
+      let qs = querystring.stringify(assign({}, this.state.qs, {
         [`${field}`]: this.state[field]
       }));
 
