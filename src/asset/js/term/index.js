@@ -18,4 +18,4 @@ export default class TermPage extends React.Component {
   }
 }
 
-ReactDOM.render(<TermPage />, $('#page').get(0));
+ReactDOM.render(<TermPage />, document.querySelector('.page'));
