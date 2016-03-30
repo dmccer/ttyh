@@ -11,6 +11,10 @@ import keys from 'lodash/object/keys';
 import Selector from '../selector/';
 import Poptip from '../poptip/';
 import Loading from '../loading/';
+import Log from '../log/';
+import $ from '../helper/z';
+import AH from '../helper/ajax';
+import {TruckTypes, TruckLengths} from '../truck/model/';
 
 export var SelectTruckTypeEnhance = ComposedComponent => class extends Component {
   state = {};
@@ -19,56 +23,8 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
     super(props);
   }
 
-  /**
-   * 获取车型列表
-   * @return {Promise}
-   */
-  fetchTruckTypes() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckType',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckTypes = res.truckTypeMap;
-      truckTypes = keys(truckTypes).map((key) => {
-        return {
-          name: truckTypes[key],
-          id: key
-        };
-      });
-
-      return truckTypes;
-    });
-  }
-
-  /**
-   * 获取车长列表
-   * @return {Promise}
-   */
-  fetchTruckLengths() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckLength',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckLengths = res.truckLengthList;
-      truckLengths = truckLengths.map((len) => {
-        return {
-          name: len !== '自定义' ? `${len}米` : len,
-          id: len
-        };
-      });
-
-      return truckLengths;
-    });
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
   }
 
   /**
@@ -84,26 +40,36 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       return;
     }
 
-    this.refs.loading.show('加载中...');
+    this.ah.all([TruckTypes, TruckLengths], {
+      success: res => {
+        let truckTypes = res[0].truckTypeMap;
+        truckTypes = keys(truckTypes).map(key => {
+          return {
+            name: truckTypes[key],
+            id: key
+          };
+        });
 
-    Promise
-      .all([this.fetchTruckTypes(), this.fetchTruckLengths()])
-      .then((res) => {
+        let truckLengths = res[1].truckLengthList;
+        truckLengths = truckLengths.map(len => {
+          return {
+            name: len !== '自定义' ? `${len}米` : len,
+            id: len
+          };
+        });
+
         this.setState({
-          truckTypes: res[0],
-          truckLengths: res[1]
+          truckTypes: truckTypes,
+          truckLengths: truckLengths
         }, () => {
           this.showSelector('truckType');
         });
-      })
-      .catch((err) => {
+      },
+      error: err => {
         Log.error(err);
-
         this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
-      })
-      .done(() => {
-        this.refs.loading.close();
-      });
+      }
+    });
   }
 
   /**
