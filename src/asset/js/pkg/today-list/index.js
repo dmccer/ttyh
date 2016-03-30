@@ -15,6 +15,10 @@ import LoadMore from '../../load-more/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import AH from '../../helper/ajax';
+import {
+  TodayRecommendPkgs
+} from '../model/';
 
 const PKG_SEARCH = 'pkg-search';
 
@@ -32,6 +36,8 @@ export default class TodayPkgListPage extends Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     this.query();
 
     LoadMore.init(() => {
@@ -42,48 +48,38 @@ export default class TodayPkgListPage extends Component {
   }
 
   query() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(TodayRecommendPkgs, {
+      success: (res) => {
+        let pkgs = this.state.pkgs;
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/todayRecommendProductsForH5',
-        type: 'GET',
-        cache: false,
-        data: {
-          pageIndex: this.state.pageIndex,
-          pageSize: this.state.pageSize
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let pkgs = this.state.pkgs;
+        if (!res.data || !res.data.length) {
+          if (!pkgs.length) {
+            // 空列表，没有数据
+            return;
+          }
 
-      if (!res.data || !res.data.length) {
-        if (!pkgs.length) {
-          // 空列表，没有数据
+          this.refs.poptip.info('没有更多了');
+
+          this.setState({
+            over: true
+          });
+
           return;
         }
 
-        this.refs.poptip.info('没有更多了');
+        pkgs = pkgs.concat(res.data);
 
         this.setState({
-          over: true
+          pkgs: pkgs,
+          pageIndex: this.state.pageIndex + 1
         });
-
-        return;
+      },
+      error: () => {
+        this.refs.poptip.warn('查询货源失败,请重试');
       }
-
-      pkgs = pkgs.concat(res.data);
-
-      this.setState({
-        pkgs: pkgs,
-        pageIndex: this.state.pageIndex + 1
-      });
-    }).catch(() => {
-      this.refs.poptip.warn('查询货源失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    }, {
+      pageIndex: this.state.pageIndex,
+      pageSize: this.state.pageSize
     });
   }
 
@@ -110,4 +106,4 @@ export default class TodayPkgListPage extends Component {
   }
 }
 
-ReactDOM.render(<TodayPkgListPage />, $('#page').get(0));
+ReactDOM.render(<TodayPkgListPage />, document.querySelector('.page'));
