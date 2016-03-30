@@ -18,6 +18,10 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
+import AH from '../../helper/ajax';
+import {
+  PkgSearch
+} from '../model/';
 
 const PAGE_TYPE = 'trucker_page';
 
@@ -34,6 +38,8 @@ export default class SearchPkgPage extends Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     LoadMore.init(() => {
       if (!this.state.over) {
         this.query();
@@ -48,55 +54,45 @@ export default class SearchPkgPage extends Component {
   }
 
   query() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(PkgSearch, {
+      success: (res) => {
+        let pkgs = this.state.pkgs;
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/searchProductsForH5',
-        type: 'GET',
-        cache: false,
-        data: {
-          fromCity: this.state.fromCity,
-          toCity: this.state.toCity,
-          truckTypeFlags: this.state.truckTypeFlag,
-          loadLimitFlags: this.state.loadLimitFlag,
-          truckLengthFlags: this.state.truckLengthFlag,
-          pageSize: this.state.pageSize,
-          pageIndex: this.state.pageIndex
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let pkgs = this.state.pkgs;
+        if (!res.data || !res.data.length) {
+          if (!pkgs.length) {
+            // 空列表，没有数据
+            return;
+          }
 
-      if (!res.data || !res.data.length) {
-        if (!pkgs.length) {
-          // 空列表，没有数据
+          this.refs.poptip.info('没有更多了');
+
+          this.setState({
+            over: true
+          });
+
           return;
         }
 
-        this.refs.poptip.info('没有更多了');
+        pkgs = pkgs.concat(res.data);
 
         this.setState({
-          over: true
+          pkgs: pkgs,
+          pageIndex: this.state.pageIndex + 1
         });
+      },
+      error: (err) => {
+        Log.error(err);
 
-        return;
+        this.refs.poptip.warn('查询货源失败,请重试');
       }
-
-      pkgs = pkgs.concat(res.data);
-
-      this.setState({
-        pkgs: pkgs,
-        pageIndex: this.state.pageIndex + 1
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('查询货源失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    }, {
+      fromCity: this.state.fromCity,
+      toCity: this.state.toCity,
+      truckTypeFlags: this.state.truckTypeFlag,
+      loadLimitFlags: this.state.loadLimitFlag,
+      truckLengthFlags: this.state.truckLengthFlag,
+      pageSize: this.state.pageSize,
+      pageIndex: this.state.pageIndex
     });
   }
 
@@ -146,4 +142,4 @@ export default class SearchPkgPage extends Component {
   }
 }
 
-ReactDOM.render(<SearchPkgPage />, $('#page').get(0));
+ReactDOM.render(<SearchPkgPage />, document.querySelector('.page'));
