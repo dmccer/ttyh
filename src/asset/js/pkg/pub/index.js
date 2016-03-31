@@ -28,6 +28,7 @@ import AH from '../../helper/ajax';
 import {
   PubPkg
 } from '../model/';
+import DatePicker from '../../datepicker/';
 
 const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
@@ -417,6 +418,7 @@ export default class PkgPubPage extends React.Component {
         >发布</button>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <DatePicker ref="datepicker" />
         <CitySelector
           ref="citySelector"
           prefix={PAGE_TYPE}
