@@ -327,27 +327,17 @@ module.exports = {
     inline: true,
     proxy: {
       '/api/bbs*': {
-        // target: 'http://o.dp:3000',
-        target: 'http://api.ttyhuo.com:83',
+        target: 'http://api.ttyhuo.com:85',
         secure: false
       },
       '/mvc/code_msg*': {
-        target: 'http://api.ttyhuo.com:83',
+        target: 'http://api.ttyhuo.com:85',
         secure: false
       },
       '/mvc*': {
         target: 'http://api.ttyhuo.com:85',
         secure: false
       }
-      // '/api*': {
-      //   target: 'http://o.dp:3000',
-      //   // target: 'http://m.ttyhuo.com',
-      //   secure: false
-      // },
-      // '/*.jsp*': {
-      //   target: 'http://m.ttyhuo.com/bbs',
-      //   secure: false
-      // }
     }
   }
 };
