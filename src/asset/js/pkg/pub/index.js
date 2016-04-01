@@ -554,10 +554,12 @@ export default class PkgPubPage extends React.Component {
               <i className="icon icon-truck-type s20"></i>
             </label>
             <div className="control">
-              <span
+              <a
+                href="./truck-requirement.html"
                 className={cx('input-holder', truckDesc && 'on' || '')}
-                onClick={props.handleSelectTruckType.bind(this,  this.writeDraft.bind(this))}
-              >{truckDesc || '请填写用车要求'}</span>
+              >
+                {truckDesc || '请填写用车要求'}
+              </a>
               <i className="icon icon-arrow"></i>
             </div>
           </div>

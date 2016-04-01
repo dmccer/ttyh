@@ -19,8 +19,16 @@ import $ from '../helper/z';
 import AH from '../helper/ajax';
 import {TruckTypes, TruckLengths} from '../truck/model/';
 
+const TRUCK_SELECTOR_TYPE = [
+  'truckType',
+  'truckLength'
+];
+
 export var SelectTruckTypeEnhance = ComposedComponent => class extends Component {
-  state = {};
+  state = {
+    truckType: {},
+    truckLength: {}
+  };
 
   constructor(props) {
     super(props);
@@ -28,6 +36,12 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
 
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
+  }
+
+  setTruckEnhanceSelectorType(type: Number) {
+    this.setState({
+      sType: type
+    });
   }
 
   /**
@@ -38,7 +52,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
 
     // 若已经请求过车型和车长列表，则直接展示
     if (this.state.truckTypes && this.state.truckLengths) {
-      this.showSelector('truckType');
+      this.showSelector(TRUCK_SELECTOR_TYPE[0]);
 
       return;
     }
@@ -65,7 +79,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
           truckTypes: truckTypes,
           truckLengths: truckLengths
         }, () => {
-          this.showSelector('truckType');
+          this.showSelector(TRUCK_SELECTOR_TYPE[0]);
         });
       },
       error: err => {
@@ -114,8 +128,13 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       [this.state.selectorField]: item
     }, this.cb);
 
-    if (field === 'truckType') {
-      this.showSelector('truckLength');
+    let sType = this.state.sType;
+    if (sType != null && sType === 0) {
+      return;
+    }
+
+    if (field === TRUCK_SELECTOR_TYPE[0]) {
+      this.showSelector(TRUCK_SELECTOR_TYPE[1]);
     }
   }
 
@@ -127,6 +146,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
           truckType={this.state.truckType}
           truckLength={this.state.truckLength}
           handleSelectTruckType={this.handleSelectTruckType.bind(this)}
+          setTruckEnhanceSelectorType={this.setTruckEnhanceSelectorType.bind(this)}
         />
         <Selector
           ref="selector"

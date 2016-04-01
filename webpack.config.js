@@ -24,6 +24,7 @@ module.exports = {
     'notice': './src/asset/js/bbs/notice/index.js',
 
     'pkg-pub': './src/asset/js/pkg/pub/index.js',
+    'truck-requirement': './src/asset/js/pkg/pub/truck-requirement/index.js',
     'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
     'my-pkg': './src/asset/js/pkg/my/index.js',
     // 'recommend-pkg-list': './src/asset/js/pkg/recommend-list/index.js',
@@ -187,6 +188,14 @@ module.exports = {
       template: './src/page/index.ejs',
       filename: 'pkg-pub-memo.html',
       chunks: ['pkg-pub-memo', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '用车需求',
+      template: './src/page/index.ejs',
+      filename: 'truck-requirement.html',
+      chunks: ['truck-requirement', 'fetch', 'ved'],
       chunksSortMode: 'dependency',
       inject: 'body'
     }),

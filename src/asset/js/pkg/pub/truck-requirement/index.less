@@ -1,0 +1,91 @@
+@import '../../../../less/global/site.variable';
+@import '../../../../less/global/util.less';
+@import '../../../../less/component/icon-util.less';
+
+body {
+  background-color: @offWhite;
+}
+
+.bottom-btn {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 49px;
+  border-radius: 0;
+}
+
+.tags-title {
+  padding-left: 20px;
+  margin-bottom: 6px;
+}
+
+.tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: no-wrap;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 13px;
+  margin-bottom: 20px;
+
+  .tag {
+    flex: 1;
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    p {
+      margin-bottom: 0;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      background-color: @white;
+      color: @c_black;
+      border: 1px solid @c_lightGrey;
+      border-radius: 2px;
+    }
+
+    .check:checked + p {
+      border-color: @c_teal;
+      color: @c_teal;
+    }
+  }
+
+  .check {
+    position: absolute;
+    left: -9999px;
+  }
+}
+
+.cells-form {
+  .cell {
+    font-size: 12px;
+  }
+
+  .input, .val {
+    text-align: right;
+    font-size: 16px;
+  }
+  .input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    -webkit-appearance: none;
+    background-color: transparent;
+    color: inherit;
+  }
+
+  .val {
+    width: 100%;
+
+    &.holder {
+      color: @c_grey;
+    }
+  }
+  .cell-ft {
+    font-size: 16px;
+  }
+}

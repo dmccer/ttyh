@@ -238,6 +238,10 @@ function getDsOfLatest30Days(sDate) {
   r = r.concat(curMonthWeeks);
 
   let remainCount = MAX_DAY_COUNT - countOfCurMonth;
+  if (remainCount === 0) {
+    return r;
+  }
+
   let firstDateOfNextMonth = getNextMonth(year, month);
   let nextYear = firstDateOfNextMonth.getFullYear();
   let nextMonth = firstDateOfNextMonth.getMonth();
