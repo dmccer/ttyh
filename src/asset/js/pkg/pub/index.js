@@ -19,11 +19,12 @@ import $ from '../../helper/z';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Log from '../../log/';
-import CitySelector from '../../city-selector/';
 import Selector from '../../selector/';
+import CitySelector from '../../city-selector/';
 import FixedHolder from '../../fixed-holder/';
 import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
 import {FieldChangeEnhance} from '../../enhance/field-change';
+import DT from '../../helper/date';
 import AH from '../../helper/ajax';
 import {
   PubPkg
@@ -34,6 +35,57 @@ const DRAFT = 'pkg-pub';
 const MEMO = 'pkg-pub-memo';
 const PAGE_TYPE = 'shipper_page';
 const ALL = '不限';
+const TIME_AREAS = [
+  {
+    name: '不限',
+    id: 0
+  }, {
+    name: '上午',
+    id: 1,
+    test: (h) => {
+      return h < 12;
+    }
+  }, {
+    name: '下午',
+    id: 2,
+    test: (h) => {
+      return h < 18;
+    }
+  }, {
+    name: '晚上',
+    id: 3,
+    test: (h) => {
+      return h < 24;
+    }
+  }
+];
+const LOAD_TYPES = [
+  {
+    name: '不限',
+    id: 0
+  }, {
+    name: '人工',
+    id: 1
+  }, {
+    name: '铲车、叉车',
+    id: 2
+  }, {
+    name: '吊车',
+    id: 3
+  }
+];
+const PAYMENT_TYPES = [
+  {
+    name: '货到付款',
+    id: 1
+  }, {
+    name: '预付部分',
+    id: 2
+  }, {
+    name: '回单结算',
+    id: 3
+  }
+]
 
 @FieldChangeEnhance
 @SelectTruckTypeEnhance
@@ -42,7 +94,12 @@ export default class PkgPubPage extends React.Component {
 
   state = assign({
     qs: querystring.parse(location.search.substring(1)),
-    memo: localStorage.getItem(MEMO)
+    memo: localStorage.getItem(MEMO),
+    timeAreas: [],
+    loadTypes: LOAD_TYPES,
+    paymentTypes: PAYMENT_TYPES,
+    loadType: {},
+    paymentType: {}
   }, JSON.parse(localStorage.getItem(DRAFT)) || {});
 
   constructor(props) {
@@ -311,6 +368,69 @@ export default class PkgPubPage extends React.Component {
     });
   }
 
+  handleSelectDate(d) {
+    // TODO
+    // set date
+    console.log(d);
+
+    let r;
+
+    if (DT.isToday(d)) {
+      let h = new Date().getHours();
+      r = TIME_AREAS.map((timeArea, index) => {
+        if (index === 0) {
+          return {
+            name: timeArea.name,
+            id: timeArea.id,
+            disabled: true
+          };
+        }
+
+        return {
+          name: timeArea.name,
+          id: timeArea.id,
+          disabled: !timeArea.test(h)
+        };
+      });
+    } else {
+      r = assign([], TIME_AREAS);
+    }
+
+    this.setState({
+      selectedDate: d,
+      timeAreas: r
+    }, () => {
+      this.refs.dateAreaSelector.show();
+    });
+  }
+
+  handleSelectTimeArea(v) {
+    this.setState({
+      timeArea: v
+    });
+  }
+
+
+  handleClickSelectLoadType() {
+    this.refs.loadTypeSelector.show();
+  }
+
+  handleSelectLoadType(v) {
+    this.setState({
+      loadType: v
+    });
+  }
+
+  handleClickSelectPaymentType() {
+    this.refs.paymentTypeSelector.show();
+  }
+
+  handleSelectPaymentType(v) {
+    this.setState({
+      paymentType: v
+    });
+  }
+
   /**
    * 若有 memo, 则展示 memo, 并高亮，
    * 若无 memo, 则模拟 placeholder
@@ -323,7 +443,7 @@ export default class PkgPubPage extends React.Component {
     }
 
     return (
-      <a href="./pkg-pub-memo.html" className="input-holder">备注</a>
+      <a href="./pkg-pub-memo.html" className="input-holder">请填写注意事项等</a>
     );
   }
 
@@ -332,10 +452,34 @@ export default class PkgPubPage extends React.Component {
     let truckType = props.truckType;
     let truckLength = props.truckLength;
 
-    let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name || ''}` : null;
+    let truckDesc = truckType && truckType.name
+      ? `${truckType.name} ${truckLength && truckLength.name || ''}`
+      : null;
+
+    let selectedDate = this.state.selectedDate;
+    let timeAreaSelectorTitle = selectedDate
+      ? `${DT.toLocaleDateString(selectedDate)}${DT.isToday(selectedDate) ? ' (今天)' : ''}`
+      : '';
+
+    let timeArea = this.state.timeArea;
+    let selectedDateStr = selectedDate ? (DT.format(selectedDate) + (timeArea ? ` ${timeArea.name}` : '')) : null;
 
     return (
       <section className="pkg-pub">
+        <h2 className="subtitle"><b>*</b>装车日期</h2>
+        <div className="field-group">
+          <div className="field">
+            <label><i className="icon icon-pkg-type s20"></i></label>
+            <div className="control">
+              <span
+                className={cx('input-holder', selectedDate && 'on' || '')}
+                onClick={() => { this.refs.datepicker.show(new Date()); }}
+              >{selectedDateStr || '请选择装车日期'}</span>
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
+        </div>
+
         <h2 className="subtitle"><b>*</b>地址信息</h2>
         <div className="field-group">
           <div className="field">
@@ -351,6 +495,18 @@ export default class PkgPubPage extends React.Component {
             </div>
           </div>
           <div className="field">
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <input
+                type="text"
+                placeholder="详细地址(选填)"
+                value={props.detailFromCity}
+                onChange={props.handleStrChange.bind(this, 'detailFromCity', this.writeDraft.bind(this))}
+              />
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
+          <div className="field">
             <label><i className="icon icon-end-point on s20"></i></label>
             <div
               ref="toCityField"
@@ -362,8 +518,35 @@ export default class PkgPubPage extends React.Component {
               <i className="icon icon-arrow"></i>
             </div>
           </div>
+          <div className="field">
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <input
+                type="text"
+                placeholder="详细地址(选填)"
+                value={props.detailToCity}
+                onChange={props.handleStrChange.bind(this, 'detailToCity', this.writeDraft.bind(this))}
+              />
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
         </div>
-        <h2 className="subtitle">货车要求</h2>
+
+        <h2 className="subtitle"><b>*</b>货物信息</h2>
+        <div className="field-group">
+          <div className="field">
+            <label><i className="icon icon-pkg-type s20"></i></label>
+            <div className="control">
+              <a
+                href="#"
+                className={cx('input-holder', truckDesc && 'on' || '')}
+              >{truckDesc || '请填写货物信息'}</a>
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
+        </div>
+
+        <h2 className="subtitle"><b>*</b>用车要求</h2>
         <div className="field-group">
           <div className="field">
             <label>
@@ -374,19 +557,33 @@ export default class PkgPubPage extends React.Component {
               <span
                 className={cx('input-holder', truckDesc && 'on' || '')}
                 onClick={props.handleSelectTruckType.bind(this,  this.writeDraft.bind(this))}
-              >{truckDesc || '选择车型'}</span>
+              >{truckDesc || '请填写用车要求'}</span>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
           <div className="field">
-            <label><i className="icon icon-pkg-type s20"></i></label>
+            <label><i className="icon s20"></i></label>
             <div className="control">
-              <input
-                type="text"
-                placeholder="货物种类"
-                value={props.pkgType}
-                onChange={props.handleStrChange.bind(this, 'pkgType', this.writeDraft.bind(this))}
-              />
+              <span
+                className="input-holder"
+                onClick={this.handleClickSelectLoadType.bind(this)}
+              >
+                <i className="inner-label">装货方式</i>
+                <b className="inner-val">{this.state.loadType.name}</b>
+              </span>
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
+          <div className="field">
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span
+                className="input-holder"
+                onClick={this.handleClickSelectPaymentType.bind(this)}
+              >
+                <i className="inner-label">运费结算方式</i>
+                <b className="inner-val">{this.state.paymentType.name}</b>
+              </span>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -410,6 +607,16 @@ export default class PkgPubPage extends React.Component {
             </div>
           </div>
         </div>
+        <h2 className="subtitle"><b>*</b>备注</h2>
+        <div className="field-group">
+          <div className="field">
+            <label><i className="icon icon-memo s20"></i></label>
+            <div className="control">
+              {this.renderMemo()}
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
+        </div>
         <FixedHolder height="70" />
         <button
           className="btn block teal pub-btn"
@@ -418,7 +625,7 @@ export default class PkgPubPage extends React.Component {
         >发布</button>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
-        <DatePicker ref="datepicker" />
+        <DatePicker ref="datepicker" onSelect={this.handleSelectDate.bind(this)} />
         <CitySelector
           ref="citySelector"
           prefix={PAGE_TYPE}
@@ -430,6 +637,21 @@ export default class PkgPubPage extends React.Component {
           onShow={this.handleShowCitySelector.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
+        <Selector
+          ref="dateAreaSelector"
+          items={this.state.timeAreas}
+          title={timeAreaSelectorTitle}
+          select={this.handleSelectTimeArea.bind(this)} />
+        <Selector
+          ref="loadTypeSelector"
+          items={this.state.loadTypes}
+          title="装货方式"
+          select={this.handleSelectLoadType.bind(this)} />
+        <Selector
+          ref="paymentTypeSelector"
+          items={this.state.paymentTypes}
+          title="运费结算方式"
+          select={this.handleSelectPaymentType.bind(this)} />
       </section>
     );
   }

@@ -365,7 +365,8 @@ module.exports = {
         secure: false
       },
       '/mvc*': {
-        target: 'http://api.ttyhuo.com:85',
+        // target: 'http://api.ttyhuo.com:85',
+        target: 'http://m.ttyhuo.com',
         secure: false
       }
       // '/api*': {

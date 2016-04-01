@@ -1,7 +1,8 @@
 import assign from 'lodash/object/assign';
 
 const COMMON_OPT = {
-  credentials: 'same-origin'
+  // credentials: 'same-origin'
+  credentials: 'include'
 }
 const COMMON_HEADER = {
   'Accept': 'application/json',

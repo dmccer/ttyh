@@ -72,6 +72,29 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     }, cb);
   }
 
+  handleStrWithEmptyChange(field: String, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+      cb = this.noop;
+    }
+
+    this.setState({
+      [field]: e.target.value
+    }, cb);
+  }
+
+  // 长度限制的字符串
+  handleLimitStrChange(field: String, limit: Number, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+      cb = this.noop;
+    }
+
+    this.setState({
+      [field]: $.trim(e.target.value).substring(0, limit)
+    }, cb);
+  }
+
   // 手机号
   handleMobileNoChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
@@ -84,6 +107,22 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     }, cb);
   }
 
+  set(field: String, val: Object, cb=noop) {
+    this.setState({
+      [field]: val
+    }, cb);
+  }
+
+  setFields(fields: Object, cb=noop) {
+    this.setState(fields, cb);
+  }
+
+  clear(field: String, cb=noop) {
+    this.setState({
+      [field]: null
+    }, cb);
+  }
+
   render() {
     return (
       <ComposedComponent
@@ -92,7 +131,12 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
         handleIntegerChange={this.handleIntegerChange.bind(this)}
         handleFloatChange={this.handleFloatChange.bind(this)}
         handleStrChange={this.handleStrChange.bind(this)}
+        handleStrWithEmptyChange={this.handleStrWithEmptyChange.bind(this)}
         handleMobileNoChange={this.handleMobileNoChange.bind(this)}
+        handleLimitStrChange={this.handleLimitStrChange.bind(this)}
+        clear={this.clear.bind(this)}
+        set={this.set.bind(this)}
+        setFields={this.setFields.bind(this)}
       />
     );
   }

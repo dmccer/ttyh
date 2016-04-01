@@ -4,6 +4,9 @@
  * @author Kane xiaoyunhua@ttyhuo.cn
  *
  */
+
+import './select-truck-type-enhance.less';
+
 import React, {Component} from 'react';
 import Promise from 'promise';
 import keys from 'lodash/object/keys';
@@ -127,6 +130,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
         />
         <Selector
           ref="selector"
+          className="select-truck-type"
           items={this.state.selectorItems}
           select={this.handleSelectItem.bind(this)} />
         <Loading ref="loading" />
