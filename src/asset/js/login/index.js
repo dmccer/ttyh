@@ -117,11 +117,11 @@ export default class LoginPage extends React.Component {
 
 
         if (this.state.qs.page) {
-          // location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`);
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`);
           return;
         }
 
-        // location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
         return;
       }
 

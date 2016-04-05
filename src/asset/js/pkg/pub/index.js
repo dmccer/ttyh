@@ -589,25 +589,6 @@ export default class PkgPubPage extends React.Component {
               <i className="icon icon-arrow"></i>
             </div>
           </div>
-          <div className="field">
-            <label><i className="icon icon-pkg-weight s20"></i></label>
-            <div className="control">
-              <input
-                type="text"
-                placeholder="货重(单位: 吨)"
-                value={props.pkgWeight}
-                onChange={props.handleFloatChange.bind(this, 'pkgWeight', this.writeDraft.bind(this))}
-              />
-              <i className="icon icon-arrow"></i>
-            </div>
-          </div>
-          <div className="field">
-            <label><i className="icon icon-memo s20"></i></label>
-            <div className="control">
-              {this.renderMemo()}
-              <i className="icon icon-arrow"></i>
-            </div>
-          </div>
         </div>
         <h2 className="subtitle"><b>*</b>备注</h2>
         <div className="field-group">
