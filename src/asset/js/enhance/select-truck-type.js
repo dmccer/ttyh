@@ -44,6 +44,10 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
     });
   }
 
+  setSelectTruckTypeData(o: Object) {
+    this.setState(o);
+  }
+
   /**
    * 处理选择车型和车长
    */
@@ -147,6 +151,7 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
           truckLength={this.state.truckLength}
           handleSelectTruckType={this.handleSelectTruckType.bind(this)}
           setTruckEnhanceSelectorType={this.setTruckEnhanceSelectorType.bind(this)}
+          setSelectTruckTypeData={this.setSelectTruckTypeData.bind(this)}
         />
         <Selector
           ref="selector"

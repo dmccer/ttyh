@@ -25,6 +25,8 @@ import $ from '../helper/z';
 // const FLOAT_REG = /^(([1-9]{1}\d*)|(0))\.\d+$/;
 // const INT_REG = /^\d+$/;
 
+function noop() {}
+
 export var FieldChangeEnhance = ComposedComponent => class extends React.Component {
   static displayName = 'ComponentEnhancedWithFieldChangeHandler';
 
@@ -34,13 +36,13 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     super(props);
   }
 
-  noop() {}
+
 
   // 纯数字字符串或整数
   handleIntegerChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -52,7 +54,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleFloatChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -64,7 +66,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleStrChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -75,7 +77,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleStrWithEmptyChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -87,7 +89,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleLimitStrChange(field: String, limit: Number, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -99,7 +101,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleMobileNoChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
