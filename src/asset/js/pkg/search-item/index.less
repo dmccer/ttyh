@@ -25,9 +25,8 @@
   text-align: center;
 }
 
-.tel {
-  width: 30px;
-  vertical-align: middle;
+.tel, .entruck-time {
+  margin-bottom: 5px;
 }
 
 .pkg {
@@ -50,6 +49,11 @@
 
   .detail {
     position: relative;
+
+    .entruck-time b {
+      font-weight: normal;
+      color: @c_lightBlack;
+    }
 
     .memo {
       color: @c_lightBlack;
@@ -78,4 +82,9 @@
       }
     }
   }
+}
+
+.contact {
+  vertical-align: middle;
+  width: 30px;
 }
