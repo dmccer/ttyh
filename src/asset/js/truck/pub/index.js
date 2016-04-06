@@ -14,8 +14,8 @@ import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import cx from 'classnames';
 import Promise from 'promise';
-import keys from 'lodash/object/keys';
 import assign from 'lodash/object/assign';
+import find from 'lodash/collection/find';
 
 import $ from '../../helper/z';
 import Log from '../../log/';
@@ -27,6 +27,8 @@ import {
   TruckTags,
   PubTruckRoute
 } from '../model/';
+
+import {OrderedEnumValue} from '../../model/';
 
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
@@ -56,26 +58,25 @@ export default class TruckPubPage extends React.Component {
 
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+    this.fetchTruckTagList();
   }
 
   /**
    * 获取车辆标签列表
    */
   fetchTruckTagList() {
-    this.ah.one(TruckTags, {
+    this.ah.one(OrderedEnumValue, {
       success: (res) => {
-        delete res.truckTagList['0'];
-
-        let truckTagListKeys = keys(res.truckTagList);
-        let truckTagList = truckTagListKeys.map((key) => {
+        let truckTags = res.truckTagMap.map(item => {
           return {
-            name: res.truckTagList[key],
-            id: key
+            name: item.value,
+            id: item.key
           };
         });
 
         this.setState({
-          truckTags: truckTagList
+          truckTags: truckTags
         });
       },
       error: (err) => {
@@ -83,7 +84,7 @@ export default class TruckPubPage extends React.Component {
 
         this.refs.poptip.warn('获取车辆标签失败,请重试');
       }
-    });
+    }, 'truckTag');
   }
 
   /**

@@ -17,7 +17,7 @@ import FixedHolder from '../../../fixed-holder/';
 import {FieldChangeEnhance} from '../../../enhance/field-change';
 
 import AH from '../../../helper/ajax';
-import {OrderedEnumValue} from '../../model/';
+import {OrderedEnumValue} from '../../../model/';
 import Validator from '../../../helper/validator';
 import {PKG_INFO_DATA} from '../../../const/pkg-pub';
 

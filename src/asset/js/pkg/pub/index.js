@@ -28,7 +28,8 @@ import {FieldChangeEnhance} from '../../enhance/field-change';
 import DT from '../../helper/date';
 import Validator from '../../helper/validator';
 import AH from '../../helper/ajax';
-import {PubPkg, OrderedEnumValue} from '../model/';
+import {OrderedEnumValue} from '../../model/';
+import {PubPkg} from '../model/';
 import {
   PKG_DRAFT, PKG_INFO_DATA,
   PKG_MEMO, TIME_AREAS,

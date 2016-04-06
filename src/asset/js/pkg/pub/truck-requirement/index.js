@@ -18,7 +18,6 @@ import Loading from '../../../loading/';
 import FixedHolder from '../../../fixed-holder/';
 import {FieldChangeEnhance} from '../../../enhance/field-change';
 import {SelectTruckTypeEnhance} from '../../../enhance/select-truck-type';
-import AH from '../../../helper/ajax';
 import Validator from '../../../helper/validator';
 import {
   PKG_TRUCK_USE_DATA,
@@ -63,8 +62,6 @@ export default class TruckRequirementPage extends React.Component {
   }
 
   componentDidMount() {
-    this.ah = new AH(this.refs.loading, this.refs.poptip);
-
     Validator.config(this.refs.poptip);
   }
 
