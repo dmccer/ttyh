@@ -10,6 +10,7 @@ import querystring from 'querystring';
 import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
+import find from 'lodash/collection/find';
 
 import Selector from '../../../selector/';
 import Poptip from '../../../poptip/';
@@ -18,61 +19,127 @@ import FixedHolder from '../../../fixed-holder/';
 import {FieldChangeEnhance} from '../../../enhance/field-change';
 import {SelectTruckTypeEnhance} from '../../../enhance/select-truck-type';
 import AH from '../../../helper/ajax';
+import Validator from '../../../helper/validator';
+import {
+  PKG_TRUCK_USE_DATA,
+  TRUCK_USE_TYPES,
+  DEFAULT_TRUCK_USE_TYPE_ID,
+  JUST_SELECT_TRUCK_TYPE
+} from '../../../const/pkg-pub';
 
-const TRUCK_TYPES = [
-  {
-    name: '整车',
-    id: 1
-  }, {
-    name: '零担',
-    id: 2
-  }
-];
-const SPECIAL_TRUCK_TYPE_ID = 2;
+const TMP_TUD = JSON.parse(localStorage.getItem(PKG_TRUCK_USE_DATA));
 
 @FieldChangeEnhance
 @SelectTruckTypeEnhance
 export default class TruckRequirementPage extends React.Component {
   state = {
-    checkedTruckType: {}
+    checkedTruckUseType: {}
   };
 
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    this.ah = new AH(this.refs.loading, this.refs.poptip);
+  componentWillMount() {
+    let checkedTruckUseTypeId = TMP_TUD ? TMP_TUD.truckUseType.id : DEFAULT_TRUCK_USE_TYPE_ID;
+    let checkedTruckUseType = find(TRUCK_USE_TYPES, (item) => {
+      return item.id === checkedTruckUseTypeId;
+    });
+
+    this.setState({
+      checkedTruckUseType: checkedTruckUseType
+    });
+
+    if (TMP_TUD) {
+      this.props.setFields({
+        stallSize: TMP_TUD.stallSize
+      });
+
+      this.props.setSelectTruckTypeData({
+        truckType: TMP_TUD.truckType,
+        truckLength: TMP_TUD.truckLength
+      });
+    }
   }
 
-  handleSubmit() {}
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-  writeDraft() {}
+    Validator.config(this.refs.poptip);
+  }
+
+  validate() {
+    let props = this.props;
+    let states = this.state;
+
+    return (
+      Validator.test('required', '请选择车型', props.truckType.id) &&
+      (
+        states.checkedTruckUseType.id !== 1 ||
+        (
+          Validator.test('required', '请选择车长', props.truckLength.id) &&
+          Validator.test('min', '请选择车长', props.truckLength.id, 0, false)
+        )
+      ) &&
+      (
+        states.checkedTruckUseType.id !== 2 ||
+        (
+          Validator.test('required', '请填写占用车位', props.stallSize) &&
+          Validator.test('min', '请填写占用车位', props.stallSize, 0, false)
+        )
+      )
+    );
+  }
+
+  handleSubmit() {
+    let props = this.props;
+    let states = this.state;
+
+    if (!this.validate()) {
+      return;
+    }
+
+    localStorage.setItem(PKG_TRUCK_USE_DATA, JSON.stringify({
+      truckType: props.truckType,
+      truckLength: props.truckLength,
+      stallSize: props.stallSize,
+      truckUseType: states.checkedTruckUseType
+    }));
+
+    history.back();
+  }
 
   handleClickSelectTruckType() {
     let props = this.props;
-    let checkedTruckTypeId = this.state.checkedTruckType.id;
+    let checkedTruckUseTypeId = this.state.checkedTruckUseType.id;
+    let special = checkedTruckUseTypeId === JUST_SELECT_TRUCK_TYPE;
 
-    props.setTruckEnhanceSelectorType(checkedTruckTypeId === SPECIAL_TRUCK_TYPE_ID ? 0 : 1);
-    props.handleSelectTruckType(this.writeDraft.bind(this));
+    props.setTruckEnhanceSelectorType(special ? 0 : 1);
+    props.handleSelectTruckType();
   }
 
   handleSetTruckTypeCategory(tType: Object) {
-    let cur = this.state.checkedTruckType;
+    let cur = this.state.checkedTruckUseType;
 
     if (tType === cur) {
       return;
     }
 
     this.setState({
-      checkedTruckType: tType
+      checkedTruckUseType: tType
     });
+
+    if (tType.id === JUST_SELECT_TRUCK_TYPE) {
+      this.props.setSelectTruckTypeData({
+        truckLength: {}
+      });
+    }
   }
 
   renderTruckTypes() {
-    let checkedTruckTypeId = this.state.checkedTruckType.id;
+    let checkedTruckUseTypeId = this.state.checkedTruckUseType.id;
 
-    let tTypes = TRUCK_TYPES.map((tType, index) => {
+    let tTypes = TRUCK_USE_TYPES.map((tType, index) => {
       return (
         <label className="tag" key={`truckType-item_${index}`}>
           <input
@@ -80,8 +147,8 @@ export default class TruckRequirementPage extends React.Component {
             name="truckType"
             className="check"
             value={tType.id}
-            checked={tType.id === checkedTruckTypeId}
-            onClick={this.handleSetTruckTypeCategory.bind(this, tType)} />
+            checked={tType.id === checkedTruckUseTypeId}
+            onChange={this.handleSetTruckTypeCategory.bind(this, tType)} />
           <p>{tType.name}</p>
         </label>
       );
@@ -95,8 +162,8 @@ export default class TruckRequirementPage extends React.Component {
   }
 
   renderStallSize() {
-    let checkedTruckTypeId = this.state.checkedTruckType.id;
-    if (checkedTruckTypeId === SPECIAL_TRUCK_TYPE_ID) {
+    let checkedTruckUseTypeId = this.state.checkedTruckUseType.id;
+    if (checkedTruckUseTypeId === JUST_SELECT_TRUCK_TYPE) {
       let props = this.props;
 
       return (
@@ -119,7 +186,7 @@ export default class TruckRequirementPage extends React.Component {
 
   render() {
     let props = this.props;
-    let truckTypeValStr = `${props.truckType.name || ''} ${this.state.checkedTruckType.id !== SPECIAL_TRUCK_TYPE_ID ? (props.truckLength.name || '') : ''}`;
+    let truckTypeValStr = `${props.truckType.name || ''} ${this.state.checkedTruckUseType.id !== JUST_SELECT_TRUCK_TYPE ? (props.truckLength.name || '') : ''}`;
 
     return (
       <section className="truck-requirement">
@@ -141,13 +208,17 @@ export default class TruckRequirementPage extends React.Component {
           {this.renderStallSize()}
         </div>
         <FixedHolder height="70" />
-        <button
-          className="btn block teal bottom-btn"
-          type="submit"
-          onClick={this.handleSubmit.bind(this)}
-        >
-          发布
-        </button>
+        <div className="bottom-btn">
+          <button
+            className="btn block teal"
+            type="submit"
+            onClick={this.handleSubmit.bind(this)}
+          >
+            确定
+          </button>
+        </div>
+        <Poptip ref="poptip" />
+        <Loading ref="loading" />
       </section>
     );
   }
