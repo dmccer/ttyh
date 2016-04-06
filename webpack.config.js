@@ -36,6 +36,7 @@ module.exports = {
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
     'truck-add': './src/asset/js/truck/add/index.js',
+    'select-truck-common-route': './src/asset/js/truck/add/route/index.js',
     'my-truck': './src/asset/js/truck/my/index.js',
     // 'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
     'truck-search': './src/asset/js/truck/search/index.js',
@@ -221,6 +222,14 @@ module.exports = {
       template: './src/page/index.ejs',
       filename: 'truck-add.html',
       chunks: ['truck-add', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '常跑路线',
+      template: './src/page/index.ejs',
+      filename: 'select-truck-common-route.html',
+      chunks: ['select-truck-common-route', 'fetch', 'ved'],
       chunksSortMode: 'dependency',
       inject: 'body'
     }),
