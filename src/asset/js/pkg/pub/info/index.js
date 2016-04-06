@@ -72,8 +72,6 @@ export default class PkgInfoPubPage extends Component {
     let props = this.props;
     let states = this.state;
 
-    console.log(props.pkgVolume);
-
     return (
       Validator.test('required', '请填写货物名称', props.pkgName) &&
       Validator.test('required', '请填写货物重量', props.pkgWeight) &&
