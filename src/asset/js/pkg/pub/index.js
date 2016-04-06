@@ -38,7 +38,7 @@ import {
   DEFAULT_PAYMENT_TYPE_ID
 } from '../../const/pkg-pub';
 
-const ALL = '不限';
+const ALL = '全部';
 const TMP_DATA = JSON.parse(localStorage.getItem(PKG_DRAFT));
 
 @FieldChangeEnhance
@@ -205,6 +205,7 @@ export default class PkgPubPage extends React.Component {
       spaceNeeded: states.truckUseInfo.stallSize,
 
       productName: states.pkgInfo.pkgName,
+      title: states.pkgInfo.pkgName,
       productVolume: states.pkgInfo.pkgVolume,
       packType: states.pkgInfo.packManner.id,
       productCount: states.pkgInfo.pkgCount,

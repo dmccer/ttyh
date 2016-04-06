@@ -1,7 +1,8 @@
 import '../../../../less/global/global.less';
 import '../../../../less/global/form.less';
-import '../../../../less/component/cell.less';
+import '../../../../less/component/cell-form.less';
 import '../../../../less/component/icon.less';
+import '../../../../less/component/tag.less';
 import './index.less';
 
 import React, {Component} from 'react';

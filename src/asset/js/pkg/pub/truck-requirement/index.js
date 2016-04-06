@@ -2,6 +2,7 @@ import '../../../../less/global/global.less';
 import '../../../../less/global/form.less';
 import '../../../../less/component/cell.less';
 import '../../../../less/component/icon.less';
+import '../../../../less/component/tag.less';
 import './index.less';
 
 import React from 'react';
@@ -152,8 +153,10 @@ export default class TruckRequirementPage extends React.Component {
     });
 
     return (
-      <div className="tags">
-        {tTypes}
+      <div className="truck-use-types">
+        <div className="tags col-2">
+          {tTypes}
+        </div>
       </div>
     );
   }

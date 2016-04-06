@@ -1,6 +1,5 @@
 @import '../../../../less/global/site.variable';
 @import '../../../../less/global/util.less';
-@import '../../../../less/component/icon-util.less';
 
 body {
   background-color: @offWhite;
@@ -24,108 +23,6 @@ body {
 .tags-title {
   padding-left: 20px;
   margin-bottom: 6px;
-}
-
-.tags {
-  .clearfix();
-  font-size: 13px;
-
-  &.col-3 {
-    .tag {
-      width: 32%;
-      margin-right: 2%;
-      margin-bottom: 6px;
-
-      &:nth-child(3n) {
-        margin-right: 0;
-      }
-    }
-  }
-
-  .tag {
-    float: left;
-
-    p {
-      margin-bottom: 0;
-      height: 35px;
-      line-height: 35px;
-      text-align: center;
-      background-color: @white;
-      color: @c_black;
-      border: 1px solid @c_lightGrey;
-      border-radius: 2px;
-    }
-
-    .check:checked + p {
-      border-color: @c_teal;
-      color: @c_teal;
-    }
-  }
-
-  .check {
-    position: absolute;
-    left: -9999px;
-  }
-}
-
-.label {
-  padding-left: 5px;
-
-  &:before {
-    content: '*';
-    color: @c_teal;
-    visibility: hidden;
-    float: left;
-    font-weight: bolder;
-  }
-}
-
-.required .label:before {
-  visibility: visible;
-}
-
-.cells.cells-form {
-  .cell {
-    font-size: 12px;
-  }
-
-  .input_placeholder(@c_grey, 14px);
-
-  .input, .val {
-    text-align: right;
-    font-size: 16px;
-  }
-
-  .input {
-    width: 100%;
-    border: 0;
-    outline: 0;
-    -webkit-appearance: none;
-    background-color: transparent;
-    color: inherit;
-  }
-
-  .unit .input {
-    padding-right: 10px;
-  }
-
-  .val {
-    width: 100%;
-
-    &.holder {
-      color: @c_lightGrey;
-    }
-  }
-  .cell-ft {
-    font-size: 16px;
-    color: @c_lightBlack;
-
-    .num {
-      width: 4em;
-      text-align: left;
-      color: @c_black;
-    }
-  }
 }
 
 .pkg-pack-manner {
