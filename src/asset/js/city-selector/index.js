@@ -3,6 +3,7 @@
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
+import '../../less/global/layout.less';
 import './index.less';
 
 import React from 'react';
@@ -27,7 +28,7 @@ import {Cities} from './model';
 injectTapEventPlugin();
 
 const HISTORY = '_city_selector_histories';
-const ALL = '不限';
+const ALL = '全部';
 
 export default class CitySelector extends React.Component {
   static defaultProps = {
@@ -78,22 +79,13 @@ export default class CitySelector extends React.Component {
   }
 
   /**
-   * 获取选中的数据在列表中的索引位置
-   * @param  {String} field    字段
-   * @param  {String} listName 列表字段
-   */
-  getIndex(field, listName) {
-    return this.state[listName].indexOf(this.state[field]);
-  }
-
-  /**
    * 获取省份列表
    */
   fetchProvinces() {
     this.ah.one(Cities, {
       success: (res) => {
         this.setState({
-          provinces: res.resultList
+          provinces: res.result
         });
       },
       error: (err) => {
@@ -109,14 +101,14 @@ export default class CitySelector extends React.Component {
     this.ah.one(Cities, {
       success: res => {
         this.setState({
-          cities: res.resultList
+          cities: res
         });
       },
       error: err => {
 
         this.refs.poptip.warn('加载城市失败,请重试');
       }
-    }, this.getIndex('province', 'provinces'));
+    }, [this.state.regionIndex, this.state.provinceIndex].join());
   }
 
   /**
@@ -126,13 +118,13 @@ export default class CitySelector extends React.Component {
     this.ah.one(Cities, {
       success: res => {
         this.setState({
-          areas: res.resultList
+          areas: res
         });
       },
       error: err => {
         this.refs.poptip.warn('加载地区失败,请重试');
       }
-    }, this.getIndex('province', 'provinces'), this.getIndex('city', 'cities'));
+    }, [this.state.regionIndex, this.state.provinceIndex, this.state.cityIndex].join());
   }
 
   componentWillReceiveProps() {
@@ -178,9 +170,10 @@ export default class CitySelector extends React.Component {
   /**
    * 处理选择城市
    */
-  select_city(city) {
+  select_city(city, cityIndex) {
     this.setState({
-      city: city
+      city: city,
+      cityIndex: cityIndex
     }, () => {
       this.props.onSelectCity(city, this.state.province);
 
@@ -197,9 +190,11 @@ export default class CitySelector extends React.Component {
   /**
    * 处理选择省份
    */
-  select_province(province) {
+  select_province(province, regionIndex, provinceIndex) {
     this.setState({
-      province: province
+      province: province,
+      regionIndex: regionIndex,
+      provinceIndex: provinceIndex
     }, () => {
       this.props.onSelectProvince(province);
 
@@ -268,7 +263,10 @@ export default class CitySelector extends React.Component {
     this.setState({
       province: null,
       city: null,
-      area: null
+      area: null,
+      cityIndex: null,
+      regionIndex: null,
+      provinceIndex: null
     });
   }
 
@@ -348,11 +346,47 @@ export default class CitySelector extends React.Component {
    * 展示城市或省份或地区项
    */
   renderItem(list, field) {
-    return list.map((item, index) => {
+    if (field === 'province') {
+      return list.map((item, index) => {
+        let children = item.child.map((province, pIndex) => {
+          return (
+            <div
+              className="item"
+              key={`${field}_${pIndex}`}
+              onTouchTap={this[`select_${field}`].bind(this, province, index, pIndex)}
+            >{province}</div>
+          );
+        });
+
+        return (
+          <dl className="row" key={`region_${index}`}>
+            <dt className="hd">{item.name}</dt>
+            <dd className="bd">
+              {children}
+            </dd>
+          </dl>
+        );
+      });
+    }
+
+    let children = (list.child || []).map((item, index) => {
       return (
-        <li key={`${field}_${item}`} onTouchTap={this[`select_${field}`].bind(this, item)}>{item}</li>
+        <div
+          className="item"
+          key={`${field}_${item}`}
+          onTouchTap={this[`select_${field}`].bind(this, item, index)}
+        >{item}</div>
       );
     });
+
+    return (
+      <dl className="row" key={`${field}`}>
+        <dt className="hd">{list.name}</dt>
+        <dd className="bd">
+          {children}
+        </dd>
+      </dl>
+    );
   }
 
   render() {
@@ -381,9 +415,9 @@ export default class CitySelector extends React.Component {
             <ReactIScroll
               iScroll={IScroll}
               options={this.props.options}>
-              <ul>
+              <div className="scroller">
                 {this.renderItems()}
-              </ul>
+              </div>
             </ReactIScroll>
           </div>
         </div>
