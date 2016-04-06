@@ -33,7 +33,7 @@ import {OrderedEnumValue} from '../../model/';
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
 const PAGE_TYPE = 'trucker_page';
-const ALL = '不限';
+const ALL = '全部';
 const ERR_MSG = {
   1001: '请选择车辆',
   1002: '您没有登录',

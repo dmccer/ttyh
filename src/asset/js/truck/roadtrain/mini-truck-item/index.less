@@ -7,33 +7,39 @@
   a {
     display: block;
     position: relative;
-    padding: 12px 15px;
-  }
+    padding: 12px 30px 12px 15px;
+    font-size: 13px;
 
-  h3, p {
-    color: @c_black;
-    margin-bottom: 0;
+    > * {
+      margin-bottom: 5px;
+    }
   }
 
   h3 {
-    font-size: 16px;
-    margin-bottom: 5px;
     font-weight: normal;
+    color: @c_lightBlack;
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
   }
 
   p {
-    font-size: 13px;
     font-weight: bolder;
+    color: @c_black;
   }
 
-  .icon {
+  .memo {
+    color: @c_lightBlack;
+  }
+
+  .icon-item-selected {
     margin-left: 10px;
   }
 
   .icon-del {
     position: absolute;
     top: 50%;
-    right: 15px;
+    right: 10px;
     margin-top: -10px;
   }
 }
