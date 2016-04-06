@@ -31,6 +31,7 @@ module.exports = {
     'pkg-search': './src/asset/js/pkg/search/index.js',
     'today-pkg': './src/asset/js/pkg/today-list/',
     'pkg-detail': './src/asset/js/pkg/detail/index.js',
+    'pkg-info-pub': './src/asset/js/pkg/pub/info/index.js',
 
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
@@ -308,6 +309,14 @@ module.exports = {
       template: './src/page/index.ejs',
       filename: 'today-truck.html',
       chunks: ['today-truck', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '货源信息',
+      template: './src/page/index.ejs',
+      filename: 'pkg-info-pub.html',
+      chunks: ['pkg-info-pub', 'fetch', 'ved'],
       chunksSortMode: 'dependency',
       inject: 'body'
     })

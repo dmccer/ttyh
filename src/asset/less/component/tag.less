@@ -1,0 +1,42 @@
+@import '../global/site.variable';
+
+.tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: no-wrap;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 13px;
+  margin-bottom: 20px;
+
+  .tag {
+    flex: 1;
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    p {
+      margin-bottom: 0;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      background-color: @white;
+      color: @c_black;
+      border: 1px solid @c_lightGrey;
+      border-radius: 2px;
+    }
+
+    .check:checked + p {
+      border-color: @c_teal;
+      color: @c_teal;
+    }
+  }
+
+  .check {
+    position: absolute;
+    left: -9999px;
+  }
+}
