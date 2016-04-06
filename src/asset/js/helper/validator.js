@@ -23,6 +23,18 @@ let Validator = {
     return s.length === size;
   },
 
+  max: (s, size, equal=true) => {
+    let n = Number(s);
+
+    return (n < size || (equal && n === size));
+  },
+
+  min: (s, size, equal=true) => {
+    let n = Number(s);
+
+    return (n > size || (equal && n === size));
+  },
+
   licenseplate: (s) => {
     s = $.trim(s);
     let re = /^[\u4E00-\u9FA5]{1}[A-Z0-9]{6}$/;
