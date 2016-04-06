@@ -30,7 +30,7 @@ import FixedHolder from '../fixed-holder/';
 import $ from '../helper/z';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
-const ALL = '不限';
+const ALL = '全部';
 
 export default class SearchCondition extends Component {
   static defaultProps = {
