@@ -14,6 +14,7 @@ import querystring from 'querystring';
 import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
+import find from 'lodash/collection/find';
 import $ from '../../helper/z';
 
 import Poptip from '../../poptip/';
@@ -21,49 +22,22 @@ import Loading from '../../loading/';
 import Log from '../../log/';
 import Selector from '../../selector/';
 import CitySelector from '../../city-selector/';
+import DatePicker from '../../datepicker/';
 import FixedHolder from '../../fixed-holder/';
 import {FieldChangeEnhance} from '../../enhance/field-change';
 import DT from '../../helper/date';
+import Validator from '../../helper/validator';
 import AH from '../../helper/ajax';
-import {
-  PubPkg
-} from '../model/';
-import DatePicker from '../../datepicker/';
+import {PubPkg, OrderedEnumValue} from '../model/';
 import {
   PKG_DRAFT, PKG_INFO_DATA,
   PKG_MEMO, TIME_AREAS,
   PAGE_TYPE, PKG_TRUCK_USE_DATA,
-  JUST_SELECT_TRUCK_TYPE
+  JUST_SELECT_TRUCK_TYPE, DEFAULT_LOAD_TYPE_ID,
+  DEFAULT_PAYMENT_TYPE_ID
 } from '../../const/pkg-pub';
 
 const ALL = '不限';
-const LOAD_TYPES = [
-  {
-    name: '不限',
-    id: 0
-  }, {
-    name: '人工',
-    id: 1
-  }, {
-    name: '铲车、叉车',
-    id: 2
-  }, {
-    name: '吊车',
-    id: 3
-  }
-];
-const PAYMENT_TYPES = [
-  {
-    name: '货到付款',
-    id: 1
-  }, {
-    name: '预付部分',
-    id: 2
-  }, {
-    name: '回单结算',
-    id: 3
-  }
-]
 const TMP_DATA = JSON.parse(localStorage.getItem(PKG_DRAFT));
 
 @FieldChangeEnhance
@@ -86,8 +60,8 @@ export default class PkgPubPage extends React.Component {
     qs: querystring.parse(location.search.substring(1)),
     memo: localStorage.getItem(PKG_MEMO),
     timeAreas: [],
-    loadTypes: LOAD_TYPES,
-    paymentTypes: PAYMENT_TYPES,
+    loadTypes: [],
+    paymentTypes: [],
     loadType: {},
     paymentType: {}
   };
@@ -133,6 +107,41 @@ export default class PkgPubPage extends React.Component {
 
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
+    Validator.config(this.refs.poptip);
+
+    this.getEnums();
+  }
+
+  getEnums() {
+    this.ah.all([OrderedEnumValue, OrderedEnumValue], (res) => {
+      let loadTypes = res[0].loadingTypeMap.map(item => {
+        return {
+          name: item.value,
+          id: item.key
+        };
+      });
+      let paymentTypes = res[1].payTypeMap.map(item => {
+        return {
+          name: item.value,
+          id: item.key
+        };
+      });;
+
+      let loadType = find(loadTypes, item => {
+        return DEFAULT_LOAD_TYPE_ID === item.id;
+      });
+
+      let paymentType = find(paymentTypes, item => {
+        return DEFAULT_PAYMENT_TYPE_ID === item.id
+      });
+
+      this.setState({
+        loadTypes: loadTypes,
+        paymentTypes: paymentTypes,
+        loadType: loadType,
+        paymentType: paymentType
+      });
+    }, ['loadingType'], ['payType']);
   }
 
   /**
@@ -143,16 +152,14 @@ export default class PkgPubPage extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    let r = this.validate();
-    if (r !== true) {
-      this.refs.poptip.warn(r);
-
+    if (!this.validate()) {
       return;
     }
 
     _hmt.push(['_trackEvent', '货源', '发布', new Date().toLocaleString()]);
 
     let props = this.props;
+    let states = this.state;
 
     this.ah.one(PubPkg, {
       success: (res) => {
@@ -166,17 +173,12 @@ export default class PkgPubPage extends React.Component {
 
         this.refs.poptip.success('发布货源成功');
 
-        // 清空发布货源草稿及备注
+        // 清空发布货源草稿及页面数据
         localStorage.removeItem(PKG_DRAFT);
         localStorage.removeItem(PKG_MEMO);
-
-        this.setState({
-          fromCity: null,
-          toCity: null,
-          memo: null
-        });
-
-        this.forceUpdate();
+        localStorage.removeItem(PKG_INFO_DATA);
+        localStorage.removeItem(PKG_TRUCK_USE_DATA);
+        this.clearData();
 
         setTimeout(() => {
           location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/my-pkg.html?' + querystring.stringify(this.state.qs));
@@ -188,13 +190,39 @@ export default class PkgPubPage extends React.Component {
         this.refs.poptip.error('发布货源失败');
       }
     }, {
-      fromCity: this.state.fromCity,
-      toCity: this.state.toCity,
-      truckType: props.truckType.id,
-      truckLength: props.truckLength.id,
-      title: props.pkgType,
-      loadLimit: props.pkgWeight,
+      loadProTime: `${states.entruckTime} ${states.timeArea.name}`,
+      fromCity: states.fromCity,
+      toCity: states.toCity,
+      fromAddr: props.detailFromCity,
+      toAddr: props.detailToCity,
+      payType: states.paymentType.id,
+      loadingType: states.loadType.id,
+
+      useType: states.truckUseInfo.truckUseType.id,
+      truckType: states.truckUseInfo.truckType.id,
+      truckLength: states.truckUseInfo.truckLength.id,
+      spaceNeeded: states.truckUseInfo.stallSize,
+
+      productName: states.pkgInfo.pkgName,
+      productVolume: states.pkgInfo.pkgVolume,
+      packType: states.pkgInfo.packManner.id,
+      productCount: states.pkgInfo.pkgCount,
+      loadLimit: states.pkgInfo.pkgWeight,
+
       memo: this.state.memo
+    });
+  }
+
+  clearData() {
+    this.setState({
+      entruckTime: null,
+      timeArea: null,
+      fromCity: null,
+      toCity: null,
+      detailFromCity: null,
+      detailToCity: null,
+      paymentType: {},
+      loadingType: {},
     });
   }
 
@@ -203,28 +231,15 @@ export default class PkgPubPage extends React.Component {
    */
   validate() {
     let props = this.props;
+    let states = this.state;
 
-    if ($.trim(this.state.fromCity) === '') {
-      return '出发地址不能为空';
-    }
-
-    if ($.trim(this.state.toCity) === '') {
-      return '到达地址不能为空';
-    }
-
-    // if (!props.truckType || $.trim(props.truckType.id) === '') {
-    //   return '车型不能为空';
-    // }
-
-    // if (!props.truckLength || $.trim(props.truckLength.id) === '') {
-    //   return '车长不能为空';
-    // }
-
-    // if (parseFloat(props.weight) > 9999) {
-    //   return '载重不能超过9999吨';
-    // }
-
-    return true;
+    return (
+      Validator.test('required', '请选择装车日期', states.entruckTime) &&
+      Validator.test('required', '请选择装车时间段', states.timeArea) &&
+      Validator.test('required', '请选择出发地址', states.fromCity) &&
+      Validator.test('required', '请选择到达地址', states.toCity) &&
+      Validator.test('required', '请填写货物信息', states.pkgInfo)
+    );
   }
 
   /**
@@ -376,23 +391,11 @@ export default class PkgPubPage extends React.Component {
   }
 
   handleSelectDate(d) {
-    // TODO
-    // set date
-    console.log(d);
-
     let r;
 
     if (DT.isToday(d)) {
       let h = new Date().getHours();
       r = TIME_AREAS.map((timeArea, index) => {
-        if (index === 0) {
-          return {
-            name: timeArea.name,
-            id: timeArea.id,
-            disabled: true
-          };
-        }
-
         return {
           name: timeArea.name,
           id: timeArea.id,
@@ -404,7 +407,7 @@ export default class PkgPubPage extends React.Component {
     }
 
     this.setState({
-      entruckTime: DT.toLocaleDateString(d),
+      entruckTime: DT.format(d),
       timeAreas: r
     }, () => {
       this.refs.dateAreaSelector.show();
@@ -458,21 +461,15 @@ export default class PkgPubPage extends React.Component {
   render() {
     let props = this.props;
     let states = this.state;
-    let truckType = props.truckType;
-    let truckLength = props.truckLength;
-
-    let truckDesc = truckType && truckType.name
-      ? `${truckType.name} ${truckLength && truckLength.name || ''}`
-      : null;
 
     let entruckTime = this.state.entruckTime;
     let entruckTimeObj = new Date(entruckTime);
     let timeAreaSelectorTitle = entruckTime
-      ? `${DT.toLocaleDateString(entruckTimeObj)}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
+      ? `${entruckTime}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
       : '';
 
     let timeArea = this.state.timeArea;
-    let entruckTimeStr = entruckTime ? (DT.format(entruckTimeObj) + (timeArea ? ` ${timeArea.name}` : '')) : null;
+    let entruckTimeStr = entruckTime ? (entruckTime + (timeArea ? ` ${timeArea.name}` : '')) : null;
 
     return (
       <section className="pkg-pub">
@@ -556,7 +553,7 @@ export default class PkgPubPage extends React.Component {
           </div>
         </div>
 
-        <h2 className="subtitle"><b>*</b>用车要求</h2>
+        <h2 className="subtitle"><b></b>用车要求</h2>
         <div className="field-group">
           <div className="field">
             <label>
@@ -599,7 +596,7 @@ export default class PkgPubPage extends React.Component {
             </div>
           </div>
         </div>
-        <h2 className="subtitle"><b>*</b>备注</h2>
+        <h2 className="subtitle"><b></b>备注</h2>
         <div className="field-group">
           <div className="field">
             <label><i className="icon icon-memo s20"></i></label>
