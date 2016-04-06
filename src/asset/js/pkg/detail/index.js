@@ -13,6 +13,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import Promise from 'promise';
+import cx from 'classnames';
 
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
@@ -23,7 +24,8 @@ import JWeiXin from '../../jweixin/';
 import $ from '../../helper/z';
 import AH from '../../helper/ajax';
 import {
-  PkgSearch
+  PkgSearch,
+  FollowUser
 } from '../model/';
 
 export default class PkgDetailPage extends Component {
@@ -134,24 +136,27 @@ export default class PkgDetailPage extends Component {
 
     let pkgDesc;
 
-    if (product.title == null && (parseFloat(product.loadLimit) === 0 || product.loadLimit == null)) {
+    if (product.title == null &&
+      (parseFloat(product.loadLimit) === 0 || product.loadLimit == null)) {
       pkgDesc = '暂无';
     } else {
       let title = product.title && product.title || '';
       let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
+      let pack = product.packTypeStr + (product.productCount ? ` * ${product.productCount}` : '');
 
-      pkgDesc = `${title} ${loadLimit}`;
+      pkgDesc = `${title} ${loadLimit} ${pack}`;
     }
 
     let truckDesc;
 
     if ($.trim(product.truckTypeStr) == '' &&
-      (parseFloat(product.loadLimit) === 0 || product.loadLimit == null) &&
       (parseFloat(product.truckLength) === 0 || product.truckLength == null)) {
       truckDesc = '暂无';
     } else {
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
-      truckDesc = `${product.truckTypeStr || ''} ${truckLength}`;
+      let useType = product.useType != null && parseInt(product.useType) ? product.useTypeStr : null;
+      let stallSize = product.spaceNeeded != null && parseFloat(product.spaceNeeded) ? `占用${product.spaceNeeded}米` : null;
+      truckDesc = `${useType} ${product.truckTypeStr || ''} ${truckLength} ${stallSize}`;
     }
 
     let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {pkg.product.provideUserMobileNo}</span>
@@ -165,6 +170,16 @@ export default class PkgDetailPage extends Component {
             {pkg.createTime}发布
           </span>
         </h2>
+        <h2 className="subtitle">装车日期</h2>
+        <div className="field-group">
+          <div className="field">
+            <label><i className="icon icon-pkg-type on s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">{pkg.product.loadProTime}</span>
+            </div>
+          </div>
+        </div>
+        <h2 className="subtitle">路线信息</h2>
         <div className="field-group">
           <div className="field">
             <label><i className="icon icon-start-point on s20"></i></label>
@@ -172,10 +187,22 @@ export default class PkgDetailPage extends Component {
               <span className="input-holder on">{pkg.product.fromCity}</span>
             </div>
           </div>
+          <div className={cx('field', pkg.product.fromAddr != '' ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">{pkg.product.fromAddr}</span>
+            </div>
+          </div>
           <div className="field">
             <label><i className="icon icon-end-point on s20"></i></label>
             <div className="control">
               <span className="input-holder on">{pkg.product.toCity}</span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.toAddr != '' ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">{pkg.product.toAddr}</span>
             </div>
           </div>
         </div>
@@ -190,12 +217,30 @@ export default class PkgDetailPage extends Component {
         </div>
         <h2 className="subtitle">车辆要求</h2>
         <div className="field-group">
-          <div className="field truck-field">
+          <div className="field">
             <label>
               <i className="icon icon-truck-type s20"></i>
             </label>
             <div className="control">
               <span className="input-holder on">{truckDesc}</span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.loadingTypeStr ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder">
+                <i className="inner-label">装货方式</i>
+                <b className="inner-val">{pkg.product.loadingTypeStr}</b>
+              </span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.payTypeStr ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">
+                <i className="inner-label">运费结算方式</i>
+                <b className="inner-val">{pkg.product.payTypeStr}</b>
+              </span>
             </div>
           </div>
         </div>
