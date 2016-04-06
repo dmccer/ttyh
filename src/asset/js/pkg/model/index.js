@@ -47,3 +47,10 @@ export var TodayRecommendPkgs = (params) => {
   let qs = querystring.stringify(params);
   return fetch(`/mvc/todayRecommendProductsForH5?${qs}`, GET_OPT);
 }
+
+export var OrderedEnumValue = (type) => {
+  let qs = querystring.stringify({
+    type: type
+  });
+  return fetch(`/mvc/v2/getOrderEnumValue?${qs}`, GET_OPT);
+}
