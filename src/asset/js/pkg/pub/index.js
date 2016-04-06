@@ -22,7 +22,6 @@ import Log from '../../log/';
 import Selector from '../../selector/';
 import CitySelector from '../../city-selector/';
 import FixedHolder from '../../fixed-holder/';
-import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
 import {FieldChangeEnhance} from '../../enhance/field-change';
 import DT from '../../helper/date';
 import AH from '../../helper/ajax';
@@ -30,35 +29,14 @@ import {
   PubPkg
 } from '../model/';
 import DatePicker from '../../datepicker/';
+import {
+  PKG_DRAFT, PKG_INFO_DATA,
+  PKG_MEMO, TIME_AREAS,
+  PAGE_TYPE, PKG_TRUCK_USE_DATA,
+  JUST_SELECT_TRUCK_TYPE
+} from '../../const/pkg-pub';
 
-const DRAFT = 'pkg-pub';
-const MEMO = 'pkg-pub-memo';
-const PAGE_TYPE = 'shipper_page';
 const ALL = '不限';
-const TIME_AREAS = [
-  {
-    name: '不限',
-    id: 0
-  }, {
-    name: '上午',
-    id: 1,
-    test: (h) => {
-      return h < 12;
-    }
-  }, {
-    name: '下午',
-    id: 2,
-    test: (h) => {
-      return h < 18;
-    }
-  }, {
-    name: '晚上',
-    id: 3,
-    test: (h) => {
-      return h < 24;
-    }
-  }
-];
 const LOAD_TYPES = [
   {
     name: '不限',
@@ -86,24 +64,71 @@ const PAYMENT_TYPES = [
     id: 3
   }
 ]
+const TMP_DATA = JSON.parse(localStorage.getItem(PKG_DRAFT));
 
 @FieldChangeEnhance
-@SelectTruckTypeEnhance
 export default class PkgPubPage extends React.Component {
-  static defaultProps = JSON.parse(localStorage.getItem(DRAFT)) || {};
+  static defaultProps = (() => {
+    let r = {};
 
-  state = assign({
+    if (!TMP_DATA) {
+      return r;
+    }
+
+    ['detailFromCity', 'detailToCity'].forEach(key => {
+      r[key] = TMP_DATA[key];
+    });
+
+    return r;
+  })();
+
+  state = {
     qs: querystring.parse(location.search.substring(1)),
-    memo: localStorage.getItem(MEMO),
+    memo: localStorage.getItem(PKG_MEMO),
     timeAreas: [],
     loadTypes: LOAD_TYPES,
     paymentTypes: PAYMENT_TYPES,
     loadType: {},
     paymentType: {}
-  }, JSON.parse(localStorage.getItem(DRAFT)) || {});
+  };
 
   constructor(props) {
     super(props);
+  }
+
+  componentWillMount() {
+    if (TMP_DATA) {
+      let r = {};
+
+      [
+        'entruckTime', 'fromCity', 'toCity',
+        'loadType', 'paymentType', 'entruckTimeArea'
+      ].forEach(key => {
+        if (TMP_DATA[key]) {
+          r[key] = TMP_DATA[key];
+        }
+      });
+
+      this.setState(r);
+    }
+
+    let TMP_PIDATA = JSON.parse(localStorage.getItem(PKG_INFO_DATA));
+    if (TMP_PIDATA) {
+      let volumeStr = TMP_PIDATA.pkgVolume ? `${TMP_PIDATA.pkgVolume}方` : '';
+      this.setState({
+        pkgInfo: TMP_PIDATA,
+        pkgInfoDesc: `${TMP_PIDATA.pkgName} ${TMP_PIDATA.pkgWeight}吨 ${volumeStr} ${TMP_PIDATA.packManner.name}*${TMP_PIDATA.pkgCount}`
+      });
+    }
+
+    let TMP_TUDATA = JSON.parse(localStorage.getItem(PKG_TRUCK_USE_DATA));
+    if (TMP_TUDATA) {
+      let size = TMP_TUDATA.truckUseType.id === JUST_SELECT_TRUCK_TYPE ? `${TMP_TUDATA.stallSize}米` : TMP_TUDATA.truckLength.name;
+      this.setState({
+        truckUseInfo: TMP_TUDATA,
+        truckUseInfoDesc: `${TMP_TUDATA.truckUseType.name} ${TMP_TUDATA.truckType.name} ${size}`
+      });
+    }
   }
 
   componentDidMount() {
@@ -142,8 +167,8 @@ export default class PkgPubPage extends React.Component {
         this.refs.poptip.success('发布货源成功');
 
         // 清空发布货源草稿及备注
-        localStorage.removeItem(DRAFT);
-        localStorage.removeItem(MEMO);
+        localStorage.removeItem(PKG_DRAFT);
+        localStorage.removeItem(PKG_MEMO);
 
         this.setState({
           fromCity: null,
@@ -187,17 +212,17 @@ export default class PkgPubPage extends React.Component {
       return '到达地址不能为空';
     }
 
-    if (!props.truckType || $.trim(props.truckType.id) === '') {
-      return '车型不能为空';
-    }
+    // if (!props.truckType || $.trim(props.truckType.id) === '') {
+    //   return '车型不能为空';
+    // }
 
-    if (!props.truckLength || $.trim(props.truckLength.id) === '') {
-      return '车长不能为空';
-    }
+    // if (!props.truckLength || $.trim(props.truckLength.id) === '') {
+    //   return '车长不能为空';
+    // }
 
-    if (parseFloat(props.weight) > 9999) {
-      return '载重不能超过9999吨';
-    }
+    // if (parseFloat(props.weight) > 9999) {
+    //   return '载重不能超过9999吨';
+    // }
 
     return true;
   }
@@ -207,14 +232,17 @@ export default class PkgPubPage extends React.Component {
    */
   writeDraft() {
     let props = this.props;
+    let states = this.state;
 
-    localStorage.setItem(DRAFT, JSON.stringify({
-      truckType: props.truckType,
-      truckLength: props.truckLength,
-      pkgType: props.pkgType,
-      fromCity: this.state.fromCity,
-      toCity: this.state.toCity,
-      pkgWeight: props.pkgWeight
+    localStorage.setItem(PKG_DRAFT, JSON.stringify({
+      entruckTime: states.entruckTime,
+      timeArea: states.timeArea,
+      fromCity: states.fromCity,
+      toCity: states.toCity,
+      detailFromCity: props.detailFromCity,
+      detailToCity: props.detailToCity,
+      loadType: states.loadType,
+      paymentType: states.paymentType
     }));
   }
 
@@ -347,27 +375,6 @@ export default class PkgPubPage extends React.Component {
     }
   }
 
-  /**
-   * 处理数字型字段值修改
-   * @param  {String} field 字段名
-   * @param  {ChangeEvent} e
-   */
-  handleNumChange(field: string, e: Object) {
-    this.setState({
-      [field]: $.trim(e.target.value).replace(/[^\d\.]+/g, '')
-    }, () => {
-      this.writeDraft();
-    });
-  }
-
-  handleStrChange(field: string, e: Object) {
-    this.setState({
-      [field]: $.trim(e.target.value)
-    }, () => {
-      this.writeDraft();
-    });
-  }
-
   handleSelectDate(d) {
     // TODO
     // set date
@@ -397,17 +404,18 @@ export default class PkgPubPage extends React.Component {
     }
 
     this.setState({
-      selectedDate: d,
+      entruckTime: DT.toLocaleDateString(d),
       timeAreas: r
     }, () => {
       this.refs.dateAreaSelector.show();
+      this.writeDraft();
     });
   }
 
   handleSelectTimeArea(v) {
     this.setState({
       timeArea: v
-    });
+    }, this.writeDraft.bind(this));
   }
 
 
@@ -418,7 +426,7 @@ export default class PkgPubPage extends React.Component {
   handleSelectLoadType(v) {
     this.setState({
       loadType: v
-    });
+    }, this.writeDraft.bind(this));
   }
 
   handleClickSelectPaymentType() {
@@ -428,7 +436,7 @@ export default class PkgPubPage extends React.Component {
   handleSelectPaymentType(v) {
     this.setState({
       paymentType: v
-    });
+    }, this.writeDraft.bind(this));
   }
 
   /**
@@ -449,6 +457,7 @@ export default class PkgPubPage extends React.Component {
 
   render() {
     let props = this.props;
+    let states = this.state;
     let truckType = props.truckType;
     let truckLength = props.truckLength;
 
@@ -456,13 +465,14 @@ export default class PkgPubPage extends React.Component {
       ? `${truckType.name} ${truckLength && truckLength.name || ''}`
       : null;
 
-    let selectedDate = this.state.selectedDate;
-    let timeAreaSelectorTitle = selectedDate
-      ? `${DT.toLocaleDateString(selectedDate)}${DT.isToday(selectedDate) ? ' (今天)' : ''}`
+    let entruckTime = this.state.entruckTime;
+    let entruckTimeObj = new Date(entruckTime);
+    let timeAreaSelectorTitle = entruckTime
+      ? `${DT.toLocaleDateString(entruckTimeObj)}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
       : '';
 
     let timeArea = this.state.timeArea;
-    let selectedDateStr = selectedDate ? (DT.format(selectedDate) + (timeArea ? ` ${timeArea.name}` : '')) : null;
+    let entruckTimeStr = entruckTime ? (DT.format(entruckTimeObj) + (timeArea ? ` ${timeArea.name}` : '')) : null;
 
     return (
       <section className="pkg-pub">
@@ -472,9 +482,9 @@ export default class PkgPubPage extends React.Component {
             <label><i className="icon icon-pkg-type s20"></i></label>
             <div className="control">
               <span
-                className={cx('input-holder', selectedDate && 'on' || '')}
+                className={cx('input-holder', entruckTime && 'on' || '')}
                 onClick={() => { this.refs.datepicker.show(new Date()); }}
-              >{selectedDateStr || '请选择装车日期'}</span>
+              >{entruckTimeStr || '请选择装车日期'}</span>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -538,9 +548,9 @@ export default class PkgPubPage extends React.Component {
             <label><i className="icon icon-pkg-type s20"></i></label>
             <div className="control">
               <a
-                href="#"
-                className={cx('input-holder', truckDesc && 'on' || '')}
-              >{truckDesc || '请填写货物信息'}</a>
+                href="./pkg-info-pub.html"
+                className={cx('input-holder', states.pkgInfoDesc && 'on' || '')}
+              >{states.pkgInfoDesc || '请填写货物信息'}</a>
               <i className="icon icon-arrow"></i>
             </div>
           </div>
@@ -550,15 +560,14 @@ export default class PkgPubPage extends React.Component {
         <div className="field-group">
           <div className="field">
             <label>
-              <b>*</b>
               <i className="icon icon-truck-type s20"></i>
             </label>
             <div className="control">
               <a
                 href="./truck-requirement.html"
-                className={cx('input-holder', truckDesc && 'on' || '')}
+                className={cx('input-holder', states.truckUseInfoDesc && 'on' || '')}
               >
-                {truckDesc || '请填写用车要求'}
+                {states.truckUseInfoDesc || '请填写用车要求'}
               </a>
               <i className="icon icon-arrow"></i>
             </div>
