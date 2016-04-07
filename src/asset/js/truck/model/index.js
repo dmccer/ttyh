@@ -38,6 +38,19 @@ export var AddTruck = (params) => {
   }, POST_OPT));
 }
 
+export var EditTruck = (params) => {
+  return fetch('/mvc/v2/updateTruck', assign({
+    body: querystring.stringify(params)
+  }, POST_OPT));
+}
+
+export var GetTruck = (tid) => {
+  let qs = querystring.stringify({
+    truckID: tid
+  });
+  return fetch(`/mvc/v2/getTruckById?${qs}`, GET_OPT);
+}
+
 export var TruckUsers = (params) => {
   let qs = querystring.stringify(params);
   return fetch(`/mvc/searchUsersForH5?${qs}`, GET_OPT);
