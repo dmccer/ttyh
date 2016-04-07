@@ -66,7 +66,7 @@ export default class SearchItem extends Component {
     let truckLength = truck.truckLength != null && parseFloat(truck.truckLength) !== 0 ? `${truck.truckLength}米`: '';
     let loadLimit = truck.loadLimit != null && parseFloat(truck.loadLimit) !== 0 ? `${truck.loadLimit}吨` : '';
 
-    let tel = JWeiXin.isWeixinBrowser() ? null : <p>电话联系: {truck.mobileNo}</p>;
+    let tel = JWeiXin.isWeixinBrowser() ? null : <p className="tel-text">电话联系: {truck.mobileNo}</p>;
     let telLink = JWeiXin.isWeixinBrowser() ? (
       <div className="tel">
         <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${truck.mobileNo}`} className="icon icon-call s30"></a>
