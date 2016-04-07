@@ -15,6 +15,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'promise';
 import cx from 'classnames';
+import querystring from 'querystring';
 
 import $ from '../../helper/z';
 import Poptip from '../../poptip/';
@@ -25,36 +26,96 @@ import {FieldChangeEnhance} from '../../enhance/field-change';
 import {SelectTruckTypeEnhance} from '../../enhance/select-truck-type';
 import AH from '../../helper/ajax';
 import {
-  AddTruck
+  GetTruck,
+  AddTruck,
+  EditTruck
 } from '../model/';
 import {
   SELECTED_COMMON_ROUTE,
   TRUCK_ADD_DRAFT
 } from '../../const/truck-pub';
 
-const ERR_MSG = {
-  1001: '没有找到用户',
-  1002: '您没有登录'
-};
-
 @FieldChangeEnhance
 @SelectTruckTypeEnhance
 export default class TruckAddPage extends React.Component {
-  state = {};
+  state = {
+    qs: querystring.parse(location.search.substring(1))
+  };
 
   constructor(props) {
     super(props);
   }
 
+  componentWillMount() {
+    if ($.trim(this.state.qs.tid) != '') {
+      this.setState({
+        edit: true
+      });
+    }
+  }
+
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
 
+    if (this.state.edit) {
+      // 编辑并且已有新编辑的内容
+      if (this.state.qs.refer === 'back') {
+        this.readLocal();
+        return;
+      }
+
+      // 先清除上次的数据
+      this.clearData();
+
+      // 首次进入编辑
+      this.getTruck();
+      return;
+    }
+
+    this.readLocal();
+  }
+
+  writeRemoteToLocal(truck: Object) {
+    let commonRoute = {
+      fromCity: truck.fromcity,
+      toCity: truck.tocity
+    };
+
+    let mappedTruck = {
+      name: truck.dirverName,
+      tel: truck.dirverPoneNo,
+      license: truck.licensePlate,
+      weight: truck.loadLimit,
+      memo: truck.memo,
+      truckType: {
+        id: truck.truckType,
+        name: truck.truckTypeStr
+      },
+      truckLength: {
+        id: truck.truckLength,
+        name: `${truck.truckLength}米`
+      }
+    };
+
+    localStorage.setItem(SELECTED_COMMON_ROUTE, JSON.stringify(commonRoute));
+    localStorage.setItem(TRUCK_ADD_DRAFT, JSON.stringify(mappedTruck));
+
+    this.readLocal();
+  }
+
+  getTruck() {
+    this.ah.one(GetTruck, (res) => {
+      this.writeRemoteToLocal(res.truck);
+    }, this.state.qs.tid);
+  }
+
+  readLocal() {
     let TMP_DATA = JSON.parse(localStorage.getItem(SELECTED_COMMON_ROUTE));
     if (TMP_DATA) {
       this.setState({
         fromCity: TMP_DATA.fromCity,
         toCity: TMP_DATA.toCity,
-        commonRouteDesc: `${TMP_DATA.fromCity} 到 ${TMP_DATA.toCity}`
+        commonRouteDesc: TMP_DATA.fromCity && TMP_DATA.toCity ? `${TMP_DATA.fromCity} 到 ${TMP_DATA.toCity}` : ''
       });
     }
 
@@ -75,6 +136,11 @@ export default class TruckAddPage extends React.Component {
     }
   }
 
+  clearData() {
+    localStorage.removeItem(TRUCK_ADD_DRAFT);
+    localStorage.removeItem(SELECTED_COMMON_ROUTE);
+  }
+
   /**
    * 提交车辆
    * @param  {ClickEvent} e
@@ -92,35 +158,40 @@ export default class TruckAddPage extends React.Component {
     }
 
     let props = this.props;
-
-    this.ah.one(AddTruck, {
-      success: (res) => {
-        if (res.retcode !== 0) {
-          this.refs.poptip.warn(ERR_MSG[res.retcode]);
-
-          return;
-        }
-
-        this.refs.poptip.success('添加车辆成功');
-        localStorage.removeItem(TRUCK_ADD_DRAFT);
-        localStorage.removeItem(SELECTED_COMMON_ROUTE);
-        
-        history.back();
-      },
-      error: (err) => {
-        Log.error(err);
-
-        this.refs.poptip.warn('添加车辆失败');
-      }
-    }, {
+    let data = {
       dirverName: props.name,
       dirverPoneNo: props.tel,
       licensePlate: props.license,
       loadLimit: props.weight,
       truckType: props.truckType.id,
       truckLength: props.truckLength.id,
-      memo: props.memo
-    });
+      memo: props.memo,
+      fromcity: this.state.fromCity,
+      tocity: this.state.toCity
+    };
+
+    if (this.state.edit) {
+      data.truckID = this.state.qs.tid;
+    }
+
+    this.ah.one(this.state.edit ? EditTruck: AddTruck, {
+      success: (res) => {
+        if (res.retcode !== 0) {
+          this.refs.poptip.warn('保存车辆失败');
+
+          return;
+        }
+
+        this.refs.poptip.success('保存车辆成功');
+        this.clearData();
+        history.back();
+      },
+      error: (err) => {
+        Log.error(err);
+
+        this.refs.poptip.warn('保存车辆失败');
+      }
+    }, data);
   }
 
   /**
@@ -177,6 +248,12 @@ export default class TruckAddPage extends React.Component {
       truckLength: props.truckLength,
       memo: props.memo
     }));
+  }
+
+  addCommonRoute() {
+    let url = `/select-truck-common-route.html?tid=${this.state.qs.tid || ''}`;
+
+    location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, url));
   }
 
   render() {
@@ -251,7 +328,7 @@ export default class TruckAddPage extends React.Component {
             <label className="label"><span>常跑路线</span></label>
             <div className="control with-arrow">
               <a
-                href="./select-truck-common-route.html"
+                onClick={this.addCommonRoute.bind(this)}
                 className={cx('input-holder', this.state.commonRouteDesc && 'on' || '')}
               >{this.state.commonRouteDesc || '请选择常跑路线'}</a>
               <i className="icon icon-arrow"></i>

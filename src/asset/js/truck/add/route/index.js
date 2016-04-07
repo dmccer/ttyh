@@ -7,6 +7,8 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
+import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 
 import $ from '../../../helper/z';
 import CitySelector from '../../../city-selector/';
@@ -15,7 +17,9 @@ import {PAGE_TYPE, SELECTED_COMMON_ROUTE} from '../../../const/truck-pub';
 const ALL = '全部';
 
 export default class SelectCommonRoutePage extends Component {
-  state = {};
+  state = {
+    qs: querystring.parse(location.search.substring(1))
+  };
 
   constructor() {
     super();
@@ -42,7 +46,11 @@ export default class SelectCommonRoutePage extends Component {
       }));
     }
 
-    history.back();
+    let qs = querystring.stringify(assign({}, this.state.qs, {
+      refer: 'back'
+    }));
+
+    location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/truck-add.html?' + qs));
   }
 
   toggleCitySelector(field, e) {
