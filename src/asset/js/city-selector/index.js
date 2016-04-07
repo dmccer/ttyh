@@ -347,7 +347,7 @@ export default class CitySelector extends React.Component {
    */
   renderItem(list, field) {
     if (field === 'province') {
-      return list.map((item, index) => {
+      let rowList = list.map((item, index) => {
         let children = item.child.map((province, pIndex) => {
           return (
             <div
@@ -367,6 +367,20 @@ export default class CitySelector extends React.Component {
           </dl>
         );
       });
+
+      rowList.unshift((
+        <dl className="row" key={`region_all`}>
+          <dt className="hd"></dt>
+          <dd className="bd">
+            <div
+              className="item"
+              onTouchTap={this[`select_${field}`].bind(this, ALL)}
+            >{ALL}</div>
+          </dd>
+        </dl>
+      ));
+
+      return rowList;
     }
 
     let children = (list.child || []).map((item, index) => {
