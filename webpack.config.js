@@ -35,6 +35,7 @@ module.exports = {
 
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
+    'my-roadtrain': './src/asset/js/truck/my-roadtrain/index.js',
     'truck-add': './src/asset/js/truck/add/index.js',
     'select-truck-common-route': './src/asset/js/truck/add/route/index.js',
     'my-truck': './src/asset/js/truck/my/index.js',
@@ -214,6 +215,14 @@ module.exports = {
       template: './src/page/index.ejs',
       filename: 'roadtrain.html',
       chunks: ['roadtrain', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '我的车队',
+      template: './src/page/index.ejs',
+      filename: 'my-roadtrain.html',
+      chunks: ['my-roadtrain', 'fetch', 'ved'],
       chunksSortMode: 'dependency',
       inject: 'body'
     }),
