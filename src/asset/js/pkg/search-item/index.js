@@ -36,7 +36,12 @@ export default class SearchItem extends Component {
 
   render() {
     let props = this.props;
-    let tel = JWeiXin.isWeixinBrowser() ? null : <p className="tel">电话联系: {props.product.provideUserMobileNo}</p>;
+    let tel = JWeiXin.isWeixinBrowser() ? null : <p className="tel-text">电话联系: {props.product.provideUserMobileNo}</p>;
+    let telLink = JWeiXin.isWeixinBrowser() ? (
+      <div className="tel">
+        <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
+      </div>
+    ) : null;
 
     return (
       <div className="pkg-item" onTouchTap={this.detail.bind(this)}>
@@ -75,9 +80,7 @@ export default class SearchItem extends Component {
               </p>
             </div>
           </div>
-          <a className="contact" ref="tel" href={`tel:${props.product.provideUserMobileNo}`}>
-            <i className="icon icon-call s30"></i>
-          </a>
+          {telLink}
         </div>
       </div>
     );
