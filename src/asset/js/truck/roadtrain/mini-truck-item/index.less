@@ -3,15 +3,15 @@
 .mini-truck-item {
   background-color: @white;
   height: 100%;
+  position: relative;
+  padding: 12px 30px 12px 15px;
+  font-size: 13px;
 
-  a {
-    display: block;
-    position: relative;
-    padding: 12px 30px 12px 15px;
-    font-size: 13px;
+  > * {
+    margin-bottom: 5px;
 
-    > * {
-      margin-bottom: 5px;
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 
@@ -26,6 +26,30 @@
   p {
     font-weight: bolder;
     color: @c_black;
+  }
+
+  .common-route {
+    color: @c_black;
+
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .extra-desc {
+      color: @c_lightBlack;
+      padding-left: 5px;
+    }
+  }
+
+  .tel-text {
+    color: @c_black;
+    font-weight: normal;
   }
 
   .memo {
