@@ -58,10 +58,12 @@ export default class CitySelector extends React.Component {
     super();
   }
 
-  show(top: String) {
+  show(top: String, step=3, useHistory=true) {
     this.setState({
       top: top,
-      on: true
+      on: true,
+      step: step,
+      useHistory: useHistory
     });
 
     this.props.onShow();
@@ -157,12 +159,6 @@ export default class CitySelector extends React.Component {
     }, () => {
       this.props.onSelectArea(area, this.state.city, this.state.province);
 
-      if (area === ALL) {
-        this.done();
-
-        return;
-      }
-
       this.done();
     });
   }
@@ -177,7 +173,7 @@ export default class CitySelector extends React.Component {
     }, () => {
       this.props.onSelectCity(city, this.state.province);
 
-      if (city === ALL) {
+      if (city === ALL || this.state.step === 2) {
         this.done();
 
         return;
@@ -198,7 +194,7 @@ export default class CitySelector extends React.Component {
     }, () => {
       this.props.onSelectProvince(province);
 
-      if (province === ALL) {
+      if (province === ALL || this.state.step === 1) {
         this.done();
         return;
       }
@@ -218,7 +214,7 @@ export default class CitySelector extends React.Component {
     let area = this.state.area;
 
     // 若有选择，则写入历史记录
-    if (province && province !== ALL) {
+    if (province && province !== ALL && this.state.useHistory) {
       this.writeHistory2Local({
         province: province,
         city: city === ALL ? null : city,
@@ -306,7 +302,7 @@ export default class CitySelector extends React.Component {
   renderHistory() {
     let list = this.state.historyCities;
 
-    if (list.length) {
+    if (list.length && this.state.useHistory) {
       let historyList = list.map((item, index) => {
         return (
           <li
