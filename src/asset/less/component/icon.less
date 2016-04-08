@@ -131,13 +131,19 @@
   &.icon-call,
   &.icon-del-addr,
   &.icon-add-addr,
-  &.icon-filter {
+  &.icon-filter,
+  &.icon-credentials {
     background-size: 100% 100%;
     background-repeat: no-repeat;
 
     &.s30 {
       width: 30px;
       height: 30px;
+    }
+
+    &.s25 {
+      width: 25px;
+      height: 25px;
     }
 
     &.s20 {
@@ -268,6 +274,10 @@
 
   &.icon-account {
     background-image: url('../../img/common/account-30.png');
+
+    &.off {
+      background-image: url('../../img/app/account@3x.png');
+    }
   }
 
   &.icon-correct {
@@ -349,5 +359,8 @@
   }
   &.icon-filter {
     background-image: url('../../img/app/shaixuan-off-30@3x.png');
+  }
+  &.icon-credentials {
+    background-image: url('../../img/app/zhengjian@3x.png');
   }
 }
