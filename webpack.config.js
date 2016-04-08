@@ -420,8 +420,8 @@ module.exports = {
     hot: true,
     inline: true,
     proxy: {
-      '/api/bbs*': {
-        target: 'http://api.ttyhuo.com:85',
+      '/app*': {
+        target: 'http://api.ttyhuo.com',
         secure: false
       },
       '/mvc/code_msg*': {
