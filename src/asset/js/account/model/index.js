@@ -34,3 +34,25 @@ export var Login = (params) => {
     body: querystring.stringify(params)
   }, POST_OPT));
 }
+
+export var RealNameCertify = (params) => {
+  return fetch('/mvc/v2/realNameCertify', assign({
+    body: querystring.stringify(params)
+  }, POST_OPT));
+}
+
+export var CompanyCertify = (params) => {
+  return fetch('/mvc/v2/companyCertify', assign({
+    body: querystring.stringify(params)
+  }, POST_OPT));
+}
+
+export var TruckerCertify = (params) => {
+  return fetch('/mvc/v2/truckerCertify', assign({
+    body: querystring.stringify(params)
+  }, POST_OPT));
+}
+
+export var UserRealNameCertify = () => {
+  return fetch('/mvc/v2/')
+}
