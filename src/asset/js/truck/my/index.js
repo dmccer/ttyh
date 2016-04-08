@@ -19,11 +19,13 @@ import TruckItem from '../item/';
 import truckPNG from '../../../img/app/truck@3x.png';
 import FixedHolder from '../../fixed-holder/';
 import AH from '../../helper/ajax';
+import Confirm from '../../confirm/';
 import {
   MyTruckRoutes,
   DelTruckRoutes,
   RePubTruckRoutes
 } from '../model/';
+import {REAL_NAME_CERTIFY_TITLE, REAL_NAME_CERTIFY_TIP} from '../../const/certify';
 
 const ERR_MSG_REPUB = {
   1001: '您没有登录',
@@ -168,6 +170,20 @@ export default class MyTruckPage extends Component {
     }, truck.userWithLatLng.routeID);
   }
 
+  handleGoToPub(e) {
+    if (!this.state.realNameVerified) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP
+      });
+
+      return;
+    }
+  }
+
   /**
    * 展示车源列表为空时的提示
    */
@@ -225,9 +241,15 @@ export default class MyTruckPage extends Component {
         {this.renderEmpty()}
         {this.renderTruckList()}
         <FixedHolder height="70" />
-        <a href="./truck-pub.html" className="pub-btn">发布</a>
+        <a href="./truck-pub.html" onClick={this.handleGoToPub.bind(this)} className="pub-btn">发布</a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
       </div>
     );
   }
