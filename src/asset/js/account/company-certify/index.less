@@ -1,0 +1,52 @@
+@import '../../../less/global/site.variable';
+
+body {
+  background-color: @offWhite;
+}
+
+.pic-holder {
+  background-color: @c_lightGreen;
+  border-radius: 2px;
+  text-align: center;
+  color: @white;
+  height: 50px;
+  width: 50px;
+  box-sizing: border-box;
+
+  > div {
+    vertical-align: middle;
+  }
+
+  p {
+    margin-top: 3px;
+    font-size: 11px;
+  }
+}
+
+.cells.cells-form {
+  margin-bottom: 10px;
+
+  .label {
+    color: @c_lightBlack;
+    font-size: 13px;
+  }
+
+  .input, .textarea, .val, .holder {
+    font-size: 13px;
+  }
+
+  .textarea {
+    height: 60px;
+    text-align: left;
+  }
+}
+
+.bottom-btn {
+  position: fixed;
+  width: 100%;
+  box-sizing: border-box;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  border-radius: 0;
+}
