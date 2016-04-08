@@ -19,11 +19,13 @@ import pkgPNG from '../../../img/app/pkg@3x.png';
 import Log from '../../log/';
 import FixedHolder from '../../fixed-holder/';
 import AH from '../../helper/ajax';
+import Confirm from '../../confirm/';
 import {
   MyPkgSearch,
   RePubPkg,
   DelPkg
 } from '../model/';
+import {REAL_NAME_CERTIFY_TITLE, REAL_NAME_CERTIFY_TIP} from '../../const/certify';
 
 const ERR_MSG_REPUB = {
   1001: '您没有登录',
@@ -46,7 +48,7 @@ export default class MyPkgPage extends Component {
 
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
-    
+
     LoadMore.init(() => {
       if (!this.state.over) {
         this.fetchMyPkgs(this.state.pageIndex);
@@ -155,6 +157,20 @@ export default class MyPkgPage extends Component {
     }, pkg.product.productID);
   }
 
+  handleGoToPub(e) {
+    if (!this.state.realNameVerified) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP
+      });
+
+      return;
+    }
+  }
+
   /**
    * 展示货源为空时的提示界面
    * @return {Element}
@@ -210,9 +226,15 @@ export default class MyPkgPage extends Component {
         {this.renderEmpty()}
         {this.renderPkgList()}
         <FixedHolder height="70" />
-        <a href="./pkg-pub.html" className="pub-btn">发布</a>
+        <a href="./pkg-pub.html" onClick={this.handleGoToPub.bind(this)} className="pub-btn">发布</a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
       </div>
     );
   }

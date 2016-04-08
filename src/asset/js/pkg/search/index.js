@@ -16,9 +16,11 @@ import SearchCondition from '../../condition/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import Confirm from '../../confirm/';
 import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 import AH from '../../helper/ajax';
+import {REAL_NAME_CERTIFY_TITLE, REAL_NAME_CERTIFY_TIP} from '../../const/certify';
 import {
   PkgSearch
 } from '../model/';
@@ -96,6 +98,24 @@ export default class SearchPkgPage extends Component {
     });
   }
 
+  handleShowVerifyTip(tel) {
+    this.setState({
+      activeTel: tel
+    });
+
+    this.refs.verifyTip.show({
+      title: REAL_NAME_CERTIFY_TITLE,
+      msg: REAL_NAME_CERTIFY_TIP
+    });
+  }
+
+  handleCancelVerify() {
+    this.refs.telPanel.show({
+      title: '拨打电话',
+      msg: this.state.activeTel
+    });
+  }
+
   /**
    * 展示货源为空时的提示界面
    * @return {Element}
@@ -118,7 +138,12 @@ export default class SearchPkgPage extends Component {
 
     if (pkgs && pkgs.length) {
       return pkgs.map((pkg, index) => {
-        return <SearchItem key={`pkg-item_${index}`} {...pkg} />
+        return (
+          <SearchItem
+            verifyTip={this.handleShowVerifyTip.bind(this)}
+            key={`pkg-item_${index}`}
+            {...pkg} />
+        );
       });
     }
 
@@ -137,6 +162,19 @@ export default class SearchPkgPage extends Component {
         </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          cancel={this.handleCancelVerify.bind(this)}
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
+        <Confirm
+          ref="telPanel"
+          rightLink={`tel:${this.state.activeTel}`}
+          rightBtnText={'拨打'}
+          leftBtnText={'取消'}
+        />
       </div>
     );
   }
