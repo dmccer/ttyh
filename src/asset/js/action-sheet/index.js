@@ -25,6 +25,11 @@ export default class ActionSheet extends Component {
     this.props.cancel();
   }
 
+  handleClick(item: Object) {
+    item.handler();
+    this.cancel();
+  }
+
   render() {
     if (!this.state.on) {
       return null;
@@ -35,8 +40,8 @@ export default class ActionSheet extends Component {
         <div
           key={`as-cell_${index}`}
           className="as-cell"
-          onClick={item.handler}
-        >选择照片</div>
+          onClick={this.handleClick.bind(this, item)}
+        >{item.name}</div>
       )
     });
 
