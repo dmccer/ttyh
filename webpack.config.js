@@ -48,6 +48,9 @@ module.exports = {
     'real-name-certify': './src/asset/js/account/real-name-certify/index.js',
     'trucker-certify': './src/asset/js/account/trucker-certify/index.js',
     'company-certify': './src/asset/js/account/company-certify/index.js',
+    'company-certify-result': './src/asset/js/account/company-certify/result/index.js',
+    'real-name-certify-result': './src/asset/js/account/real-name-certify/result/index.js',
+    'trucker-certify-result': './src/asset/js/account/trucker-certify/result/index.js',
 
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
@@ -364,6 +367,30 @@ module.exports = {
       template: './src/page/index.ejs',
       filename: 'company-certify.html',
       chunks: ['company-certify', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '公司认证',
+      template: './src/page/index.ejs',
+      filename: 'company-certify-result.html',
+      chunks: ['company-certify-result', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '实名认证',
+      template: './src/page/index.ejs',
+      filename: 'real-name-certify-result.html',
+      chunks: ['real-name-certify-result', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '车辆认证',
+      template: './src/page/index.ejs',
+      filename: 'trucker-certify-result.html',
+      chunks: ['trucker-certify-result', 'fetch', 'ved'],
       chunksSortMode: 'dependency',
       inject: 'body'
     })
