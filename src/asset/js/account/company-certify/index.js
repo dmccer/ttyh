@@ -27,15 +27,13 @@ import ShopFaceDemoPng from '../../../img/app/mentouzhao@3x.png';
 import BizLicenseDemoPng from '../../../img/app/yingyezhizhao@3x.png';
 import BizCardDemoPng from '../../../img/app/mingpingzhao@3x.png';
 
-import {CompanyCertify} from '../model/';
+import {CompanyCertify, CompanyCertifyStatus} from '../model/';
 
 const COMPANY_CERTIFY_DRAFT = 'company_certify_draft';
 
 @FieldChangeEnhance
 export default class TruckerCertifyPage extends Component {
-  state = {
-    maxBizDescLength: 80
-  };
+  state = {};
 
   constructor(props) {
     super(props);
@@ -60,7 +58,9 @@ export default class TruckerCertifyPage extends Component {
     EventListener.listen(window, 'beforeunload', () => {
       localStorage.setItem(COMPANY_CERTIFY_DRAFT, JSON.stringify(this.getData()))
     });
+  }
 
+  readFromLocal() {
     let TMP_DATA = JSON.parse(localStorage.getItem(COMPANY_CERTIFY_DRAFT));
     if (TMP_DATA) {
       this.setState({
@@ -79,6 +79,37 @@ export default class TruckerCertifyPage extends Component {
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
     Validator.config(this.refs.poptip);
+
+    this.fetch();
+  }
+
+  fetch() {
+    this.ah.one(CompanyCertifyStatus, (res) => {
+      if (res.auditStatus === 1) {
+        location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/company-certify-result.html`));
+        return;
+      }
+
+      if (res.auditStatus === -1 || res.auditStatus === 0) {
+        let result = res.userWithCompanyInfo;
+
+        this.setState({
+          bizCardPic: result.bizCardPic,
+          shopFacePic: result.shopFacePic,
+          bizLicensePic: result.bizLicensePic,
+          auditStatus: res.auditStatus
+        });
+        this.props.setFields({
+          companyName: result.companyName,
+          companyPos: result.companyPos,
+          companyAddr: result.companyAddr
+        });
+
+        return;
+      }
+
+      this.readFromLocal();
+    });
   }
 
   getData() {
@@ -97,7 +128,7 @@ export default class TruckerCertifyPage extends Component {
 
   validate() {
     let props = this.props;
-    let states = this.states;
+    let states = this.state;
 
     return (
       Validator.test('required', '请填写公司名称', props.companyName) &&
@@ -122,16 +153,71 @@ export default class TruckerCertifyPage extends Component {
     });
   }
 
+  uploadImage(localId: String) {
+    return new Promise((resolve, reject) => {
+      wx.uploadImage({
+        localId: localId,
+        isShowProgressTips: 1,
+        success: (res) => {
+          resolve(res.serverId);
+        }
+      });
+    });
+  }
+
+  transformData(data: Object) {
+    return {
+      company: data.companyName,
+      address: data.companyAddr,
+      jobPosition: data.companyPos,
+      companyAuthorizeUrlId: data.bizCardPic,
+      companyCertificateNOId: data.shopFacePic,
+      companyCertificateUrlId: data.bizLicensePic,
+      toAudit: true
+    };
+  }
+
   handleSubmit() {
     if (!this.validate()) {
       return;
     }
 
-    this.ah.one(RealNameCertify, (res) => {
-      this.refs.poptip.show('成功提交公司认证');
-      this.clearData();
-      setTimeout(history.back, 1500);
-    }, this.getData());
+    let data = this.getData();
+
+    this.uploadImage(data.bizCardPic)
+      .then(sid => {
+        data.bizCardPic = sid;
+
+        return this.uploadImage(data.shopFacePic);
+      })
+      .then(sid => {
+        data.shopFacePic = sid;
+
+        return this.uploadImage(data.bizLicensePic);
+      })
+      .then(sid => {
+        data.bizLicensePic = sid;
+
+        return data;
+      })
+      .then(this.transformData)
+      .then((params) => {
+        this.ah.one(CompanyCertify, (res) => {
+          if (res.retcode === 0) {
+            this.refs.poptip.warn('成功提交公司认证');
+
+            this.clearData();
+            setTimeout(history.back, 1500);
+
+            return;
+          }
+
+          this.refs.poptip.warn(res.msg);
+        }, params);
+      })
+      .catch(() => {
+        this.refs.poptip.warn('提交失败');
+      });
   }
 
   showActionSheet(field: Object, pic: String) {
@@ -153,10 +239,9 @@ export default class TruckerCertifyPage extends Component {
               sourceType: ['camera'],
               success: (res) => {
                 var localIds = res.localIds;
-                alert(JSON.stringify(localIds));
 
                 this.setState({
-                  [field]: localIds
+                  [field]: localIds[0]
                 });
               }
             });
@@ -170,10 +255,9 @@ export default class TruckerCertifyPage extends Component {
               sourceType: ['album'],
               success: (res) => {
                 var localIds = res.localIds;
-                alert(JSON.stringify(localIds));
 
                 this.setState({
-                  [field]: localIds
+                  [field]: localIds[0]
                 });
               }
             });
@@ -183,11 +267,41 @@ export default class TruckerCertifyPage extends Component {
     });
   }
 
+  closeNotice() {
+    this.setState({
+      noticeClosed: true
+    });
+  }
+
+  renderStatusText() {
+    let statusText;
+
+    switch (this.state.auditStatus) {
+      case 0:
+        statusText = '公司认证审核中...';
+        break;
+      case 1:
+        statusText = '公司认证失败!';
+        break;
+    }
+
+    if (statusText) {
+      return (
+        <div className={cx('notice', this.state.noticeClosed && 'hide' || '')} onClick={this.closeNotice.bind(this)}>
+          <b>·</b>
+          <span>{statusText}</span>
+          <i className="icon close">x</i>
+        </div>
+      );
+    }
+  }
+
   render() {
     let props = this.props;
 
     return (
       <section className="trucker-certify-page">
+        {this.renderStatusText()}
         <div className="cells cells-access cells-form">
           <div className="cell required">
             <div className="cell_hd">
