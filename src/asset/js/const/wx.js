@@ -1,4 +1,4 @@
 export default {
-  url: '/app/weixin/data_info/jsapi',
-  appId: 'wx13306fcc7460426e'
+  url: '/mvc/wx/jsapi',
+  appId: 'wx3e1252e1493096be'
 }
