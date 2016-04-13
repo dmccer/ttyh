@@ -24,7 +24,7 @@ import AH from '../../helper/ajax';
 import Validator from '../../helper/validator';
 import CitySelector from '../../city-selector/';
 import IDCardDemoPng from '../../../img/app/shenfenzhengzhao@3x.png';
-import {RealNameCertify} from '../model/';
+import {RealNameCertify, RealNameCertifyStatus} from '../model/';
 
 const REAL_NAME_CERTIFY_DRAFT = 'real_name_certify_draft';
 
@@ -57,25 +57,58 @@ export default class RealNameCertifyPage extends Component {
     EventListener.listen(window, 'beforeunload', () => {
       localStorage.setItem(REAL_NAME_CERTIFY_DRAFT, JSON.stringify(this.getData()))
     });
+  }
 
+  readFromLocal() {
     let TMP_DATA = JSON.parse(localStorage.getItem(REAL_NAME_CERTIFY_DRAFT));
     if (TMP_DATA) {
       this.setState({
         avatar: TMP_DATA.avatar,
-        idCardPic: TMP_DATA.idCardPic
+        idCardPic: TMP_DATA.idCardPic,
+        addr: TMP_DATA.addr
       });
       this.props.setFields({
         realName: TMP_DATA.realName,
         idCardNo: TMP_DATA.idCardNo,
-        addr: TMP_DATA.addr,
         bizDesc: TMP_DATA.bizDesc
       });
     }
   }
 
-  omponentDidMount() {
+  componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
     Validator.config(this.refs.poptip);
+
+    this.fetch();
+  }
+
+  fetch() {
+    this.ah.one(RealNameCertifyStatus, (res) => {
+      if (res.auditStatus === 1) {
+        location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/real-name-certify-result.html`));
+        return;
+      }
+
+      if (res.auditStatus === -1 || res.auditStatus === 0) {
+        let result = res.loggedUser;
+
+        this.setState({
+          avatar: result.FaceImgUrl,
+          idCardPic: result.IdentityImgUrl,
+          addr: result.identityAddress,
+          auditStatus: res.auditStatus
+        });
+        this.props.setFields({
+          realName: result.identityName,
+          idCardNo: result.identityID,
+          bizDesc: result.description
+        });
+
+        return;
+      }
+
+      this.readFromLocal();
+    });
   }
 
   getData() {
@@ -87,7 +120,7 @@ export default class RealNameCertifyPage extends Component {
       idCardPic: states.idCardPic,
       realName: props.realName,
       idCardNo: props.idCardNo,
-      addr: props.addr,
+      addr: states.addr,
       bizDesc: props.bizDesc
     };
   }
@@ -105,14 +138,38 @@ export default class RealNameCertifyPage extends Component {
     localStorage.removeItem(REAL_NAME_CERTIFY_DRAFT);
     this.setState({
       avatar: null,
-      idCardPic: null
+      idCardPic: null,
+      addr: null
     });
     this.props.setFields({
       realName: null,
       idCardNo: null,
-      addr: null,
       bizDesc: null
     });
+  }
+
+  uploadImage(localId: String) {
+    return new Promise((resolve, reject) => {
+      wx.uploadImage({
+        localId: localId,
+        isShowProgressTips: 1,
+        success: (res) => {
+          resolve(res.serverId);
+        }
+      });
+    });
+  }
+
+  transformData(data: Object) {
+    return {
+      identityName: data.realName,
+      identityAddress: data.addr,
+      identityID: data.idCardNo,
+      IdentityImgUrlId: data.idCardPic,
+      FaceImgUrlId: data.avatar,
+      description: data.bizDesc,
+      toAudit: true
+    };
   }
 
   handleSubmit() {
@@ -120,11 +177,38 @@ export default class RealNameCertifyPage extends Component {
       return;
     }
 
-    this.ah.one(RealNameCertify, (res) => {
-      this.refs.poptip.show('成功提交实名认证');
-      this.clearData();
-      setTimeout(history.back, 1500);
-    }, this.getData());
+    let data = this.getData();
+
+    this.uploadImage(data.avatar)
+      .then(sid => {
+        data.avatar = sid;
+
+        return this.uploadImage(data.idCardPic);
+      })
+      .then(sid => {
+        data.idCardPic = sid;
+
+        return data;
+      })
+      .then(this.transformData)
+      .then((params) => {
+        this.ah.one(RealNameCertify, (res) => {
+          if (res.retcode === 0) {
+            this.refs.poptip.warn('成功提交实名认证');
+
+            this.clearData();
+            setTimeout(history.back, 1500);
+
+            return;
+          }
+
+          this.refs.poptip.warn(res.msg);
+
+        }, params);
+      })
+      .catch(() => {
+        this.refs.poptip.warn('提交失败');
+      });
   }
 
   showActionSheet(field: Object) {
@@ -146,10 +230,9 @@ export default class RealNameCertifyPage extends Component {
               sourceType: ['camera'],
               success: (res) => {
                 var localIds = res.localIds;
-                alert(JSON.stringify(localIds));
 
                 this.setState({
-                  [field]: localIds
+                  [field]: localIds[0]
                 });
               }
             });
@@ -163,10 +246,9 @@ export default class RealNameCertifyPage extends Component {
               sourceType: ['album'],
               success: (res) => {
                 var localIds = res.localIds;
-                alert(JSON.stringify(localIds));
 
                 this.setState({
-                  [field]: localIds
+                  [field]: localIds[0]
                 });
               }
             });
@@ -188,10 +270,9 @@ export default class RealNameCertifyPage extends Component {
       sourceType: ['camera', 'album'],
       success: (res) => {
         var localIds = res.localIds;
-        alert(JSON.stringify(localIds));
 
         this.setState({
-          avatar: localIds
+          avatar: localIds[0]
         });
       }
     });
@@ -215,17 +296,37 @@ export default class RealNameCertifyPage extends Component {
     });
   }
 
+  renderStatusText() {
+    let statusText;
+
+    switch (this.state.auditStatus) {
+      case 0:
+        statusText = '实名认证审核中...';
+        break;
+      case 1:
+        statusText = '实名认证失败!';
+        break;
+      default:
+        statusText = '实名认证可以提升信任度!';
+    }
+
+    if (statusText) {
+      return (
+        <div className={cx('notice', this.state.noticeClosed && 'hide' || '')} onClick={this.closeNotice.bind(this)}>
+          <b>·</b>
+          <span>{statusText}</span>
+          <i className="icon close">x</i>
+        </div>
+      );
+    }
+  }
+
   render() {
     let props = this.props;
 
     return (
       <section className="real-name-certify-page">
-        <div className={cx('notice', this.state.noticeClosed && 'hide' || '')} onClick={this.closeNotice.bind(this)}>
-          <b>·</b>
-          <span>实名认证可以提升信任度!</span>
-          <i className="icon close">x</i>
-        </div>
-
+        {this.renderStatusText()}
         <div className="cells cells-access cells-form">
           <div className="cell required" onClick={this.takeAvatar.bind(this)}>
             <div className="cell_hd">
