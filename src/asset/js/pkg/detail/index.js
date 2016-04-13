@@ -173,7 +173,7 @@ export default class PkgDetailPage extends Component {
         <h2 className="subtitle">装车日期</h2>
         <div className="field-group">
           <div className="field">
-            <label><i className="icon icon-pkg-type on s20"></i></label>
+            <label><i className="icon icon-calendar s20"></i></label>
             <div className="control">
               <span className="input-holder on">{pkg.product.loadProTime}</span>
             </div>
