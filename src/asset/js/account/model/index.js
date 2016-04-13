@@ -35,24 +35,36 @@ export var Login = (params) => {
   }, POST_OPT));
 }
 
+export var UserInfo = () => {
+  return fetch('/mvc/v2/getLoggingUser', GET_OPT);
+}
+
 export var RealNameCertify = (params) => {
-  return fetch('/mvc/v2/realNameCertify', assign({
+  return fetch('/mvc/editUserVerifyJsonForH5', assign({
     body: querystring.stringify(params)
   }, POST_OPT));
+}
+
+export var RealNameCertifyStatus = () => {
+  return fetch('/mvc/editUserVerifyJson', GET_OPT);
 }
 
 export var CompanyCertify = (params) => {
-  return fetch('/mvc/v2/companyCertify', assign({
+  return fetch('/mvc/editCompanyInfoJsonForH5', assign({
     body: querystring.stringify(params)
   }, POST_OPT));
+}
+
+export var CompanyCertifyStatus = () => {
+  return fetch('/mvc/editCompanyInfoJson', GET_OPT);
 }
 
 export var TruckerCertify = (params) => {
-  return fetch('/mvc/v2/truckerCertify', assign({
+  return fetch('/mvc/editTruckInfoJsonForH5', assign({
     body: querystring.stringify(params)
   }, POST_OPT));
 }
 
-export var UserRealNameCertify = () => {
-  return fetch('/mvc/v2/')
+export var TruckerCertifyStatus = () => {
+  return fetch('/mvc/editTruckInfoJson', GET_OPT);
 }
