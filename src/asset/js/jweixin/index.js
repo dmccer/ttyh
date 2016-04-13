@@ -15,7 +15,7 @@ export default class JWeiXin {
   }
 
   config() {
-    fetch(`/api/bbs_v2/jsapi?url=${this.url}`, GET_OPT)
+    fetch(`/mvc/wx/jsapi?url=${this.url}`, GET_OPT)
       .then(res => res.json())
       .then((data) => {
         if (!data) {
