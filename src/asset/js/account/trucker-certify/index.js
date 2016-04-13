@@ -23,18 +23,17 @@ import WXVerify from '../../helper/wx';
 import WX from '../../const/wx';
 import AH from '../../helper/ajax';
 import Validator from '../../helper/validator';
-import {TruckerCertify} from '../model/';
-import {DrivingLicenseDemoPng} from '../../../img/app/jiashizhengzhao@3x.png';
-import {RoadLicenseDemoPng} from '../../../img/app/xingshizhengzhao@3x.png';
-import {TruckDemoPng} from '../../../img/app/cheliangzhao@3x.png';
+import {TruckerCertify, TruckerCertifyStatus} from '../model/';
+import DrivingLicenseDemoPng from '../../../img/app/jiashizhengzhao@3x.png';
+import RoadLicenseDemoPng from '../../../img/app/xingshizhengzhao@3x.png';
+import TruckDemoPng from '../../../img/app/cheliangzhao@3x.png';
 
 const TRUCKER_CERTIFY_DRAFT = 'trucker_certify_draft';
 
 @FieldChangeEnhance
 @SelectTruckTypeEnhance
 export default class TruckerCertifyPage extends Component {
-  state = {
-  };
+  state = {};
 
   constructor(props) {
     super(props);
@@ -59,7 +58,16 @@ export default class TruckerCertifyPage extends Component {
     EventListener.listen(window, 'beforeunload', () => {
       localStorage.setItem(TRUCKER_CERTIFY_DRAFT, JSON.stringify(this.getData()))
     });
+  }
 
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+    Validator.config(this.refs.poptip);
+
+    this.fetch();
+  }
+
+  readFromLocal() {
     let TMP_DATA = JSON.parse(localStorage.getItem(TRUCKER_CERTIFY_DRAFT));
     if (TMP_DATA) {
       this.setState({
@@ -69,16 +77,51 @@ export default class TruckerCertifyPage extends Component {
       });
       this.props.setFields({
         licensePlate: TMP_DATA.licensePlate,
-        truckType: TMP_DATA.truckType,
-        truckLength: TMP_DATA.truckLength,
         loadLimit: TMP_DATA.loadLimit
+      });
+      this.props.setSelectTruckTypeData({
+        truckType: TMP_DATA.truckType,
+        truckLength: TMP_DATA.truckLength
       });
     }
   }
 
-  omponentDidMount() {
-    this.ah = new AH(this.refs.loading, this.refs.poptip);
-    Validator.config(this.refs.poptip);
+  fetch() {
+    this.ah.one(TruckerCertifyStatus, (res) => {
+      if (res.auditStatus === 1) {
+        location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/trucker-certify-result.html`));
+        return;
+      }
+
+      if (res.auditStatus === -1 || res.auditStatus === 0) {
+        let result = res.truckInfo;
+
+        this.setState({
+          drivingLicensePic: result.driverLicenseImgUrl,
+          roadLicensePic: result.drivingLicenseImgUrl,
+          truckPic: result.bizLicenseImgUrl,
+          auditStatus: res.auditStatus
+        });
+        this.props.setFields({
+          licensePlate: result.licensePlate,
+          loadLimit: result.loadLimit
+        });
+        this.props.setSelectTruckTypeData({
+          truckType: {
+            name: result.truckTypeStr,
+            id: result.truckType
+          },
+          truckLength: {
+            name: `${result.truckLength}米`,
+            id: result.truckLength
+          }
+        });
+
+        return;
+      }
+
+      this.readFromLocal();
+    });
   }
 
   getData() {
@@ -128,16 +171,73 @@ export default class TruckerCertifyPage extends Component {
     });
   }
 
+  uploadImage(localId: String) {
+    return new Promise((resolve, reject) => {
+      wx.uploadImage({
+        localId: localId,
+        isShowProgressTips: 1,
+        success: (res) => {
+          resolve(res.serverId);
+        }
+      });
+    });
+  }
+
+  transformData(data: Object) {
+    return {
+      driverLicenseImgUrlId: data.drivingLicensePic,
+      drivingLicenseImgUrlId: data.roadLicensePic,
+      bizLicenseImgUrlId: data.truckPic,
+      licensePlate: data.licensePlate,
+      loadLimit: data.loadLimit,
+      truckType: data.truckType.id,
+      truckLength: data.truckLength.id,
+      toAudit: true
+    };
+  }
+
   handleSubmit() {
     if (!this.validate()) {
       return;
     }
 
-    this.ah.one(TruckerCertify, (res) => {
-      this.refs.poptip.show('成功提交实名认证');
-      this.clearData();
-      setTimeout(history.back, 1500);
-    }, this.getData());
+    let data = this.getData();
+
+    this.uploadImage(data.drivingLicensePic)
+      .then(sid => {
+        data.drivingLicensePic = sid;
+
+        return this.uploadImage(data.roadLicensePic);
+      })
+      .then(sid => {
+        data.roadLicensePic = sid;
+
+        return this.uploadImage(data.truckPic);
+      })
+      .then(sid => {
+        data.truckPic = sid;
+
+        return data;
+      })
+      .then(this.transformData)
+      .then((params) => {
+        this.ah.one(TruckerCertify, (res) => {
+          if (res.retcode === 0) {
+            this.refs.poptip.warn('成功提交车辆认证');
+
+            this.clearData();
+            setTimeout(history.back, 1500);
+
+            return;
+          }
+
+          this.refs.poptip.warn(res.msg);
+
+        }, params);
+      })
+      .catch(() => {
+        this.refs.poptip.warn('提交失败');
+      });
   }
 
   showActionSheet(field: Object, pic: String) {
@@ -159,10 +259,9 @@ export default class TruckerCertifyPage extends Component {
               sourceType: ['camera'],
               success: (res) => {
                 var localIds = res.localIds;
-                alert(JSON.stringify(localIds));
 
                 this.setState({
-                  [field]: localIds
+                  [field]: localIds[0]
                 });
               }
             });
@@ -176,10 +275,9 @@ export default class TruckerCertifyPage extends Component {
               sourceType: ['album'],
               success: (res) => {
                 var localIds = res.localIds;
-                alert(JSON.stringify(localIds));
 
                 this.setState({
-                  [field]: localIds
+                  [field]: localIds[0]
                 });
               }
             });
@@ -187,6 +285,35 @@ export default class TruckerCertifyPage extends Component {
         }
       ]
     });
+  }
+
+  closeNotice() {
+    this.setState({
+      noticeClosed: true
+    });
+  }
+
+  renderStatusText() {
+    let statusText;
+
+    switch (this.state.auditStatus) {
+      case 0:
+        statusText = '车辆认证审核中...';
+        break;
+      case 1:
+        statusText = '车辆认证失败!';
+        break;
+    }
+
+    if (statusText) {
+      return (
+        <div className={cx('notice', this.state.noticeClosed && 'hide' || '')} onClick={this.closeNotice.bind(this)}>
+          <b>·</b>
+          <span>{statusText}</span>
+          <i className="icon close">x</i>
+        </div>
+      );
+    }
   }
 
   render() {
@@ -197,6 +324,7 @@ export default class TruckerCertifyPage extends Component {
 
     return (
       <section className="trucker-certify-page">
+        {this.renderStatusText()}
         <div className="cells cells-access cells-form">
           <div className="cell required">
             <div className="cell_hd">
@@ -209,8 +337,8 @@ export default class TruckerCertifyPage extends Component {
                 type="text"
                 className="input"
                 placeholder="填写"
-                value={props.license}
-                onChange={props.handleStrChange.bind(this, 'license')}
+                value={props.licensePlate}
+                onChange={props.handleStrChange.bind(this, 'licensePlate')}
               />
             </div>
             <div className="cell-ft"></div>
