@@ -94,15 +94,15 @@ export default class TruckerCertifyPage extends Component {
         let result = res.userWithCompanyInfo;
 
         this.setState({
-          bizCardPic: result.bizCardPic,
-          shopFacePic: result.shopFacePic,
-          bizLicensePic: result.bizLicensePic,
+          bizCardPic: result.companyAuthorizeUrl,
+          shopFacePic: result.companyCertificateNO,
+          bizLicensePic: result.companyCertificateUrl,
           auditStatus: res.auditStatus
         });
         this.props.setFields({
-          companyName: result.companyName,
-          companyPos: result.companyPos,
-          companyAddr: result.companyAddr
+          companyName: result.company,
+          companyPos: result.jobPosition,
+          companyAddr: result.address
         });
 
         return;
@@ -173,7 +173,7 @@ export default class TruckerCertifyPage extends Component {
       companyAuthorizeUrlId: data.bizCardPic,
       companyCertificateNOId: data.shopFacePic,
       companyCertificateUrlId: data.bizLicensePic,
-      toAudit: true
+      toAudit: 'yes'
     };
   }
 
@@ -207,7 +207,9 @@ export default class TruckerCertifyPage extends Component {
             this.refs.poptip.warn('成功提交公司认证');
 
             this.clearData();
-            setTimeout(history.back, 1500);
+            setTimeout(() => {
+              history.back();
+            }, 1500);
 
             return;
           }
