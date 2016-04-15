@@ -192,7 +192,7 @@ export default class TruckerCertifyPage extends Component {
       loadLimit: data.loadLimit,
       truckType: data.truckType.id,
       truckLength: data.truckLength.id,
-      toAudit: true
+      toAudit: 'yes'
     };
   }
 
@@ -226,7 +226,9 @@ export default class TruckerCertifyPage extends Component {
             this.refs.poptip.warn('成功提交车辆认证');
 
             this.clearData();
-            setTimeout(history.back, 1500);
+            setTimeout(() => {
+              history.back();
+            }, 1500);
 
             return;
           }
