@@ -20,7 +20,13 @@ import Confirm from '../../confirm/';
 import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 import AH from '../../helper/ajax';
-import {REAL_NAME_CERTIFY_TITLE, REAL_NAME_CERTIFY_TIP} from '../../const/certify';
+import {
+  RealNameCertifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
 import {
   PkgSearch
 } from '../model/';
@@ -47,11 +53,21 @@ export default class SearchPkgPage extends Component {
         this.query();
       }
     });
+
+    this.fetchUserInfo();
   }
 
   handleSearchConditionInit(q) {
     this.setState(q, () => {
       this.query();
+    });
+  }
+
+  fetchUserInfo() {
+    this.ah.one(RealNameCertifyStatus, (res) => {
+      this.setState({
+        realNameVerifyStatus: res.auditStatus
+      });
     });
   }
 
@@ -101,11 +117,18 @@ export default class SearchPkgPage extends Component {
   handleShowVerifyTip(tel) {
     this.setState({
       activeTel: tel
-    });
+    }, () => {
+      let status = this.state.realNameVerifyStatus;
 
-    this.refs.verifyTip.show({
-      title: REAL_NAME_CERTIFY_TITLE,
-      msg: REAL_NAME_CERTIFY_TIP
+      if (status === 1 || status === 0) {
+        this.handleCancelVerify();
+        return;
+      }
+
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
+      });
     });
   }
 
