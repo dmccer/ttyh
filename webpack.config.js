@@ -448,15 +448,15 @@ module.exports = {
     inline: true,
     proxy: {
       '/app*': {
-        target: 'http://api.ttyhuo.com',
+        target: 'http://test.ttyhuo.com/',
         secure: false
       },
       '/mvc/code_msg*': {
-        target: 'http://api.ttyhuo.com:85',
+        target: 'http://test.ttyhuo.com/',
         secure: false
       },
       '/mvc*': {
-        target: 'http://api.ttyhuo.com:85',
+        target: 'http://test.ttyhuo.com/',
         secure: false
       }
     }
