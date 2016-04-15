@@ -17,8 +17,16 @@ import SearchItem from './item/';
 import Log from '../../log/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import Confirm from '../../confirm/';
 import truckPNG from '../../../img/app/truck@3x.png';
 import AH from '../../helper/ajax';
+import {
+  RealNameCertifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
 import {TruckUsers} from '../model/';
 
 const PAGE_TYPE = 'shipper_page';
@@ -48,6 +56,16 @@ export default class SearchTruckPage extends Component {
       if (!this.state.over) {
         this.query();
       }
+    });
+
+    this.fetchUserInfo();
+  }
+
+  fetchUserInfo() {
+    this.ah.one(RealNameCertifyStatus, (res) => {
+      this.setState({
+        realNameVerifyStatus: res.auditStatus
+      });
     });
   }
 
@@ -94,6 +112,31 @@ export default class SearchTruckPage extends Component {
     });
   }
 
+  handleShowVerifyTip(tel) {
+    this.setState({
+      activeTel: tel
+    }, () => {
+      let status = this.state.realNameVerifyStatus;
+
+      if (status === 1 || status === 0) {
+        this.handleCancelVerify();
+        return;
+      }
+
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
+      });
+    });
+  }
+
+  handleCancelVerify() {
+    this.refs.telPanel.show({
+      title: '拨打电话',
+      msg: this.state.activeTel
+    });
+  }
+
   /**
    * 展示车源列表为空时的提示
    */
@@ -115,7 +158,12 @@ export default class SearchTruckPage extends Component {
 
     if (trucks && trucks.length) {
       return trucks.map((truck, index) => {
-        return <SearchItem key={`pkg-item_${index}`} {...truck} />
+        return (
+          <SearchItem
+            verifyTip={this.handleShowVerifyTip.bind(this)}
+            key={`pkg-item_${index}`}
+            {...truck} />
+        );
       });
     }
 
@@ -134,6 +182,19 @@ export default class SearchTruckPage extends Component {
         </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          cancel={this.handleCancelVerify.bind(this)}
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
+        <Confirm
+          ref="telPanel"
+          rightLink={`tel:${this.state.activeTel}`}
+          rightBtnText={'拨打'}
+          leftBtnText={'取消'}
+        />
       </div>
     );
   }

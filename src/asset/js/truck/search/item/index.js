@@ -28,8 +28,13 @@ export default class SearchItem extends Component {
     location.href = `./truck-detail.html?tid=${this.props.userWithLatLng.routeID}`;
   }
 
-  hanldleMakeCall() {
+  hanldleMakeCall(tel, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     _hmt.push(['_trackEvent', '车源', '列表打电话', this.props.userWithLatLng.mobileNo || '']);
+
+    this.props.verifyTip(tel);
   }
 
   renderLine() {
@@ -69,7 +74,7 @@ export default class SearchItem extends Component {
     let tel = JWeiXin.isWeixinBrowser() ? null : <p className="tel-text">电话联系: {truck.mobileNo}</p>;
     let telLink = JWeiXin.isWeixinBrowser() ? (
       <div className="tel">
-        <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${truck.mobileNo}`} className="icon icon-call s30"></a>
+        <a onClick={this.hanldleMakeCall.bind(this, truck.mobileNo)} ref="tel" href={`tel:${truck.mobileNo}`} className="icon icon-call s30"></a>
       </div>
     ) : null;
 
