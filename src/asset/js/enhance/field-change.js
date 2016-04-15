@@ -19,6 +19,7 @@
  *
  */
 import React from 'react';
+import keys from 'lodash/object/keys';
 import $ from '../helper/z';
 
 // for validate
@@ -35,8 +36,6 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   constructor(props) {
     super(props);
   }
-
-
 
   // 纯数字字符串或整数
   handleIntegerChange(field: String, cb: Function, e: Object) {
@@ -125,6 +124,18 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     }, cb);
   }
 
+  clearAll(cb=noop) {
+    let ks = keys(this.state);
+
+    if (ks && ks.length) {
+      ks.forEach(k => {
+        this.setState({
+          [k]: null
+        });
+      });
+    }
+  }
+
   render() {
     return (
       <ComposedComponent
@@ -137,6 +148,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
         handleMobileNoChange={this.handleMobileNoChange.bind(this)}
         handleLimitStrChange={this.handleLimitStrChange.bind(this)}
         clear={this.clear.bind(this)}
+        clearAll={this.clearAll.bind(this)}
         set={this.set.bind(this)}
         setFields={this.setFields.bind(this)}
       />
