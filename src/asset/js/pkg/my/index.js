@@ -25,7 +25,14 @@ import {
   RePubPkg,
   DelPkg
 } from '../model/';
-import {REAL_NAME_CERTIFY_TITLE, REAL_NAME_CERTIFY_TIP} from '../../const/certify';
+import {
+  RealNameCertifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFING_TIP,
+  REAL_NAME_CERTIFY_TIP_FOR_PKGER
+} from '../../const/certify';
 
 const ERR_MSG_REPUB = {
   1001: '您没有登录',
@@ -56,6 +63,15 @@ export default class MyPkgPage extends Component {
     });
 
     this.fetchMyPkgs();
+    this.fetchUserInfo();
+  }
+
+  fetchUserInfo() {
+    this.ah.one(RealNameCertifyStatus, (res) => {
+      this.setState({
+        realNameVerifyStatus: res.auditStatus
+      });
+    });
   }
 
   /**
@@ -158,17 +174,21 @@ export default class MyPkgPage extends Component {
   }
 
   handleGoToPub(e) {
-    if (!this.state.realNameVerified) {
-      e.stopPropagation();
-      e.preventDefault();
+    let status = this.state.realNameVerifyStatus;
 
-      this.refs.verifyTip.show({
-        title: REAL_NAME_CERTIFY_TITLE,
-        msg: REAL_NAME_CERTIFY_TIP
-      });
-
+    if (status === 1) {
       return;
     }
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.refs.verifyTip.show({
+      title: REAL_NAME_CERTIFY_TITLE,
+      msg: status === 0 ? REAL_NAME_CERTIFING_TIP : REAL_NAME_CERTIFY_TIP_FOR_PKGER
+    });
+
+    return;
   }
 
   /**
