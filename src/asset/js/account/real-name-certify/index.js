@@ -27,6 +27,7 @@ import IDCardDemoPng from '../../../img/app/shenfenzhengzhao@3x.png';
 import {RealNameCertify, RealNameCertifyStatus} from '../model/';
 
 const REAL_NAME_CERTIFY_DRAFT = 'real_name_certify_draft';
+const ALL = '全部';
 
 @FieldChangeEnhance
 export default class RealNameCertifyPage extends Component {
@@ -90,18 +91,19 @@ export default class RealNameCertifyPage extends Component {
       }
 
       if (res.auditStatus === -1 || res.auditStatus === 0) {
-        let result = res.loggedUser;
+        let userVerify = res.userVerify;
+        let user = res.loggedUser;
 
         this.setState({
-          avatar: result.FaceImgUrl,
-          idCardPic: result.IdentityImgUrl,
-          addr: result.identityAddress,
+          avatar: userVerify.faceImgUrl,
+          idCardPic: userVerify.identityImgUrl,
+          addr: userVerify.identityAddress,
           auditStatus: res.auditStatus
         });
         this.props.setFields({
-          realName: result.identityName,
-          idCardNo: result.identityID,
-          bizDesc: result.description
+          realName: userVerify.identityName,
+          idCardNo: userVerify.identityID,
+          bizDesc: user.description
         });
 
         return;
@@ -141,10 +143,9 @@ export default class RealNameCertifyPage extends Component {
       idCardPic: null,
       addr: null
     });
+    this.props.clearAll();
     this.props.setFields({
-      realName: null,
-      idCardNo: null,
-      bizDesc: null
+      bizDesc: ''
     });
   }
 
@@ -168,7 +169,7 @@ export default class RealNameCertifyPage extends Component {
       IdentityImgUrlId: data.idCardPic,
       FaceImgUrlId: data.avatar,
       description: data.bizDesc,
-      toAudit: true
+      toAudit: 'yes'
     };
   }
 
@@ -197,7 +198,9 @@ export default class RealNameCertifyPage extends Component {
             this.refs.poptip.warn('成功提交实名认证');
 
             this.clearData();
-            setTimeout(history.back, 1500);
+            setTimeout(() => {
+              history.back();
+            }, 1500);
 
             return;
           }
@@ -283,9 +286,13 @@ export default class RealNameCertifyPage extends Component {
   }
 
   handleSelectCityDone(province, city) {
+    if (province === ALL) {
+      return;
+    }
+
     if (province) {
       this.setState({
-        addr: `${province} ${city || ''}`
+        addr: `${province} ${city !== ALL && city || ''}`
       });
     }
   }
@@ -419,7 +426,7 @@ export default class RealNameCertifyPage extends Component {
                 className="textarea"
                 placeholder="我有17米平板车一辆，常跑上海到武汉；或者长期货源，广州到深圳，家具。"
                 value={props.bizDesc}
-                onChange={props.handleLimitStrChange.bind(this, 'bizDesc', 80)}>
+                onChange={props.handleLimitStrChange.bind(this, 'bizDesc', this.state.maxBizDescLength)}>
               </textarea>
               <span className="char-limit">{props.bizDesc && props.bizDesc.length || 0} / {this.state.maxBizDescLength}</span>
             </div>
