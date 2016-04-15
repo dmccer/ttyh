@@ -35,36 +35,32 @@ export var Login = (params) => {
   }, POST_OPT));
 }
 
-export var UserInfo = () => {
-  return fetch('/mvc/v2/getLoggingUser', GET_OPT);
-}
-
 export var RealNameCertify = (params) => {
-  return fetch('/mvc/editUserVerifyJsonForH5', assign({
+  return fetch('/mvc/wx/editUserVerifyJsonForH5', assign({
     body: querystring.stringify(params)
   }, POST_OPT));
 }
 
 export var RealNameCertifyStatus = () => {
-  return fetch('/mvc/editUserVerifyJson', GET_OPT);
+  return fetch('/mvc/wx/editUserVerifyJson', GET_OPT);
 }
 
 export var CompanyCertify = (params) => {
-  return fetch('/mvc/editCompanyInfoJsonForH5', assign({
+  return fetch('/mvc/wx/editCompanyInfoJsonForH5', assign({
     body: querystring.stringify(params)
   }, POST_OPT));
 }
 
 export var CompanyCertifyStatus = () => {
-  return fetch('/mvc/editCompanyInfoJson', GET_OPT);
+  return fetch('/mvc/wx/editCompanyInfoJson', GET_OPT);
 }
 
 export var TruckerCertify = (params) => {
-  return fetch('/mvc/editTruckInfoJsonForH5', assign({
+  return fetch('/mvc/wx/editTruckInfoJsonForH5', assign({
     body: querystring.stringify(params)
   }, POST_OPT));
 }
 
 export var TruckerCertifyStatus = () => {
-  return fetch('/mvc/editTruckInfoJson', GET_OPT);
+  return fetch('/mvc/wx/editTruckInfoJson', GET_OPT);
 }
