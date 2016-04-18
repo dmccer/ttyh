@@ -12,17 +12,26 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import cx from 'classnames';
 
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import {MiniReadableTime} from '../../bbs/readable-time/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import Confirm from '../../confirm/';
 import Log from '../../log/';
 import FixedHolder from '../../fixed-holder/';
 import JWeiXin from '../../jweixin/';
 import $ from '../../helper/z';
 import AH from '../../helper/ajax';
+import {
+  UserVerifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
 import {
   TruckUsers,
   FollowUser
@@ -61,6 +70,44 @@ export default class TruckDetailPage extends Component {
        this.refs.poptip.warn('加载货源详情失败, 请重试');
      }
    }, this.state.qs.tid);
+
+   this.fetchUserInfo();
+ }
+
+ fetchUserInfo() {
+   this.ah.one(UserVerifyStatus, (res) => {
+     this.setState({
+       realNameVerifyStatus: res.auditStatus
+     });
+   });
+ }
+
+ handleShowVerifyTip(tel, e) {
+   e.preventDefault();
+   e.stopPropagation();
+
+   this.setState({
+     activeTel: tel
+   }, () => {
+     let status = this.state.realNameVerifyStatus;
+
+     if (status === 1 || status === 0) {
+       this.handleCancelVerify();
+       return;
+     }
+
+     this.refs.verifyTip.show({
+       title: REAL_NAME_CERTIFY_TITLE,
+       msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
+     });
+   });
+ }
+
+ handleCancelVerify() {
+   this.refs.telPanel.show({
+     title: '拨打电话',
+     msg: this.state.activeTel
+   });
  }
 
  follow() {
@@ -237,12 +284,28 @@ export default class TruckDetailPage extends Component {
          </div>
        </div>
        <FixedHolder height="50" />
-       <a href={`tel:${rtruckDetail.mobileNo}`} className="call-btn">
+       <a
+        onClick={this.handleShowVerifyTip.bind(this, rtruckDetail.mobileNo)}
+        href={`tel:${rtruckDetail.mobileNo}`}
+        className={cx('call-btn', rtruck.isMyRoute ? 'hide' : '')}>
          <i className="icon icon-call"></i>
          {tel}
        </a>
        <Loading ref="loading" />
        <Poptip ref="poptip" />
+       <Confirm
+         ref="verifyTip"
+         cancel={this.handleCancelVerify.bind(this)}
+         rightLink="./real-name-certify.html"
+         rightBtnText={'立即认证'}
+         leftBtnText={'稍后认证'}
+       />
+       <Confirm
+         ref="telPanel"
+         rightLink={`tel:${this.state.activeTel}`}
+         rightBtnText={'拨打'}
+         leftBtnText={'取消'}
+       />
      </section>
    );
  }

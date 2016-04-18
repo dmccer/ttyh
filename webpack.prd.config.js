@@ -354,7 +354,7 @@ module.exports = {
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      title: '车辆认证',
+      title: '司机认证',
       template: './src/page/index.ejs',
       filename: 'trucker-certify.html',
       chunks: ['trucker-certify', 'fetch'],
@@ -386,7 +386,7 @@ module.exports = {
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
-      title: '车辆认证',
+      title: '司机认证',
       template: './src/page/index.ejs',
       filename: 'trucker-certify-result.html',
       chunks: ['trucker-certify-result', 'fetch'],

@@ -107,19 +107,19 @@ export default class TruckerCertifyResultPage extends Component {
     let states = this.state;
 
     let drivingLicensePic = states.drivingLicensePic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.drivingLicensePic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
     let roadLicensePic = states.roadLicensePic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.roadLicensePic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
     let truckPic = states.truckPic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.truckPic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);

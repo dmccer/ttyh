@@ -200,6 +200,12 @@ export default class RealNameCertifyPage extends Component {
             this.clearData();
             setTimeout(() => {
               history.back();
+
+              try {
+                WeixinJSBridge.invoke('closeWindow');
+              } catch(e) {
+                window.close();
+              }
             }, 1500);
 
             return;
@@ -334,19 +340,19 @@ export default class RealNameCertifyPage extends Component {
 
     let avatar = states.avatar ? (
       <div>
-        <i className="icon s25" style={{
+        <i className="icon pic" style={{
           backgroundImage: `url(${states.avatar})`
         }}></i>
       </div>
     ) : (
       <div>
         <i className="icon icon-account off s25"></i>
-        <p>真实头像</p>
+        <p>本人正面照</p>
       </div>
     );
 
     let idCardPic = states.idCardPic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.idCardPic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);

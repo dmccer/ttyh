@@ -225,9 +225,11 @@ export default class SearchCondition extends Component {
   }
 
   render() {
+    let states = this.state;
     let props = this.props;
-    let fromCityOn = this.state.showCitySelector && this.state.citySelectorField === 'fromCity' ? 'on' : '';
-    let toCityOn = this.state.showCitySelector && this.state.citySelectorField === 'toCity' ? 'on' : '';
+    let fromCityOn = this.state.showCitySelector && this.state.citySelectorField === 'fromCity';
+    let toCityOn = this.state.showCitySelector && this.state.citySelectorField === 'toCity';
+    let filtersOn = states.truckTypeFlag || states.truckLengthFlag || states.loadLimitFlag;
 
     let fromCity = this.getAddress(this.state.fromCity) || '出发地点';
     let toCity = this.getAddress(this.state.toCity) || '到达地点';
@@ -236,26 +238,26 @@ export default class SearchCondition extends Component {
       <div className="search-condition">
         <ul className="filters row">
           <li
-            className={fromCityOn}
+            className={fromCityOn && 'on'}
             ref="fromCityField"
             onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
             <a href="javascript:void(0)">
-              <i className={cx('icon icon-start-point s18', fromCity)}></i>
+              <i className={cx('icon icon-start-point s18', fromCityOn && 'on' || '' )}></i>
               <span>{fromCity}</span>
             </a>
           </li>
           <li
-            className={toCityOn}
+            className={toCityOn && 'on'}
             ref="toCityField"
             onClick={this.toggleCitySelector.bind(this, 'toCity')}>
             <a href="javascript:void(0)">
-              <i className={cx('icon icon-end-point s18', toCity)}></i>
+              <i className={cx('icon icon-end-point s18', toCityOn && 'on' || '')}></i>
               <span>{toCity}</span>
             </a>
           </li>
-          <li>
+          <li className={filtersOn && 'on'}>
             <a href={`./search-filter.html?type=${props.pageType}`}>
-              <i className="icon icon-filter off s18"></i>
+              <i className={cx('icon icon-filter s18', filtersOn && 'on' || '')}></i>
               <span>筛选</span>
             </a>
           </li>

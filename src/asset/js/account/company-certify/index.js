@@ -208,7 +208,11 @@ export default class TruckerCertifyPage extends Component {
 
             this.clearData();
             setTimeout(() => {
-              history.back();
+              try {
+                WeixinJSBridge.invoke('closeWindow');
+              } catch(e) {
+                window.close();
+              }
             }, 1500);
 
             return;
@@ -303,19 +307,19 @@ export default class TruckerCertifyPage extends Component {
     let states = this.state;
 
     let bizCardPic = states.bizCardPic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.bizCardPic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
     let bizLicensePic = states.bizLicensePic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.bizLicensePic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
     let shopFacePic = states.shopFacePic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.shopFacePic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);

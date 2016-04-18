@@ -145,7 +145,7 @@ export default class TruckerCertifyPage extends Component {
 
     return (
       Validator.test('required', '请填写车牌号', props.licensePlate) &&
-      Validator.test('licenseplate', '请输入正确的车牌号', props.licenseplate) &&
+      Validator.test('licenseplate', '请输入正确的车牌号', props.licensePlate) &&
       Validator.test('required', '请选择车型', props.truckType && props.truckType.id) &&
       Validator.test('required', '请选择车长', props.truckLength && props.truckLength.id) &&
       Validator.test('required', '请填写载重', props.loadLimit) &&
@@ -224,11 +224,15 @@ export default class TruckerCertifyPage extends Component {
       .then((params) => {
         this.ah.one(TruckerCertify, (res) => {
           if (res.retcode === 0) {
-            this.refs.poptip.warn('成功提交车辆认证');
+            this.refs.poptip.warn('成功提交司机认证');
 
             this.clearData();
             setTimeout(() => {
-              history.back();
+              try {
+                WeixinJSBridge.invoke('closeWindow');
+              } catch(e) {
+                window.close();
+              }
             }, 1500);
 
             return;
@@ -301,10 +305,10 @@ export default class TruckerCertifyPage extends Component {
 
     switch (this.state.auditStatus) {
       case 0:
-        statusText = '车辆认证审核中...';
+        statusText = '司机认证审核中...';
         break;
       case 1:
-        statusText = '车辆认证失败!';
+        statusText = '司机认证失败!';
         break;
     }
 
@@ -321,25 +325,25 @@ export default class TruckerCertifyPage extends Component {
 
   render() {
     let props = this.props;
-    let states = this.states;
+    let states = this.state;
     let truckType = props.truckType;
     let truckLength = props.truckLength;
     let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name || ''}` : null;
 
     let drivingLicensePic = states.drivingLicensePic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.drivingLicensePic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
     let roadLicensePic = states.roadLicensePic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.roadLicensePic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
     let truckPic = states.truckPic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.truckPic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);

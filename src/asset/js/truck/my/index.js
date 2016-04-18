@@ -132,7 +132,7 @@ export default class MyTruckPage extends Component {
     this.ah.one(RePubTruckRoutes, {
       success: (res) => {
         if (res.retcode !== 0) {
-          this.refs.poptip.warn(ERR_MSG_REPUB[res.retcode]);
+          this.refs.poptip.warn(res.msg);
           return;
         }
 

@@ -18,10 +18,18 @@ import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import Confirm from '../../confirm/';
 import FixedHolder from '../../fixed-holder/';
 import JWeiXin from '../../jweixin/';
 import $ from '../../helper/z';
 import AH from '../../helper/ajax';
+import {
+  UserVerifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
 import {
   PkgSearch,
   FollowUser
@@ -53,6 +61,44 @@ export default class PkgDetailPage extends Component {
       }
     }, {
       productIDs: this.state.qs.pid
+    });
+
+    this.fetchUserInfo();
+  }
+
+  fetchUserInfo() {
+    this.ah.one(UserVerifyStatus, (res) => {
+      this.setState({
+        realNameVerifyStatus: res.auditStatus
+      });
+    });
+  }
+
+  handleShowVerifyTip(tel, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.setState({
+      activeTel: tel
+    }, () => {
+      let status = this.state.realNameVerifyStatus;
+
+      if (status === 1 || status === 0) {
+        this.handleCancelVerify();
+        return;
+      }
+
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
+      });
+    });
+  }
+
+  handleCancelVerify() {
+    this.refs.telPanel.show({
+      title: '拨打电话',
+      msg: this.state.activeTel
     });
   }
 
@@ -155,7 +201,7 @@ export default class PkgDetailPage extends Component {
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
       let useType = product.useType != null && parseInt(product.useType) ? product.useTypeStr : null;
       let stallSize = product.spaceNeeded != null && parseFloat(product.spaceNeeded) ? `占用${product.spaceNeeded}米` : null;
-      truckDesc = `${useType} ${product.truckTypeStr || ''} ${truckLength} ${stallSize}`;
+      truckDesc = `${useType} ${product.truckTypeStr || ''} ${truckLength} ${stallSize || ''}`;
     }
 
     let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {pkg.product.provideUserMobileNo}</span>
@@ -163,13 +209,12 @@ export default class PkgDetailPage extends Component {
     return (
       <section className="pkg-detail-page">
         <h2 className="subtitle">
-          <span>货源详情</span>
+          <span>装车日期</span>
           <span className="pub-time">
             <i className="icon icon-clock"></i>
             {pkg.createTime}发布
           </span>
         </h2>
-        <h2 className="subtitle">装车日期</h2>
         <div className="field-group">
           <div className="field">
             <label><i className="icon icon-calendar s20"></i></label>
@@ -275,12 +320,28 @@ export default class PkgDetailPage extends Component {
           </div>
         </div>
         <FixedHolder height="50" />
-        <a href={`tel:${pkg.product.provideUserMobileNo}`} className="call-btn">
+        <a
+          onClick={this.handleShowVerifyTip.bind(this, pkg.product.provideUserMobileNo)}
+          href={`tel:${pkg.product.provideUserMobileNo}`}
+          className={cx('call-btn', pkg.isMyProduct ? 'hide' : '')}>
           <i className="icon icon-call"></i>
           {tel}
         </a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          cancel={this.handleCancelVerify.bind(this)}
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
+        <Confirm
+          ref="telPanel"
+          rightLink={`tel:${this.state.activeTel}`}
+          rightBtnText={'拨打'}
+          leftBtnText={'取消'}
+        />
       </section>
     );
   }

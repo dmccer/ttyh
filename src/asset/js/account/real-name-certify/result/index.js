@@ -107,13 +107,20 @@ export default class RealNameCertifyResultPage extends Component {
     let states = this.state;
 
     let avatar = states.avatar ? (
-      <i className="icon s25" style={{
-        backgroundImage: `url(${states.avatar})`
-      }}></i>
-    ) : (<i className="icon icon-credentials s25"></i>);
+      <div>
+        <i className="icon pic" style={{
+          backgroundImage: `url(${states.avatar})`
+        }}></i>
+      </div>
+    ) : (
+      <div>
+        <i className="icon icon-account off s25"></i>
+        <p>本人正面照</p>
+      </div>
+    );
 
     let idCardPic = states.idCardPic ? (
-      <i className="icon s25" style={{
+      <i className="icon pic" style={{
         backgroundImage: `url(${states.idCardPic})`
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
@@ -130,9 +137,7 @@ export default class RealNameCertifyResultPage extends Component {
             <div className="cell-bd cell_primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
-                <div>
-                  {avatar}
-                </div>
+                {avatar}
               </div>
             </div>
           </div>
