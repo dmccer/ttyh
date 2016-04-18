@@ -8,7 +8,6 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'promise';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoadMore from '../../load-more/';
@@ -18,7 +17,7 @@ import Poptip from '../../poptip/';
 import Confirm from '../../confirm/';
 import AH from '../../helper/ajax';
 import {
-  RealNameCertifyStatus
+  UserVerifyStatus
 } from '../../account/model/';
 import {
   REAL_NAME_CERTIFY_TITLE,
@@ -55,7 +54,7 @@ export default class TodayTruckListPage extends Component {
   }
 
   fetchUserInfo() {
-    this.ah.one(RealNameCertifyStatus, (res) => {
+    this.ah.one(UserVerifyStatus, (res) => {
       this.setState({
         realNameVerifyStatus: res.auditStatus
       });

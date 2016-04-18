@@ -8,7 +8,7 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
+// import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import EventListener from 'fbjs/lib/EventListener';
@@ -145,6 +145,7 @@ export default class TruckerCertifyPage extends Component {
 
     return (
       Validator.test('required', '请填写车牌号', props.licensePlate) &&
+      Validator.test('licenseplate', '请输入正确的车牌号', props.licenseplate) &&
       Validator.test('required', '请选择车型', props.truckType && props.truckType.id) &&
       Validator.test('required', '请选择车长', props.truckLength && props.truckLength.id) &&
       Validator.test('required', '请填写载重', props.loadLimit) &&
@@ -320,9 +321,28 @@ export default class TruckerCertifyPage extends Component {
 
   render() {
     let props = this.props;
+    let states = this.states;
     let truckType = props.truckType;
     let truckLength = props.truckLength;
     let truckDesc = truckType && truckType.name ? `${truckType.name} ${truckLength && truckLength.name || ''}` : null;
+
+    let drivingLicensePic = states.drivingLicensePic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.drivingLicensePic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
+
+    let roadLicensePic = states.roadLicensePic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.roadLicensePic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
+
+    let truckPic = states.truckPic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.truckPic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
 
     return (
       <section className="trucker-certify-page">
@@ -383,7 +403,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {drivingLicensePic}
                 </div>
               </div>
             </div>
@@ -398,7 +418,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {roadLicensePic}
                 </div>
               </div>
             </div>
@@ -413,7 +433,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {truckPic}
                 </div>
               </div>
             </div>

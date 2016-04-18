@@ -13,7 +13,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
 import cx from 'classnames';
-import Promise from 'promise';
 import assign from 'lodash/object/assign';
 import find from 'lodash/collection/find';
 

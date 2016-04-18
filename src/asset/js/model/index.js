@@ -1,4 +1,3 @@
-import Promise from 'promise/lib/es6-extensions';
 import querystring from 'querystring';
 import assign from 'lodash/object/assign';
 import {POST_OPT, GET_OPT} from '../const/fetch';

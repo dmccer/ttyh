@@ -11,7 +11,6 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import find from 'lodash/collection/find';
@@ -77,7 +76,7 @@ export default class PkgPubPage extends React.Component {
 
       [
         'entruckTime', 'fromCity', 'toCity',
-        'loadType', 'paymentType', 'entruckTimeArea'
+        'loadType', 'paymentType', 'timeArea'
       ].forEach(key => {
         if (TMP_DATA[key]) {
           r[key] = TMP_DATA[key];

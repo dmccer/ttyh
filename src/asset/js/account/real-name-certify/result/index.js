@@ -8,7 +8,6 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 
@@ -52,15 +51,16 @@ export default class RealNameCertifyResultPage extends Component {
 
   fetch() {
     this.ah.one(RealNameCertifyStatus, (res) => {
-      let result = res.loggedUser;
+      let user = res.loggedUser;
+      let userVerify = res.userVerify;
 
       this.setState({
-        avatar: result.FaceImgUrl,
-        idCardPic: result.IdentityImgUrl,
-        realName: result.identityName,
-        idCardNo: result.identityID,
-        addr: result.identityAddress,
-        bizDesc: result.description,
+        avatar: userVerify.faceImgUrl,
+        idCardPic: userVerify.identityImgUrl,
+        realName: userVerify.identityName,
+        idCardNo: userVerify.identityID,
+        addr: userVerify.identityAddress,
+        bizDesc: user.description,
         auditStatus: res.auditStatus
       });
     });
@@ -121,7 +121,7 @@ export default class RealNameCertifyResultPage extends Component {
     return (
       <section className="real-name-certify-result-page">
         <div className="cells cells-access cells-form">
-          <div className="cell required" onClick={this.takeAvatar.bind(this)}>
+          <div className="cell required" onClick={this.showImg.bind(this)}>
             <div className="cell_hd">
               <label className="label">
                 <span>头像</span>

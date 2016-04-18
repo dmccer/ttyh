@@ -9,7 +9,6 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 
 import LoadMore from '../../load-more/';
 import SearchCondition from '../../condition/';
@@ -21,7 +20,7 @@ import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 import AH from '../../helper/ajax';
 import {
-  RealNameCertifyStatus
+  UserVerifyStatus
 } from '../../account/model/';
 import {
   REAL_NAME_CERTIFY_TITLE,
@@ -64,7 +63,7 @@ export default class SearchPkgPage extends Component {
   }
 
   fetchUserInfo() {
-    this.ah.one(RealNameCertifyStatus, (res) => {
+    this.ah.one(UserVerifyStatus, (res) => {
       this.setState({
         realNameVerifyStatus: res.auditStatus
       });

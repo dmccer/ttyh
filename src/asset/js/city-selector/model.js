@@ -1,4 +1,3 @@
-import Promise from 'promise/lib/es6-extensions';
 import querystring from 'querystring';
 import {GET_OPT} from '../const/fetch';
 

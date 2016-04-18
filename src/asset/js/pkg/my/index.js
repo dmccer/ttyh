@@ -8,7 +8,6 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'promise';
 import querystring from 'querystring';
 
 import LoadMore from '../../load-more/';
@@ -26,7 +25,7 @@ import {
   DelPkg
 } from '../model/';
 import {
-  RealNameCertifyStatus
+  UserVerifyStatus
 } from '../../account/model/';
 import {
   REAL_NAME_CERTIFY_TITLE,
@@ -67,7 +66,7 @@ export default class MyPkgPage extends Component {
   }
 
   fetchUserInfo() {
-    this.ah.one(RealNameCertifyStatus, (res) => {
+    this.ah.one(UserVerifyStatus, (res) => {
       this.setState({
         realNameVerifyStatus: res.auditStatus
       });

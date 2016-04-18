@@ -1,4 +1,3 @@
-import Promise from 'promise/lib/es6-extensions';
 import querystring from 'querystring';
 import assign from 'lodash/object/assign';
 import keys from 'lodash/object/keys';

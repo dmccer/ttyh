@@ -12,7 +12,6 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 import cx from 'classnames';
 
 import Avatar from '../../avatar/';

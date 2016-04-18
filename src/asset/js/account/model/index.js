@@ -1,4 +1,3 @@
-import Promise from 'promise/lib/es6-extensions';
 import querystring from 'querystring';
 import assign from 'lodash/object/assign';
 import {POST_OPT, GET_OPT} from '../../const/fetch';
@@ -33,6 +32,10 @@ export var Login = (params) => {
   return fetch(LOGIN_URL[params.action], assign({
     body: querystring.stringify(params)
   }, POST_OPT));
+}
+
+export var UserVerifyStatus = () => {
+  return fetch('/mvc/wx/getVerifyStatus', GET_OPT);
 }
 
 export var RealNameCertify = (params) => {

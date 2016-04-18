@@ -21,7 +21,6 @@ import './index.less';
 
 import React, {Component} from 'react';
 import querystring from 'querystring';
-import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 

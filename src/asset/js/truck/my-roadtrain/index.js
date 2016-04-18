@@ -7,7 +7,6 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 import find from 'lodash/collection/find';
 
 import MiniTruckItem from '../roadtrain/mini-truck-item/';

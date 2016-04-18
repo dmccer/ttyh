@@ -8,7 +8,7 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
+// import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import EventListener from 'fbjs/lib/EventListener';
@@ -300,6 +300,25 @@ export default class TruckerCertifyPage extends Component {
 
   render() {
     let props = this.props;
+    let states = this.state;
+
+    let bizCardPic = states.bizCardPic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.bizCardPic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
+
+    let bizLicensePic = states.bizLicensePic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.bizLicensePic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
+
+    let shopFacePic = states.shopFacePic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.shopFacePic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
 
     return (
       <section className="trucker-certify-page">
@@ -367,7 +386,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {bizCardPic}
                 </div>
               </div>
             </div>
@@ -382,7 +401,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {shopFacePic}
                 </div>
               </div>
             </div>
@@ -397,7 +416,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {bizLicensePic}
                 </div>
               </div>
             </div>

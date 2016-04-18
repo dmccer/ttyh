@@ -5,11 +5,13 @@ import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import querystring from 'querystring';
+
 import Poptip from '../poptip/';
 import Loading from '../loading/';
-import querystring from 'querystring';
 import $ from '../helper/z';
 import AH from '../helper/ajax';
+
 import {SendVerifyCode, Login} from '../account/model/';
 
 export default class LoginPage extends React.Component {

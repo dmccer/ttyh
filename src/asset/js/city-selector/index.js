@@ -10,7 +10,6 @@ import React from 'react';
 import cx from 'classnames';
 import ReactIScroll from 'react-iscroll';
 import IScroll from 'iscroll/build/iscroll';
-import Promise from 'promise';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import find from 'lodash/collection/find';

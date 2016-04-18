@@ -8,7 +8,6 @@
 import './select-truck-type-enhance.less';
 
 import React, {Component} from 'react';
-import Promise from 'promise';
 import keys from 'lodash/object/keys';
 
 import Selector from '../selector/';

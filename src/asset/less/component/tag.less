@@ -5,25 +5,8 @@
   .clearfix();
   font-size: 13px;
 
-  &.col-3 {
-    .tag {
-      width: 32%;
-      &:nth-child(3n) {
-        margin-right: 0;
-      }
-    }
-  }
-
-  &.col-2 {
-    .tag {
-      width: 48%;
-      &:last-child(2n) {
-        margin-right: 0;
-      }
-    }
-  }
-
   .tag {
+    display: block;
     float: left;
     margin-right: 2%;
     margin-bottom: 6px;
@@ -42,6 +25,26 @@
     .check:checked + p {
       border-color: @c_teal;
       color: @c_teal;
+    }
+  }
+
+  &.col-3 {
+    .tag {
+      width: 32%;
+
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &.col-2 {
+    .tag {
+      width: 48%;
+
+      &:nth-child(2n) {
+        margin-right: 0;
+      }
     }
   }
 

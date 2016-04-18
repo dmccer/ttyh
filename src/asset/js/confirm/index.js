@@ -13,6 +13,7 @@
  * 		msg: '是否删除该条记录?'
  * });
  */
+import '../../less/global/form.less';
 import '../../less/component/layout.less';
 import './index.less';
 

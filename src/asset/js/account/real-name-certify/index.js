@@ -8,7 +8,7 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
+// import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import EventListener from 'fbjs/lib/EventListener';
@@ -330,6 +330,26 @@ export default class RealNameCertifyPage extends Component {
 
   render() {
     let props = this.props;
+    let states = this.state;
+
+    let avatar = states.avatar ? (
+      <div>
+        <i className="icon s25" style={{
+          backgroundImage: `url(${states.avatar})`
+        }}></i>
+      </div>
+    ) : (
+      <div>
+        <i className="icon icon-account off s25"></i>
+        <p>真实头像</p>
+      </div>
+    );
+
+    let idCardPic = states.idCardPic ? (
+      <i className="icon s25" style={{
+        backgroundImage: `url(${states.idCardPic})`
+      }}></i>
+    ) : (<i className="icon icon-credentials s25"></i>);
 
     return (
       <section className="real-name-certify-page">
@@ -344,10 +364,7 @@ export default class RealNameCertifyPage extends Component {
             <div className="cell-bd cell_primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
-                <div>
-                  <i className="icon icon-account off s25"></i>
-                  <p>真实头像</p>
-                </div>
+                {avatar}
               </div>
             </div>
           </div>
@@ -396,7 +413,7 @@ export default class RealNameCertifyPage extends Component {
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
-                  <i className="icon icon-credentials s25"></i>
+                  {idCardPic}
                 </div>
               </div>
             </div>

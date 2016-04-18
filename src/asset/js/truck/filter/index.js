@@ -4,7 +4,6 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'promise';
 import querystring from 'querystring';
 import keys from 'lodash/object/keys';
 import assign from 'lodash/object/assign';

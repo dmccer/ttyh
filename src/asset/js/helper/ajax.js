@@ -20,7 +20,7 @@
  * }
  */
 import querystring from 'querystring';
-import Promise from 'promise/lib/es6-extensions';
+// import Promise from 'promise';
 import Detect from './detect';
 import Log from '../log/';
 

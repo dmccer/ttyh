@@ -12,7 +12,6 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';

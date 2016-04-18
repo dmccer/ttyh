@@ -13,7 +13,6 @@ import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'promise';
 import cx from 'classnames';
 import querystring from 'querystring';
 
