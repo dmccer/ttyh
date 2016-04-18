@@ -70,6 +70,7 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.ProvidePlugin({
+      'Promise': 'promise',
       'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
     }),
     new webpack.optimize.UglifyJsPlugin({
