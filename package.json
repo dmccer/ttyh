@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "prestart": "npm install",
+    "prestart": "cnpm install",
     "start": "rm -rf ./assets; NODE_ENV=production ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --profile --colors",
-    "dev": "npm run prestart; ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
+    "dev": "cnpm run prestart; ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "dest": "assets",
   "repository": {
