@@ -50,10 +50,8 @@ export var GetTruck = (tid) => {
   return fetch(`/mvc/v2/getTruckById?${qs}`, GET_OPT);
 }
 
-export var TruckUsers = (tid) => {
-  let qs = querystring.stringify({
-    routeIDs: tid
-  });
+export var TruckUsers = (params) => {
+  let qs = querystring.stringify(params);
   return fetch(`/mvc/searchUsersForH5?${qs}`, GET_OPT);
 }
 

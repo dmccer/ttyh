@@ -75,7 +75,8 @@ export default class TruckPubPage extends React.Component {
         });
 
         this.setState({
-          truckTags: truckTags
+          truckTags: truckTags,
+          selectedTruckTag: selectedTruckTag.id != null ? selectedTruckTag : truckTags[0]
         });
       },
       error: (err) => {

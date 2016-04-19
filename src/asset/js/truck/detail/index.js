@@ -69,7 +69,9 @@ export default class TruckDetailPage extends Component {
 
        this.refs.poptip.warn('加载货源详情失败, 请重试');
      }
-   }, this.state.qs.tid);
+   }, {
+     routeIDs: this.state.qs.tid
+   });
 
    this.fetchUserInfo();
  }

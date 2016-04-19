@@ -89,12 +89,14 @@ export default class RoadtrainPage extends React.Component {
           trucks: trucks
         });
 
-        // 删除当前选中的默认项
-        if (this.state.selected.truckID === id) {
+        let selectedTruck = this.state.selected;
+
+        if (selectedTruck && selectedTruck.truckID === id) {
           this.state.selected = null;
         }
 
-        if (this.state.lastDefaultTruck.truckID === id) {
+        let lastDefaultTruck = this.state.lastDefaultTruck;
+        if (lastDefaultTruck && lastDefaultTruck.truckID === id) {
           localStorage.removeItem(DEFAULT_TRUCK);
         }
 

@@ -79,7 +79,7 @@ export default class RoadtrainPage extends React.Component {
     this.ah.one(DelTruck, {
       success: (res) => {
         if (res.retcode !== 0) {
-          this.refs.poptip.warn(ERR_MSG_DEL[res.retcode]);
+          this.refs.poptip.warn(res.msg);
 
           return;
         }
@@ -96,11 +96,15 @@ export default class RoadtrainPage extends React.Component {
         });
 
         // 删除当前选中的默认项
-        if (this.state.selected.truckID === id) {
+        let selectedTruck = this.state.selected;
+
+        if (selectedTruck && selectedTruck.truckID === id) {
           this.state.selected = null;
         }
 
-        if (this.state.lastDefaultTruck.truckID === id) {
+        let lastDefaultTruck = this.state.lastDefaultTruck;
+
+        if (lastDefaultTruck && lastDefaultTruck.truckID === id) {
           localStorage.removeItem(DEFAULT_TRUCK);
         }
 

@@ -42,7 +42,7 @@ export default class MiniTruckItem extends React.Component {
           {selected}
         </h3>
         <i className="icon icon-del s20 off" onClick={this.remove.bind(this)}></i>
-        <p>{props.licensePlate} {props.truckType} {truckLength} {loadLimit}</p>
+        <p>{props.licensePlate} {props.truckTypeStr} {truckLength} {loadLimit}</p>
         {commonRoute}
         <div className="memo">{props.memo}</div>
         {tel}

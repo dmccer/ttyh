@@ -15,6 +15,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
 import querystring from 'querystring';
+import EventListener from 'fbjs/lib/EventListener';
 
 import $ from '../../helper/z';
 import Poptip from '../../poptip/';
@@ -68,6 +69,12 @@ export default class TruckAddPage extends React.Component {
 
       // 首次进入编辑
       this.getTruck();
+
+      EventListener.listen(window, 'beforeunload', () => {
+        localStorage.removeItem(TRUCK_ADD_DRAFT);
+        localStorage.removeItem(SELECTED_COMMON_ROUTE);
+      });
+
       return;
     }
 
