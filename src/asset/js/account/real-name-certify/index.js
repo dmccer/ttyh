@@ -91,7 +91,7 @@ export default class RealNameCertifyPage extends Component {
       }
 
       if (res.auditStatus === -1 || res.auditStatus === 0) {
-        let userVerify = res.userVerify;
+        let userVerify = res.userVerify || {};
         let user = res.loggedUser;
 
         this.setState({
@@ -129,7 +129,7 @@ export default class RealNameCertifyPage extends Component {
 
   validate() {
     return (
-      Validator.test('required', '请上传头像', this.state.avatar) &&
+      Validator.test('required', '请上传本人正面照', this.state.avatar) &&
       Validator.test('required', '请填写姓名', this.props.realName) &&
       Validator.test('required', '请填写身份证号', this.props.idCardNo) &&
       Validator.test('required', '请上传身份证照片', this.state.idCardPic)
@@ -364,7 +364,7 @@ export default class RealNameCertifyPage extends Component {
           <div className="cell required" onClick={this.takeAvatar.bind(this)}>
             <div className="cell_hd">
               <label className="label">
-                <span>头像</span>
+                <span>本人正面照</span>
               </label>
             </div>
             <div className="cell-bd cell_primary"></div>

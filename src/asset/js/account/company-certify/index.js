@@ -91,7 +91,7 @@ export default class TruckerCertifyPage extends Component {
       }
 
       if (res.auditStatus === -1 || res.auditStatus === 0) {
-        let result = res.userWithCompanyInfo;
+        let result = res.userWithCompanyInfo || {};
 
         this.setState({
           bizCardPic: result.companyAuthorizeUrl,
@@ -325,7 +325,7 @@ export default class TruckerCertifyPage extends Component {
     ) : (<i className="icon icon-credentials s25"></i>);
 
     return (
-      <section className="trucker-certify-page">
+      <section className="company-certify-page">
         {this.renderStatusText()}
         <div className="cells cells-access cells-form">
           <div className="cell required">
@@ -442,4 +442,4 @@ export default class TruckerCertifyPage extends Component {
   }
 }
 
-ReactDOM.render(<TruckerCertifyPage />, document.querySelector('.page'));
+ReactDOM.render(<CompanyCertifyPage />, document.querySelector('.page'));

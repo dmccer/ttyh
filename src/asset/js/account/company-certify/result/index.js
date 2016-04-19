@@ -51,7 +51,7 @@ export default class CompanyCertifyResultPage extends Component {
 
   fetch() {
     this.ah.one(CompanyCertifyStatus, (res) => {
-      let result = res.userWithCompanyInfo;
+      let result = res.userWithCompanyInfo || {};
 
       this.setState({
         bizCardPic: result.companyAuthorizeUrl,
@@ -124,7 +124,8 @@ export default class CompanyCertifyResultPage extends Component {
     ) : (<i className="icon icon-credentials s25"></i>);
 
     return (
-      <section className="trucker-certify-page">
+      <section className="company-certify-page">
+        <i className="icon s80 icon-certified"></i>
         <div className="cells cells-access cells-form">
           <div className="cell required">
             <div className="cell_hd">

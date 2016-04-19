@@ -94,7 +94,7 @@ export default class TruckerCertifyPage extends Component {
       }
 
       if (res.auditStatus === -1 || res.auditStatus === 0) {
-        let result = res.truckInfo;
+        let result = res.truckInfo || {};
 
         this.setState({
           drivingLicensePic: result.driverLicenseImgUrl,

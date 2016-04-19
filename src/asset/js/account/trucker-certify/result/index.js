@@ -51,7 +51,7 @@ export default class TruckerCertifyResultPage extends Component {
 
   fetch() {
     this.ah.one(TruckerCertifyStatus, (res) => {
-      let result = res.truckInfo;
+      let result = res.truckInfo || {};
 
       this.setState({
         drivingLicensePic: result.driverLicenseImgUrl,
@@ -124,10 +124,11 @@ export default class TruckerCertifyResultPage extends Component {
       }}></i>
     ) : (<i className="icon icon-credentials s25"></i>);
 
-    let truckDesc = `${states.truckType} ${states.truckLength}米`;
+    let truckDesc = `${states.truckType || ''} ${states.truckLength && (states.truckLength + '米') || ''}`;
 
     return (
       <section className="trucker-certify-page">
+        <i className="icon s80 icon-certified"></i>
         <div className="cells cells-access cells-form">
           <div className="cell required">
             <div className="cell_hd">
@@ -156,7 +157,7 @@ export default class TruckerCertifyResultPage extends Component {
               </label>
             </div>
             <div className="cell-bd cell_primary">
-              <p className={states.loadLimit ? 'val' : 'holder'}>{`${states.loadLimit}吨`}</p>
+              <p className={states.loadLimit ? 'val' : 'holder'}>{states.loadLimit}</p>
             </div>
             <div className="cell-ft">吨</div>
           </div>

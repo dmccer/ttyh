@@ -52,7 +52,7 @@ export default class RealNameCertifyResultPage extends Component {
   fetch() {
     this.ah.one(RealNameCertifyStatus, (res) => {
       let user = res.loggedUser;
-      let userVerify = res.userVerify;
+      let userVerify = res.userVerify || {};
 
       this.setState({
         avatar: userVerify.faceImgUrl,
@@ -127,11 +127,12 @@ export default class RealNameCertifyResultPage extends Component {
 
     return (
       <section className="real-name-certify-result-page">
+        <i className="icon s80 icon-certified"></i>
         <div className="cells cells-access cells-form">
           <div className="cell required" onClick={this.showImg.bind(this)}>
             <div className="cell_hd">
               <label className="label">
-                <span>头像</span>
+                <span>本人正面照</span>
               </label>
             </div>
             <div className="cell-bd cell_primary"></div>
