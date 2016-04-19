@@ -15,12 +15,14 @@ export default class PkgItemDesc extends Component {
     let pkgName = props.title != null ? <span>{props.title}</span> : null;
     let loadLimit = props.loadLimit != null && parseFloat(props.loadLimit) !== 0 ? <span>{props.loadLimit}吨</span> : null;
     let pack = <span>{props.packTypeStr}{props.productCount ? ` * ${props.productCount}` : ''}</span>;
+    let productVolume = props.productVolume != null && parseFloat(props.productVolume) != 0 ? <span>{props.productVolume}方</span> : null;
 
     return (
       <p className="pkg-desc">
         <i className="icon icon-pkg-type s18"></i>
         {pkgName}
         {loadLimit}
+        {productVolume}
         {pack}
       </p>
     );

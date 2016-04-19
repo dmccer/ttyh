@@ -188,8 +188,8 @@ export default class PkgDetailPage extends Component {
       let title = product.title && product.title || '';
       let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
       let pack = product.packTypeStr + (product.productCount ? ` * ${product.productCount}` : '');
-
-      pkgDesc = `${title} ${loadLimit} ${pack}`;
+      let productVolume = product.productVolume != null && parseFloat(product.productVolume) != 0 ? `${product.productVolume}方` : '';
+      pkgDesc = `${title} ${loadLimit} ${productVolume} ${pack}`;
     }
 
     let truckDesc;

@@ -59,9 +59,12 @@ export default class PkgInfoPubPage extends Component {
         };
       });
 
+      let checkedPackManner = this.state.checkedPackManner;
+
       this.setState({
         packManners: packManners,
-        loaded: true
+        loaded: true,
+        checkedPackManner: checkedPackManner.id != null ? checkedPackManner : packManners[0]
       }, () => {
         Validator.config(this.refs.poptip);
       });
