@@ -96,10 +96,12 @@ export default class TruckRequirementPage extends React.Component {
       return;
     }
 
+    let special = states.checkedTruckUseType.id === JUST_SELECT_TRUCK_TYPE;
+
     localStorage.setItem(PKG_TRUCK_USE_DATA, JSON.stringify({
       truckType: props.truckType,
-      truckLength: props.truckLength,
-      stallSize: props.stallSize,
+      truckLength: special ? null : props.truckLength,
+      stallSize: special ? props.stallSize : null,
       truckUseType: states.checkedTruckUseType
     }));
 
