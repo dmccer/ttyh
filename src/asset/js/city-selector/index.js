@@ -152,7 +152,11 @@ export default class CitySelector extends React.Component {
   /**
    * 处理选择地区
    */
-  select_area(area) {
+  select_area(area, areaIndex) {
+    if (this.backLastLevel(areaIndex, 'city')) {
+      return;
+    }
+
     this.setState({
       area: area
     }, () => {
@@ -166,6 +170,10 @@ export default class CitySelector extends React.Component {
    * 处理选择城市
    */
   select_city(city, cityIndex) {
+    if (this.backLastLevel(cityIndex, 'province')) {
+      return;
+    }
+
     this.setState({
       city: city,
       cityIndex: cityIndex
@@ -200,8 +208,27 @@ export default class CitySelector extends React.Component {
 
       this.fetchCities();
     });
+  }
 
+  backLastLevel(regionIndex, level) {
+    if (regionIndex !== -1) {
+      return false;
+    }
 
+    switch (level) {
+      case 'province':
+        this.setState({
+          province: null
+        }, this.fetchProvinces);
+        break;
+      case 'city':
+        this.setState({
+          city: null
+        }, this.fetchCities);
+        break;
+    }
+
+    return true;
   }
 
   /**
@@ -364,7 +391,7 @@ export default class CitySelector extends React.Component {
       });
 
       rowList.unshift((
-        <dl className="row" key={`region_all`}>
+        <dl className="row" key="region_all">
           <dt className="hd"></dt>
           <dd className="bd">
             <div
@@ -388,14 +415,22 @@ export default class CitySelector extends React.Component {
       );
     });
 
-    return (
+    return [
+      <dl className="row" key="back_last_level">
+        <dt className="hd"></dt>
+        <dd className="bd">
+          <div
+            className="item"
+            onTouchTap={this[`select_${field}`].bind(this, '返回上级', -1)}>返回上级</div>
+        </dd>
+      </dl>,
       <dl className="row" key={`${field}`}>
         <dt className="hd">{list.name}</dt>
         <dd className="bd">
           {children}
         </dd>
       </dl>
-    );
+    ];
   }
 
   render() {

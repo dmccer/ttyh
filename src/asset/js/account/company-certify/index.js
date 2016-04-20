@@ -32,7 +32,7 @@ import {CompanyCertify, CompanyCertifyStatus} from '../model/';
 const COMPANY_CERTIFY_DRAFT = 'company_certify_draft';
 
 @FieldChangeEnhance
-export default class TruckerCertifyPage extends Component {
+export default class CompanyCertifyPage extends Component {
   state = {};
 
   constructor(props) {
