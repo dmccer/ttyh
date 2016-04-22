@@ -9,6 +9,7 @@ import ResPicker from './../../res-picker/';
 import Loading from  '../../../loading/';
 import Poptip from  '../../../poptip/';
 import AH from '../../../helper/ajax';
+import $ from '../../../helper/z';
 import {
   Comment
 } from '../../model/';

@@ -23,7 +23,7 @@ export default class Emoj extends React.Component {
     };
   }
 
-  static formatText(text: string) {
+  static formatText(text: String, lineBreak: Boolean) {
     let cnt = text;
 
     if ($.trim(cnt) === '') {
@@ -33,7 +33,7 @@ export default class Emoj extends React.Component {
     let m = cnt.match(Emoj.code_reg());
 
     if (!m) {
-      return <span>{Emoj.replaceLineBreak(cnt)}</span>;
+      return <span>{lineBreak ? Emoj.replaceLineBreak(cnt) : cnt}</span>;
     }
 
     let r = [];
@@ -53,7 +53,7 @@ export default class Emoj extends React.Component {
       let t = cnt.substring(0, si);
       cnt = cnt.substring(si + s.length);
 
-      r = r.concat(Emoj.replaceLineBreak(t));
+      r = r.concat(lineBreak ? Emoj.replaceLineBreak(t) : t);
       r.push(<Emoj key={`emoj-text-item_${++Emoj.count}`} code={code} />)
     });
 

@@ -1,6 +1,7 @@
 import querystring from 'querystring';
 import assign from 'lodash/object/assign';
 import {POST_OPT, GET_OPT} from '../../const/fetch';
+import fetchJsonp from 'fetch-jsonp';
 
 /**
  * 检查是否有新的帖子和回复
@@ -49,7 +50,7 @@ export var HotUser = (uid: String) => {
   let qs = querystring.stringify({
     uid: uid
   });
-  return fetch(`/api/bbs_v2/show_my_forum?${qs}`, GET_OPT);
+  return fetch(`/api/bbs_v2/hot_user?${qs}`, GET_OPT);
 }
 
 export var FollowUser = (uid: String) => {
@@ -59,7 +60,7 @@ export var FollowUser = (uid: String) => {
 export var Forum = (uid: String, fid: String) => {
   let qs = querystring.stringify({
     uid: uid,
-    fid: fid
+    id: fid
   });
   return fetch(`/api/bbs_v2/show_forum?${qs}`, GET_OPT);
 }
@@ -117,5 +118,5 @@ export var Topics = () => {
 
 export var BaiduGeo = (params: Object) => {
   let qs = querystring.stringify(params);
-  return fetch(`http://api.map.baidu.com/geocoder/v2/?${qs}`, GET_OPT);
+  return fetchJsonp(`http://api.map.baidu.com/geocoder/v2/?${qs}`);
 }

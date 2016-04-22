@@ -333,7 +333,7 @@ export default class CitySelector extends React.Component {
         return (
           <li
             key={`history_${index}`}
-            onTouchTap={this.select_history.bind(this, item)}
+            onClick={this.select_history.bind(this, item)}
           >{item.area || item.city || item.province}</li>
         );
       });

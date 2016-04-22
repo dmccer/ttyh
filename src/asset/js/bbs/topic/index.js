@@ -2,6 +2,7 @@ import './index.less';
 
 import React from 'react';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 import AH from '../../helper/ajax';
 import {
   Topics
@@ -39,7 +40,7 @@ export default class Topic extends React.Component {
     });
 
     let topicList = topics.map((topic, index) => {
-      let url = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, { tid: topic.id, topic: topic.name }));
+      let url = './topic-posts.html?' + querystring.stringify(assign({}, this.state.qs, { tid: topic.id, topic: topic.name }));
 
       return <a
         href={url}

@@ -10,6 +10,7 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import querystring from 'querystring';
 import AH from '../../helper/ajax';
+import $ from '../../helper/z';
 import {
   BaiduGeo,
   PubForum
@@ -42,6 +43,8 @@ export default class PostAdd extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((pos) => {
         this.ah.one(BaiduGeo, (data) => {

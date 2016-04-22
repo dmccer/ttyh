@@ -1,8 +1,7 @@
 import assign from 'lodash/object/assign';
 
 const COMMON_OPT = {
-  // credentials: 'same-origin'
-  credentials: 'include'
+  credentials: 'same-origin'
 }
 const COMMON_HEADER = {
   'Accept': 'application/json',
@@ -10,7 +9,6 @@ const COMMON_HEADER = {
 const FORM_POST_HEADER = {
   'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
 };
-
 
 export const POST_OPT = assign({}, COMMON_OPT, {
   method: 'POST',

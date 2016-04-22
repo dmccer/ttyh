@@ -8,6 +8,8 @@ const cssNumber = {
   'zoom': 1
 };
 const rootNodeRE = /^(?:body|html)$/i;
+let class2type = {};
+let toString = class2type.toString;
 
 function isWindow(obj) {
   return obj != null && obj == obj.window;
@@ -33,6 +35,11 @@ function dasherize(str) {
 
 function maybeAddPx(name, value) {
   return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value;
+}
+
+function type(obj) {
+  return obj == null ? String(obj) :
+    class2type[toString.call(obj)] || "object";
 }
 
 let z = {
@@ -97,7 +104,7 @@ let z = {
       else
         css = dasherize(property) + ":" + maybeAddPx(property, value)
     } else {
-      for (key in property)
+      for (var key in property)
         if (!property[key] && property[key] !== 0)
           element.style.removeProperty(dasherize(key))
         else

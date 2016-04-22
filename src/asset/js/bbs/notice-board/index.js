@@ -4,9 +4,17 @@ import React from 'react';
 import ReadableTime from '../readable-time/';
 import Emoj from '../emoj/';
 import AH from '../../helper/ajax';
+import $ from '../../helper/z';
 import {
   AllPublishedNotice
 } from '../model/';
+
+let rAF = window.requestAnimationFrame	||
+	window.webkitRequestAnimationFrame	||
+	window.mozRequestAnimationFrame		||
+	window.oRequestAnimationFrame		||
+	window.msRequestAnimationFrame		||
+	function (callback) { window.setTimeout(callback, 1000 / 60); };
 
 export default class NoticeBoard extends React.Component {
   constructor() {
@@ -34,27 +42,33 @@ export default class NoticeBoard extends React.Component {
   }
 
   scroll() {
-    let $content = $(this.refs.content);
-    let $text = $(this.refs.text);
-
-    let len = $text.width();
-    let w = $content.width();
+    let len = $.width(this.refs.text);
+    let w = $.width(this.refs.content);
 
     let delta = len - w;
+    let count = 0;
 
     let fn = () => {
-      $text.animate({
-        left: -delta
-      }, this.state.text.length / 3 * 1000, 'linear', () => {
-        $text.css({
+      count += 1;
+      $.css(this.refs.text, {
+        left: -count
+      });
+
+      if (count < delta) {
+        rAF(fn);
+      } else {
+        $.css(this.refs.text, {
           left: 0
         });
 
-        setTimeout(fn, 2000);
-      });
-    }
+        setTimeout(() => {
+          count = 0;
+          rAF(fn);
+        }, 2000);
+      }
+    };
 
-    fn();
+    rAF(fn);
   }
 
   render() {

@@ -3,6 +3,7 @@ import '../../../less/global/global.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 
 import AboutMeHeadBar from './head-bar/';
 import Post from '../post/';
@@ -16,7 +17,8 @@ import AH from '../../helper/ajax';
 import {
   CheckHasNewPostsOrReplies,
   MyForums,
-  RemoveCommend
+  RemoveCommend,
+  MyCommends
 } from '../model/';
 
 const DEL_REPLY_ERR = {
@@ -56,7 +58,7 @@ export default class AboutMe extends React.Component {
 
   componentWillMount() {
     this.setState({
-      tab: query.tab || 'forum'
+      tab: this.state.qs.tab || 'forum'
     });
   }
 
@@ -190,7 +192,7 @@ export default class AboutMe extends React.Component {
       tab: tab
     });
 
-    let qs = querystring.stringify($.extend({}, this.state.qs, { tab: tab }));
+    let qs = querystring.stringify(assign({}, this.state.qs, { tab: tab }));
     location.replace(location.protocol + '//' + location.host + location.pathname + '?' + qs);
   }
 

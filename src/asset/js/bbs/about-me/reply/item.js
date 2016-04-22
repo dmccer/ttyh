@@ -2,6 +2,7 @@ import './item.less';
 
 import React from 'react';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 import Emoj from '../../emoj/';
 import ReadableTime from '../../readable-time/';
 import Avatar from '../../avatar/';
@@ -29,7 +30,7 @@ export default class ReportItem extends React.Component {
 
     let post = this.props.item;
 
-    const qs = querystring.stringify($.extend({}, this.state.qs, {
+    const qs = querystring.stringify(assign({}, this.state.qs, {
       fid: post.pid
     }));
 

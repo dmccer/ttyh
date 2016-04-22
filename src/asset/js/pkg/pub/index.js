@@ -125,15 +125,21 @@ export default class PkgPubPage extends React.Component {
           name: item.value,
           id: item.key
         };
-      });;
-
-      let loadType = find(loadTypes, item => {
-        return DEFAULT_LOAD_TYPE_ID === item.id;
       });
 
-      let paymentType = find(paymentTypes, item => {
-        return DEFAULT_PAYMENT_TYPE_ID === item.id
-      });
+      let loadType = this.state.loadType;
+      let paymentType = this.state.paymentType;
+
+      if (this.state.loadType.id == null) {
+        loadType = find(loadTypes, item => {
+          return DEFAULT_LOAD_TYPE_ID === item.id;
+        });
+      }
+      if (this.state.paymentType.id == null) {
+        paymentType = find(paymentTypes, item => {
+          return DEFAULT_PAYMENT_TYPE_ID === item.id
+        });
+      }
 
       this.setState({
         loadTypes: loadTypes,
@@ -198,15 +204,15 @@ export default class PkgPubPage extends React.Component {
       payType: states.paymentType.id,
       loadingType: states.loadType.id,
 
-      useType: states.truckUseInfo.truckUseType.id,
-      truckType: states.truckUseInfo.truckType.id,
-      truckLength: states.truckUseInfo.truckLength.id,
+      useType: states.truckUseInfo.truckUseType && states.truckUseInfo.truckUseType.id,
+      truckType: states.truckUseInfo.truckType && states.truckUseInfo.truckType.id,
+      truckLength: states.truckUseInfo.truckLength && states.truckUseInfo.truckLength.id,
       spaceNeeded: states.truckUseInfo.stallSize,
 
       productName: states.pkgInfo.pkgName,
       title: states.pkgInfo.pkgName,
       productVolume: states.pkgInfo.pkgVolume,
-      packType: states.pkgInfo.packManner.id,
+      packType: states.pkgInfo.packManner && states.pkgInfo.packManner.id,
       productCount: states.pkgInfo.pkgCount,
       loadLimit: states.pkgInfo.pkgWeight,
 

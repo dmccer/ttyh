@@ -1,5 +1,6 @@
 import Log from '../log/';
 import {GET_OPT} from '../const/fetch';
+import WX from '../const/wx';
 
 export default class JWeiXin {
   static isWeixinBrowser() {
@@ -15,7 +16,7 @@ export default class JWeiXin {
   }
 
   config() {
-    fetch(`/mvc/wx/jsapi?url=${this.url}`, GET_OPT)
+    fetch(`${WX.url}?url=${this.url}`, GET_OPT)
       .then(res => res.json())
       .then((data) => {
         if (!data) {
@@ -24,7 +25,7 @@ export default class JWeiXin {
 
         let config = {
           debug: false,
-          appId: 'wx13306fcc7460426e',
+          appId: WX.appId,
           timestamp: data.timestamp,
           nonceStr: data.noncestr,
           signature: data.signature,

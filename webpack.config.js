@@ -449,7 +449,15 @@ module.exports = {
     inline: true,
     proxy: {
       '/app*': {
-        target: 'http://test.ttyhuo.com/',
+        target: 'http://m.ttyhuo.com:83',
+        secure: false
+      },
+      '/mvc/bbs*': {
+        target: 'http://m.ttyhuo.com:83',
+        secure: false
+      },
+      '/api*': {
+        target: 'http://m.ttyhuo.com:83',
         secure: false
       },
       '/mvc/code_msg*': {

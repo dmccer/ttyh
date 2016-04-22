@@ -5,6 +5,7 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import assign from 'lodash/object/assign';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Emoj from '../emoj/';
@@ -12,6 +13,7 @@ import querystring from 'querystring';
 import ReadableTime from '../readable-time/';
 import Avatar from '../avatar/';
 import AH from '../../helper/ajax';
+import $ from '../../helper/z';
 import {
   AllPublishedNotice
 } from '../model/';
@@ -21,7 +23,7 @@ export default class NoticeDetail extends React.Component {
     qs: querystring.parse(location.search.substring(1)),
     imgs: []
   };
-  
+
   constructor() {
     super();
   }
@@ -48,7 +50,7 @@ export default class NoticeDetail extends React.Component {
       return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img} /></a>
     });
 
-    let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
+    let topicPostUrl = './topic-posts.html?' + querystring.stringify(assign({}, this.state.qs, {
       tid: this.state.tid,
       topic: this.state.topic
     }));
@@ -71,7 +73,7 @@ export default class NoticeDetail extends React.Component {
           <section className="post-content">
             <p className="post-text">
               <a href={topicPostUrl}>{topic}</a>
-              {Emoj.formatText(this.state.content)}
+              {Emoj.formatText(this.state.content, true)}
             </p>
             <div className="photo">
               {imgs}

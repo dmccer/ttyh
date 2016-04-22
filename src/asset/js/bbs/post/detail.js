@@ -2,6 +2,7 @@ import './item.less';
 
 import React from 'react';
 import classNames from 'classnames';
+import assign from 'lodash/object/assign';
 import Emoj from '../emoj/';
 import querystring from 'querystring';
 import ReadableTime from '../readable-time/';
@@ -78,7 +79,7 @@ export default class PostDetailItem extends React.Component {
       return <a href="javascript:void(0)" key={'img-item_' + index}><img src={img.replace(WH_REG, '')} /></a>
     });
 
-    let topicPostUrl = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, {
+    let topicPostUrl = './topic-posts.html?' + querystring.stringify(assign({}, this.state.qs, {
       tid: forum.tid,
       topic: forum.topic
     }));

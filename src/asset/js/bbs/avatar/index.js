@@ -3,6 +3,7 @@ import './index.less';
 import React from 'react';
 import classNames from 'classnames';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 
 export default class Avatar extends React.Component {
   constructor() {
@@ -14,7 +15,7 @@ export default class Avatar extends React.Component {
   }
 
   render() {
-    let qs = querystring.stringify($.extend({}, this.state.qs, {
+    let qs = querystring.stringify(assign({}, this.state.qs, {
       tuid: this.props.uid,
       title: this.props.name
     }));

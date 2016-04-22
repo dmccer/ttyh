@@ -30,6 +30,7 @@ export default class BBSDetail extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.toast);
     this.fetch();
   }
 
@@ -112,8 +113,6 @@ export default class BBSDetail extends React.Component {
         }
 
         this.refs.poptip.success('关注成功');
-
-        user.follow = 1;
         this.forceUpdate();
       },
       error: (xhr) => {

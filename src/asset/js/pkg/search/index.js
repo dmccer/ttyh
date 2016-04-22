@@ -9,6 +9,7 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 
 import LoadMore from '../../load-more/';
 import SearchCondition from '../../condition/';
@@ -44,20 +45,19 @@ export default class SearchPkgPage extends Component {
     super();
   }
 
-  componentDidMount() {
-    this.ah = new AH(this.refs.loading, this.refs.poptip);
-
-    LoadMore.init(() => {
-      if (!this.state.over) {
-        this.query();
-      }
-    });
-
-    this.fetchUserInfo();
-  }
-
   handleSearchConditionInit(q) {
-    this.setState(q, () => {
+    this.setState(assign({
+      filterLoaded: true
+    }, q), () => {
+      this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+      LoadMore.init(() => {
+        if (!this.state.over) {
+          this.query();
+        }
+      });
+      this.fetchUserInfo();
+
       this.query();
     });
   }
@@ -74,6 +74,10 @@ export default class SearchPkgPage extends Component {
     this.ah.one(PkgSearch, {
       success: (res) => {
         let pkgs = this.state.pkgs;
+
+        this.setState({
+          loaded: true
+        });
 
         if (!res.data || !res.data.length) {
           if (!pkgs.length) {
@@ -143,7 +147,7 @@ export default class SearchPkgPage extends Component {
    * @return {Element}
    */
   renderEmpty() {
-    if (!this.state.pkgs.length) {
+    if (!this.state.pkgs.length && this.state.loaded) {
       return (
         <div className="pkg-empty-tip">
           <div className="img-tip">
@@ -173,15 +177,19 @@ export default class SearchPkgPage extends Component {
   }
 
   render() {
+    let list = this.state.filterLoaded ? (
+      <div className="pkg-list">
+        {this.renderItems()}
+      </div>
+    ) : null;
+
     return (
       <div className="search-pkg-page">
         <SearchCondition
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
         />
-        <div className="pkg-list">
-          {this.renderItems()}
-        </div>
+        {list}
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <Confirm

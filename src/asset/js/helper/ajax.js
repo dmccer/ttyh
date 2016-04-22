@@ -71,7 +71,7 @@ export default class AjaxHelper {
   }
 
   ckStatus(res: Object) {
-    if (res.status >= 200 && res.status < 300) {
+    if (res.status >= 200 && res.status < 300 || res.ok) {
       return res.json();
     }
 
