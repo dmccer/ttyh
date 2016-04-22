@@ -3,13 +3,13 @@
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
+import '../../less/global/layout.less';
 import './index.less';
 
 import React from 'react';
 import cx from 'classnames';
 import ReactIScroll from 'react-iscroll';
 import IScroll from 'iscroll/build/iscroll';
-import Promise from 'promise';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import find from 'lodash/collection/find';
@@ -17,6 +17,9 @@ import Mask from '../mask/';
 import Loading from '../loading/';
 import Poptip from '../poptip/';
 import Log from '../log/';
+import $ from '../helper/z';
+import AH from '../helper/ajax';
+import {Cities} from './model';
 
 // 因为 iscroll 禁用了 click 事件，
 // 若启用 iscroll click, 会对其他默认滚动列表，滚动时触发 click
@@ -24,7 +27,7 @@ import Log from '../log/';
 injectTapEventPlugin();
 
 const HISTORY = '_city_selector_histories';
-const ALL = '不限';
+const ALL = '全部';
 
 export default class CitySelector extends React.Component {
   static defaultProps = {
@@ -54,16 +57,20 @@ export default class CitySelector extends React.Component {
     super();
   }
 
-  show(top: String) {
+  show(top: String, step=3, useHistory=true) {
     this.setState({
       top: top,
-      on: true
+      on: true,
+      step: step,
+      useHistory: useHistory
     });
 
     this.props.onShow();
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     // 若获取过省份列表，则直接展示，无须再次请求
     if (this.state.provinces && this.state.provinces.length) {
       return;
@@ -73,38 +80,18 @@ export default class CitySelector extends React.Component {
   }
 
   /**
-   * 获取选中的数据在列表中的索引位置
-   * @param  {String} field    字段
-   * @param  {String} listName 列表字段
-   */
-  getIndex(field, listName) {
-    return this.state[listName].indexOf(this.state[field]);
-  }
-
-  /**
    * 获取省份列表
    */
   fetchProvinces() {
-    this.refs.loading.show('加载中...');
-
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getCitys',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        provinces: res.resultList
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载省份失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    this.ah.one(Cities, {
+      success: (res) => {
+        this.setState({
+          provinces: res.result
+        });
+      },
+      error: (err) => {
+        this.refs.poptip.warn('加载省份失败,请重试');
+      }
     });
   }
 
@@ -112,64 +99,33 @@ export default class CitySelector extends React.Component {
    * 获取城市列表
    */
   fetchCities() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(Cities, {
+      success: res => {
+        this.setState({
+          cities: res
+        });
+      },
+      error: err => {
 
-    new Promise((resolve, reject) => {
-      let provinces = this.state.provinces;
-      let index = provinces.indexOf(this.state.province);
-
-      $.ajax({
-        url: '/mvc/v2/getCitys',
-        type: 'GET',
-        cache: false,
-        data: {
-          cityIndex: this.getIndex('province', 'provinces')
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        cities: res.resultList
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载城市失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+        this.refs.poptip.warn('加载城市失败,请重试');
+      }
+    }, [this.state.regionIndex, this.state.provinceIndex].join());
   }
 
   /**
    * 获取地区列表
    */
   fetchAreas() {
-    this.refs.loading.show('加载中...');
-
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getCitys',
-        type: 'GET',
-        cache: false,
-        data: {
-          cityIndex: this.getIndex('province', 'provinces'),
-          districtIndex: this.getIndex('city', 'cities')
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      this.setState({
-        areas: res.resultList
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载地区失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+    this.ah.one(Cities, {
+      success: res => {
+        this.setState({
+          areas: res
+        });
+      },
+      error: err => {
+        this.refs.poptip.warn('加载地区失败,请重试');
+      }
+    }, [this.state.regionIndex, this.state.provinceIndex, this.state.cityIndex].join());
   }
 
   componentWillReceiveProps() {
@@ -196,17 +152,15 @@ export default class CitySelector extends React.Component {
   /**
    * 处理选择地区
    */
-  select_area(area) {
+  select_area(area, areaIndex) {
+    if (this.backLastLevel(areaIndex, 'city')) {
+      return;
+    }
+
     this.setState({
       area: area
     }, () => {
       this.props.onSelectArea(area, this.state.city, this.state.province);
-
-      if (area === ALL) {
-        this.done();
-
-        return;
-      }
 
       this.done();
     });
@@ -215,13 +169,18 @@ export default class CitySelector extends React.Component {
   /**
    * 处理选择城市
    */
-  select_city(city) {
+  select_city(city, cityIndex) {
+    if (this.backLastLevel(cityIndex, 'province')) {
+      return;
+    }
+
     this.setState({
-      city: city
+      city: city,
+      cityIndex: cityIndex
     }, () => {
       this.props.onSelectCity(city, this.state.province);
 
-      if (city === ALL) {
+      if (city === ALL || this.state.step === 2) {
         this.done();
 
         return;
@@ -234,21 +193,42 @@ export default class CitySelector extends React.Component {
   /**
    * 处理选择省份
    */
-  select_province(province) {
+  select_province(province, regionIndex, provinceIndex) {
     this.setState({
-      province: province
+      province: province,
+      regionIndex: regionIndex,
+      provinceIndex: provinceIndex
     }, () => {
       this.props.onSelectProvince(province);
 
-      if (province === ALL) {
+      if (province === ALL || this.state.step === 1) {
         this.done();
         return;
       }
 
       this.fetchCities();
     });
+  }
 
+  backLastLevel(regionIndex, level) {
+    if (regionIndex !== -1) {
+      return false;
+    }
 
+    switch (level) {
+      case 'province':
+        this.setState({
+          province: null
+        }, this.fetchProvinces);
+        break;
+      case 'city':
+        this.setState({
+          city: null
+        }, this.fetchCities);
+        break;
+    }
+
+    return true;
   }
 
   /**
@@ -260,7 +240,7 @@ export default class CitySelector extends React.Component {
     let area = this.state.area;
 
     // 若有选择，则写入历史记录
-    if (province && province !== ALL) {
+    if (province && province !== ALL && this.state.useHistory) {
       this.writeHistory2Local({
         province: province,
         city: city === ALL ? null : city,
@@ -305,7 +285,10 @@ export default class CitySelector extends React.Component {
     this.setState({
       province: null,
       city: null,
-      area: null
+      area: null,
+      cityIndex: null,
+      regionIndex: null,
+      provinceIndex: null
     });
   }
 
@@ -345,12 +328,12 @@ export default class CitySelector extends React.Component {
   renderHistory() {
     let list = this.state.historyCities;
 
-    if (list.length) {
+    if (list.length && this.state.useHistory) {
       let historyList = list.map((item, index) => {
         return (
           <li
             key={`history_${index}`}
-            onTouchTap={this.select_history.bind(this, item)}
+            onClick={this.select_history.bind(this, item)}
           >{item.area || item.city || item.province}</li>
         );
       });
@@ -385,15 +368,73 @@ export default class CitySelector extends React.Component {
    * 展示城市或省份或地区项
    */
   renderItem(list, field) {
-    return list.map((item, index) => {
+    if (field === 'province') {
+      let rowList = list.map((item, index) => {
+        let children = item.child.map((province, pIndex) => {
+          return (
+            <div
+              className="item"
+              key={`${field}_${pIndex}`}
+              onTouchTap={this[`select_${field}`].bind(this, province, index, pIndex)}
+            >{province}</div>
+          );
+        });
+
+        return (
+          <dl className="row" key={`region_${index}`}>
+            <dt className="hd">{item.name}</dt>
+            <dd className="bd">
+              {children}
+            </dd>
+          </dl>
+        );
+      });
+
+      rowList.unshift((
+        <dl className="row" key="region_all">
+          <dt className="hd"></dt>
+          <dd className="bd">
+            <div
+              className="item"
+              onTouchTap={this[`select_${field}`].bind(this, ALL)}
+            >{ALL}</div>
+          </dd>
+        </dl>
+      ));
+
+      return rowList;
+    }
+
+    let children = (list.child || []).map((item, index) => {
       return (
-        <li key={`${field}_${item}`} onTouchTap={this[`select_${field}`].bind(this, item)}>{item}</li>
+        <div
+          className="item"
+          key={`${field}_${item}`}
+          onTouchTap={this[`select_${field}`].bind(this, item, index)}
+        >{item}</div>
       );
     });
+
+    return [
+      <dl className="row" key="back_last_level">
+        <dt className="hd"></dt>
+        <dd className="bd">
+          <div
+            className="item"
+            onTouchTap={this[`select_${field}`].bind(this, '返回上级', -1)}>返回上级</div>
+        </dd>
+      </dl>,
+      <dl className="row" key={`${field}`}>
+        <dt className="hd">{list.name}</dt>
+        <dd className="bd">
+          {children}
+        </dd>
+      </dl>
+    ];
   }
 
   render() {
-    let winH = $(window).height();
+    let winH = $.height(window);
     let top = this.state.top;
     let height = winH - top;
 
@@ -418,9 +459,9 @@ export default class CitySelector extends React.Component {
             <ReactIScroll
               iScroll={IScroll}
               options={this.props.options}>
-              <ul>
+              <div className="scroller">
                 {this.renderItems()}
-              </ul>
+              </div>
             </ReactIScroll>
           </div>
         </div>

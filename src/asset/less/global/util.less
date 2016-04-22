@@ -28,8 +28,16 @@
   }
 }
 
+.size(@width, @height) {
+  width: @width;
+  height: @height;
+}
+.square(@size) {
+  .size(@size, @size);
+}
+
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .keyframes (@name, @fromRules, @toRules) {
@@ -37,38 +45,54 @@
             @keyframes ~'@{name}' { 0% { @fromRules(); } 100% { @toRules(); } }
 }
 
-.input_placeholder(@color) {
+.input_placeholder(@color, @fontSize: inherit) {
   ::-webkit-input-placeholder {
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 
   :-moz-placeholder { /* Firefox 18- */
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 
   ::-moz-placeholder {  /* Firefox 19+ */
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 
   :-ms-input-placeholder {
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 }
 
 .textarea_placeholder(@color) {
   ::-webkit-textarea-placeholder {
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 
   :-moz-placeholder { /* Firefox 18- */
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 
   ::-moz-placeholder {  /* Firefox 19+ */
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 
   :-ms-textarea-placeholder {
      color: @color;
+     font-weight: normal;
+     font-size: @fontSize;
   }
 }

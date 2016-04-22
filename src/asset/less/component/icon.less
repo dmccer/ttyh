@@ -1,4 +1,5 @@
 @import '../global/site.variable';
+@import '../global/util.less';
 @import './icon-util.less';
 
 @keyframes loading {
@@ -35,8 +36,7 @@
       display: inline-block;
       vertical-align: middle;
       content: '';
-      width: 10px;
-      height: 2px;
+      .size(10px, 2px);
       background-color: @white;
     }
   }
@@ -68,8 +68,7 @@
     display: inline-block;
 
     &:before {
-      width: 40px;
-      height: 40px;
+      .square(40px);
       line-height: 35px;
       border-radius: 40px;
       text-align: center;
@@ -84,8 +83,7 @@
 
   &.icon-loading {
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    .square(40px);
     border-left: 2px solid @c_teal;
     border-top: 2px solid @c_lightGrey;
     border-bottom: 2px solid @c_lightGrey;
@@ -131,33 +129,39 @@
   &.icon-call,
   &.icon-del-addr,
   &.icon-add-addr,
-  &.icon-filter {
+  &.icon-filter,
+  &.icon-credentials,
+  &.icon-calendar,
+  &.icon-certified {
     background-size: 100% 100%;
     background-repeat: no-repeat;
 
+    &.s80 {
+      .square(80px);
+    }
+
     &.s30 {
-      width: 30px;
-      height: 30px;
+      .square(30px);
+    }
+
+    &.s25 {
+      .square(25px);
     }
 
     &.s20 {
-      width: 20px;
-      height: 20px;
+      .square(20px);
     }
 
     &.s18 {
-      width: 18px;
-      height: 18px;
+      .square(18px);
     }
 
     &.s15 {
-      width: 15px;
-      height: 15px;
+      .square(15px);
     }
 
     &.s12 {
-      width: 12px;
-      height: 12px;
+      .square(12px);
     }
   }
 
@@ -268,6 +272,10 @@
 
   &.icon-account {
     background-image: url('../../img/common/account-30.png');
+
+    &.off {
+      background-image: url('../../img/app/account@3x.png');
+    }
   }
 
   &.icon-correct {
@@ -349,5 +357,18 @@
   }
   &.icon-filter {
     background-image: url('../../img/app/shaixuan-off-30@3x.png');
+
+    &.on {
+      background-image: url('../../img/app/shaixuan-on-30@3x.png');
+    }
+  }
+  &.icon-credentials {
+    background-image: url('../../img/app/zhengjian@3x.png');
+  }
+  &.icon-calendar {
+    background-image: url('../../img/app/calendar@3x.png');
+  }
+  &.icon-certified {
+    background-image: url('../../img/app/certified@3x.png');
   }
 }

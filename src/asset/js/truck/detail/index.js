@@ -12,16 +12,30 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
+import cx from 'classnames';
 
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import {MiniReadableTime} from '../../bbs/readable-time/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import Confirm from '../../confirm/';
 import Log from '../../log/';
 import FixedHolder from '../../fixed-holder/';
 import JWeiXin from '../../jweixin/';
+import $ from '../../helper/z';
+import AH from '../../helper/ajax';
+import {
+  UserVerifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
+import {
+  TruckUsers,
+  FollowUser
+} from '../model/';
 
 export default class TruckDetailPage extends Component {
   state = {
@@ -36,73 +50,91 @@ export default class TruckDetailPage extends Component {
   }
 
  componentDidMount() {
-   this.refs.loading.show('加载中...');
+   this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-   new Promise((resolve, reject) => {
-     $.ajax({
-       url: '/mvc/searchUsersForH5',
-       type: 'GET',
-       cache: false,
-       data: {
-         routeIDs: this.state.qs.tid
-       },
-       success: resolve,
-       error: reject
+   this.ah.one(TruckUsers, {
+     success: (res) => {
+       if (res.retcode !== 0) {
+         this.refs.poptip.warn('加载车源详情失败, 请重试');
+
+         return;
+       }
+
+       this.setState({
+         rtruck: res.data[0]
+       });
+     },
+     error: (err) => {
+       Log.error(err);
+
+       this.refs.poptip.warn('加载货源详情失败, 请重试');
+     }
+   }, {
+     routeIDs: this.state.qs.tid
+   });
+
+   this.fetchUserInfo();
+ }
+
+ fetchUserInfo() {
+   this.ah.one(UserVerifyStatus, (res) => {
+     this.setState({
+       realNameVerifyStatus: res.auditStatus
      });
-   }).then((res) => {
-     if (res.retcode !== 0) {
-       this.refs.poptip.warn('加载车源详情失败, 请重试');
+   });
+ }
 
+ handleShowVerifyTip(tel, e) {
+   e.preventDefault();
+   e.stopPropagation();
+
+   this.setState({
+     activeTel: tel
+   }, () => {
+     let status = this.state.realNameVerifyStatus;
+
+     if (status === 1 || status === 0) {
+       this.handleCancelVerify();
        return;
      }
 
-     this.setState({
-       rtruck: res.data[0]
+     this.refs.verifyTip.show({
+       title: REAL_NAME_CERTIFY_TITLE,
+       msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
      });
-   }).catch((err) => {
-     Log.error(err);
+   });
+ }
 
-     this.refs.poptip.warn('加载货源详情失败, 请重试');
-   }).done(() => {
-     this.refs.loading.close();
+ handleCancelVerify() {
+   this.refs.telPanel.show({
+     title: '拨打电话',
+     msg: this.state.activeTel
    });
  }
 
  follow() {
-   this.refs.loading.show('请求中...');
+   this.ah.one(FollowUser, {
+     success: (res) => {
+       if (res.errMsg) {
+         this.refs.poptip.warn(res.errMsg);
 
-   new Promise((resolve, reject) => {
-     $.ajax({
-       url: '/mvc/followForBBS_' + this.state.rtruck.userWithLatLng.userID,
-       type: 'GET',
-       cache: false,
-       success: resolve,
-       error: reject
-     });
-   })
-   .then((res) => {
-     if (res.errMsg) {
-       this.refs.poptip.warn(res.errMsg);
+         return;
+       }
 
-       return;
+       let rtruck = this.state.rtruck;
+       rtruck.userWithLatLng.alreadyFavorite = true;
+
+       this.setState({
+         rtruck: rtruck
+       }, () => {
+         this.refs.poptip.success('关注成功');
+       });
+     },
+     error: (err) => {
+       Log.error(err);
+       this.refs.poptip.success('关注失败');
      }
-
-     let rtruck = this.state.rtruck;
-     rtruck.userWithLatLng.alreadyFavorite = true;
-
-     this.setState({
-       rtruck: rtruck
-     }, () => {
-       this.refs.poptip.success('关注成功');
-     });
-   })
-   .catch((err) => {
-     Log.error(err);
-     this.refs.poptip.success('关注失败');
-   })
-   .done(() => {
-     this.refs.loading.close();
-   });
+   }, this.state.rtruck.userWithLatLng.userID);
  }
 
  renderFollowStatus() {
@@ -186,7 +218,7 @@ export default class TruckDetailPage extends Component {
      let loadLimit = rtruckDetail.loadLimit != null && parseFloat(rtruckDetail.loadLimit) != 0 ? `${rtruckDetail.loadLimit}吨` : '';
      let truckLength = rtruckDetail.truckLength != null && parseInt(rtruckDetail.truckLength) != 0 ? `${rtruckDetail.truckLength}米` : '';
 
-     truckDesc = `${rtruckDetail.truckTypeStr} ${truckLength} ${loadLimit}`;
+     truckDesc = `${rtruckDetail.truckTypeStr} ${loadLimit} ${truckLength}`;
    }
 
    let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {rtruckDetail.mobileNo}</span>
@@ -254,15 +286,31 @@ export default class TruckDetailPage extends Component {
          </div>
        </div>
        <FixedHolder height="50" />
-       <a href={`tel:${rtruckDetail.mobileNo}`} className="call-btn">
+       <a
+        onClick={this.handleShowVerifyTip.bind(this, rtruckDetail.mobileNo)}
+        href={`tel:${rtruckDetail.mobileNo}`}
+        className={cx('call-btn', rtruck.isMyRoute ? 'hide' : '')}>
          <i className="icon icon-call"></i>
          {tel}
        </a>
        <Loading ref="loading" />
        <Poptip ref="poptip" />
+       <Confirm
+         ref="verifyTip"
+         cancel={this.handleCancelVerify.bind(this)}
+         rightLink="./real-name-certify.html"
+         rightBtnText={'立即认证'}
+         leftBtnText={'稍后认证'}
+       />
+       <Confirm
+         ref="telPanel"
+         rightLink={`tel:${this.state.activeTel}`}
+         rightBtnText={'拨打'}
+         leftBtnText={'取消'}
+       />
      </section>
    );
  }
 }
 
-ReactDOM.render(<TruckDetailPage />, $('#page').get(0));
+ReactDOM.render(<TruckDetailPage />, document.querySelector('.page'));

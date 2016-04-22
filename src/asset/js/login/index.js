@@ -5,20 +5,27 @@ import './index.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Poptip from '../poptip/';
-import Loading from '../loading/';
 import querystring from 'querystring';
 
-export default class Login extends React.Component {
+import Poptip from '../poptip/';
+import Loading from '../loading/';
+import $ from '../helper/z';
+import AH from '../helper/ajax';
+
+import {SendVerifyCode, Login} from '../account/model/';
+
+export default class LoginPage extends React.Component {
+  state = {
+    count: '获取验证码',
+    qs: querystring.parse(location.search.substring(1))
+  };
+
   constructor() {
     super();
+  }
 
-    let query = querystring.parse(location.search.substring(1));
-
-    this.state = {
-      count: '获取验证码',
-      qs: query
-    };
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
   }
 
   validateTel() {
@@ -73,90 +80,85 @@ export default class Login extends React.Component {
       submiting: true
     });
 
-    let url, data = {
+    let data = {
       confirmCode: this.state.verifyCode,
+      action: this.state.action,
       userName: ''
     };
 
-    if (this.state.loggingUserSnapShotKey) {
-      url = '/mvc/login_confirmJsonNew';
-      data.loggingUserSnapShotKey = this.state.loggingUserSnapShotKey;
+    switch(this.state.action) {
+      case 1:
+        data.loggingUserSnapShotKey = this.state.loggingUserSnapShotKey;
+        break;
+      case 2:
+        data.draftUserSnapShotKey = this.state.draftUserSnapShotKey;
+        break;
+      default:
+        break;
     }
 
-    if (this.state.draftUserSnapShotKey) {
-      url = '/mvc/registerJsonNew';
-      data.draftUserSnapShotKey = this.state.draftUserSnapShotKey;
-    }
+    this.ah.one(Login, {
+      success: ok.bind(this),
+      error: fail.bind(this)
+    }, data);
 
-    this.refs.loading.show('登录中...');
+    function ok(res) {
+      if (res.viewName === 'user/home') {
+        _hmt.push(['_setCustomVar', 1, 'login', '登录成功', 2]);
+        this.refs.poptip.success('登录成功');
 
-    $.ajax({
-      url: url,
-      type: 'POST',
-      data: data,
-      success: (res) => {
-        if (res.viewName === 'user/home') {
-          _hmt.push(['_setCustomVar', 1, 'login', '登录成功', 2]);
+        // 跳转
+        let qs = querystring.stringify({
+          uid: res.loggedUser.userID
+        });
 
-          this.refs.loading.close();
-          this.refs.poptip.success('登录成功');
-
-          // 跳转
-          let qs = querystring.stringify({
-            uid: res.loggedUser.userID
-          });
-
-          // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
-          localStorage.setItem('user', JSON.stringify({
-            token: res.token
-          }));
+        // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
+        localStorage.setItem('user', JSON.stringify({
+          token: res.token
+        }));
 
 
-          if (this.state.qs.page) {
-            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`);
-
-            return;
-          }
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+        if (this.state.qs.page) {
+          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`);
           return;
         }
 
-        _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
-
-        let msg;
-
-        switch (res.viewName) {
-          case 'user/login/confirm':
-          case 'user/register':
-            msg = '验证码不正确';
-            break;
-          case 'user/login':
-            msg = '系统异常';
-            break;
-          case 'err':
-            msg = res.errMsg;
-            break;
-        }
-
-        this.refs.loading.close();
-        this.refs.poptip.warn(msg);
-
-        this.setState({
-          submiting: false
-        });
-      },
-      error: () => {
-        _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
-
-        this.refs.loading.close();
-        this.refs.poptip.error('系统异常');
-
-        this.setState({
-          submiting: false
-        });
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+        return;
       }
-    })
+
+      _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
+
+      let msg;
+
+      switch (res.viewName) {
+        case 'user/login/confirm':
+        case 'user/register':
+          msg = '验证码不正确';
+          break;
+        case 'user/login':
+          msg = '系统异常';
+          break;
+        case 'err':
+          msg = res.errMsg;
+          break;
+      }
+
+      this.refs.poptip.warn(msg);
+
+      this.setState({
+        submiting: false
+      });
+    }
+
+    function fail() {
+      _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
+      this.refs.poptip.error('系统异常');
+
+      this.setState({
+        submiting: false
+      });
+    }
   }
 
   // 倒计时
@@ -213,81 +215,76 @@ export default class Login extends React.Component {
 
   // 验证手机
   handleValidateTelRemote() {
-    this.refs.loading.show('正在获取验证码...');
+    let ok = (res) => {
+      if (res.viewName === 'user/home') {
+        _hmt.push(['_setCustomVar', 1, 'login', '自动登录', 2]);
 
-    $.ajax({
-      url: '/mvc/loginJsonNew',
-      type: 'POST',
-      data: {
-        accountNo: this.state.tel
-      },
-      success: (res) => {
-        this.refs.loading.close();
-
-        if (res.viewName === 'user/home') {
-          _hmt.push(['_setCustomVar', 1, 'login', '自动登录', 2]);
-
-          let qs = querystring.stringify({
-            uid: res.loggedUser.userID
-          });
-
-          // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
-          localStorage.setItem('user', JSON.stringify({
-            token: res.token
-          }));
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
-        }
-
-        if (res.viewName === 'user/login/confirm') {
-          _hmt.push(['_setCustomVar', 1, 'post_verify_code', '成功', 2]);
-
-          this.refs.poptip.success('验证码发送成功');
-
-          this.setState({
-            tip: null,
-            loggingUserSnapShotKey: res.loggingUserSnapShotKey
-          });
-
-          return;
-        }
-
-        if (res.viewName === 'user/register') {
-          _hmt.push(['_setCustomVar', 1, 'post_verify_code', '成功', 2]);
-
-          this.refs.poptip.success('验证码发送成功');
-
-          this.setState({
-            tip: null,
-            draftUserSnapShotKey: res.draftUserSnapShotKey
-          });
-
-          return;
-        }
-
-        _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
-
-        let msg;
-
-        switch(res.viewName) {
-          case 'user/login':
-            msg = '手机号格式不正确';
-            break;
-        }
-
-        this.setState({
-          tip: msg
+        let qs = querystring.stringify({
+          uid: res.loggedUser.userID
         });
 
-        this.refs.poptip.warn(msg);
-      },
-      error: () => {
-        _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
+        // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
+        localStorage.setItem('user', JSON.stringify({
+          token: res.token
+        }));
 
-        this.refs.loading.close();
-        this.refs.poptip.error('系统异常')
+        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
       }
-    });
+
+      if (res.viewName === 'user/login/confirm') {
+        _hmt.push(['_setCustomVar', 1, 'post_verify_code', '成功', 2]);
+
+        this.refs.poptip.success('验证码发送成功');
+
+        this.setState({
+          tip: null,
+          action: 1,
+          loggingUserSnapShotKey: res.loggingUserSnapShotKey
+        });
+
+        return;
+      }
+
+      if (res.viewName === 'user/register') {
+        _hmt.push(['_setCustomVar', 1, 'post_verify_code', '成功', 2]);
+
+        this.refs.poptip.success('验证码发送成功');
+
+        this.setState({
+          tip: null,
+          action: 2,
+          draftUserSnapShotKey: res.draftUserSnapShotKey
+        });
+
+        return;
+      }
+
+      _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
+
+      let msg;
+
+      switch(res.viewName) {
+        case 'user/login':
+          msg = '手机号格式不正确';
+          break;
+      }
+
+      this.setState({
+        tip: msg
+      });
+
+      this.refs.poptip.warn(msg);
+    };
+
+    let fail = () => {
+      _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
+      this.refs.poptip.error('系统异常');
+    };
+
+    this.ah.one(SendVerifyCode, {
+      success: ok.bind(this),
+      error: fail.bind(this)
+    }, this.state.tel);
   }
 
   // 处理数字型字段发生改变
@@ -345,4 +342,4 @@ export default class Login extends React.Component {
   }
 }
 
-ReactDOM.render(<Login />, $('#page').get(0));
+ReactDOM.render(<LoginPage />, document.querySelector('.page'));

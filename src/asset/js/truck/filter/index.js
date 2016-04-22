@@ -4,12 +4,18 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'promise';
 import querystring from 'querystring';
 import keys from 'lodash/object/keys';
+import assign from 'lodash/object/assign';
 import find from 'lodash/collection/find';
 import findIndex from 'lodash/array/findIndex';
 
+import AH from '../../helper/ajax';
+import {
+  TruckTypes,
+  TruckSearchLengths,
+  TruckLoadLimits
+} from '../model/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
@@ -24,119 +30,42 @@ export default class SearchFilterPage extends Component {
     selectedTruckLengths: []
   };
 
-  /**
-   * 获取车型列表
-   * @return {Promise}
-   */
-  fetchTruckTypes() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckType',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckTypes = res.truckTypeMap;
-      truckTypes = keys(truckTypes).map((key) => {
-        return {
-          name: truckTypes[key],
-          id: key
-        };
-      });
-
-      return truckTypes;
-    });
+  constructor() {
+    super();
   }
 
-  /**
-   * 获取车长列表
-   * @return {Promise}
-   */
-  fetchTruckLengths() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getSearchLength',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let searchLengths = res.searchLengthList;
-      searchLengths = keys(searchLengths).map((key) => {
-        return {
-          name: searchLengths[key],
-          id: key
-        };
-      });
-
-      return searchLengths;
-    });
-  }
-
-  /**
-   * 获取载重列表
-   * @return {Promise}
-   */
-  fetchLoadLimit() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getLoadLimit',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let loadLimits = res.loadLimitList;
-
-      loadLimits = keys(loadLimits).map((key) => {
-        return {
-          name: loadLimits[key],
-          id: key
-        };
-      });
-
-      return loadLimits;
+  transform(m) {
+    return keys(m).map(key => {
+      return {
+        name: m[key],
+        id: key
+      };
     });
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     let pageType = this.state.qs.type;
 
     if (!pageType) {
       throw new Error('缺少页面类型参数');
     }
 
-    this.refs.loading.show('加载中...');
-
-    Promise
-      .all([
-        this.fetchTruckTypes(),
-        this.fetchLoadLimit(),
-        this.fetchTruckLengths()])
-      .then((res) => {
+    this.ah.all([TruckTypes, TruckSearchLengths, TruckLoadLimits], {
+      success: (res) => {
         let selected = JSON.parse(localStorage.getItem(`${pageType}${SEARCH_FILTER_SUFFIX}`)) || {};
 
-        this.setState($.extend(selected, {
-          truckTypes: res[0],
-          loadLimits: res[1],
-          truckLengths: res[2]
+        this.setState(assign({}, selected, {
+          truckTypes: this.transform(res[0].truckTypeMap),
+          truckLengths: this.transform(res[1].searchLengthList),
+          loadLimits: this.transform(res[2].loadLimitList)
         }));
-      })
-      .catch((err) => {
-        alert(err.message)
+      },
+      error: () => {
         this.refs.poptip.warn('获取车型、载重、车长失败, 请重试');
-      })
-      .done(() => {
-        this.refs.loading.close();
-      });
-  }
-
-  constructor() {
-    super();
+      }
+    });
   }
 
   renderTruckTypeList() {
@@ -256,4 +185,4 @@ export default class SearchFilterPage extends Component {
   }
 }
 
-ReactDOM.render(<SearchFilterPage />, $('#page').get(0));
+ReactDOM.render(<SearchFilterPage />, document.querySelector('.page'));

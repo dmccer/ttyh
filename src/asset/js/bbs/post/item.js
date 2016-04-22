@@ -1,12 +1,18 @@
 import './item.less';
 import React from 'react';
+import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 
 import FullscreenImg from '../../fullscreen-img/';
 import Emoj from '../emoj/';
-import querystring from 'querystring';
+
 import ReadableTime from '../readable-time/';
 import Avatar from '../avatar/';
 import Gallery from '../gallery/';
+import AH from '../../helper/ajax';
+import {
+  ClearRemind
+} from '../model/';
 
 export default class PostItem extends React.Component {
   constructor() {
@@ -17,30 +23,20 @@ export default class PostItem extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.ah = new AH();
+  }
+
   viewForum(post, e) {
     e.preventDefault();
     e.stopPropagation();
 
-    const qs = querystring.stringify($.extend({}, this.state.qs, {
+    const qs = querystring.stringify(assign({}, this.state.qs, {
       fid: post.id
     }));
 
     if (post.remind_count !== 0) {
-      $.ajax({
-        url: '/api/bbs_v2/clear_remind',
-        type: 'POST',
-        data: {
-          id: post.id
-        },
-        success: () => {
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
-        },
-        error: () => {
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
-        }
-      });
-
-      return;
+      this.ah.one(ClearRemind, () => {}, post.id);
     }
 
     location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs-detail.html?' + qs);
@@ -55,7 +51,7 @@ export default class PostItem extends React.Component {
   }
 
   render() {
-    let qs = querystring.stringify($.extend({}, this.state.qs, {
+    let qs = querystring.stringify(assign({}, this.state.qs, {
       tid: this.props.item.tid,
       topic: this.props.item.topic
     }));

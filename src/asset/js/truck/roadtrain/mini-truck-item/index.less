@@ -3,37 +3,67 @@
 .mini-truck-item {
   background-color: @white;
   height: 100%;
+  position: relative;
+  padding: 12px 30px 12px 15px;
+  font-size: 13px;
 
-  a {
-    display: block;
-    position: relative;
-    padding: 12px 15px;
-  }
+  > * {
+    margin-bottom: 5px;
 
-  h3, p {
-    color: @c_black;
-    margin-bottom: 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   h3 {
-    font-size: 16px;
-    margin-bottom: 5px;
     font-weight: normal;
+    color: @c_lightBlack;
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
   }
 
   p {
-    font-size: 13px;
     font-weight: bolder;
+    color: @c_black;
   }
 
-  .icon {
+  .common-route {
+    color: @c_black;
+
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .icon {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .extra-desc {
+      color: @c_lightBlack;
+      padding-left: 5px;
+    }
+  }
+
+  .tel-text {
+    color: @c_black;
+    font-weight: normal;
+  }
+
+  .memo {
+    color: @c_lightBlack;
+  }
+
+  .icon-item-selected {
     margin-left: 10px;
   }
 
   .icon-del {
     position: absolute;
     top: 50%;
-    right: 15px;
+    right: 10px;
     margin-top: -10px;
   }
 }

@@ -30,19 +30,23 @@ export default class SearchItem extends Component {
     location.href = `./pkg-detail.html?pid=${this.props.product.productID}`;
   }
 
-  hanldleMakeCall() {
+  hanldleMakeCall(tel, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     _hmt.push(['_trackEvent', '货源', '列表打电话', this.props.product.provideUserMobileNo || '']);
+
+    this.props.verifyTip(tel);
   }
 
   render() {
     let props = this.props;
-    let tel = JWeiXin.isWeixinBrowser() ? null : <p>电话联系: {props.product.provideUserMobileNo}</p>;
+    let tel = JWeiXin.isWeixinBrowser() ? null : <p className="tel-text">电话联系: {props.product.provideUserMobileNo}</p>;
     let telLink = JWeiXin.isWeixinBrowser() ? (
       <div className="tel">
-        <a onClick={this.hanldleMakeCall.bind(this)} ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
+        <a onClick={this.hanldleMakeCall.bind(this, props.product.provideUserMobileNo)} ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
       </div>
     ) : null;
-
 
     return (
       <div className="pkg-item" onTouchTap={this.detail.bind(this)}>
@@ -65,6 +69,10 @@ export default class SearchItem extends Component {
               <span>{props.product.toCity.replace(' ', '-')}</span>
             </div>
             <div className="detail">
+              <div className="entruck-time">
+                <span>装车时间: </span>
+                <b>{props.product.loadProTime}</b>
+              </div>
               <PkgItemDesc {...props.product} />
               <p className="memo">{props.product.memo}</p>
               {tel}

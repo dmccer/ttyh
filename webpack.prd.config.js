@@ -9,6 +9,7 @@ var pathToReact = path.resolve(node_modules, 'react/');
 var pkg = require('./package.json');
 
 module.exports = {
+  debug: true,
   watch: true,
   entry: {
     bbs: './src/asset/js/bbs/index.js',
@@ -17,8 +18,7 @@ module.exports = {
     'bbs-detail': './src/asset/js/bbs/detail.js',
     'bbs-about-me': './src/asset/js/bbs/about-me/index.js',
     login: './src/asset/js/login/index.js',
-    register: './src/asset/js/register/index.js',
-    retrieve: './src/asset/js/retrieve/index.js',
+
     term: './src/asset/js/term/index.js',
     'topic-posts': './src/asset/js/bbs/post/list-topic.js',
     'user-posts': './src/asset/js/bbs/post/list-user.js',
@@ -26,22 +26,34 @@ module.exports = {
     'notice': './src/asset/js/bbs/notice/index.js',
 
     'pkg-pub': './src/asset/js/pkg/pub/index.js',
+    'truck-requirement': './src/asset/js/pkg/pub/truck-requirement/index.js',
     'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
     'my-pkg': './src/asset/js/pkg/my/index.js',
-    'recommend-pkg-list': './src/asset/js/pkg/recommend-list/index.js',
+
     'pkg-search': './src/asset/js/pkg/search/index.js',
     'today-pkg': './src/asset/js/pkg/today-list/',
     'pkg-detail': './src/asset/js/pkg/detail/index.js',
+    'pkg-info-pub': './src/asset/js/pkg/pub/info/index.js',
 
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
+    'my-roadtrain': './src/asset/js/truck/my-roadtrain/index.js',
     'truck-add': './src/asset/js/truck/add/index.js',
+    'select-truck-common-route': './src/asset/js/truck/add/route/index.js',
     'my-truck': './src/asset/js/truck/my/index.js',
-    'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
+
     'truck-search': './src/asset/js/truck/search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
     'truck-detail': './src/asset/js/truck/detail/index.js',
-    'today-truck': './src/asset/js/truck/today-list/'
+    'today-truck': './src/asset/js/truck/today-list/',
+
+    'real-name-certify': './src/asset/js/account/real-name-certify/index.js',
+    'trucker-certify': './src/asset/js/account/trucker-certify/index.js',
+    'company-certify': './src/asset/js/account/company-certify/index.js',
+    'company-certify-result': './src/asset/js/account/company-certify/result/index.js',
+    'company-certify-result': './src/asset/js/account/company-certify/result/index.js',
+    'real-name-certify-result': './src/asset/js/account/real-name-certify/result/index.js',
+    'trucker-certify-result': './src/asset/js/account/trucker-certify/result/index.js'
   },
   output: {
     path: path.resolve(__dirname, pkg.dest),
@@ -50,18 +62,16 @@ module.exports = {
   },
   resolve: {
     alias: {
-      zepto: path.resolve(__dirname, './node_modules/zepto/dist/zepto.js'),
-      'lodash-fn': path.resolve(__dirname, './node_modules/lodash/function.js')
+      react: path.resolve(__dirname, './node_modules/react/'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom/index.js'),
+      fetch: path.resolve(__dirname, './node_modules/whatwg-fetch/')
     }
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.CommonsChunkPlugin('zepto', 'zepto.js', Infinity),
     new webpack.ProvidePlugin({
-      $: 'zepto',
-      zepto: 'zepto',
-      'window.zepto': 'zepto',
-      'root.zepto': 'zepto'
+      'Promise': 'promise',
+      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
@@ -73,205 +83,314 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       title: '社区',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'bbs.html',
-      chunks: ['bbs', 'zepto', 'lodash-fn'],
+      chunks: ['bbs', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '发帖',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'bbs-post.html',
-      chunks: ['bbs-post', 'zepto'],
+      chunks: ['bbs-post', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '帖子详情',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'bbs-detail.html',
-      chunks: ['bbs-detail', 'zepto', 'lodash-fn'],
+      chunks: ['bbs-detail', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '评论',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'bbs-comment.html',
-      chunks: ['bbs-comment', 'zepto'],
+      chunks: ['bbs-comment', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '与我有关',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'bbs-about-me.html',
-      chunks: ['bbs-about-me', 'zepto', 'lodash-fn'],
+      chunks: ['bbs-about-me', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '登录',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'login.html',
-      chunks: ['login', 'zepto'],
+      chunks: ['ved', 'fetch', 'login'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '注册',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'register.html',
-      chunks: ['register', 'zepto'],
+      chunks: ['register', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '找回密码',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'retrieve.html',
-      chunks: ['retrieve', 'zepto'],
+      chunks: ['retrieve', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '服务协议',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'term.html',
-      chunks: ['term', 'zepto'],
+      chunks: ['term', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '话题帖子',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'topic-posts.html',
-      chunks: ['topic-posts', 'zepto'],
+      chunks: ['topic-posts', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '用户帖子',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'user-posts.html',
-      chunks: ['user-posts', 'zepto', 'lodash-fn'],
+      chunks: ['user-posts', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '人气用户',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'active-users.html',
-      chunks: ['active-users', 'zepto'],
+      chunks: ['active-users', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '小妹公告',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'notice.html',
-      chunks: ['notice', 'zepto'],
+      chunks: ['notice', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '发布货源',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'pkg-pub.html',
-      chunks: ['pkg-pub', 'zepto'],
+      chunks: ['pkg-pub', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '发布货源-备注',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'pkg-pub-memo.html',
-      chunks: ['pkg-pub-memo', 'zepto'],
+      chunks: ['pkg-pub-memo', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '用车需求',
+      template: './src/page/index.ejs',
+      filename: 'truck-requirement.html',
+      chunks: ['truck-requirement', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '发布车源',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'truck-pub.html',
-      chunks: ['truck-pub', 'zepto'],
+      chunks: ['truck-pub', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '我的车队',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'roadtrain.html',
-      chunks: ['roadtrain', 'zepto'],
+      chunks: ['roadtrain', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '我的车队',
+      template: './src/page/index.ejs',
+      filename: 'my-roadtrain.html',
+      chunks: ['my-roadtrain', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '添加车辆',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'truck-add.html',
-      chunks: ['truck-add', 'zepto'],
+      chunks: ['truck-add', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '常跑路线',
+      template: './src/page/index.ejs',
+      filename: 'select-truck-common-route.html',
+      chunks: ['select-truck-common-route', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '我发布的货源',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'my-pkg.html',
-      chunks: ['my-pkg', 'zepto'],
+      chunks: ['my-pkg', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '我发布的车源',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'my-truck.html',
-      chunks: ['my-truck', 'zepto'],
+      chunks: ['my-truck', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '推荐货源',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'recommend-pkg-list.html',
-      chunks: ['recommend-pkg-list', 'zepto'],
+      chunks: ['recommend-pkg-list', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '推荐车源',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'recommend-truck-list.html',
-      chunks: ['recommend-truck-list', 'zepto'],
+      chunks: ['recommend-truck-list', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '找货',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'pkg-search.html',
-      chunks: ['pkg-search', 'zepto'],
+      chunks: ['pkg-search', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '筛选',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'search-filter.html',
-      chunks: ['search-filter', 'zepto'],
+      chunks: ['search-filter', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '货源详情',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'pkg-detail.html',
-      chunks: ['pkg-detail', 'zepto'],
+      chunks: ['pkg-detail', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '推荐货源列表',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'today-pkg.html',
-      chunks: ['today-pkg', 'zepto'],
+      chunks: ['today-pkg', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '找车',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'truck-search.html',
-      chunks: ['truck-search', 'zepto'],
+      chunks: ['truck-search', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '车源详情',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'truck-detail.html',
-      chunks: ['truck-detail', 'zepto'],
+      chunks: ['truck-detail', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     }),
     new HtmlWebpackPlugin({
       title: '推荐车源列表',
-      template: './src/page/index.html',
+      template: './src/page/index.ejs',
       filename: 'today-truck.html',
-      chunks: ['today-truck', 'zepto'],
+      chunks: ['today-truck', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '货源信息',
+      template: './src/page/index.ejs',
+      filename: 'pkg-info-pub.html',
+      chunks: ['pkg-info-pub', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '实名认证',
+      template: './src/page/index.ejs',
+      filename: 'real-name-certify.html',
+      chunks: ['real-name-certify', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '司机认证',
+      template: './src/page/index.ejs',
+      filename: 'trucker-certify.html',
+      chunks: ['trucker-certify', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '公司认证',
+      template: './src/page/index.ejs',
+      filename: 'company-certify.html',
+      chunks: ['company-certify', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '公司认证',
+      template: './src/page/index.ejs',
+      filename: 'company-certify-result.html',
+      chunks: ['company-certify-result', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '实名认证',
+      template: './src/page/index.ejs',
+      filename: 'real-name-certify-result.html',
+      chunks: ['real-name-certify-result', 'fetch'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '司机认证',
+      template: './src/page/index.ejs',
+      filename: 'trucker-certify-result.html',
+      chunks: ['trucker-certify-result', 'fetch'],
+      chunksSortMode: 'dependency',
       inject: 'body'
     })
   ],
@@ -298,7 +417,7 @@ module.exports = {
       test: /\.(png|jpg|gif|svg|ttf)(#[a-zA-Z])*$/,
       loaders: [
         'url?limit=8192',
-        'img'
+        'img?minimize'
       ]
     }, {
       test: /\.(html|htm)$/,
@@ -313,11 +432,25 @@ module.exports = {
         'react-hot',
         'babel-loader'
       ]
-    }, {
-      test: /zepto(\.min)?\.js$/,
-      loader: "exports?Zepto; delete window.$; delete window.Zepto;"
     }]
-    // noParse: [pathToReact]
+  },
+  imagemin: {
+    gifsicle: { interlaced: false },
+    jpegtran: {
+      progressive: true,
+      arithmetic: false
+    },
+    optipng: { optimizationLevel: 5 },
+    pngquant: {
+      floyd: 0.5,
+      speed: 2
+    },
+    svgo: {
+      plugins: [
+        { removeTitle: true },
+        { convertPathData: false }
+      ]
+    }
   },
   lessLoader: {
     lessPlugins: [

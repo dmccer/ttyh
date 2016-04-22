@@ -2,6 +2,11 @@ import './index.less';
 
 import React from 'react';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
+import AH from '../../helper/ajax';
+import {
+  Topics
+} from '../model/';
 
 export default class Topic extends React.Component {
   constructor() {
@@ -14,18 +19,15 @@ export default class Topic extends React.Component {
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/api/bbs_v2/all_topic',
-      type: 'GET',
-      cache: false,
-      success: (data) => {
-        this.setState({
-          topics: data.bbsTopicList
-        });
+    this.ah = new AH();
 
-        this.forceUpdate();
-      }
-    })
+    this.ah.one(Topics, (data) => {
+      this.setState({
+        topics: data.bbsTopicList
+      });
+
+      this.forceUpdate();
+    });
   }
 
   render() {
@@ -38,7 +40,7 @@ export default class Topic extends React.Component {
     });
 
     let topicList = topics.map((topic, index) => {
-      let url = './topic-posts.html?' + querystring.stringify($.extend({}, this.state.qs, { tid: topic.id, topic: topic.name }));
+      let url = './topic-posts.html?' + querystring.stringify(assign({}, this.state.qs, { tid: topic.id, topic: topic.name }));
 
       return <a
         href={url}

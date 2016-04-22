@@ -1,0 +1,24 @@
+@import '../../less/global/site.variable';
+@import '../../less/global/util.less';
+
+.select-truck-type {
+  .selector-panel {
+    .clearfix();
+
+    li {
+      float: left;
+      width: 50%;
+      text-align: center;
+
+      span {
+        border-right: 1px solid @c_lightBlack_1;
+      }
+
+      &:nth-child(2n){
+        span {
+          border-right: none;
+        }
+      }
+    }
+  }
+}

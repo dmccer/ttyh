@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "prestart": "npm install; cd ./node_modules/zepto; npm install; MODULES='zepto event ajax form ie fx' npm run dist; cd ../../",
+    "prestart": "cnpm install",
     "start": "rm -rf ./assets; NODE_ENV=production ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --profile --colors",
-    "dev": "npm run prestart; ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
+    "dev": "cnpm run prestart; ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "dest": "assets",
   "repository": {
@@ -26,6 +26,8 @@
   "dependencies": {
     "array.prototype.findindex": "^1.0.0",
     "classnames": "^2.2.1",
+    "fbjs": "^0.8.0-alpha.3",
+    "fetch-jsonp": "^1.0.0",
     "iscroll": "^5.1.3",
     "lodash": "^3.10.1",
     "normalize.css": "^3.0.3",
@@ -38,7 +40,7 @@
     "react-slick": "^0.9.3",
     "react-tap-event-plugin": "^0.2.2",
     "slick-carousel": "^1.5.9",
-    "zepto": "https://github.com/madrobby/zepto/tarball/v1.1.6"
+    "whatwg-fetch": "^0.11.0"
   },
   "devDependencies": {
     "babel-core": "^6.2.1",
@@ -49,12 +51,13 @@
     "babel-preset-react": "^6.1.18",
     "babel-preset-stage-1": "^6.3.13",
     "css-loader": "^0.23.0",
-    "exports-loader": "^0.6.2",
+    "exports-loader": "^0.6.3",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.0",
-    "html-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^2.14.0",
     "img-loader": "^1.2.0",
     "imock": "^3.2.1",
+    "imports-loader": "^0.6.5",
     "jade": "^1.11.0",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",
@@ -67,7 +70,7 @@
     "stats-webpack-plugin": "^0.2.2",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^1.12.9",
+    "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.0"
   }
 }

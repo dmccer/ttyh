@@ -10,10 +10,13 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 
 import Poptip from '../../../poptip/';
 import Loading from '../../../loading/';
+import AH from '../../../helper/ajax';
+import {
+  PkgMemo
+} from '../../model/';
 
 const MEMO = 'pkg-pub-memo';
 
@@ -28,36 +31,26 @@ export default class PkgPubMemoPage extends React.Component {
   }
 
   componentDidMount() {
-    new Promise((resolve, reject) => {
-      this.refs.loading.show('加载中...');
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-      $.ajax({
-        url: '/mvc/v2/getProductMemo',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    })
-    .then((res) => {
-      let memo = localStorage.getItem(MEMO);
-      let memos = res.productMemoList.map((memo) => {
-        return {
-          name: memo,
-          id: memo
-        };
-      });
+    this.ah.one(PkgMemo, {
+      success: (res) => {
+        let memo = localStorage.getItem(MEMO);
+        let memos = res.productMemoList.map((memo) => {
+          return {
+            name: memo,
+            id: memo
+          };
+        });
 
-      this.setState({
-        memo: memo,
-        memos: memos
-      });
-    })
-    .catch(() => {
-      this.refs.poptip.warn('加载备注列表失败,请重试');
-    })
-    .done(() => {
-      this.refs.loading.close();
+        this.setState({
+          memo: memo,
+          memos: memos
+        });
+      },
+      error: (res) => {
+        this.refs.poptip.warn('加载备注列表失败,请重试');
+      }
     });
   }
 
@@ -138,4 +131,4 @@ export default class PkgPubMemoPage extends React.Component {
   }
 }
 
-ReactDOM.render(<PkgPubMemoPage />, $('#page').get(0));
+ReactDOM.render(<PkgPubMemoPage />, document.querySelector('.page'));

@@ -19,10 +19,14 @@
  *
  */
 import React from 'react';
+import keys from 'lodash/object/keys';
+import $ from '../helper/z';
 
 // for validate
 // const FLOAT_REG = /^(([1-9]{1}\d*)|(0))\.\d+$/;
 // const INT_REG = /^\d+$/;
+
+function noop() {}
 
 export var FieldChangeEnhance = ComposedComponent => class extends React.Component {
   static displayName = 'ComponentEnhancedWithFieldChangeHandler';
@@ -33,13 +37,11 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     super(props);
   }
 
-  noop() {}
-
   // 纯数字字符串或整数
   handleIntegerChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -51,7 +53,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleFloatChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -63,7 +65,7 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
   handleStrChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
@@ -71,16 +73,67 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
     }, cb);
   }
 
+  handleStrWithEmptyChange(field: String, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+      cb = noop;
+    }
+
+    this.setState({
+      [field]: e.target.value
+    }, cb);
+  }
+
+  // 长度限制的字符串
+  handleLimitStrChange(field: String, limit: Number, cb: Function, e: Object) {
+    if (typeof cb !== 'function') {
+      e = cb;
+      cb = noop;
+    }
+
+    this.setState({
+      [field]: $.trim(e.target.value).substring(0, limit)
+    }, cb);
+  }
+
   // 手机号
   handleMobileNoChange(field: String, cb: Function, e: Object) {
     if (typeof cb !== 'function') {
       e = cb;
-      cb = this.noop;
+      cb = noop;
     }
 
     this.setState({
       [field]: $.trim(e.target.value).replace(/[^\d]/g, '').substring(0, 11)
     }, cb);
+  }
+
+  set(field: String, val: Object, cb=noop) {
+    this.setState({
+      [field]: val
+    }, cb);
+  }
+
+  setFields(fields: Object, cb=noop) {
+    this.setState(fields, cb);
+  }
+
+  clear(field: String, cb=noop) {
+    this.setState({
+      [field]: null
+    }, cb);
+  }
+
+  clearAll(cb=noop) {
+    let ks = keys(this.state);
+
+    if (ks && ks.length) {
+      ks.forEach(k => {
+        this.setState({
+          [k]: null
+        });
+      });
+    }
   }
 
   render() {
@@ -91,7 +144,13 @@ export var FieldChangeEnhance = ComposedComponent => class extends React.Compone
         handleIntegerChange={this.handleIntegerChange.bind(this)}
         handleFloatChange={this.handleFloatChange.bind(this)}
         handleStrChange={this.handleStrChange.bind(this)}
+        handleStrWithEmptyChange={this.handleStrWithEmptyChange.bind(this)}
         handleMobileNoChange={this.handleMobileNoChange.bind(this)}
+        handleLimitStrChange={this.handleLimitStrChange.bind(this)}
+        clear={this.clear.bind(this)}
+        clearAll={this.clearAll.bind(this)}
+        set={this.set.bind(this)}
+        setFields={this.setFields.bind(this)}
       />
     );
   }

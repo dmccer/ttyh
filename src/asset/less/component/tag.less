@@ -1,0 +1,55 @@
+@import '../global/site.variable';
+@import '../global/util.less';
+
+.tags {
+  .clearfix();
+  font-size: 13px;
+
+  .tag {
+    display: block;
+    float: left;
+    margin-right: 2%;
+    margin-bottom: 6px;
+
+    p {
+      margin-bottom: 0;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      background-color: @white;
+      color: @c_black;
+      border: 1px solid @c_lightGrey;
+      border-radius: 2px;
+    }
+
+    .check:checked + p {
+      border-color: @c_teal;
+      color: @c_teal;
+    }
+  }
+
+  &.col-3 {
+    .tag {
+      width: 32%;
+
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &.col-2 {
+    .tag {
+      width: 48%;
+
+      &:nth-child(2n) {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .check {
+    position: absolute;
+    left: -9999px;
+  }
+}

@@ -4,71 +4,47 @@
  * @author Kane xiaoyunhua@ttyhuo.cn
  *
  */
+
+import './select-truck-type-enhance.less';
+
 import React, {Component} from 'react';
-import Promise from 'promise';
 import keys from 'lodash/object/keys';
 
 import Selector from '../selector/';
 import Poptip from '../poptip/';
 import Loading from '../loading/';
+import Log from '../log/';
+import $ from '../helper/z';
+import AH from '../helper/ajax';
+import {TruckTypes, TruckLengths} from '../truck/model/';
+
+const TRUCK_SELECTOR_TYPE = [
+  'truckType',
+  'truckLength'
+];
 
 export var SelectTruckTypeEnhance = ComposedComponent => class extends Component {
-  state = {};
+  state = {
+    truckType: {},
+    truckLength: {}
+  };
 
   constructor(props) {
     super(props);
   }
 
-  /**
-   * 获取车型列表
-   * @return {Promise}
-   */
-  fetchTruckTypes() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckType',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckTypes = res.truckTypeMap;
-      truckTypes = keys(truckTypes).map((key) => {
-        return {
-          name: truckTypes[key],
-          id: key
-        };
-      });
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+  }
 
-      return truckTypes;
+  setTruckEnhanceSelectorType(type: Number) {
+    this.setState({
+      sType: type
     });
   }
 
-  /**
-   * 获取车长列表
-   * @return {Promise}
-   */
-  fetchTruckLengths() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruckLength',
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let truckLengths = res.truckLengthList;
-      truckLengths = truckLengths.map((len) => {
-        return {
-          name: len !== '自定义' ? `${len}米` : len,
-          id: len
-        };
-      });
-
-      return truckLengths;
-    });
+  setSelectTruckTypeData(o: Object) {
+    this.setState(o);
   }
 
   /**
@@ -79,31 +55,41 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
 
     // 若已经请求过车型和车长列表，则直接展示
     if (this.state.truckTypes && this.state.truckLengths) {
-      this.showSelector('truckType');
+      this.showSelector(TRUCK_SELECTOR_TYPE[0]);
 
       return;
     }
 
-    this.refs.loading.show('加载中...');
-
-    Promise
-      .all([this.fetchTruckTypes(), this.fetchTruckLengths()])
-      .then((res) => {
-        this.setState({
-          truckTypes: res[0],
-          truckLengths: res[1]
-        }, () => {
-          this.showSelector('truckType');
+    this.ah.all([TruckTypes, TruckLengths], {
+      success: res => {
+        let truckTypes = res[0].truckTypeMap;
+        truckTypes = keys(truckTypes).map(key => {
+          return {
+            name: truckTypes[key],
+            id: key
+          };
         });
-      })
-      .catch((err) => {
-        Log.error(err);
 
+        let truckLengths = res[1].truckLengthList;
+        truckLengths = truckLengths.map(len => {
+          return {
+            name: len !== '自定义' ? `${len}米` : len,
+            id: len
+          };
+        });
+
+        this.setState({
+          truckTypes: truckTypes,
+          truckLengths: truckLengths
+        }, () => {
+          this.showSelector(TRUCK_SELECTOR_TYPE[0]);
+        });
+      },
+      error: err => {
+        Log.error(err);
         this.refs.poptip.warn('获取车型或车长列表失败,请重新打开页面');
-      })
-      .done(() => {
-        this.refs.loading.close();
-      });
+      }
+    });
   }
 
   /**
@@ -145,8 +131,13 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
       [this.state.selectorField]: item
     }, this.cb);
 
-    if (field === 'truckType') {
-      this.showSelector('truckLength');
+    let sType = this.state.sType;
+    if (sType != null && sType === 0) {
+      return;
+    }
+
+    if (field === TRUCK_SELECTOR_TYPE[0]) {
+      this.showSelector(TRUCK_SELECTOR_TYPE[1]);
     }
   }
 
@@ -158,9 +149,12 @@ export var SelectTruckTypeEnhance = ComposedComponent => class extends Component
           truckType={this.state.truckType}
           truckLength={this.state.truckLength}
           handleSelectTruckType={this.handleSelectTruckType.bind(this)}
+          setTruckEnhanceSelectorType={this.setTruckEnhanceSelectorType.bind(this)}
+          setSelectTruckTypeData={this.setSelectTruckTypeData.bind(this)}
         />
         <Selector
           ref="selector"
+          className="select-truck-type"
           items={this.state.selectorItems}
           select={this.handleSelectItem.bind(this)} />
         <Loading ref="loading" />

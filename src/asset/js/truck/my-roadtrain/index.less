@@ -1,0 +1,57 @@
+@import '../../../less/global/site.variable';
+
+body {
+  background-color: @offWhite;
+}
+
+.truck-list {
+  background-color: @white;
+  border-bottom: 1px solid @c_lightGrey;
+
+  > div {
+    border-bottom: 1px solid @c_lightGrey;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .item {
+    font-size: 13px;
+
+    .tel {
+      width:45px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .icon-item-selected {
+      display: none;
+    }
+  }
+}
+
+.add-truck-btn {
+  border-top: 1px solid @c_lightGrey;
+  border-bottom: 1px solid @c_lightGrey;
+  background-color: @white;
+  margin-top: 15px;
+
+  a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .icon {
+      margin-bottom: 5px;
+    }
+
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: @c_grey;
+
+    span {
+      display: block;
+    }
+  }
+}

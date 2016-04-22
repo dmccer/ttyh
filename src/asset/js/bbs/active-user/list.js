@@ -4,58 +4,47 @@ import './list.less';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import querystring from 'querystring';
+
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import ReadableTime from '../readable-time/';
 import Avatar from '../avatar/';
-import querystring from 'querystring';
+
+import AH from '../../helper/ajax';
+import {
+  HotUser,
+  FollowUser
+} from '../model/';
 
 export default class ActiveUserList extends React.Component {
+  state = {
+    users: [],
+    qs: querystring.parse(location.search.substring(1))
+  };
+
   constructor() {
     super();
-
-    this.state = {
-      users: [],
-      qs: querystring.parse(location.search.substring(1))
-    }
   }
 
   componentDidMount() {
-    this.refs.loading.show('加载中...');
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-    $.ajax({
-      url: '/api/bbs_v2/hot_user',
-      type: 'GET',
-      cache: false,
-      data: {
-        uid: this.state.qs.uid
-      },
+    this.ah.one(HotUser, {
       success: (data) => {
-        this.refs.loading.close();
-
         this.setState({
           users: data.bbsUserDoSortDTOList
         });
       },
       error: () => {
-        this.refs.loading.close();
         this.refs.poptip.warn('加载活跃用户失败');
       }
-    })
+    });
   }
 
   follow(user) {
-    this.refs.loading.show('请求中...');
-
-    $.ajax({
-      url: '/mvc/followForBBS_' + user.uid,
-      type: 'GET',
-      cache: false,
-      data: {
-      },
+    this.ah.one(FollowUser, {
       success: (data) => {
-        this.refs.loading.close();
-
         if (data.errMsg) {
           this.refs.poptip.success(data.errMsg);
 
@@ -68,16 +57,9 @@ export default class ActiveUserList extends React.Component {
         this.forceUpdate();
       },
       error: (xhr) => {
-        if (xhr.status === 403) {
-          let qs = querystring.stringify(this.state.qs);
-
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-        }
-
-        this.refs.loading.close();
         this.refs.poptip.warn('关注失败');
       }
-    });
+    }, user.uid);
   }
 
   render_follow(follow, user) {
@@ -137,4 +119,4 @@ export default class ActiveUserList extends React.Component {
   }
 }
 
-ReactDOM.render(<ActiveUserList />, $('#page').get(0));
+ReactDOM.render(<ActiveUserList />, document.querySelector('.page'));

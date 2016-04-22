@@ -12,14 +12,28 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
+import cx from 'classnames';
 
 import Avatar from '../../avatar/';
 import AccountCertifyStatus from '../../account-certify-status/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
+import Confirm from '../../confirm/';
 import FixedHolder from '../../fixed-holder/';
 import JWeiXin from '../../jweixin/';
+import $ from '../../helper/z';
+import AH from '../../helper/ajax';
+import {
+  UserVerifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
+import {
+  PkgSearch,
+  FollowUser
+} from '../model/';
 
 export default class PkgDetailPage extends Component {
   state = {
@@ -34,64 +48,82 @@ export default class PkgDetailPage extends Component {
   }
 
   componentDidMount() {
-    this.refs.loading.show('加载中...')
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/searchProductsForH5',
-        type: 'GET',
-        cache: false,
-        data: {
-          productIDs: this.state.qs.pid
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+    this.ah.one(PkgSearch, {
+      success: (res) => {
+        this.setState({
+          pkg: res.data[0]
+        });
+      },
+      error: () => {
+        this.refs.poptip.warn('加载货源详情失败, 请重试');
+      }
+    }, {
+      productIDs: this.state.qs.pid
+    });
+
+    this.fetchUserInfo();
+  }
+
+  fetchUserInfo() {
+    this.ah.one(UserVerifyStatus, (res) => {
       this.setState({
-        pkg: res.data[0]
+        realNameVerifyStatus: res.auditStatus
       });
-    }).catch((...args) => {
-      console.log(args)
-      this.refs.poptip.warn('加载货源详情失败, 请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    });
+  }
+
+  handleShowVerifyTip(tel, e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.setState({
+      activeTel: tel
+    }, () => {
+      let status = this.state.realNameVerifyStatus;
+
+      if (status === 1 || status === 0) {
+        this.handleCancelVerify();
+        return;
+      }
+
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
+      });
+    });
+  }
+
+  handleCancelVerify() {
+    this.refs.telPanel.show({
+      title: '拨打电话',
+      msg: this.state.activeTel
     });
   }
 
   follow() {
-    this.refs.loading.show('请求中...');
+    this.ah.one(FollowUser, {
+      success: (res) => {
+        if (res.errMsg) {
+          this.refs.poptip.warn(res.errMsg);
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/followForBBS_' + this.state.pkg.product.provideUserID,
-        type: 'GET',
-        cache: false,
-        success: resolve,
-        error: reject
-      });
-    })
-    .then((res) => {
-      if (res.errMsg) {
-        this.refs.poptip.warn(res.errMsg);
+          return;
+        }
 
-        return;
+        let pkg = this.state.pkg;
+        pkg.alreadyFavorite = true;
+
+        this.setState({
+          pkg: pkg
+        }, () => {
+          this.refs.poptip.success('关注成功');
+        });
+      },
+      error: (err) => {
+        this.refs.poptip.success('关注失败');
       }
-
-      let pkg = this.state.pkg;
-      pkg.alreadyFavorite = true;
-
-      this.setState({
-        pkg: pkg
-      }, () => {
-        this.refs.poptip.success('关注成功');
-      });
-    })
-    .catch(() => {
-      this.refs.poptip.success('关注失败');
-    })
-    .done(() => {
-      this.refs.loading.close();
-    });
+    }, this.state.pkg.product.provideUserID);
   }
 
   renderFollowStatus() {
@@ -149,24 +181,27 @@ export default class PkgDetailPage extends Component {
 
     let pkgDesc;
 
-    if (product.title == null && (parseFloat(product.loadLimit) === 0 || product.loadLimit == null)) {
+    if (product.title == null &&
+      (parseFloat(product.loadLimit) === 0 || product.loadLimit == null)) {
       pkgDesc = '暂无';
     } else {
       let title = product.title && product.title || '';
       let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
-
-      pkgDesc = `${title} ${loadLimit}`;
+      let pack = product.packTypeStr + (product.productCount ? ` * ${product.productCount}` : '');
+      let productVolume = product.productVolume != null && parseFloat(product.productVolume) != 0 ? `${product.productVolume}方` : '';
+      pkgDesc = `${title} ${loadLimit} ${productVolume} ${pack}`;
     }
 
     let truckDesc;
 
     if ($.trim(product.truckTypeStr) == '' &&
-      (parseFloat(product.loadLimit) === 0 || product.loadLimit == null) &&
       (parseFloat(product.truckLength) === 0 || product.truckLength == null)) {
       truckDesc = '暂无';
     } else {
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
-      truckDesc = `${product.truckTypeStr || ''} ${truckLength}`;
+      let useType = product.useType != null && parseInt(product.useType) ? product.useTypeStr : null;
+      let stallSize = product.spaceNeeded != null && parseFloat(product.spaceNeeded) ? `占用${product.spaceNeeded}米` : null;
+      truckDesc = `${useType} ${product.truckTypeStr || ''} ${truckLength} ${stallSize || ''}`;
     }
 
     let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {pkg.product.provideUserMobileNo}</span>
@@ -174,7 +209,7 @@ export default class PkgDetailPage extends Component {
     return (
       <section className="pkg-detail-page">
         <h2 className="subtitle">
-          <span>货源详情</span>
+          <span>装车日期</span>
           <span className="pub-time">
             <i className="icon icon-clock"></i>
             {pkg.createTime}发布
@@ -182,15 +217,36 @@ export default class PkgDetailPage extends Component {
         </h2>
         <div className="field-group">
           <div className="field">
+            <label><i className="icon icon-calendar s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">{pkg.product.loadProTime}</span>
+            </div>
+          </div>
+        </div>
+        <h2 className="subtitle">路线信息</h2>
+        <div className="field-group">
+          <div className="field">
             <label><i className="icon icon-start-point on s20"></i></label>
             <div className="control">
               <span className="input-holder on">{pkg.product.fromCity}</span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.fromAddr != '' ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">{pkg.product.fromAddr}</span>
             </div>
           </div>
           <div className="field">
             <label><i className="icon icon-end-point on s20"></i></label>
             <div className="control">
               <span className="input-holder on">{pkg.product.toCity}</span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.toAddr != '' ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">{pkg.product.toAddr}</span>
             </div>
           </div>
         </div>
@@ -205,12 +261,30 @@ export default class PkgDetailPage extends Component {
         </div>
         <h2 className="subtitle">车辆要求</h2>
         <div className="field-group">
-          <div className="field truck-field">
+          <div className="field">
             <label>
               <i className="icon icon-truck-type s20"></i>
             </label>
             <div className="control">
               <span className="input-holder on">{truckDesc}</span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.loadingTypeStr ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder">
+                <i className="inner-label">装货方式</i>
+                <b className="inner-val">{pkg.product.loadingTypeStr}</b>
+              </span>
+            </div>
+          </div>
+          <div className={cx('field', pkg.product.payTypeStr ? '' : 'hide')}>
+            <label><i className="icon s20"></i></label>
+            <div className="control">
+              <span className="input-holder on">
+                <i className="inner-label">运费结算方式</i>
+                <b className="inner-val">{pkg.product.payTypeStr}</b>
+              </span>
             </div>
           </div>
         </div>
@@ -246,15 +320,31 @@ export default class PkgDetailPage extends Component {
           </div>
         </div>
         <FixedHolder height="50" />
-        <a href={`tel:${pkg.product.provideUserMobileNo}`} className="call-btn">
+        <a
+          onClick={this.handleShowVerifyTip.bind(this, pkg.product.provideUserMobileNo)}
+          href={`tel:${pkg.product.provideUserMobileNo}`}
+          className={cx('call-btn', pkg.isMyProduct ? 'hide' : '')}>
           <i className="icon icon-call"></i>
           {tel}
         </a>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          cancel={this.handleCancelVerify.bind(this)}
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
+        <Confirm
+          ref="telPanel"
+          rightLink={`tel:${this.state.activeTel}`}
+          rightBtnText={'拨打'}
+          leftBtnText={'取消'}
+        />
       </section>
     );
   }
 }
 
-ReactDOM.render(<PkgDetailPage />, $('#page').get(0));
+ReactDOM.render(<PkgDetailPage />, document.querySelector('.page'));

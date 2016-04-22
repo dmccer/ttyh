@@ -9,6 +9,12 @@ import ResPicker from '../res-picker/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import querystring from 'querystring';
+import AH from '../../helper/ajax';
+import $ from '../../helper/z';
+import {
+  BaiduGeo,
+  PubForum
+} from '../model/';
 
 const SUBMIT_CODE_MSG_MAP = {
   0: '成功',
@@ -17,7 +23,7 @@ const SUBMIT_CODE_MSG_MAP = {
   5: 'content 为空',
   7: 'uid 有误',
   9: '添加失败'
-}
+};
 
 export default class PostAdd extends React.Component {
   constructor() {
@@ -37,28 +43,22 @@ export default class PostAdd extends React.Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((pos) => {
-        $.ajax({
-          url: 'http://api.map.baidu.com/geocoder/v2/',
-          type: 'GET',
-          cache: false,
-          data: {
-            ak: '50b9214f70f98c0315913018ba25b420',
-            location: `${pos.coords.latitude},${pos.coords.longitude}`,
-            output: 'json'
-          },
-          dataType: 'jsonp',
-          success: (data) => {
-            this.setState({
-              address: {
-                city: data.result.addressComponent.city,
-                area: data.result.addressComponent.district
-              }
-            })
-          },
-          error: () => {}
-        })
+        this.ah.one(BaiduGeo, (data) => {
+          this.setState({
+            address: {
+              city: data.result.addressComponent.city,
+              area: data.result.addressComponent.district
+            }
+          })
+        }, {
+          ak: '50b9214f70f98c0315913018ba25b420',
+          location: `${pos.coords.latitude},${pos.coords.longitude}`,
+          output: 'json'
+        });
       });
     }
   }
@@ -125,8 +125,6 @@ export default class PostAdd extends React.Component {
     });
 
     this.uploadImage((media_ids) => {
-      this.refs.loading.show('正在发布...');
-
       let addr;
 
       if (this.state.showAddress) {
@@ -135,21 +133,8 @@ export default class PostAdd extends React.Component {
         }
       }
 
-      $.ajax({
-        url: '/api/bbs_v2/post',
-        type: 'POST',
-        data: {
-          uid: this.state.qs.uid,
-          token: this.state.localUser && this.state.localUser.token || null,
-          title: this.state.title,
-          content: this.state.text,
-          addr: addr,
-          tid: this.state.topic && this.state.topic.id || null,
-          media_ids: media_ids
-        },
+      this.ah.one(PubForum, {
         success: (data) => {
-          this.refs.loading.close();
-
           if (data === 0) {
             this.refs.poptip.success('发布成功');
 
@@ -162,20 +147,21 @@ export default class PostAdd extends React.Component {
             });
           }
         },
-        error: (xhr) => {
-          if (xhr.status === 403) {
-            let qs = querystring.stringify(this.state.qs);
-
-            location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`);
-          }
-
+        error: () => {
           this.setState({
             uploading: false
           });
 
-          this.refs.loading.close();
           this.refs.poptip.warn('发布失败');
         }
+      }, {
+        uid: this.state.qs.uid,
+        token: this.state.localUser && this.state.localUser.token || null,
+        title: this.state.title,
+        content: this.state.text,
+        addr: addr,
+        tid: this.state.topic && this.state.topic.id || null,
+        media_ids: media_ids
       });
     });
   }
@@ -340,4 +326,4 @@ export default class PostAdd extends React.Component {
   }
 }
 
-ReactDOM.render(<PostAdd />, $('#page').get(0));
+ReactDOM.render(<PostAdd />, document.querySelector('.page'));

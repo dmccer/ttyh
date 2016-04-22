@@ -1,0 +1,50 @@
+@import '../global/site.variable';
+@import '../global/util.less';
+@import './cell.less';
+@import './form.less';
+
+.cells.cells-form {
+  .cell {
+    font-size: 12px;
+  }
+
+  .input_placeholder(@c_grey, 14px);
+
+  .input, .val, .holder, .textarea {
+    width: 100%;
+    text-align: right;
+    font-size: 16px;
+    padding-left: 10px;
+  }
+
+  .input, .textarea {
+    border: 0;
+    outline: 0;
+    -webkit-appearance: none;
+    background-color: transparent;
+    color: inherit;
+  }
+
+  .textarea {
+    resize: none;
+  }
+
+  .unit .input {
+    padding-right: 10px;
+  }
+
+  .holder {
+    color: @c_grey;
+  }
+
+  .cell-ft {
+    font-size: 16px;
+    color: @c_lightBlack;
+
+    .num {
+      width: 4em;
+      text-align: left;
+      color: @c_black;
+    }
+  }
+}

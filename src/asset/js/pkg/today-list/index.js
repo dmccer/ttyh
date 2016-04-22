@@ -8,13 +8,25 @@ import './index.less';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'promise';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoadMore from '../../load-more/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import Confirm from '../../confirm/';
+import AH from '../../helper/ajax';
+import {
+  UserVerifyStatus
+} from '../../account/model/';
+import {
+  REAL_NAME_CERTIFY_TITLE,
+  REAL_NAME_CERTIFY_TIP_FOR_VIEW
+} from '../../const/certify';
+
+import {
+  TodayRecommendPkgs
+} from '../model/';
 
 const PKG_SEARCH = 'pkg-search';
 
@@ -32,6 +44,8 @@ export default class TodayPkgListPage extends Component {
   }
 
   componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
     this.query();
 
     LoadMore.init(() => {
@@ -39,51 +53,76 @@ export default class TodayPkgListPage extends Component {
         this.query();
       }
     });
+
+    this.fetchUserInfo();
+  }
+
+  fetchUserInfo() {
+    this.ah.one(UserVerifyStatus, (res) => {
+      this.setState({
+        realNameVerifyStatus: res.auditStatus
+      });
+    });
   }
 
   query() {
-    this.refs.loading.show('加载中...');
+    this.ah.one(TodayRecommendPkgs, {
+      success: (res) => {
+        let pkgs = this.state.pkgs;
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/todayRecommendProductsForH5',
-        type: 'GET',
-        cache: false,
-        data: {
-          pageIndex: this.state.pageIndex,
-          pageSize: this.state.pageSize
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      let pkgs = this.state.pkgs;
+        if (!res.data || !res.data.length) {
+          if (!pkgs.length) {
+            // 空列表，没有数据
+            return;
+          }
 
-      if (!res.data || !res.data.length) {
-        if (!pkgs.length) {
-          // 空列表，没有数据
+          this.refs.poptip.info('没有更多了');
+
+          this.setState({
+            over: true
+          });
+
           return;
         }
 
-        this.refs.poptip.info('没有更多了');
+        pkgs = pkgs.concat(res.data);
 
         this.setState({
-          over: true
+          pkgs: pkgs,
+          pageIndex: this.state.pageIndex + 1
         });
+      },
+      error: () => {
+        this.refs.poptip.warn('查询货源失败,请重试');
+      }
+    }, {
+      pageIndex: this.state.pageIndex,
+      pageSize: this.state.pageSize
+    });
+  }
 
+  handleShowVerifyTip(tel) {
+    this.setState({
+      activeTel: tel
+    }, () => {
+      let status = this.state.realNameVerifyStatus;
+
+      if (status === 1 || status === 0) {
+        this.handleCancelVerify();
         return;
       }
 
-      pkgs = pkgs.concat(res.data);
-
-      this.setState({
-        pkgs: pkgs,
-        pageIndex: this.state.pageIndex + 1
+      this.refs.verifyTip.show({
+        title: REAL_NAME_CERTIFY_TITLE,
+        msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
       });
-    }).catch(() => {
-      this.refs.poptip.warn('查询货源失败,请重试');
-    }).done(() => {
-      this.refs.loading.close();
+    });
+  }
+
+  handleCancelVerify() {
+    this.refs.telPanel.show({
+      title: '拨打电话',
+      msg: this.state.activeTel
     });
   }
 
@@ -92,7 +131,12 @@ export default class TodayPkgListPage extends Component {
 
     if (pkgs && pkgs.length) {
       return pkgs.map((pkg, index) => {
-        return <SearchItem key={`pkg-item_${index}`} {...pkg} />
+        return (
+          <SearchItem
+            verifyTip={this.handleShowVerifyTip.bind(this)}
+            key={`pkg-item_${index}`}
+            {...pkg} />
+        );
       });
     }
   }
@@ -105,9 +149,22 @@ export default class TodayPkgListPage extends Component {
         </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <Confirm
+          ref="verifyTip"
+          cancel={this.handleCancelVerify.bind(this)}
+          rightLink="./real-name-certify.html"
+          rightBtnText={'立即认证'}
+          leftBtnText={'稍后认证'}
+        />
+        <Confirm
+          ref="telPanel"
+          rightLink={`tel:${this.state.activeTel}`}
+          rightBtnText={'拨打'}
+          leftBtnText={'取消'}
+        />
       </div>
     );
   }
 }
 
-ReactDOM.render(<TodayPkgListPage />, $('#page').get(0));
+ReactDOM.render(<TodayPkgListPage />, document.querySelector('.page'));

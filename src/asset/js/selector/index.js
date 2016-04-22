@@ -1,14 +1,26 @@
 import './index.less';
 
-import React from 'react';
+import React, {Component, PropTypes}from 'react';
 import cx from 'classnames';
 import Mask from '../mask/';
 
-export default class Selector extends React.Component {
+export default class Selector extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+    select: PropTypes.func.isRequired,
+    items: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ]),
+      name: PropTypes.string
+    }))
+  };
+
+  state = {};
+
   constructor() {
     super();
-
-    this.state = {};
   }
 
   show() {
@@ -33,13 +45,14 @@ export default class Selector extends React.Component {
     if (this.props.items && this.props.items.length) {
       let list = this.props.items.map((item) => {
         return (
-          <li key={`item_${item.id}`} onClick={this.select.bind(this, item)}><span>{item.name}</span></li>
+          <li
+            className={item.disabled ? 'disabled' : ''}
+            key={`item_${item.id}`}
+            onClick={item.disabled ? () => {} : this.select.bind(this, item)}>
+            <span>{item.name}</span>
+          </li>
         );
       });
-
-      if (list.length % 2 !== 0) {
-        list.push(<li key={'item_extra'}><span></span></li>);
-      }
 
       return list;
     }
@@ -50,10 +63,15 @@ export default class Selector extends React.Component {
       return null;
     }
 
+    let title = this.props.title ? (
+      <li className="title"><span>{this.props.title}</span></li>
+    ) : null;
+
     return (
-      <section className="selector">
+      <section className={cx('selector', this.props.className || '')}>
         <Mask click={this.close.bind(this)} />
         <ul className="selector-panel">
+          {title}
           {this.renderItem()}
         </ul>
       </section>

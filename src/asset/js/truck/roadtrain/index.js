@@ -7,13 +7,18 @@ import './index.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-import Promise from 'promise';
 import find from 'lodash/collection/find';
 
 import MiniTruckItem from './mini-truck-item/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Log from '../../log/';
+import AH from '../../helper/ajax';
+import {
+  MyTrucks,
+  DelTruck,
+  SetDefaultTruck
+} from '../model/';
 
 const DEFAULT_TRUCK = 'default-truck';
 const ERR_MSG_GET_TRUCK = {
@@ -43,87 +48,74 @@ export default class RoadtrainPage extends React.Component {
   }
 
   componentDidMount() {
-    this.refs.loading.show('加载中...');
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/getTruck',
-        type: 'POST',
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      if (res.retcode != 0) {
-        this.refs.poptip.warn(ERR_MSG_GET_TRUCK[res.retcode]);
+    this.ah.one(MyTrucks, {
+      success: (res) => {
+        if (res.retcode != 0) {
+          this.refs.poptip.warn(ERR_MSG_GET_TRUCK[res.retcode]);
 
-        return;
+          return;
+        }
+
+        let selected = find(res.truckList, (truck) => {
+          return truck.isDefault === 1;
+        });
+
+        this.setState({
+          trucks: res.truckList,
+          selected: selected
+        });
+      },
+      error: (err) => {
+        Log.error(err);
+
+        this.refs.poptip.warn('加载我的车队失败');
       }
-
-      let selected = find(res.truckList, (truck) => {
-        return truck.isDefault === 1;
-      });
-
-      this.setState({
-        trucks: res.truckList,
-        selected: selected
-      });
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('加载我的车队失败');
-    }).done(() => {
-      this.refs.loading.close();
     });
   }
 
   del(id) {
-    this.refs.loading.show('请求中...');
+    this.ah.one(DelTruck, {
+      success: (res) => {
+        if (res.retcode !== 0) {
+          this.refs.poptip.warn(res.msg);
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/deleteTruck',
-        type: 'POST',
-        data: {
-          truckID: id
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      if (res.retcode !== 0) {
-        this.refs.poptip.warn(ERR_MSG_DEL[res.retcode]);
+          return;
+        }
 
-        return;
+        let trucks = this.state.trucks;
+        let truck = find(trucks, (truck) => {
+          return truck.truckID === id;
+        });
+
+        trucks.splice(trucks.indexOf(truck), 1);
+
+        this.setState({
+          trucks: trucks
+        });
+
+        // 删除当前选中的默认项
+        let selectedTruck = this.state.selected;
+
+        if (selectedTruck && selectedTruck.truckID === id) {
+          this.state.selected = null;
+        }
+
+        let lastDefaultTruck = this.state.lastDefaultTruck;
+
+        if (lastDefaultTruck && lastDefaultTruck.truckID === id) {
+          localStorage.removeItem(DEFAULT_TRUCK);
+        }
+
+        this.refs.poptip.success('删除车辆成功');
+      },
+      error: (err) => {
+        Log.error(err);
+
+        this.refs.poptip.warn('删除车辆失败，请重试');
       }
-
-      let trucks = this.state.trucks;
-      let truck = find(trucks, (truck) => {
-        return truck.truckID === id;
-      });
-
-      trucks.splice(trucks.indexOf(truck), 1);
-
-      this.setState({
-        trucks: trucks
-      });
-
-      // 删除当前选中的默认项
-      if (this.state.selected.truckID === id) {
-        this.state.selected = null;
-      }
-
-      if (this.state.lastDefaultTruck.truckID === id) {
-        localStorage.removeItem(DEFAULT_TRUCK);
-      }
-
-      this.refs.poptip.success('删除车辆成功');
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('删除车辆失败，请重试');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+    }, id);
   }
 
   handleSelect(truck, e) {
@@ -167,33 +159,22 @@ export default class RoadtrainPage extends React.Component {
       history.back();
     }
 
-    this.refs.loading.show('请求中...');
+    this.ah.one(SetDefaultTruck, {
+      success: (res) => {
+        if (res.retcode !== 0) {
+          this.refs.poptip.warn(ERR_MSG_SET_DEFAULT[res.retcode]);
+          return;
+        }
 
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: '/mvc/v2/setTruckDefalt',
-        type: 'POST',
-        data: {
-          truckID: this.state.selected && this.state.selected.truckID
-        },
-        success: resolve,
-        error: reject
-      });
-    }).then((res) => {
-      if (res.retcode !== 0) {
-        this.refs.poptip.warn(ERR_MSG_SET_DEFAULT[res.retcode]);
-        return;
+        localStorage.setItem(DEFAULT_TRUCK, JSON.stringify(this.state.selected));
+        history.back();
+      },
+      error: (err) => {
+        Log.error(err);
+
+        this.refs.poptip.warn('设置默认车辆失败');
       }
-
-      localStorage.setItem(DEFAULT_TRUCK, JSON.stringify(this.state.selected));
-      history.back();
-    }).catch((err) => {
-      Log.error(err);
-
-      this.refs.poptip.warn('设置默认车辆失败');
-    }).done(() => {
-      this.refs.loading.close();
-    });
+    }, this.state.selected && this.state.selected.truckID);
   }
 
   render() {
@@ -219,4 +200,4 @@ export default class RoadtrainPage extends React.Component {
   }
 }
 
-ReactDOM.render(<RoadtrainPage />, $('#page').get(0));
+ReactDOM.render(<RoadtrainPage />, document.querySelector('.page'));
