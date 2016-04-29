@@ -43,13 +43,7 @@ export default class AjaxHelper {
         ref: location.href
       });
 
-      let url;
-
-      if (Detect.isWeiXin()) {
-        url = location.protocol + '//' + location.host + `/pim/wxpim/authorize?${qs}`;
-      } else {
-        url = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`)
-      }
+      let url = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/login.html?${qs}`)
 
       location.replace(url);
 

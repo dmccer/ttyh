@@ -25,6 +25,12 @@ const SUBMIT_CODE_MSG_MAP = {
   9: '添加失败'
 };
 
+let lStorage = localStorage || {
+  setItem() {},
+  getItem() {},
+  removeItem() {}
+};
+
 export default class PostAdd extends React.Component {
   constructor() {
     super();
@@ -38,7 +44,8 @@ export default class PostAdd extends React.Component {
       maxTextLen: 2000,
       address: {},
       qs: query,
-      localUser: JSON.parse(localStorage.getItem('user'))
+      resMenu: 'topic',
+      localUser: JSON.parse(lStorage.getItem('user') || "{}")
     }
   }
 
@@ -133,12 +140,24 @@ export default class PostAdd extends React.Component {
         }
       }
 
+      let data = {
+        uid: this.state.qs.uid,
+        token: this.state.qs.token || this.state.localUser && this.state.localUser.token || null,
+        title: this.state.title,
+        content: this.state.text,
+        addr: addr,
+        tid: this.state.topic && this.state.topic.id || null,
+        media_ids: media_ids
+      };
+
       this.ah.one(PubForum, {
         success: (data) => {
           if (data === 0) {
             this.refs.poptip.success('发布成功');
 
-            history.back();
+            setTimeout(() => {
+              history.back();
+            }, 1500);
           } else {
             this.refs.poptip.warn(SUBMIT_CODE_MSG_MAP[data] || '发布失败');
 
@@ -154,15 +173,7 @@ export default class PostAdd extends React.Component {
 
           this.refs.poptip.warn('发布失败');
         }
-      }, {
-        uid: this.state.qs.uid,
-        token: this.state.localUser && this.state.localUser.token || null,
-        title: this.state.title,
-        content: this.state.text,
-        addr: addr,
-        tid: this.state.topic && this.state.topic.id || null,
-        media_ids: media_ids
-      });
+      }, data);
     });
   }
 

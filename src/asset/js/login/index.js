@@ -14,6 +14,12 @@ import AH from '../helper/ajax';
 
 import {SendVerifyCode, Login} from '../account/model/';
 
+let lStorage = localStorage || {
+  setItem() {},
+  getItem() {},
+  removeItem() {}
+};
+
 export default class LoginPage extends React.Component {
   state = {
     count: '获取验证码',
@@ -109,21 +115,17 @@ export default class LoginPage extends React.Component {
 
         // 跳转
         let qs = querystring.stringify({
-          uid: res.loggedUser.userID
+          uid: res.loggedUser.userID,
+          token: res.token
         });
 
         // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
-        localStorage.setItem('user', JSON.stringify({
+        lStorage.setItem('user', JSON.stringify({
           token: res.token
         }));
 
+        this.redirect(qs);
 
-        if (this.state.qs.page) {
-          location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`);
-          return;
-        }
-
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
         return;
       }
 
@@ -151,7 +153,7 @@ export default class LoginPage extends React.Component {
       });
     }
 
-    function fail() {
+    function fail(err) {
       _hmt.push(['_setCustomVar', 1, 'login', '登录失败', 2]);
       this.refs.poptip.error('系统异常');
 
@@ -213,6 +215,20 @@ export default class LoginPage extends React.Component {
     this.handleValidateTelRemote();
   }
 
+  redirect(qs) {
+    if (this.state.qs.repage) {
+      location.replace(`${this.state.qs.repage}?${qs}`);
+      return;
+    }
+
+    if (this.state.qs.page) {
+      location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, `/${this.state.qs.page}.html?${qs}`));
+      return;
+    }
+
+    location.replace(location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs));
+  }
+
   // 验证手机
   handleValidateTelRemote() {
     let ok = (res) => {
@@ -220,15 +236,18 @@ export default class LoginPage extends React.Component {
         _hmt.push(['_setCustomVar', 1, 'login', '自动登录', 2]);
 
         let qs = querystring.stringify({
-          uid: res.loggedUser.userID
+          uid: res.loggedUser.userID,
+          token: res.token
         });
 
         // 登录后将 user token 和 code 存入本地，后面请求接口需要以 token 或 code 作为参数
-        localStorage.setItem('user', JSON.stringify({
+        lStorage.setItem('user', JSON.stringify({
           token: res.token
         }));
 
-        location.href = location.protocol + '//' + location.host + location.pathname.replace(/\/[^\/]+$/, '/bbs.html?' + qs);
+        this.redirect(qs);
+
+        return;
       }
 
       if (res.viewName === 'user/login/confirm') {
@@ -276,14 +295,14 @@ export default class LoginPage extends React.Component {
       this.refs.poptip.warn(msg);
     };
 
-    let fail = () => {
+    let fail = (err) => {
       _hmt.push(['_setCustomVar', 1, 'post_verify_code', '失败', 2]);
       this.refs.poptip.error('系统异常');
     };
 
     this.ah.one(SendVerifyCode, {
-      success: ok.bind(this),
-      error: fail.bind(this)
+      success: ok,
+      error: fail
     }, this.state.tel);
   }
 

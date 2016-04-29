@@ -9,7 +9,6 @@ var pathToReact = path.resolve(node_modules, 'react/');
 var pkg = require('./package.json');
 
 module.exports = {
-  debug: true,
   watch: true,
   entry: {
     bbs: './src/asset/js/bbs/index.js',
