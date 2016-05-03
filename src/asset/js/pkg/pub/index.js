@@ -31,11 +31,12 @@ import {OrderedEnumValue} from '../../model/';
 import {PubPkg} from '../model/';
 import {
   PKG_DRAFT, PKG_INFO_DATA,
-  PKG_MEMO, TIME_AREAS,
+  PKG_MEMO,
   PAGE_TYPE, PKG_TRUCK_USE_DATA,
   JUST_SELECT_TRUCK_TYPE, DEFAULT_LOAD_TYPE_ID,
   DEFAULT_PAYMENT_TYPE_ID
 } from '../../const/pkg-pub';
+import {TIME_AREAS} from '../../const/time-area';
 
 const ALL = '全部';
 const TMP_DATA = JSON.parse(localStorage.getItem(PKG_DRAFT));
@@ -622,6 +623,11 @@ export default class PkgPubPage extends React.Component {
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <DatePicker ref="datepicker" onSelect={this.handleSelectDate.bind(this)} />
+        <Selector
+          ref="dateAreaSelector"
+          items={this.state.timeAreas}
+          title={timeAreaSelectorTitle}
+          select={this.handleSelectTimeArea.bind(this)} />
         <CitySelector
           ref="citySelector"
           prefix={PAGE_TYPE}
@@ -633,11 +639,6 @@ export default class PkgPubPage extends React.Component {
           onShow={this.handleShowCitySelector.bind(this)}
           onCancel={this.handleCancelCitySelector.bind(this)}
         />
-        <Selector
-          ref="dateAreaSelector"
-          items={this.state.timeAreas}
-          title={timeAreaSelectorTitle}
-          select={this.handleSelectTimeArea.bind(this)} />
         <Selector
           ref="loadTypeSelector"
           items={this.state.loadTypes}

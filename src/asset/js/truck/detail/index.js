@@ -232,6 +232,15 @@ export default class TruckDetailPage extends Component {
            <MiniReadableTime time={rtruckDetail.orderByTime} />
          </span>
        </h2>
+       <h2 className="subtitle">可装车时间</h2>
+       <div className="field-group">
+         <div className="field">
+           <label><i className="icon icon-calendar s20"></i></label>
+           <div className="control">
+              <p className="input-holder on">2016-12-11 下午</p>
+           </div>
+         </div>
+       </div>
        <h2 className="subtitle">
         <span>路线</span>
         <i className="flag teal">{rtruckDetail.truckTagStr}</i>

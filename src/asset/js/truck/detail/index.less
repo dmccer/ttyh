@@ -54,6 +54,10 @@ body {
 }
 
 .lines .field {
+  .control {
+    margin-bottom: 0;
+  }
+
   &:last-child {
     padding-bottom: 5px;
   }
@@ -68,6 +72,8 @@ body {
   > label {
     display: block;
     float: left;
+    width: 50px;
+    height: 100%;
     padding-left: 15px;
     padding-right: 15px;
     text-align: center;
@@ -79,7 +85,14 @@ body {
 
   &:last-child {
     border-bottom: 1px solid @c_lightGrey;
-    padding-bottom: 15px;
+
+    .control .input-holder {
+      border-bottom: none;
+    }
+  }
+
+  &:first-child {
+    // border-top: 1px solid @c_lightGrey;
   }
 
   .control {
@@ -87,12 +100,11 @@ body {
     height: 100%;
     overflow: hidden;
 
-    input {
+    .input-holder {
       display: block;
       width: 100%;
-      height: 49px;
-      line-height: 49px;
       box-sizing: border-box;
+      padding-top:5px;
       font-size: 13px;
       border-radius: 0;
       border-right: none;
@@ -101,10 +113,15 @@ body {
       padding-left: 5px;
       border-bottom: 1px solid @c_lightGrey;
       padding-right: 20px;
-      color: @c_black;
-    }
+      color: @c_grey;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
-    .input_placeholder(@c_grey);
+      &.on {
+        color: @black;
+      }
+    }
   }
 }
 
@@ -121,10 +138,6 @@ body {
   }
 }
 
-// .truck-field .control input {
-//   color: @c_lightBlack;
-// }
-
 .memo-field {
   height: auto;
 
@@ -137,7 +150,6 @@ body {
     color: @c_black;
     overflow: hidden;
     padding-right: 10px;
-    margin-bottom: 10px;
 
     .memo-toggler {
       color: @c_teal;

@@ -21,7 +21,11 @@ import Log from '../../log/';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import CitySelector from '../../city-selector/';
+import Selector from '../../selector/';
 import AH from '../../helper/ajax';
+import DT from '../../helper/date';
+import DatePicker from '../../datepicker/';
+import {TIME_AREAS} from '../../const/time-area';
 import {
   TruckTags,
   PubTruckRoute
@@ -47,6 +51,7 @@ export default class TruckPubPage extends React.Component {
     memo: '',
     fromCities: [],
     toCities: [],
+    timeAreas: [],
     selectedTruckTag: {},
     truck: JSON.parse(localStorage.getItem(DEFAULT_TRUCK))
   }, JSON.parse(localStorage.getItem(TRUCK_PUB)) || {});
@@ -473,6 +478,37 @@ export default class TruckPubPage extends React.Component {
     });
   }
 
+  handleSelectDate(d) {
+    let r;
+
+    if (DT.isToday(d)) {
+      let h = new Date().getHours();
+      r = TIME_AREAS.map((timeArea, index) => {
+        return {
+          name: timeArea.name,
+          id: timeArea.id,
+          disabled: !timeArea.test(h)
+        };
+      });
+    } else {
+      r = assign([], TIME_AREAS);
+    }
+
+    this.setState({
+      entruckTime: DT.format(d),
+      timeAreas: r
+    }, () => {
+      this.refs.dateAreaSelector.show();
+      this.writeDraft();
+    });
+  }
+
+  handleSelectTimeArea(v) {
+    this.setState({
+      timeArea: v
+    }, this.writeDraft.bind(this));
+  }
+
   /**
    * 展示车辆标记选择列表
    * @return {[type]} [description]
@@ -575,10 +611,32 @@ export default class TruckPubPage extends React.Component {
   }
 
   render() {
+    let entruckTime = this.state.entruckTime;
+    let entruckTimeObj = new Date(entruckTime);
+    let timeAreaSelectorTitle = entruckTime
+      ? `${entruckTime}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
+      : '';
+
+    let timeArea = this.state.timeArea;
+    let entruckTimeStr = entruckTime ? (entruckTime + (timeArea ? ` ${timeArea.name}` : '')) : null;
+
     return (
       <section className="truck-pub">
         <div className="row biz-types">
           {this.renderTruckTagList()}
+        </div>
+        <h2 className="subtitle"><b>*</b>可装车时间</h2>
+        <div className="field-group">
+          <div className="field">
+            <label><i className="icon icon-calendar s20"></i></label>
+            <div className="control">
+              <span
+                className={cx('input-holder', entruckTime && 'on' || '')}
+                onClick={() => { this.refs.datepicker.show(new Date()); }}
+              >{entruckTimeStr || '请选择装车日期'}</span>
+              <i className="icon icon-arrow"></i>
+            </div>
+          </div>
         </div>
         <h2 className="subtitle"><b>*</b>路线</h2>
         <div className="field-group">
@@ -611,6 +669,12 @@ export default class TruckPubPage extends React.Component {
         <div className="fixed-holder"></div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
+        <DatePicker ref="datepicker" onSelect={this.handleSelectDate.bind(this)} />
+        <Selector
+          ref="dateAreaSelector"
+          items={this.state.timeAreas}
+          title={timeAreaSelectorTitle}
+          select={this.handleSelectTimeArea.bind(this)} />
         <CitySelector
           ref="citySelector"
           prefix={PAGE_TYPE}
