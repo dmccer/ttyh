@@ -20,9 +20,11 @@ import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Confirm from '../../confirm/';
 import FixedHolder from '../../fixed-holder/';
+import PkgMaluationPanel from '../maluation/';
 import JWeiXin from '../../jweixin/';
 import $ from '../../helper/z';
 import AH from '../../helper/ajax';
+import {OrderedEnumValue} from '../../model/';
 import {
   UserVerifyStatus
 } from '../../account/model/';
@@ -40,7 +42,8 @@ export default class PkgDetailPage extends Component {
     qs: querystring.parse(location.search.substring(1)),
     pkg: {
       product: {}
-    }
+    },
+    maluationItems: []
   };
 
   constructor() {
@@ -100,6 +103,29 @@ export default class PkgDetailPage extends Component {
       title: '拨打电话',
       msg: this.state.activeTel
     });
+  }
+
+  madeCall() {
+    this.ah.one(OrderedEnumValue, (res) => {
+      let list = res.packTypeMap;
+
+      list = list.map((item) => {
+        return {
+          id: item.key,
+          name: item.value
+        };
+      });
+
+      this.setState({
+        maluationItems: list
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+    }, 'packType');
+  }
+
+  handleSelectPkgMaluation(maluation) {
+    console.log('maluation:', maluation);
   }
 
   follow() {
@@ -294,16 +320,21 @@ export default class PkgDetailPage extends Component {
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
               {this.renderMemo(pkg.product.memo)}
-              {
-                // <span className="contact-count">
-                //   <b>{pkg.product.contactCount}</b>
-                //   位车主联系过该货源
-                // </span>
-              }
             </div>
           </div>
         </div>
-        <div className="row">
+        <h2 className="subtitle">评价</h2>
+        <div className="maluations">
+          <span className="maluation-item">
+            <span>有效货源 </span>
+            <b>(3)</b>
+          </span>
+          <span className="maluation-item">
+            <span>有效货源 </span>
+            <b>(3)</b>
+          </span>
+        </div>
+        <div className="row account-info">
           <div className="avatar-col">
             <Avatar img={pkg.provideUserImgUrl} />
           </div>
@@ -341,6 +372,12 @@ export default class PkgDetailPage extends Component {
           rightLink={`tel:${this.state.activeTel}`}
           rightBtnText={'拨打'}
           leftBtnText={'取消'}
+          confirm={this.madeCall.bind(this)}
+        />
+        <PkgMaluationPanel
+          ref="pkgMaluation"
+          items={this.state.maluationItems}
+          onSelected={this.handleSelectPkgMaluation.bind(this)}
         />
       </section>
     );
