@@ -17,6 +17,7 @@ import Log from '../../log/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Confirm from '../../confirm/';
+import IconMenu from '../../icon-menu/';
 import truckPNG from '../../../img/app/truck@3x.png';
 import AH from '../../helper/ajax';
 import {
@@ -27,6 +28,7 @@ import {
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
 import {TruckUsers} from '../model/';
+import {MENUS} from '../../const/truck';
 
 const PAGE_TYPE = 'shipper_page';
 
@@ -172,6 +174,7 @@ export default class SearchTruckPage extends Component {
   render() {
     return (
       <div className="search-truck-page">
+        <IconMenu menus={MENUS} />
         <SearchCondition
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}

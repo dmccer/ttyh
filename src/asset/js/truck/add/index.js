@@ -33,7 +33,7 @@ import {
 import {
   SELECTED_COMMON_ROUTE,
   TRUCK_ADD_DRAFT
-} from '../../const/truck-pub';
+} from '../../const/truck';
 
 @FieldChangeEnhance
 @SelectTruckTypeEnhance

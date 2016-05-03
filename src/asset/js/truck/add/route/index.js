@@ -13,7 +13,7 @@ import assign from 'lodash/object/assign';
 import $ from '../../../helper/z';
 import CitySelector from '../../../city-selector/';
 
-import {PAGE_TYPE, SELECTED_COMMON_ROUTE} from '../../../const/truck-pub';
+import {PAGE_TYPE, SELECTED_COMMON_ROUTE} from '../../../const/truck';
 const ALL = '全部';
 
 export default class SelectCommonRoutePage extends Component {
