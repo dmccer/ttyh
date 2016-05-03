@@ -1,3 +1,26 @@
+import PU_HUO_PNG from '../../img/app/puhuo@3x.png';
+import WEI_XIAN_PIN_PNG from '../../img/app/weixianpin@3x.png';
+import DA_JIAN_PNG from '../../img/app/dajian@3x.png';
+import LENG_CANGE_PNG from '../../img/app/lengcang@3x.png';
+
+// 货源搜索图标菜单
+export const MENUS = [
+  {
+    name: '普货',
+    icon: PU_HUO_PNG,
+    url: '',
+  }, {
+    name: '危险品',
+    icon: WEI_XIAN_PIN_PNG
+  }, {
+    name: '大件',
+    icon: DA_JIAN_PNG
+  }, {
+    name: '冷藏',
+    icon: LENG_CANGE_PNG
+  }
+];
+
 // 发货草稿
 export const PKG_DRAFT = 'pkg-pub';
 // 货物信息
