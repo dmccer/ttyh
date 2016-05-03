@@ -5,9 +5,18 @@ var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var pkg = require('./package.json');
 
+function createPage(title, pageName) {
+  return new HtmlWebpackPlugin({
+    title: title,
+    template: './src/page/index.ejs',
+    filename: pageName + '.html',
+    chunks: [pageName, 'fetch', 'ved'],
+    chunksSortMode: 'dependency',
+    inject: 'body'
+  });
+}
+
 module.exports = {
-  debug: true,
-  watch: true,
   entry: {
     bbs: './src/asset/js/bbs/index.js',
     'bbs-comment': './src/asset/js/bbs/feedback/comment/add.js',
@@ -15,8 +24,7 @@ module.exports = {
     'bbs-detail': './src/asset/js/bbs/detail.js',
     'bbs-about-me': './src/asset/js/bbs/about-me/index.js',
     login: './src/asset/js/login/index.js',
-    // register: './src/asset/js/register/index.js',
-    // retrieve: './src/asset/js/retrieve/index.js',
+
     term: './src/asset/js/term/index.js',
     'topic-posts': './src/asset/js/bbs/post/list-topic.js',
     'user-posts': './src/asset/js/bbs/post/list-user.js',
@@ -27,7 +35,7 @@ module.exports = {
     'truck-requirement': './src/asset/js/pkg/pub/truck-requirement/index.js',
     'pkg-pub-memo': './src/asset/js/pkg/pub/memo/index.js',
     'my-pkg': './src/asset/js/pkg/my/index.js',
-    // 'recommend-pkg-list': './src/asset/js/pkg/recommend-list/index.js',
+
     'pkg-search': './src/asset/js/pkg/search/index.js',
     'today-pkg': './src/asset/js/pkg/today-list/',
     'pkg-detail': './src/asset/js/pkg/detail/index.js',
@@ -39,7 +47,7 @@ module.exports = {
     'truck-add': './src/asset/js/truck/add/index.js',
     'select-truck-common-route': './src/asset/js/truck/add/route/index.js',
     'my-truck': './src/asset/js/truck/my/index.js',
-    // 'recommend-truck-list': './src/asset/js/truck/recommend-list/index.js',
+
     'truck-search': './src/asset/js/truck/search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
     'truck-detail': './src/asset/js/truck/detail/index.js',
@@ -52,23 +60,62 @@ module.exports = {
     'real-name-certify-result': './src/asset/js/account/real-name-certify/result/index.js',
     'trucker-certify-result': './src/asset/js/account/trucker-certify/result/index.js',
 
+    report: './src/asset/js/report/index.js',
+
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
-  output: {
-    path: path.resolve(__dirname, pkg.dest),
-    publicPath: '',
-    filename: '[name].js',
-    chunkFilename: '[id].js'
-  },
-  resolve: {
-    alias: {
-      react: path.resolve(__dirname, './node_modules/react/'),
-      'react-dom': path.resolve(__dirname, './node_modules/react-dom/index.js'),
-      fetch: path.resolve(__dirname, './node_modules/whatwg-fetch/')
-    }
-  },
+
   plugins: [
-    // new webpack.optimize.OccurenceOrderPlugin(),
+    // start 社区
+    createPage('社区', 'bbs'),
+    createPage('评论', 'bbs-comment'),
+    createPage('发帖', 'bbs-post'),
+    createPage('详情', 'bbs-detail'),
+    createPage('与我有关', 'bbs-about-me'),
+    createPage('服务条款', 'term'),
+    createPage('热门帖子', 'topic-posts'),
+    createPage('用户帖子', 'user-posts'),
+    createPage('人气用户', 'active-users'),
+    createPage('小妹公告', 'notice'),
+    // end 社区
+
+    createPage('登录', 'login'),
+    createPage('举报', 'report'),
+
+    // start 货主
+    createPage('找车', 'truck-search'),
+    createPage('发布货源', 'pkg-pub'),
+    createPage('用车需求', 'truck-requirement'),
+    createPage('货源信息', 'pkg-info-pub'),
+    createPage('发布货源-备注', 'pkg-pub-memo'),
+    createPage('货源详情', 'pkg-detail'),
+    createPage('我的货源', 'my-pkg'),
+    createPage('推荐货源', 'today-pkg'),
+    // end 货主
+
+    createPage('筛选', 'search-filter'),
+
+    // start 车主
+    createPage('找货', 'pkg-search'),
+    createPage('发布车源', 'truck-pub'),
+    createPage('我的车队', 'roadtrain'),
+    createPage('我的车队', 'my-roadtrain'),
+    createPage('添加车辆', 'truck-add'),
+    createPage('常跑路线', 'select-truck-common-route'),
+    createPage('车源详情', 'truck-detail'),
+    createPage('我的车源', 'my-truck'),
+    createPage('推荐车源', 'today-truck'),
+    // end 车主
+
+    // start 认证
+    createPage('实名认证', 'real-name-certify'),
+    createPage('司机认证', 'trucker-certify'),
+    createPage('公司认证', 'company-certify'),
+    createPage('实名认证结果', 'real-name-certify-result'),
+    createPage('公司认证结果', 'company-certify-result'),
+    createPage('司机认证结果', 'trucker-certify-result'),
+    // end 认证
+
     new webpack.optimize.CommonsChunkPlugin('ved', 'ved.js'),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'fetch',
@@ -394,8 +441,32 @@ module.exports = {
       chunks: ['trucker-certify-result', 'fetch', 'ved'],
       chunksSortMode: 'dependency',
       inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      title: '举报',
+      template: './src/page/index.ejs',
+      filename: 'report.html',
+      chunks: ['report', 'fetch', 'ved'],
+      chunksSortMode: 'dependency',
+      inject: 'body'
     })
   ],
+
+  debug: true,
+  watch: true,
+  output: {
+    path: path.resolve(__dirname, pkg.dest),
+    publicPath: '',
+    filename: '[name].js',
+    chunkFilename: '[id].js'
+  },
+  resolve: {
+    alias: {
+      react: path.resolve(__dirname, './node_modules/react/'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom/index.js'),
+      fetch: path.resolve(__dirname, './node_modules/whatwg-fetch/')
+    }
+  },
   module: {
     noParse: /\.min\.js$/,
     preLoaders: [{
