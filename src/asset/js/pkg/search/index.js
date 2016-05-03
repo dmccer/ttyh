@@ -19,7 +19,9 @@ import Poptip from '../../poptip/';
 import Confirm from '../../confirm/';
 import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
+import PkgMaluationPanel from '../maluation/';
 import AH from '../../helper/ajax';
+import {OrderedEnumValue} from '../../model/';
 import {
   UserVerifyStatus
 } from '../../account/model/';
@@ -38,7 +40,8 @@ export default class SearchPkgPage extends Component {
     qs: querystring.parse(location.search.substring(1)),
     pageIndex: 0,
     pageSize: 20,
-    pkgs: []
+    pkgs: [],
+    maluationItems: []
   };
 
   constructor() {
@@ -142,6 +145,29 @@ export default class SearchPkgPage extends Component {
     });
   }
 
+  madeCall() {
+    this.ah.one(OrderedEnumValue, (res) => {
+      let list = res.maluationItems;
+
+      list = list.map((item) => {
+        return {
+          id: item.key,
+          name: item.value
+        };
+      });
+
+      this.setState({
+        maluationItems: list
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+    }, 'maluation');
+  }
+
+  handleSelectPkgMaluation(maluation) {
+    console.log('maluation:', maluation);
+  }
+
   /**
    * 展示货源为空时的提示界面
    * @return {Element}
@@ -204,6 +230,12 @@ export default class SearchPkgPage extends Component {
           rightLink={`tel:${this.state.activeTel}`}
           rightBtnText={'拨打'}
           leftBtnText={'取消'}
+          confirm={this.madeCall.bind(this)}
+        />
+        <PkgMaluationPanel
+          ref="pkgMaluation"
+          items={this.state.maluationItems}
+          onSelected={this.handleSelectPkgMaluation.bind(this)}
         />
       </div>
     );

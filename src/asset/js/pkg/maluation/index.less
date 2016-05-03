@@ -1,0 +1,57 @@
+@import '../../../less/global/site.variable';
+
+.pkg-maluation-panel {
+  .panel-close {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    color: @c_lightBlack;
+    padding: 10px;
+  }
+
+  .panel-title {
+    font-size: 12px;
+    font-weight: normal;
+    color: @c_lightBlack;
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  .pkg-maluation {
+    position: fixed;
+    width: 90%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 10px;
+    border-radius: 2px;
+    z-index: 101;
+    background-color: @offWhite;
+  }
+
+  .maluation-list {
+    li {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid @c_lightGrey;
+      text-align: center;
+      color: @c_black;
+      font-size: 13px;
+      background-color: @white;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .panel-footer {
+    a {
+      display: block;
+      text-align: right;
+      padding-top: 15px;
+      color: @c_lightBlack;
+      font-size: 12px;
+    }
+  }
+}
