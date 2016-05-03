@@ -17,6 +17,7 @@ import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Confirm from '../../confirm/';
+import IconMenu from '../../icon-menu/';
 import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 import PkgMaluationPanel from '../maluation/';
@@ -29,6 +30,9 @@ import {
   REAL_NAME_CERTIFY_TITLE,
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
+import {
+  MENUS
+} from '../../const/pkg';
 import {
   PkgSearch
 } from '../model/';
@@ -211,6 +215,7 @@ export default class SearchPkgPage extends Component {
 
     return (
       <div className="search-pkg-page">
+        <IconMenu menus={MENUS} />
         <SearchCondition
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}

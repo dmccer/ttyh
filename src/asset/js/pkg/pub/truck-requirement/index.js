@@ -24,7 +24,7 @@ import {
   TRUCK_USE_TYPES,
   DEFAULT_TRUCK_USE_TYPE_ID,
   JUST_SELECT_TRUCK_TYPE
-} from '../../../const/pkg-pub';
+} from '../../../const/pkg';
 
 const TMP_TUD = JSON.parse(localStorage.getItem(PKG_TRUCK_USE_DATA));
 

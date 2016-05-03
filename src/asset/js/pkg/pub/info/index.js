@@ -19,7 +19,7 @@ import {FieldChangeEnhance} from '../../../enhance/field-change';
 import AH from '../../../helper/ajax';
 import {OrderedEnumValue} from '../../../model/';
 import Validator from '../../../helper/validator';
-import {PKG_INFO_DATA} from '../../../const/pkg-pub';
+import {PKG_INFO_DATA} from '../../../const/pkg';
 
 @FieldChangeEnhance
 export default class PkgInfoPubPage extends Component {

@@ -35,7 +35,7 @@ import {
   PAGE_TYPE, PKG_TRUCK_USE_DATA,
   JUST_SELECT_TRUCK_TYPE, DEFAULT_LOAD_TYPE_ID,
   DEFAULT_PAYMENT_TYPE_ID
-} from '../../const/pkg-pub';
+} from '../../const/pkg';
 import {TIME_AREAS} from '../../const/time-area';
 
 const ALL = '全部';
