@@ -1,3 +1,31 @@
+/**
+ * Selector 列表选择器
+ *
+ * 用法：
+ * let items = [{
+ * 		id: 1,
+ * 		name: 'x'
+ * }, {
+ * 		id: 2,
+ * 		name: 'xx'
+ * }]
+ *
+ * function handleSelectXxx(item) {
+ * 		console.log(item.id, item.name)
+ * }
+ *
+ * <Selector
+ * 	ref="selector"
+ * 	title="选择xxx"
+ *  items={items}
+ *  select={handleSelectXxx.bind(this)}
+ * />
+ *
+ * this.refs.selector.show();
+ *
+ * Author: Kane xiaoyunhua@ttyhuo.cn
+ *
+ */
 import './index.less';
 
 import React, {Component, PropTypes}from 'react';
