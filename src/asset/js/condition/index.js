@@ -25,8 +25,12 @@ import cx from 'classnames';
 import assign from 'lodash/object/assign';
 
 import CitySelector from '../city-selector/';
+import DatePicker from '../datepicker/';
+import Selector from '../selector/';
+import DT from '../helper/date';
 import FixedHolder from '../fixed-holder/';
 import $ from '../helper/z';
+import {TIME_AREAS} from '../const/time-area';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
 const ALL = '全部';
@@ -38,7 +42,8 @@ export default class SearchCondition extends Component {
 
   state = {
     qs: querystring.parse(location.search.substring(1)),
-    url: location.href.split('?')[0].split('#')[0]
+    url: location.href.split('?')[0].split('#')[0],
+    timeAreas: []
   };
 
   constructor() {
@@ -52,6 +57,8 @@ export default class SearchCondition extends Component {
     let r = {
       fromCity: qs.fromCity,
       toCity: qs.toCity,
+      entruckTime: qs.entruckTime,
+      timeArea: qs.timeArea
     };
 
     // 获取本地筛选条件
@@ -104,13 +111,16 @@ export default class SearchCondition extends Component {
   }
 
   componentDidMount() {
+    let {
+      fromCity, toCity, truckTypeFlag,
+      loadLimitFlag, truckLengthFlag, entruckTime,
+      timeArea
+    } = this.state;
     // 页面加载 SearchCondition, 初始化数据
     this.props.init({
-      fromCity: this.state.fromCity,
-      toCity: this.state.toCity,
-      truckTypeFlag: this.state.truckTypeFlag,
-      loadLimitFlag: this.state.loadLimitFlag,
-      truckLengthFlag: this.state.truckLengthFlag
+      fromCity, toCity, truckTypeFlag,
+      loadLimitFlag, truckLengthFlag, entruckTime,
+      timeArea
     });
   }
 
@@ -224,15 +234,61 @@ export default class SearchCondition extends Component {
     return sArr[sArr.length - 1];
   }
 
+  handleSelectDate(d) {
+    let r;
+
+    if (DT.isToday(d)) {
+      let h = new Date().getHours();
+      r = TIME_AREAS.map((timeArea, index) => {
+        return {
+          name: timeArea.name,
+          id: timeArea.id,
+          disabled: !timeArea.test(h)
+        };
+      });
+    } else {
+      r = assign([], TIME_AREAS);
+    }
+
+    this.setState({
+      entruckTime: DT.format(d),
+      timeAreas: r
+    }, () => {
+      this.refs.dateAreaSelector.show();
+    });
+  }
+
+  handleSelectTimeArea(v) {
+    let qs = querystring.stringify(assign({}, this.state.qs, {
+      entruckTime: this.state.entruckTime,
+      timeArea: v.name
+    }));
+
+    // 更新 url querystring
+    location.replace(`${this.state.url}?${qs}`);
+  }
+
+  handleSelectAllDate() {
+    // all
+  }
+
   render() {
     let states = this.state;
     let props = this.props;
     let fromCityOn = this.state.showCitySelector && this.state.citySelectorField === 'fromCity';
     let toCityOn = this.state.showCitySelector && this.state.citySelectorField === 'toCity';
     let filtersOn = states.truckTypeFlag || states.truckLengthFlag || states.loadLimitFlag;
+    let entruckTimeOn = states.entruckTime;
 
     let fromCity = this.getAddress(this.state.fromCity) || '出发地点';
     let toCity = this.getAddress(this.state.toCity) || '到达地点';
+
+    let entruckTime = states.entruckTime;
+    let entruckTimeObj = new Date(entruckTime);
+    let timeAreaSelectorTitle = entruckTime
+      ? `${entruckTime}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
+      : '';
+    let entruckTimeStr = entruckTime ? DT.format(entruckTimeObj, 'MM-DD') : '装车时间';
 
     return (
       <div className="search-condition">
@@ -255,6 +311,15 @@ export default class SearchCondition extends Component {
               <span>{toCity}</span>
             </a>
           </li>
+          <li
+            className={entruckTimeOn && 'on'}
+            ref="entruckTimeField"
+            onClick={() => { this.refs.datepicker.show(new Date()); }}>
+            <a href="javascript:void(0)">
+              <i className={cx('icon icon-calendar s18', entruckTimeOn && 'on' || '')}></i>
+              <span>{entruckTimeStr}</span>
+            </a>
+          </li>
           <li className={filtersOn && 'on'}>
             <a href={`./search-filter.html?type=${props.pageType}`}>
               <i className={cx('icon icon-filter s18', filtersOn && 'on' || '')}></i>
@@ -269,6 +334,16 @@ export default class SearchCondition extends Component {
           done={this.handleSelectCityDone.bind(this)}
           onCancel={this.handleCancelSelectCity.bind(this)}
         />
+        <DatePicker
+          ref="datepicker"
+          useAll={true}
+          onSelect={this.handleSelectDate.bind(this)}
+          onSelectAll={this.handleSelectAllDate.bind(this)} />
+        <Selector
+          ref="dateAreaSelector"
+          items={this.state.timeAreas}
+          title={timeAreaSelectorTitle}
+          select={this.handleSelectTimeArea.bind(this)} />
       </div>
     );
   }

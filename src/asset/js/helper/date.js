@@ -24,11 +24,14 @@ export default {
 
     return _d.setHours(0, 0, 0, 0) == now.setHours(0, 0, 0, 0);
   },
-  format: (d) => {
+  format: (d: Date, tpl: String='YYYY-MM-DD') => {
     let r = parse(d);
 
-    return `${r.y}-${r.m}-${r.d}`;
+    return tpl.replace('YYYY', r.y).replace('MM', r.m).replace('DD', r.d);
+
+    // return `${r.y}-${r.m}-${r.d}`;
   },
+
   toLocaleDateString: (d) => {
     let r = parse(d);
     return `${r.y}年${r.m}月${r.d}日`;

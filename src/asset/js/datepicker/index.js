@@ -264,7 +264,13 @@ function getDsOfLatest30Days(sDate) {
 const MAX_DAY_COUNT = 30;
 export default class DatePicker extends Component {
   static propTypes = {
-    onSelect: PropTypes.func.isRequired
+    onSelect: PropTypes.func.isRequired,
+    onSelectAll: PropTypes.func
+  };
+
+  static defaultProps = {
+    onSelect() {},
+    onSelectAll() {}
   };
 
   state = {
@@ -291,6 +297,12 @@ export default class DatePicker extends Component {
   handleSelectDate(year, month, date) {
     let d = new Date(year, month, date);
     this.props.onSelect(d);
+
+    this.close();
+  }
+
+  handleSelectAllDate() {
+    this.props.onSelectAll();
 
     this.close();
   }
@@ -329,6 +341,16 @@ export default class DatePicker extends Component {
       }
     });
 
+    let tfoot = this.props.useAll ? (
+      <tfoot>
+        <tr>
+          <td colSpan={7} onClick={this.handleSelectAllDate.bind(this)}>
+            <div className="all">不限</div>
+          </td>
+        </tr>
+      </tfoot>
+    ) : null;
+
     return (
       <div className="calendar">
         <Mask click={this.close.bind(this)} />
@@ -347,6 +369,7 @@ export default class DatePicker extends Component {
           <tbody>
             {calendar}
           </tbody>
+          {tfoot}
         </table>
       </div>
     );
