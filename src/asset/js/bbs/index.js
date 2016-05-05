@@ -37,10 +37,12 @@ export default class BBS extends React.Component {
     let query = querystring.parse(location.search.substring(1));
 
     let token = cookie.load('token');
+    let uid = cookie.load('uid');
 
     if (token) {
       localStorage.setItem('user', JSON.stringify({
-        token: token
+        token: token,
+        uid: uid
       }));
     }
 
