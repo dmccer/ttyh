@@ -9,6 +9,7 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
+import assign from 'lodash/object/assign';
 
 import LoadMore from '../../load-more/';
 import SearchCondition from '../../condition';
@@ -43,7 +44,9 @@ export default class SearchTruckPage extends Component {
   }
 
   handleSearchConditionInit(q) {
-    this.setState(q, () => {
+    this.setState(assign({
+      filterLoaded: true
+    }, q), () => {
       this.query();
     });
   }
@@ -170,15 +173,19 @@ export default class SearchTruckPage extends Component {
   }
 
   render() {
+    let list = this.state.filterLoaded ? (
+      <div className="truck-list">
+        {this.renderItems()}
+      </div>
+    ) : null;
+
     return (
       <div className="search-truck-page">
         <SearchCondition
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
         />
-        <div className="truck-list">
-          {this.renderItems()}
-        </div>
+        {list}
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <Confirm
