@@ -358,7 +358,7 @@ export default class TruckerCertifyPage extends Component {
                 <span>车牌号</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"
@@ -375,7 +375,7 @@ export default class TruckerCertifyPage extends Component {
             <div className="cell_hd">
               <label className="label">车型</label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={truckDesc ? 'val' : 'holder'}>{truckDesc || '选择'}</p>
             </div>
             <div className="cell-ft"></div>
@@ -386,7 +386,7 @@ export default class TruckerCertifyPage extends Component {
                 <span>载重</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"
@@ -403,7 +403,7 @@ export default class TruckerCertifyPage extends Component {
                 <span>驾驶证</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
@@ -418,7 +418,7 @@ export default class TruckerCertifyPage extends Component {
                 <span>行驶证</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
@@ -433,7 +433,7 @@ export default class TruckerCertifyPage extends Component {
                 <span>车辆照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>

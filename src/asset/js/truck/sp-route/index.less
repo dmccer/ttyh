@@ -1,0 +1,56 @@
+@import '../../../less/global/site.variable';
+
+body {
+  background-color: @white;
+}
+
+.sp-route-page {
+  position: relative;
+
+  .spr-list:before {
+    display: none;
+  }
+
+  .spr-list .cell {
+    padding-left: 10px;
+    padding-right: 10px;
+
+    .cell-hd, .cell-ft {
+      align-self: flex-start;
+    }
+  }
+  .spr-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 2px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .spr-info {
+    padding-left: 10px;
+    padding-right: 10px;
+
+    h2 {
+      color: @c_black;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .spr-description {
+      color: @c_lightBlack;
+      font-size: 12px;
+      line-height: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .spr-company {
+      color: @c_black;
+      font-size: 12px;
+    }
+  }
+}

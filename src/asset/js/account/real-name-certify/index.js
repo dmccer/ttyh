@@ -367,7 +367,7 @@ export default class RealNameCertifyPage extends Component {
                 <span>本人正面照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 {avatar}
@@ -380,7 +380,7 @@ export default class RealNameCertifyPage extends Component {
                 <span>姓名</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"
@@ -397,7 +397,7 @@ export default class RealNameCertifyPage extends Component {
                 <span>身份证号</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"
@@ -414,7 +414,7 @@ export default class RealNameCertifyPage extends Component {
                 <span>身份证照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
             </div>
             <div className="cell-ft">
               <div className="pic-holder row">
@@ -433,7 +433,7 @@ export default class RealNameCertifyPage extends Component {
                 <span>地区</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={this.state.addr ? 'val' : 'holder'}>{this.state.addr || '选填'}</p>
             </div>
             <div className="cell-ft"></div>
@@ -444,7 +444,7 @@ export default class RealNameCertifyPage extends Component {
                 <span>业务介绍</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <textarea
                 className="textarea"
                 placeholder="我有17米平板车一辆，常跑上海到武汉；或者长期货源，广州到深圳，家具。"

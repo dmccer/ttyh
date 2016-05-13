@@ -10,7 +10,7 @@ import React from 'react';
 import cx from 'classnames';
 import ReactIScroll from 'react-iscroll';
 import IScroll from 'iscroll/build/iscroll';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+// import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import find from 'lodash/collection/find';
 import Mask from '../mask/';
@@ -24,7 +24,7 @@ import {Cities} from './model';
 // 因为 iscroll 禁用了 click 事件，
 // 若启用 iscroll click, 会对其他默认滚动列表，滚动时触发 click
 // 启用 tap 事件
-injectTapEventPlugin();
+// injectTapEventPlugin();
 
 const HISTORY = '_city_selector_histories';
 const ALL = '全部';
@@ -50,7 +50,8 @@ export default class CitySelector extends React.Component {
     historyCities: [],
     provinces: [],
     cities: [],
-    areas: []
+    areas: [],
+    cityHeight: 180
   };
 
   constructor() {
@@ -339,7 +340,7 @@ export default class CitySelector extends React.Component {
       });
 
       return (
-        <div className="history">
+        <div className="history" ref="history">
           <h2>历史记录</h2>
           <ul className="history-cities">
             {historyList}
@@ -443,6 +444,14 @@ export default class CitySelector extends React.Component {
       height = winH;
     }
 
+    let cityHeight = this.state.cityHeight;
+
+    let l = this.state.historyCities.length;
+
+    if (this.state.useHistory && l) {
+      cityHeight = height - 50 - (l > 3 ? 96 : 70);
+    }
+
     let cxs = cx('city-selector', this.state.on ? 'on' : '');
 
     return (
@@ -455,7 +464,9 @@ export default class CitySelector extends React.Component {
         onClick={this.cancel.bind(this)}>
         <div className="inner">
           {this.renderHistory()}
-          <div className="cities">
+          <div className="cities" style={{
+            height: `${cityHeight}px`
+          }}>
             <ReactIScroll
               iScroll={IScroll}
               options={this.props.options}>

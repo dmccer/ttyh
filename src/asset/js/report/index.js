@@ -104,7 +104,7 @@ export default class ReportPage extends Component {
                 <span>被举报人</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="tel"
                 className="input"
@@ -120,13 +120,13 @@ export default class ReportPage extends Component {
             <div className="cell_hd">
               <label className="label">选择类型</label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={this.state.reportType ? 'val' : 'holder'}>{this.state.reportType.name || '选择'}</p>
             </div>
             <div className="cell-ft"></div>
           </div>
           <div className="cell required">
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <textarea
                 className="textarea"
                 placeholder="输入举报理由"

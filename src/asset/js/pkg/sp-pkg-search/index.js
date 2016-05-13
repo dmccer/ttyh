@@ -19,7 +19,6 @@ import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Confirm from '../../confirm/';
-import IconMenu from '../../icon-menu/';
 import Log from '../../log/';
 import pkgPNG from '../../../img/app/pkg@3x.png';
 import PkgMaluationPanel from '../maluation/';
@@ -33,9 +32,6 @@ import {
   REAL_NAME_CERTIFY_TITLE,
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
-import {
-  MENUS
-} from '../../const/pkg';
 import {
   PkgSearch
 } from '../model/';
@@ -55,32 +51,8 @@ export default class SearchPkgPage extends Component {
 
   constructor() {
     super();
-  }
 
-  componentDidMount() {
-    let searchConditionEl = findDOMNode(this.refs.searchCondition);
-    let offset = $.offset(searchConditionEl);
-    let delta = offset.top;
-
-    EventListener.listen(window, 'scroll', () => {
-      let t = $.scrollTop(window);
-
-      if (t >= delta && !this.state.fixedCondition) {
-        this.setState({
-          fixedCondition: true
-        });
-
-        return;
-      }
-
-      if (t < delta && this.state.fixedCondition) {
-        this.setState({
-          fixedCondition: false
-        });
-
-        return;
-      }
-    });
+    document.title = this.state.qs.title;
   }
 
   handleSearchConditionInit(q) {
@@ -246,12 +218,11 @@ export default class SearchPkgPage extends Component {
 
     return (
       <div className="search-pkg-page">
-        <IconMenu menus={MENUS} />
         <SearchCondition
           ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
-          fixed={this.state.fixedCondition}
+          fixed={true}
         />
         {list}
         <Loading ref="loading" />

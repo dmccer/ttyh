@@ -1,5 +1,5 @@
 /**
- * 货源搜索页面 - 用户角色是车主 Trucker
+ * 找车 - 车源搜索页面
  *
  * @author Kane xiaoyunhua@ttyhuo.cn
  */
@@ -9,23 +9,17 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM, {findDOMNode} from 'react-dom';
 import querystring from 'querystring';
-import assign from 'lodash/object/assign';
-import EventListener from 'fbjs/lib/EventListener';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoadMore from '../../load-more/';
-import SearchCondition from '../../condition/';
-import SearchItem from '../search-item/';
+import SearchCondition from '../../condition';
+import SearchItem from '../search/item/';
+import Log from '../../log/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import Confirm from '../../confirm/';
-import IconMenu from '../../icon-menu/';
-import Log from '../../log/';
-import pkgPNG from '../../../img/app/pkg@3x.png';
-import PkgMaluationPanel from '../maluation/';
+import truckPNG from '../../../img/app/truck@3x.png';
 import AH from '../../helper/ajax';
 import $ from '../../helper/z';
-import {OrderedEnumValue} from '../../model/';
 import {
   UserVerifyStatus
 } from '../../account/model/';
@@ -33,71 +27,40 @@ import {
   REAL_NAME_CERTIFY_TITLE,
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
-import {
-  MENUS
-} from '../../const/pkg';
-import {
-  PkgSearch
-} from '../model/';
+import {TruckUsers} from '../model/';
 
-injectTapEventPlugin();
+const PAGE_TYPE = 'shipper_page';
 
-const PAGE_TYPE = 'trucker_page';
-
-export default class SearchPkgPage extends Component {
+export default class SearchTruckPage extends Component {
   state = {
     qs: querystring.parse(location.search.substring(1)),
     pageIndex: 0,
     pageSize: 20,
-    pkgs: [],
-    maluationItems: []
+    trucks: []
   };
 
   constructor() {
     super();
-  }
 
-  componentDidMount() {
-    let searchConditionEl = findDOMNode(this.refs.searchCondition);
-    let offset = $.offset(searchConditionEl);
-    let delta = offset.top;
-
-    EventListener.listen(window, 'scroll', () => {
-      let t = $.scrollTop(window);
-
-      if (t >= delta && !this.state.fixedCondition) {
-        this.setState({
-          fixedCondition: true
-        });
-
-        return;
-      }
-
-      if (t < delta && this.state.fixedCondition) {
-        this.setState({
-          fixedCondition: false
-        });
-
-        return;
-      }
-    });
+    document.title = this.state.qs.title;
   }
 
   handleSearchConditionInit(q) {
-    this.setState(assign({
-      filterLoaded: true
-    }, q), () => {
-      this.ah = new AH(this.refs.loading, this.refs.poptip);
-
-      LoadMore.init(() => {
-        if (!this.state.over) {
-          this.query();
-        }
-      });
-      this.fetchUserInfo();
-
+    this.setState(q, () => {
       this.query();
     });
+  }
+
+  componentDidMount() {
+    this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+    LoadMore.init(() => {
+      if (!this.state.over) {
+        this.query();
+      }
+    });
+
+    this.fetchUserInfo();
   }
 
   fetchUserInfo() {
@@ -109,16 +72,16 @@ export default class SearchPkgPage extends Component {
   }
 
   query() {
-    this.ah.one(PkgSearch, {
+    this.ah.one(TruckUsers, {
       success: (res) => {
-        let pkgs = this.state.pkgs;
-
         this.setState({
           loaded: true
         });
 
+        let trucks = this.state.trucks || [];
+
         if (!res.data || !res.data.length) {
-          if (!pkgs.length) {
+          if (!trucks.length) {
             // 空列表，没有数据
             return;
           }
@@ -132,17 +95,17 @@ export default class SearchPkgPage extends Component {
           return;
         }
 
-        pkgs = pkgs.concat(res.data);
+        trucks = trucks.concat(res.data);
 
         this.setState({
-          pkgs: pkgs,
+          trucks: trucks,
           pageIndex: this.state.pageIndex + 1
         });
       },
       error: (err) => {
         Log.error(err);
 
-        this.refs.poptip.warn('查询货源失败,请重试');
+        this.refs.poptip.warn('查询车源失败,请重试');
       }
     }, {
       fromCity: this.state.fromCity,
@@ -180,56 +143,32 @@ export default class SearchPkgPage extends Component {
     });
   }
 
-  madeCall() {
-    this.ah.one(OrderedEnumValue, (res) => {
-      let list = res.maluationItems;
-
-      list = list.map((item) => {
-        return {
-          id: item.key,
-          name: item.value
-        };
-      });
-
-      this.setState({
-        maluationItems: list
-      }, () => {
-        this.refs.pkgMaluation.show();
-      });
-    }, 'maluation');
-  }
-
-  handleSelectPkgMaluation(maluation) {
-    console.log('maluation:', maluation);
-  }
-
   /**
-   * 展示货源为空时的提示界面
-   * @return {Element}
+   * 展示车源列表为空时的提示
    */
   renderEmpty() {
-    if (!this.state.pkgs.length && this.state.loaded) {
+    if (!this.state.trucks.length && this.state.loaded) {
       return (
-        <div className="pkg-empty-tip">
+        <div className="truck-empty-tip">
           <div className="img-tip">
-            <img src={pkgPNG} />
+            <img src={truckPNG} />
           </div>
-          <p>未找到合适货源</p>
+          <p>未找到合适车源</p>
         </div>
       );
     }
   }
 
   renderItems() {
-    let pkgs = this.state.pkgs;
+    let trucks = this.state.trucks;
 
-    if (pkgs && pkgs.length) {
-      return pkgs.map((pkg, index) => {
+    if (trucks && trucks.length) {
+      return trucks.map((truck, index) => {
         return (
           <SearchItem
             verifyTip={this.handleShowVerifyTip.bind(this)}
             key={`pkg-item_${index}`}
-            {...pkg} />
+            {...truck} />
         );
       });
     }
@@ -238,22 +177,17 @@ export default class SearchPkgPage extends Component {
   }
 
   render() {
-    let list = this.state.filterLoaded ? (
-      <div className="pkg-list">
-        {this.renderItems()}
-      </div>
-    ) : null;
-
     return (
-      <div className="search-pkg-page">
-        <IconMenu menus={MENUS} />
+      <div className="search-truck-page">
         <SearchCondition
           ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
-          fixed={this.state.fixedCondition}
+          fixed={true}
         />
-        {list}
+        <div className="truck-list">
+          {this.renderItems()}
+        </div>
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <Confirm
@@ -268,16 +202,10 @@ export default class SearchPkgPage extends Component {
           rightLink={`tel:${this.state.activeTel}`}
           rightBtnText={'拨打'}
           leftBtnText={'取消'}
-          confirm={this.madeCall.bind(this)}
-        />
-        <PkgMaluationPanel
-          ref="pkgMaluation"
-          items={this.state.maluationItems}
-          onSelected={this.handleSelectPkgMaluation.bind(this)}
         />
       </div>
     );
   }
 }
 
-ReactDOM.render(<SearchPkgPage />, document.querySelector('.page'));
+ReactDOM.render(<SearchTruckPage />, document.querySelector('.page'));

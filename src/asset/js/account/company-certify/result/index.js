@@ -133,7 +133,7 @@ export default class CompanyCertifyResultPage extends Component {
                 <span>公司名称</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.companyName ? 'val' : 'holder'}>{states.companyName}</p>
             </div>
             <div className="cell-ft"></div>
@@ -144,7 +144,7 @@ export default class CompanyCertifyResultPage extends Component {
                 <span>公司地址</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.companyAddr ? 'val' : 'holder'}>{states.companyAddr}</p>
             </div>
             <div className="cell-ft"></div>
@@ -155,7 +155,7 @@ export default class CompanyCertifyResultPage extends Component {
                 <span>职位</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.companyPos ? 'val' : 'holder'}>{states.companyPos}</p>
             </div>
             <div className="cell-ft"></div>
@@ -167,7 +167,7 @@ export default class CompanyCertifyResultPage extends Component {
                 <span>名片</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
@@ -182,7 +182,7 @@ export default class CompanyCertifyResultPage extends Component {
                 <span>门头照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>
@@ -197,7 +197,7 @@ export default class CompanyCertifyResultPage extends Component {
                 <span>营业执照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 <div>

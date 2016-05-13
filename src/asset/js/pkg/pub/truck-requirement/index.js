@@ -172,7 +172,7 @@ export default class TruckRequirementPage extends React.Component {
           <div className="cell_hd">
             <label className="label">占用车位</label>
           </div>
-          <div className="cell-bd cell_primary">
+          <div className="cell-bd cell-primary">
             <input
               type="text"
               className="input"
@@ -201,7 +201,7 @@ export default class TruckRequirementPage extends React.Component {
             <div className="cell_hd">
               <label className="label">车型</label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className="val">{truckTypeValStr}</p>
             </div>
             <div className="cell-ft"></div>

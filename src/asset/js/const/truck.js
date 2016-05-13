@@ -13,14 +13,19 @@ export const SELECTED_COMMON_ROUTE = 'selected_common_route';
 // 车源搜索图标菜单
 export const MENUS = [
   {
+    id: 1,
     name: '顺风车',
     icon: SHUN_FENG_CHE_PNG,
-    url: '',
+    url: './sp-truck-search.html'
   }, {
+    id: 2,
     name: '回程车',
-    icon: HUI_CHENG_CHE_PNG
+    icon: HUI_CHENG_CHE_PNG,
+    url: './sp-truck-search.html'
   }, {
+    id: 3,
     name: '专线',
-    icon: ZHUAN_XIAN_PNG
+    icon: ZHUAN_XIAN_PNG,
+    url: './sp-route.html'
   }
 ];

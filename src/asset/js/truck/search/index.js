@@ -7,8 +7,10 @@ import '../../../less/global/global.less';
 import './index.less';
 
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, {findDOMNode} from 'react-dom';
 import querystring from 'querystring';
+import EventListener from 'fbjs/lib/EventListener';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoadMore from '../../load-more/';
 import SearchCondition from '../../condition';
@@ -20,6 +22,7 @@ import Confirm from '../../confirm/';
 import IconMenu from '../../icon-menu/';
 import truckPNG from '../../../img/app/truck@3x.png';
 import AH from '../../helper/ajax';
+import $ from '../../helper/z';
 import {
   UserVerifyStatus
 } from '../../account/model/';
@@ -29,6 +32,8 @@ import {
 } from '../../const/certify';
 import {TruckUsers} from '../model/';
 import {MENUS} from '../../const/truck';
+
+injectTapEventPlugin();
 
 const PAGE_TYPE = 'shipper_page';
 
@@ -44,6 +49,32 @@ export default class SearchTruckPage extends Component {
     super();
   }
 
+  bindScroll() {
+    let searchConditionEl = findDOMNode(this.refs.searchCondition);
+    let offset = $.offset(searchConditionEl);
+    let delta = offset.top;
+
+    EventListener.listen(window, 'scroll', () => {
+      let t = $.scrollTop(window);
+
+      if (t >= delta && !this.state.fixedCondition) {
+        this.setState({
+          fixedCondition: true
+        });
+
+        return;
+      }
+
+      if (t < delta && this.state.fixedCondition) {
+        this.setState({
+          fixedCondition: false
+        });
+
+        return;
+      }
+    });
+  }
+
   handleSearchConditionInit(q) {
     this.setState(q, () => {
       this.query();
@@ -51,6 +82,8 @@ export default class SearchTruckPage extends Component {
   }
 
   componentDidMount() {
+    this.bindScroll();
+
     this.ah = new AH(this.refs.loading, this.refs.poptip);
 
     LoadMore.init(() => {
@@ -73,6 +106,10 @@ export default class SearchTruckPage extends Component {
   query() {
     this.ah.one(TruckUsers, {
       success: (res) => {
+        this.setState({
+          loaded: true
+        });
+
         let trucks = this.state.trucks || [];
 
         if (!res.data || !res.data.length) {
@@ -142,7 +179,7 @@ export default class SearchTruckPage extends Component {
    * 展示车源列表为空时的提示
    */
   renderEmpty() {
-    if (!this.state.trucks.length) {
+    if (!this.state.trucks.length && this.state.loaded) {
       return (
         <div className="truck-empty-tip">
           <div className="img-tip">
@@ -176,8 +213,10 @@ export default class SearchTruckPage extends Component {
       <div className="search-truck-page">
         <IconMenu menus={MENUS} />
         <SearchCondition
+          ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
+          fixed={this.state.fixedCondition}
         />
         <div className="truck-list">
           {this.renderItems()}

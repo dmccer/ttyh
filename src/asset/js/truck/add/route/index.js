@@ -178,7 +178,7 @@ export default class SelectCommonRoutePage extends Component {
             <div className="cell_hd">
               <label className="label"><i className="icon icon-start-point on s20"></i></label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={cx(this.state.fromCity ? 'val' : 'holder')}>{this.state.fromCity || '请选择出发地'}</p>
             </div>
             <div className="cell-ft"></div>
@@ -190,7 +190,7 @@ export default class SelectCommonRoutePage extends Component {
             <div className="cell_hd">
               <label className="label"><i className="icon icon-end-point on s20"></i></label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={cx(this.state.toCity ? 'val' : 'holder')}>{this.state.toCity || '请选择到达地'}</p>
             </div>
             <div className="cell-ft"></div>

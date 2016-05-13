@@ -6,18 +6,25 @@ import LENG_CANGE_PNG from '../../img/app/lengcang@3x.png';
 // 货源搜索图标菜单
 export const MENUS = [
   {
+    id: 1,
     name: '普货',
     icon: PU_HUO_PNG,
-    url: '',
+    url: './sp-pkg-search.html',
   }, {
+    id: 2,
     name: '危险品',
-    icon: WEI_XIAN_PIN_PNG
+    icon: WEI_XIAN_PIN_PNG,
+    url: './sp-pkg-search.html'
   }, {
+    id: 3,
     name: '大件',
-    icon: DA_JIAN_PNG
+    icon: DA_JIAN_PNG,
+    url: './sp-pkg-search.html'
   }, {
+    id: 4,
     name: '冷藏',
-    icon: LENG_CANGE_PNG
+    icon: LENG_CANGE_PNG,
+    url: './sp-pkg-search.html'
   }
 ];
 

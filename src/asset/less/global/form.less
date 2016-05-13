@@ -38,9 +38,20 @@
   border: none;
   font-size: 1.3rem;
 
+  &.line {
+    border: 1px solid @c_lightGrey;
+  }
+
+  &.offWhite {
+    background-color: @offWhite;
+    color: @c_lightBlack;
+  }
+
   &.block {
     display: block;
     width: 100%;
+    text-align: center;
+    box-sizing: border-box;
   }
 
   &.teal {

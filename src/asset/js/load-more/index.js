@@ -11,8 +11,8 @@
  * LoadMore.init(cb, 800)
  */
 import debounce from 'lodash/function/debounce';
-import $ from '../helper/z';
 import EventListener from 'fbjs/lib/EventListener';
+import $ from '../helper/z';
 
 /**
  * 上拉加载更多

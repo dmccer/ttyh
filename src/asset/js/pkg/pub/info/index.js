@@ -161,7 +161,7 @@ export default class PkgInfoPubPage extends Component {
               <span>数量</span>
             </label>
           </div>
-          <div className="cell-bd cell_primary">
+          <div className="cell-bd cell-primary">
             <p className="val">{this.state.checkedPackManner.name}&nbsp;*&nbsp;</p>
           </div>
           <div className="cell-ft">
@@ -194,7 +194,7 @@ export default class PkgInfoPubPage extends Component {
                 <span>货物名称</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"
@@ -211,7 +211,7 @@ export default class PkgInfoPubPage extends Component {
                 <span>货物重量</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"
@@ -228,7 +228,7 @@ export default class PkgInfoPubPage extends Component {
                 <span>货物体积</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <input
                 type="text"
                 className="input"

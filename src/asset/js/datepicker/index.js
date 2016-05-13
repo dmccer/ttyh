@@ -265,12 +265,14 @@ const MAX_DAY_COUNT = 30;
 export default class DatePicker extends Component {
   static propTypes = {
     onSelect: PropTypes.func.isRequired,
-    onSelectAll: PropTypes.func
+    onSelectAll: PropTypes.func,
+    onClose: PropTypes.func
   };
 
   static defaultProps = {
     onSelect() {},
-    onSelectAll() {}
+    onSelectAll() {},
+    onClose() {}
   };
 
   state = {
@@ -292,6 +294,8 @@ export default class DatePicker extends Component {
         on: false
       });
     }
+
+    this.props.onClose();
   }
 
   handleSelectDate(year, month, date) {

@@ -29,6 +29,7 @@ import DatePicker from '../datepicker/';
 import Selector from '../selector/';
 import DT from '../helper/date';
 import FixedHolder from '../fixed-holder/';
+import SearchFilter from '../truck/filter/';
 import $ from '../helper/z';
 import {TIME_AREAS} from '../const/time-area';
 
@@ -54,36 +55,24 @@ export default class SearchCondition extends Component {
     let props = this.props;
     let qs = this.state.qs;
 
-    let r = {
+    let r = assign({
       fromCity: qs.fromCity,
       toCity: qs.toCity,
       entruckTime: qs.entruckTime,
       timeArea: qs.timeArea
-    };
+    }, qs);
 
     // 获取本地筛选条件
     let filters = JSON.parse(localStorage.getItem(`${props.pageType}${SEARCH_FILTER_SUFFIX}`));
 
     if (filters) {
-      let m = (a, b) => {
-        return a.id;
-      };
+      let _filters = this.transformFilters(filters);
 
-      let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
-      let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
-      let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
-
-      assign(r, {
-        truckTypeFlag: truckTypeFlag,
-        loadLimitFlag: loadLimitFlag,
-        truckLengthFlag: truckLengthFlag
-      });
+      assign(r, {..._filters});
 
       // 如果本地筛选条件和查询参数的筛选条件不一致，则更新查询参数
       // 即筛选条件发生改变，更新查询参数
-      if (qs.truckTypeFlag !== truckTypeFlag ||
-        qs.loadLimitFlag !== loadLimitFlag ||
-        qs.truckLengthFlag !== truckLengthFlag) {
+      if (this.freshable(_filters)) {
         location.replace(`${this.state.url}?${querystring.stringify(r)}`);
 
         return;
@@ -110,12 +99,37 @@ export default class SearchCondition extends Component {
     this.setState(r);
   }
 
+  freshable(filters) {
+    let qs = this.state.qs;
+
+    return ($.trim(qs.truckTypeFlag) !== $.trim(filters.truckTypeFlag) ||
+      $.trim(qs.loadLimitFlag) !== $.trim(filters.loadLimitFlag) ||
+      $.trim(qs.truckLengthFlag) !== $.trim(filters.truckLengthFlag));
+  }
+
+  transformFilters(filters) {
+    let m = (a, b) => {
+      return a.id;
+    };
+
+    let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
+    let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
+    let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
+
+    return {
+      truckTypeFlag: truckTypeFlag,
+      loadLimitFlag: loadLimitFlag,
+      truckLengthFlag: truckLengthFlag
+    };
+  }
+
   componentDidMount() {
     let {
       fromCity, toCity, truckTypeFlag,
       loadLimitFlag, truckLengthFlag, entruckTime,
       timeArea
     } = this.state;
+
     // 页面加载 SearchCondition, 初始化数据
     this.props.init({
       fromCity, toCity, truckTypeFlag,
@@ -134,6 +148,8 @@ export default class SearchCondition extends Component {
       e.preventDefault();
       e.stopPropagation();
     }
+
+    this.closeOther(field);
 
     let state = this.state;
     let cs = this.refs.citySelector;
@@ -168,10 +184,10 @@ export default class SearchCondition extends Component {
   }
 
   getCitySelectorTop(target) {
-    let pos = $.position(target);
+    let pos = $.offset(target);
     let h = $.height(target);
 
-    return pos.top + h - 1;
+    return pos.top + h + 2;
   }
 
   /**
@@ -234,6 +250,14 @@ export default class SearchCondition extends Component {
     return sArr[sArr.length - 1];
   }
 
+  handleShowDatepicker() {
+    this.closeOther('entruckTimeOn');
+    this.refs.datepicker.show(new Date());
+    this.setState({
+      datepickerOn: true
+    });
+  }
+
   handleSelectDate(d) {
     let r;
 
@@ -269,16 +293,98 @@ export default class SearchCondition extends Component {
   }
 
   handleSelectAllDate() {
-    // all
+    let d = {
+      entruckTime: null,
+      timeArea: null
+    };
+    this.setState(d, () => {
+      let qs = querystring.stringify(assign({}, this.state.qs, d));
+
+      location.replace(`${this.state.url}?${qs}`);
+    });
+  }
+
+  handleCloseSelectDate() {
+    this.setState({
+      datepickerOn: false
+    });
+  }
+
+  // 切换更多 popup
+  toggleSearchFilter() {
+    this.closeOther('filters');
+
+    let top = this.getCitySelectorTop(this.refs.filtersField);
+
+    let on = !this.state.searchFilterOn;
+
+    let d = {
+      searchFilterOn: on
+    };
+
+    if (!on) {
+      return this.setState(d);
+    }
+
+    this.setState(assign(d, {
+      searchFilterTop: top
+    }));
+  }
+
+  handleSearchFilterDone(filters) {
+    let _filters = this.transformFilters(filters);
+    let qs = this.state.qs;
+
+    if (this.freshable(_filters)) {
+      location.replace(`${this.state.url}?${querystring.stringify(assign({}, qs, _filters))}`);
+
+      return;
+    }
+  }
+
+  closeOther(curr) {
+    if (this.fromCityOn() && curr !== 'fromCity') {
+      return this.toggleCitySelector('fromCity');
+    }
+
+    if (this.toCityOn() && curr !== 'toCity') {
+      return this.toggleCitySelector('toCity');
+    }
+
+    if (this.state.searchFilterOn && curr !== 'filters') {
+      return this.setState({
+        searchFilterOn: false
+      });
+    }
+
+    if (this.state.datepickerOn && curr !== 'entruckTime') {
+      return this.refs.datepicker.close();
+    }
+  }
+
+  fromCityOn() {
+    return this.state.showCitySelector && this.state.citySelectorField === 'fromCity';
+  }
+
+  toCityOn() {
+    return this.state.showCitySelector && this.state.citySelectorField === 'toCity';
+  }
+
+  filtersOn() {
+    return this.state.truckTypeFlag || this.state.truckLengthFlag || this.state.loadLimitFlag;
+  }
+
+  entruckTimeOn() {
+    return !!this.state.entruckTime;
   }
 
   render() {
     let states = this.state;
     let props = this.props;
-    let fromCityOn = this.state.showCitySelector && this.state.citySelectorField === 'fromCity';
-    let toCityOn = this.state.showCitySelector && this.state.citySelectorField === 'toCity';
-    let filtersOn = states.truckTypeFlag || states.truckLengthFlag || states.loadLimitFlag;
-    let entruckTimeOn = states.entruckTime;
+    let fromCityOn = this.fromCityOn();
+    let toCityOn = this.toCityOn();
+    let filtersOn = this.filtersOn();
+    let entruckTimeOn = this.entruckTimeOn();
 
     let fromCity = this.getAddress(this.state.fromCity) || '出发地点';
     let toCity = this.getAddress(this.state.toCity) || '到达地点';
@@ -288,18 +394,24 @@ export default class SearchCondition extends Component {
     let timeAreaSelectorTitle = entruckTime
       ? `${entruckTime}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
       : '';
-    let entruckTimeStr = entruckTime ? DT.format(entruckTimeObj, 'MM-DD') : '装车时间';
+    let entruckTimeStr = entruckTime ? DT.format(entruckTimeObj, 'MM-DD') : '可装车时间';
+    let fixedHolder = this.props.fixed ? <FixedHolder height="41" /> : null;
 
     return (
       <div className="search-condition">
-        <ul className="filters row">
+        <ul
+          className="filters row"
+          style={{
+            position: this.props.fixed ? 'fixed' : 'relative'
+          }}
+        >
           <li
             className={fromCityOn && 'on'}
             ref="fromCityField"
             onClick={this.toggleCitySelector.bind(this, 'fromCity')}>
             <a href="javascript:void(0)">
-              <i className={cx('icon icon-start-point s18', fromCityOn && 'on' || '' )}></i>
               <span>{fromCity}</span>
+              <i className={cx('icon icon-spread s10', fromCityOn && 'teal' || '' )}></i>
             </a>
           </li>
           <li
@@ -307,27 +419,38 @@ export default class SearchCondition extends Component {
             ref="toCityField"
             onClick={this.toggleCitySelector.bind(this, 'toCity')}>
             <a href="javascript:void(0)">
-              <i className={cx('icon icon-end-point s18', toCityOn && 'on' || '')}></i>
               <span>{toCity}</span>
+              <i className={cx('icon icon-spread s10', toCityOn && 'teal' || '' )}></i>
             </a>
           </li>
           <li
             className={entruckTimeOn && 'on'}
-            ref="entruckTimeField"
-            onClick={() => { this.refs.datepicker.show(new Date()); }}>
+            onClick={this.handleShowDatepicker.bind(this)}>
             <a href="javascript:void(0)">
-              <i className={cx('icon icon-calendar s18', entruckTimeOn && 'on' || '')}></i>
               <span>{entruckTimeStr}</span>
+              <i className={cx('icon icon-spread s10', entruckTimeOn && 'teal' || '' )}></i>
             </a>
           </li>
-          <li className={filtersOn && 'on'}>
-            <a href={`./search-filter.html?type=${props.pageType}`}>
-              <i className={cx('icon icon-filter s18', filtersOn && 'on' || '')}></i>
-              <span>筛选</span>
+          <li
+            className={filtersOn && 'on'}
+            ref="filtersField"
+            onClick={this.toggleSearchFilter.bind(this)}>
+            <a href="javascript:;">
+              <span>更多</span>
+              <i className={cx('icon icon-spread s10', filtersOn && 'teal' || '' )}></i>
             </a>
           </li>
         </ul>
-        <FixedHolder height="41" />
+        {fixedHolder}
+        <SearchFilter
+          ref="searchFilter"
+          pageType={props.pageType}
+          top={this.state.searchFilterTop}
+          on={this.state.searchFilterOn}
+          cancel={this.toggleSearchFilter.bind(this)}
+          close={this.toggleSearchFilter.bind(this)}
+          done={this.handleSearchFilterDone.bind(this)}
+        />
         <CitySelector
           ref="citySelector"
           prefix={props.pageType}
@@ -338,7 +461,8 @@ export default class SearchCondition extends Component {
           ref="datepicker"
           useAll={true}
           onSelect={this.handleSelectDate.bind(this)}
-          onSelectAll={this.handleSelectAllDate.bind(this)} />
+          onSelectAll={this.handleSelectAllDate.bind(this)}
+          onClose={this.handleCloseSelectDate.bind(this)} />
         <Selector
           ref="dateAreaSelector"
           items={this.state.timeAreas}

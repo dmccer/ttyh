@@ -135,7 +135,7 @@ export default class RealNameCertifyResultPage extends Component {
                 <span>本人正面照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary"></div>
+            <div className="cell-bd cell-primary"></div>
             <div className="cell-ft">
               <div className="pic-holder row">
                 {avatar}
@@ -148,7 +148,7 @@ export default class RealNameCertifyResultPage extends Component {
                 <span>姓名</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.realName ? 'val' : 'holder'}>{states.realName}</p>
             </div>
             <div className="cell-ft"></div>
@@ -159,7 +159,7 @@ export default class RealNameCertifyResultPage extends Component {
                 <span>身份证号</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.idCardNo ? 'val' : 'holder'}>{states.idCardNo}</p>
             </div>
             <div className="cell-ft"></div>
@@ -170,7 +170,7 @@ export default class RealNameCertifyResultPage extends Component {
                 <span>身份证照</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
             </div>
             <div className="cell-ft">
               <div className="pic-holder row">
@@ -189,7 +189,7 @@ export default class RealNameCertifyResultPage extends Component {
                 <span>地区</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.addr ? 'val' : 'holder'}>{states.addr}</p>
             </div>
             <div className="cell-ft"></div>
@@ -200,7 +200,7 @@ export default class RealNameCertifyResultPage extends Component {
                 <span>业务介绍</span>
               </label>
             </div>
-            <div className="cell-bd cell_primary">
+            <div className="cell-bd cell-primary">
               <p className={states.bizDesc ? 'val' : 'holder'}>{states.bizDesc}</p>
             </div>
             <div className="cell-ft"></div>

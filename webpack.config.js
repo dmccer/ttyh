@@ -40,6 +40,7 @@ module.exports = {
     'today-pkg': './src/asset/js/pkg/today-list/',
     'pkg-detail': './src/asset/js/pkg/detail/index.js',
     'pkg-info-pub': './src/asset/js/pkg/pub/info/index.js',
+    'sp-pkg-search': './src/asset/js/pkg/sp-pkg-search/index.js',
 
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
@@ -49,9 +50,11 @@ module.exports = {
     'my-truck': './src/asset/js/truck/my/index.js',
 
     'truck-search': './src/asset/js/truck/search/index.js',
+    'sp-truck-search': './src/asset/js/truck/sp-truck-search/index.js',
     'search-filter': './src/asset/js/truck/filter/index.js',
     'truck-detail': './src/asset/js/truck/detail/index.js',
     'today-truck': './src/asset/js/truck/today-list/',
+    'sp-route': './src/asset/js/truck/sp-route/',
 
     'real-name-certify': './src/asset/js/account/real-name-certify/index.js',
     'trucker-certify': './src/asset/js/account/trucker-certify/index.js',
@@ -91,6 +94,8 @@ module.exports = {
     createPage('货源详情', 'pkg-detail'),
     createPage('我的货源', 'my-pkg'),
     createPage('推荐货源', 'today-pkg'),
+    createPage('专线查询', 'sp-route'),
+    createPage('', 'sp-truck-search'),
     // end 货主
 
     createPage('筛选', 'search-filter'),
@@ -105,6 +110,7 @@ module.exports = {
     createPage('车源详情', 'truck-detail'),
     createPage('我的车源', 'my-truck'),
     createPage('推荐车源', 'today-truck'),
+    createPage('', 'sp-pkg-search'),
     // end 车主
 
     // start 认证
@@ -129,326 +135,6 @@ module.exports = {
       compress: {
         warnings: false
       }
-    }),
-    new HtmlWebpackPlugin({
-      title: '社区',
-      template: './src/page/index.ejs',
-      filename: 'bbs.html',
-      chunks: ['bbs', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '发帖',
-      template: './src/page/index.ejs',
-      filename: 'bbs-post.html',
-      chunks: ['bbs-post', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '帖子详情',
-      template: './src/page/index.ejs',
-      filename: 'bbs-detail.html',
-      chunks: ['bbs-detail', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '评论',
-      template: './src/page/index.ejs',
-      filename: 'bbs-comment.html',
-      chunks: ['bbs-comment', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '与我有关',
-      template: './src/page/index.ejs',
-      filename: 'bbs-about-me.html',
-      chunks: ['bbs-about-me', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '登录',
-      template: './src/page/index.ejs',
-      filename: 'login.html',
-      chunks: ['ved', 'fetch', 'login'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '注册',
-      template: './src/page/index.ejs',
-      filename: 'register.html',
-      chunks: ['register', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '找回密码',
-      template: './src/page/index.ejs',
-      filename: 'retrieve.html',
-      chunks: ['retrieve', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '服务协议',
-      template: './src/page/index.ejs',
-      filename: 'term.html',
-      chunks: ['term', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '话题帖子',
-      template: './src/page/index.ejs',
-      filename: 'topic-posts.html',
-      chunks: ['topic-posts', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '用户帖子',
-      template: './src/page/index.ejs',
-      filename: 'user-posts.html',
-      chunks: ['user-posts', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '人气用户',
-      template: './src/page/index.ejs',
-      filename: 'active-users.html',
-      chunks: ['active-users', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '小妹公告',
-      template: './src/page/index.ejs',
-      filename: 'notice.html',
-      chunks: ['notice', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '发布货源',
-      template: './src/page/index.ejs',
-      filename: 'pkg-pub.html',
-      chunks: ['pkg-pub', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '发布货源-备注',
-      template: './src/page/index.ejs',
-      filename: 'pkg-pub-memo.html',
-      chunks: ['pkg-pub-memo', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '用车需求',
-      template: './src/page/index.ejs',
-      filename: 'truck-requirement.html',
-      chunks: ['truck-requirement', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '发布车源',
-      template: './src/page/index.ejs',
-      filename: 'truck-pub.html',
-      chunks: ['truck-pub', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '我的车队',
-      template: './src/page/index.ejs',
-      filename: 'roadtrain.html',
-      chunks: ['roadtrain', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '我的车队',
-      template: './src/page/index.ejs',
-      filename: 'my-roadtrain.html',
-      chunks: ['my-roadtrain', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '添加车辆',
-      template: './src/page/index.ejs',
-      filename: 'truck-add.html',
-      chunks: ['truck-add', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '常跑路线',
-      template: './src/page/index.ejs',
-      filename: 'select-truck-common-route.html',
-      chunks: ['select-truck-common-route', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '我发布的货源',
-      template: './src/page/index.ejs',
-      filename: 'my-pkg.html',
-      chunks: ['my-pkg', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '我发布的车源',
-      template: './src/page/index.ejs',
-      filename: 'my-truck.html',
-      chunks: ['my-truck', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '推荐货源',
-      template: './src/page/index.ejs',
-      filename: 'recommend-pkg-list.html',
-      chunks: ['recommend-pkg-list', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '推荐车源',
-      template: './src/page/index.ejs',
-      filename: 'recommend-truck-list.html',
-      chunks: ['recommend-truck-list', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '找货',
-      template: './src/page/index.ejs',
-      filename: 'pkg-search.html',
-      chunks: ['pkg-search', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '筛选',
-      template: './src/page/index.ejs',
-      filename: 'search-filter.html',
-      chunks: ['search-filter', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '货源详情',
-      template: './src/page/index.ejs',
-      filename: 'pkg-detail.html',
-      chunks: ['pkg-detail', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '推荐货源列表',
-      template: './src/page/index.ejs',
-      filename: 'today-pkg.html',
-      chunks: ['today-pkg', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '找车',
-      template: './src/page/index.ejs',
-      filename: 'truck-search.html',
-      chunks: ['truck-search', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '车源详情',
-      template: './src/page/index.ejs',
-      filename: 'truck-detail.html',
-      chunks: ['truck-detail', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '推荐车源列表',
-      template: './src/page/index.ejs',
-      filename: 'today-truck.html',
-      chunks: ['today-truck', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '货源信息',
-      template: './src/page/index.ejs',
-      filename: 'pkg-info-pub.html',
-      chunks: ['pkg-info-pub', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '实名认证',
-      template: './src/page/index.ejs',
-      filename: 'real-name-certify.html',
-      chunks: ['real-name-certify', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '司机认证',
-      template: './src/page/index.ejs',
-      filename: 'trucker-certify.html',
-      chunks: ['trucker-certify', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '公司认证',
-      template: './src/page/index.ejs',
-      filename: 'company-certify.html',
-      chunks: ['company-certify', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '公司认证',
-      template: './src/page/index.ejs',
-      filename: 'company-certify-result.html',
-      chunks: ['company-certify-result', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '实名认证',
-      template: './src/page/index.ejs',
-      filename: 'real-name-certify-result.html',
-      chunks: ['real-name-certify-result', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '司机认证',
-      template: './src/page/index.ejs',
-      filename: 'trucker-certify-result.html',
-      chunks: ['trucker-certify-result', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      title: '举报',
-      template: './src/page/index.ejs',
-      filename: 'report.html',
-      chunks: ['report', 'fetch', 'ved'],
-      chunksSortMode: 'dependency',
-      inject: 'body'
     })
   ],
 
