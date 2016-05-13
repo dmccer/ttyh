@@ -43,7 +43,7 @@ export default class PkgInfoPubPage extends Component {
       });
 
       this.setState({
-        checkedPackManner: TMP_DATA.packManner
+        checkedPackManner: TMP_DATA.packManner || {}
       });
     }
   }

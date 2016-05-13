@@ -91,7 +91,7 @@ export default class PkgPubPage extends React.Component {
       let volumeStr = TMP_PIDATA.pkgVolume ? `${TMP_PIDATA.pkgVolume}方` : '';
       this.setState({
         pkgInfo: TMP_PIDATA,
-        pkgInfoDesc: `${TMP_PIDATA.pkgName} ${TMP_PIDATA.pkgWeight}吨 ${volumeStr} ${TMP_PIDATA.packManner.name}*${TMP_PIDATA.pkgCount}`
+        pkgInfoDesc: `${TMP_PIDATA.pkgName || ''} ${TMP_PIDATA.pkgWeight ? (TMP_PIDATA.pkgWeight + '吨') : ''} ${volumeStr} ${TMP_PIDATA.packManner.name || ''}${TMP_PIDATA.pkgCount ? ('*' + TMP_PIDATA.pkgCount) : ''}`
       });
     }
 
@@ -100,7 +100,7 @@ export default class PkgPubPage extends React.Component {
       let size = TMP_TUDATA.truckUseType.id === JUST_SELECT_TRUCK_TYPE ? `${TMP_TUDATA.stallSize}米` : TMP_TUDATA.truckLength.name;
       this.setState({
         truckUseInfo: TMP_TUDATA,
-        truckUseInfoDesc: `${TMP_TUDATA.truckUseType.name} ${TMP_TUDATA.truckType.name} ${size}`
+        truckUseInfoDesc: `${TMP_TUDATA.truckUseType.name || ''} ${TMP_TUDATA.truckType.name || ''} ${size || ''}`
       });
     }
   }

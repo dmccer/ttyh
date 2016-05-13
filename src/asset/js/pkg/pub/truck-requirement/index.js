@@ -43,7 +43,7 @@ export default class TruckRequirementPage extends React.Component {
     let checkedTruckUseTypeId = TMP_TUD ? TMP_TUD.truckUseType.id : DEFAULT_TRUCK_USE_TYPE_ID;
     let checkedTruckUseType = find(TRUCK_USE_TYPES, (item) => {
       return item.id === checkedTruckUseTypeId;
-    });
+    }) || {};
 
     this.setState({
       checkedTruckUseType: checkedTruckUseType
