@@ -47,20 +47,17 @@ export default class SearchTruckPage extends Component {
     this.setState(assign({
       filterLoaded: true
     }, q), () => {
+      this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+      LoadMore.init(() => {
+        if (!this.state.over) {
+          this.query();
+        }
+      });
+
+      this.fetchUserInfo();
       this.query();
     });
-  }
-
-  componentDidMount() {
-    this.ah = new AH(this.refs.loading, this.refs.poptip);
-
-    LoadMore.init(() => {
-      if (!this.state.over) {
-        this.query();
-      }
-    });
-
-    this.fetchUserInfo();
   }
 
   fetchUserInfo() {
@@ -74,6 +71,10 @@ export default class SearchTruckPage extends Component {
   query() {
     this.ah.one(TruckUsers, {
       success: (res) => {
+        this.setState({
+          loaded: true
+        });
+        
         let trucks = this.state.trucks || [];
 
         if (!res.data || !res.data.length) {
@@ -143,7 +144,7 @@ export default class SearchTruckPage extends Component {
    * 展示车源列表为空时的提示
    */
   renderEmpty() {
-    if (!this.state.trucks.length) {
+    if (!this.state.trucks.length && this.state.loaded) {
       return (
         <div className="truck-empty-tip">
           <div className="img-tip">

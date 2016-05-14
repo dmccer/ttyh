@@ -58,7 +58,7 @@ export default class PkgPubPage extends React.Component {
 
   state = {
     qs: querystring.parse(location.search.substring(1)),
-    memo: localStorage.getItem(PKG_MEMO),
+    memo: localStorage.getItem(PKG_MEMO) || '',
     timeAreas: [],
     loadTypes: [],
     paymentTypes: [],
@@ -372,6 +372,8 @@ export default class PkgPubPage extends React.Component {
 
     this.setState({
       [this.state.citySelectorField]: selected.join('-')
+    }, () => {
+      this.writeDraft();
     });
   }
 
