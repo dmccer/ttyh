@@ -11,6 +11,7 @@ import ReactDOM, {findDOMNode} from 'react-dom';
 import querystring from 'querystring';
 import EventListener from 'fbjs/lib/EventListener';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import assign from 'lodash/object/assign';
 
 import LoadMore from '../../load-more/';
 import SearchCondition from '../../condition';
@@ -76,23 +77,24 @@ export default class SearchTruckPage extends Component {
   }
 
   handleSearchConditionInit(q) {
-    this.setState(q, () => {
+    this.setState(assign({
+      filterLoaded: true
+    }, q), () => {
+      this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+      LoadMore.init(() => {
+        if (!this.state.over) {
+          this.query();
+        }
+      });
+
+      this.fetchUserInfo();
       this.query();
     });
   }
 
   componentDidMount() {
     this.bindScroll();
-
-    this.ah = new AH(this.refs.loading, this.refs.poptip);
-
-    LoadMore.init(() => {
-      if (!this.state.over) {
-        this.query();
-      }
-    });
-
-    this.fetchUserInfo();
   }
 
   fetchUserInfo() {
@@ -109,7 +111,7 @@ export default class SearchTruckPage extends Component {
         this.setState({
           loaded: true
         });
-
+        
         let trucks = this.state.trucks || [];
 
         if (!res.data || !res.data.length) {
@@ -209,6 +211,12 @@ export default class SearchTruckPage extends Component {
   }
 
   render() {
+    let list = this.state.filterLoaded ? (
+      <div className="truck-list">
+        {this.renderItems()}
+      </div>
+    ) : null;
+
     return (
       <div className="search-truck-page">
         <IconMenu menus={MENUS} />
@@ -218,9 +226,7 @@ export default class SearchTruckPage extends Component {
           init={this.handleSearchConditionInit.bind(this)}
           fixed={this.state.fixedCondition}
         />
-        <div className="truck-list">
-          {this.renderItems()}
-        </div>
+        {list}
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <Confirm

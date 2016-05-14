@@ -19,10 +19,20 @@ export default class PostDetailItem extends React.Component {
     };
   }
 
+  componentWillMount() {
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (user && user.uid) {
+      this.setState({
+        currUid: user.uid
+      });
+    }
+  }
+
   render_follow() {
     let forum = this.props.forum;
 
-    if (forum.uid !== this.state.qs.uid) {
+    if (forum.uid !== this.state.currUid) {
       if (forum.follow === 1) {
         return (
           <span
