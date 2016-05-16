@@ -229,7 +229,7 @@ export default class PkgPubPage extends React.Component {
       detailFromCity: null,
       detailToCity: null,
       paymentType: {},
-      loadingType: {},
+      loadingType: {}
     });
   }
 
@@ -245,7 +245,14 @@ export default class PkgPubPage extends React.Component {
       Validator.test('required', '请选择装车时间段', states.timeArea) &&
       Validator.test('required', '请选择出发地址', states.fromCity) &&
       Validator.test('required', '请选择到达地址', states.toCity) &&
-      Validator.test('required', '请填写货物信息', states.pkgInfo)
+      Validator.test('required', '请填写货物名称', states.pkgInfo && states.pkgInfo.pkgName) &&
+      Validator.test('required', '请填写货物重量', states.pkgInfo && states.pkgInfo.pkgWeight) &&
+      Validator.test('required', '请选择货物包装', states.pkgInfo && states.pkgInfo.packManner.id) &&
+      Validator.test('required', '请选择用车类型', states.truckUseInfo && states.truckUseInfo.truckUseType.id) &&
+      (
+        Validator.test('required', '请选择用车车长或占用车位', states.truckUseInfo && states.truckUseInfo.truckLength && states.truckUseInfo.truckLength.id) ||
+        Validator.test('required', '请选择用车车长或占用车位', states.truckUseInfo && states.truckUseInfo.stallSize)
+      )
     );
   }
 
@@ -562,7 +569,7 @@ export default class PkgPubPage extends React.Component {
           </div>
         </div>
 
-        <h2 className="subtitle"><b></b>用车要求</h2>
+        <h2 className="subtitle"><b>*</b>用车要求</h2>
         <div className="field-group">
           <div className="field">
             <label>
