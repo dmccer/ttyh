@@ -120,7 +120,7 @@ export default class PostDetailItem extends React.Component {
           <section className="post-content">
             <p className="post-text">
               <a href={topicPostUrl}><b>#{forum.topic}#</b></a>
-              {Emoj.formatText(forum.content)}
+              {Emoj.formatText(forum.content, true)}
             </p>
             <div className="photo">
               {imgs}
