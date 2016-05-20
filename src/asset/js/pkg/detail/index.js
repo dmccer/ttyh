@@ -34,7 +34,9 @@ import {
 } from '../../const/certify';
 import {
   PkgSearch,
-  FollowUser
+  FollowUser,
+  Maluation,
+  MaluationOfPkg
 } from '../model/';
 
 export default class PkgDetailPage extends Component {
@@ -67,6 +69,8 @@ export default class PkgDetailPage extends Component {
     });
 
     this.fetchUserInfo();
+
+    this.fetchMaluation();
   }
 
   fetchUserInfo() {
@@ -74,6 +78,21 @@ export default class PkgDetailPage extends Component {
       this.setState({
         realNameVerifyStatus: res.auditStatus
       });
+    });
+  }
+
+  fetchMaluation() {
+    this.ah.one(MaluationOfPkg, (res) => {
+      if (res.retcode !== 0) {
+        return this.refs.poptip.warn(res.msg);
+      }
+
+      this.setState({
+        comments: res.commentCountList
+      });
+    }, {
+      businessId: this.state.qs.pid,
+      businessType: 2
     });
   }
 
@@ -106,8 +125,12 @@ export default class PkgDetailPage extends Component {
   }
 
   madeCall() {
+    if (this.state.maluationItems && this.state.maluationItems.length) {
+      return this.refs.pkgMaluation.show();
+    }
+
     this.ah.one(OrderedEnumValue, (res) => {
-      let list = res.packTypeMap;
+      let list = res.productAppraise;
 
       list = list.map((item) => {
         return {
@@ -121,11 +144,27 @@ export default class PkgDetailPage extends Component {
       }, () => {
         this.refs.pkgMaluation.show();
       });
-    }, 'packType');
+    }, 'productAppraise');
   }
 
   handleSelectPkgMaluation(maluation) {
-    console.log('maluation:', maluation);
+    this.ah.one(Maluation, (res) => {
+      if (res.retcode === 0) {
+        this.refs.poptip.success('感谢您的评价');
+
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+        return;
+      }
+
+      this.refs.poptip.warn(res.msg);
+    }, {
+      businessId: this.state.qs.pid,
+      // 车源 1 | 货源 2
+      businessType: 2,
+      commentType: maluation.id
+    });
   }
 
   follow() {
@@ -180,6 +219,30 @@ export default class PkgDetailPage extends Component {
     this.setState({
       showMore: !this.state.showMore
     });
+  }
+
+  renderComments() {
+    let comments = this.state.comments;
+
+    if (comments && comments.length) {
+      let list = comments.map((comment, index) => {
+        return (
+          <span className="maluation-item" key={`comment-item_${index}`}>
+            <span>{comment.commentTypeStr}</span>
+            <b>{`(${comment.commentCount})`}</b>
+          </span>
+        );
+      })
+
+      return (
+        <div>
+          <h2 className="subtitle">评价</h2>
+          <div className="maluations">
+            {list}
+          </div>
+        </div>
+      );
+    }
   }
 
   renderMemo(memo) {
@@ -323,17 +386,7 @@ export default class PkgDetailPage extends Component {
             </div>
           </div>
         </div>
-        <h2 className="subtitle">评价</h2>
-        <div className="maluations">
-          <span className="maluation-item">
-            <span>有效货源 </span>
-            <b>(3)</b>
-          </span>
-          <span className="maluation-item">
-            <span>有效货源 </span>
-            <b>(3)</b>
-          </span>
-        </div>
+        {this.renderComments()}
         <div className="row account-info">
           <div className="avatar-col">
             <Avatar img={pkg.provideUserImgUrl} />
