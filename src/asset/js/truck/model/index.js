@@ -110,3 +110,17 @@ export var TodayRecommendTruckRoutes = (params) => {
   let qs = querystring.stringify(params);
   return fetch(`/mvc/todayRecommendUsersForH5?${qs}`, GET_OPT);
 }
+
+/**
+ * 获取专线公司列表
+ * @param  {Object} params
+ * @param  {String} params.fromCity
+ * @param  {String} params.toCity
+ * @param  {Number} params.pageIndex
+ * @param  {Number} params.pageSize
+ * @return {Promise}
+ */
+export var SpRoutes = (params) => {
+  let qs = querystring.stringify(params);
+  return fetch(`/mvc/v2/speCompany?${qs}`, GET_OPT);
+}
