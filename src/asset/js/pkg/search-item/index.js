@@ -36,7 +36,7 @@ export default class SearchItem extends Component {
 
     _hmt.push(['_trackEvent', '货源', '列表打电话', this.props.product.provideUserMobileNo || '']);
 
-    this.props.verifyTip(tel);
+    this.props.verifyTip(this.props, tel);
   }
 
   render() {

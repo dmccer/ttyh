@@ -37,7 +37,8 @@ import {
   MENUS
 } from '../../const/pkg';
 import {
-  PkgSearch
+  PkgSearch,
+  Maluation
 } from '../model/';
 
 injectTapEventPlugin();
@@ -155,7 +156,7 @@ export default class SearchPkgPage extends Component {
     });
   }
 
-  handleShowVerifyTip(tel) {
+  handleShowVerifyTip(pkg, tel) {
     this.setState({
       activeTel: tel
     }, () => {
@@ -163,6 +164,11 @@ export default class SearchPkgPage extends Component {
 
       if (status === 1 || status === 0) {
         this.handleCancelVerify();
+
+        this.setState({
+          thePkgIdOfMadeCall: pkg.product.productID
+        });
+
         return;
       }
 
@@ -181,8 +187,12 @@ export default class SearchPkgPage extends Component {
   }
 
   madeCall() {
+    if (this.state.maluationItems && this.state.maluationItems.length) {
+      return this.refs.pkgMaluation.show();
+    }
+
     this.ah.one(OrderedEnumValue, (res) => {
-      let list = res.maluationItems;
+      let list = res.productAppraise;
 
       list = list.map((item) => {
         return {
@@ -196,11 +206,27 @@ export default class SearchPkgPage extends Component {
       }, () => {
         this.refs.pkgMaluation.show();
       });
-    }, 'maluation');
+    }, 'productAppraise');
   }
 
   handleSelectPkgMaluation(maluation) {
-    console.log('maluation:', maluation);
+    this.ah.one(Maluation, (res) => {
+      this.setState({
+        thePkgIdOfMadeCall: null
+      });
+
+      if (res.retcode === 0) {
+        this.refs.poptip.success('感谢您的评价');
+        return;
+      }
+
+      this.refs.poptip.warn(res.msg);
+    }, {
+      businessId: this.state.thePkgIdOfMadeCall,
+      // 车源 1 | 货源 2
+      businessType: 2,
+      commentType: maluation.id
+    });
   }
 
   /**

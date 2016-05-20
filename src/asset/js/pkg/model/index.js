@@ -47,9 +47,13 @@ export var TodayRecommendPkgs = (params) => {
   return fetch(`/mvc/todayRecommendProductsForH5?${qs}`, GET_OPT);
 }
 
-export var OrderedEnumValue = (type) => {
-  let qs = querystring.stringify({
-    type: type
-  });
-  return fetch(`/mvc/v2/getOrderEnumValue?${qs}`, GET_OPT);
+export var Maluation = (params) => {
+  return fetch('/mvc/v2/saveComment', assign({
+    body: querystring.stringify(params)
+  }, POST_OPT));
+}
+
+export var MaluationOfPkg = (params) => {
+  let qs = querystring.stringify(params);
+  return fetch(`/mvc/v2/commentCount?${qs}`, GET_OPT);
 }
