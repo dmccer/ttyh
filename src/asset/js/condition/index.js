@@ -170,7 +170,7 @@ export default class SearchCondition extends Component {
         return;
       }
 
-      cs.show();
+      cs.show(top);
 
       return;
     }
@@ -184,9 +184,13 @@ export default class SearchCondition extends Component {
   }
 
   getCitySelectorTop(target) {
-    let pos = $.offset(target);
     let h = $.height(target);
 
+    if (this.props.fixed) {
+      return h + 2;
+    }
+
+    let pos = $.offset(target);
     return pos.top + h + 2;
   }
 
@@ -317,15 +321,12 @@ export default class SearchCondition extends Component {
     let top = this.getCitySelectorTop(this.refs.filtersField);
 
     let on = !this.state.searchFilterOn;
-
     let d = {
       searchFilterOn: on
     };
-
     if (!on) {
       return this.setState(d);
     }
-
     this.setState(assign(d, {
       searchFilterTop: top
     }));
