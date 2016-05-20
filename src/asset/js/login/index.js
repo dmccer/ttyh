@@ -89,7 +89,8 @@ export default class LoginPage extends React.Component {
     let data = {
       confirmCode: this.state.verifyCode,
       action: this.state.action,
-      userName: ''
+      userName: '',
+      code: this.state.qs.code
     };
 
     switch(this.state.action) {
