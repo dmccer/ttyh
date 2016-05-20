@@ -6,49 +6,139 @@ import './index.less';
 
 import React, {Component} from 'react';
 import {render} from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import assign from 'lodash/object/assign';
 
+import LoadMore from '../../load-more/';
 import CityFilter from '../../city-filter/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import AH from '../../helper/ajax';
+import truckPNG from '../../../img/app/truck@3x.png';
+
+import {SpRoutes} from '../model/';
 
 const PAGE_TYPE = 'shipper_page';
 
-export default class SpRoute extends Component {
-  state = {};
+injectTapEventPlugin();
 
-  constructor() {
-    super();
-  }
+export default class SpRoute extends Component {
+  state = {
+    pageIndex: 0,
+    pageSize: 20,
+    trucks: []
+  };
 
   handleCityFilterInit(q) {
-    this.setState(q, () => {
+    this.setState(assign({
+      filterLoaded: true
+    }, q), () => {
+      this.ah = new AH(this.refs.loading, this.refs.poptip);
+
+      LoadMore.init(() => {
+        if (!this.state.over) {
+          this.query();
+        }
+      });
+
       this.query();
     });
   }
 
   query() {
+    this.ah.one(SpRoutes, {
+      success: (res) => {
+        this.setState({
+          loaded: true
+        });
 
+        let spRoutes = this.state.spRoutes || [];
+
+        if (!res.speCompanyList || !res.speCompanyList.length) {
+          if (!spRoutes.length) {
+            return;
+          }
+
+          this.refs.poptip.info('没有更多了');
+
+          this.setState({
+            over: true
+          });
+
+          return;
+        }
+
+        spRoutes = spRoutes.concat(res.speCompanyList);
+
+        this.setState({
+          spRoutes: spRoutes,
+          pageIndex: this.state.pageIndex + 1
+        });
+      },
+      error: (err) => {
+        this.refs.poptip.warn('查询专线失败,请重试');
+      }
+    }, {
+      fromCity: this.state.fromCity,
+      toCity: this.state.toCity,
+      pageSize: this.state.pageSize,
+      pageIndex: this.state.pageIndex
+    });
   }
 
   renderItems() {
-    let trucks = this.state.trucks;
+    let spRoutes = this.state.spRoutes;
 
-    if (trucks && trucks.length) {
-      return trucks.map((truck, index) => {
+    if (spRoutes && spRoutes.length) {
+      let list = spRoutes.map((spRoute, index) => {
         return (
-          <SearchItem
-            verifyTip={this.handleShowVerifyTip.bind(this)}
-            key={`pkg-item_${index}`}
-            {...truck} />
+          <div className="cell" href={spRoute.introduceUrl} key={`sp-route-item_${index}`}>
+            <div className="cell-hd">
+              <div className="spr-logo">
+                <img src={spRoute.imgUrl || 'http://imgsize.ph.126.net/?imgurl=http://img0.ph.126.net/jUGiLNtdMqLtFrGu8-fPXQ==/6631212901239917475.jpg_188x188x1.jpg'} />
+              </div>
+            </div>
+            <div className="cell-bd cell-primary">
+              <div className="spr-info">
+                <h2>
+                  <i className="icon icon-wlcom s20"></i>
+                  <span>{spRoute.companyName}</span>
+                </h2>
+                <p className="spr-description">{spRoute.memo}</p>
+                <p className="spr-company">{spRoute.companyAddr}</p>
+              </div>
+            </div>
+            <div className="cell-ft">
+              <a href={`tel:${spRoute.phoneNo}`} className="icon icon-call s30"></a>
+            </div>
+          </div>
         );
       });
+
+      return (
+        <div className="cells spr-list">{list}</div>
+      );
     }
 
     return this.renderEmpty();
   }
 
+  renderEmpty() {
+    if (!this.state.spRoutes || !this.state.spRoutes.length && this.state.loaded) {
+      return (
+        <div className="empty-tip">
+          <div className="img-tip">
+            <img src={truckPNG} />
+          </div>
+          <p>未找到专线公司</p>
+        </div>
+      );
+    }
+  }
+
   render() {
+    let list = this.state.filterLoaded ? this.renderItems() : null;
+
     return (
       <section className="sp-route-page">
         <CityFilter
@@ -56,48 +146,9 @@ export default class SpRoute extends Component {
           init={this.handleCityFilterInit.bind(this)}
           fixed={true}
         />
-        <div className="cells spr-list">
-          <div className="cell">
-            <div className="cell-hd">
-              <div className="spr-logo">
-                <img src={'http://imgsize.ph.126.net/?imgurl=http://img0.ph.126.net/jUGiLNtdMqLtFrGu8-fPXQ==/6631212901239917475.jpg_188x188x1.jpg'} />
-              </div>
-            </div>
-            <div className="cell-bd cell-primary">
-              <div className="spr-info">
-                <h2>
-                  <i className="icon icon-wlcom s20"></i>
-                  <span>万台物流</span>
-                </h2>
-                <p className="spr-description">专业调车三十年，大事件艾佛森，大事件艾的萨芬撒佛，大事件艾佛森艾佛森，大事件艾的萨芬撒佛，大事件艾佛森大事件艾佛森</p>
-                <p className="spr-company">上海皮包公司</p>
-              </div>
-            </div>
-            <div className="cell-ft">
-              <a href="tel:xxx" className="icon icon-call s30"></a>
-            </div>
-          </div>
-          <div className="cell">
-            <div className="cell-hd">
-              <div className="spr-logo">
-                <img src={'http://imgsize.ph.126.net/?imgurl=http://img0.ph.126.net/jUGiLNtdMqLtFrGu8-fPXQ==/6631212901239917475.jpg_188x188x1.jpg'} />
-              </div>
-            </div>
-            <div className="cell-bd cell-primary">
-              <div className="spr-info">
-                <h2>
-                  <i className="icon icon-wlcom s20"></i>
-                  <span>万打物流</span>
-                </h2>
-                <p className="spr-description">专业调车三十年，大事件艾佛森，大事件艾的萨芬撒佛，大事件艾佛森艾佛森，大事件艾的萨芬撒佛，大事件艾佛森大事件艾佛森</p>
-                <p className="spr-company">上海啥擦圣诞节阿佛公司</p>
-              </div>
-            </div>
-            <div className="cell-ft">
-              <a href="tel:xxx" className="icon icon-call s30"></a>
-            </div>
-          </div>
-        </div>
+        {list}
+        <Loading ref="loading" />
+        <Poptip ref="poptip" />
       </section>
     );
   }
