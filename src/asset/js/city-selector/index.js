@@ -444,12 +444,12 @@ export default class CitySelector extends React.Component {
       height = winH;
     }
 
-    let cityHeight = this.state.cityHeight;
+    let cityHeight = height - 50;
 
     let l = this.state.historyCities.length;
 
     if (this.state.useHistory && l) {
-      cityHeight = height - 50 - (l > 3 ? 96 : 70);
+      cityHeight = cityHeight - (l > 3 ? 96 : 70);
     }
 
     let cxs = cx('city-selector', this.state.on ? 'on' : '');
