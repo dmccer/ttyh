@@ -61,7 +61,7 @@ export default class PkgMaluationPanel extends Component {
             {list}
           </ul>
           <div className="panel-footer">
-            <a href="#">去举报此人 &gt;</a>
+            <a href={`./report.html?tel=${this.props.tel}&tid=${this.props.targetId}`}>去举报此人 &gt;</a>
           </div>
         </section>
       </section>
