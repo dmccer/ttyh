@@ -9,6 +9,8 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM, {findDOMNode} from 'react-dom';
 import querystring from 'querystring';
+import find from 'lodash/collection/find';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoadMore from '../../load-more/';
 import SearchCondition from '../../condition';
@@ -28,6 +30,11 @@ import {
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
 import {TruckUsers} from '../model/';
+import {
+  MENUS
+} from '../../const/truck';
+
+injectTapEventPlugin();
 
 const PAGE_TYPE = 'shipper_page';
 
@@ -42,7 +49,15 @@ export default class SearchTruckPage extends Component {
   constructor() {
     super();
 
-    document.title = this.state.qs.title;
+    let mid = this.state.qs.mid;
+
+    let menu = find(MENUS, (m) => {
+      return m.id === parseInt(mid)
+    });
+
+    this.menu = menu;
+
+    document.title = menu.name;
   }
 
   handleSearchConditionInit(q) {
@@ -114,7 +129,8 @@ export default class SearchTruckPage extends Component {
       loadLimitFlags: this.state.loadLimitFlag,
       truckLengthFlags: this.state.truckLengthFlag,
       pageSize: this.state.pageSize,
-      pageIndex: this.state.pageIndex
+      pageIndex: this.state.pageIndex,
+      truckTag: this.state.qs.mid
     });
   }
 
@@ -183,6 +199,7 @@ export default class SearchTruckPage extends Component {
           ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
+          filters={['truckTypes', 'loadLimits', 'truckLengths']}
           fixed={true}
         />
         <div className="truck-list">

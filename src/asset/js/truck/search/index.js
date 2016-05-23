@@ -111,7 +111,7 @@ export default class SearchTruckPage extends Component {
         this.setState({
           loaded: true
         });
-        
+
         let trucks = this.state.trucks || [];
 
         if (!res.data || !res.data.length) {
@@ -224,6 +224,7 @@ export default class SearchTruckPage extends Component {
           ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
+          filters={['truckTypes', 'loadLimits', 'truckLengths']}
           fixed={this.state.fixedCondition}
         />
         {list}
