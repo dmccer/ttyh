@@ -15,11 +15,6 @@ import IScroll from 'iscroll/build/iscroll';
 
 import AH from '../../helper/ajax';
 import $ from '../../helper/z';
-// import {
-//   TruckTypes,
-//   TruckSearchLengths,
-//   TruckLoadLimits
-// } from '../model/';
 import {
   OrderedEnumValue
 } from '../../model/';
@@ -27,6 +22,23 @@ import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
+const FILTERS = [{
+  k: 'useTypes',
+  s: 'selectedUseTypes',
+  name: '是否整车'
+}, {
+  k: 'truckTypes',
+  s: 'selectedTruckTypes',
+  name: '车型'
+}, {
+  k: 'loadLimits',
+  s: 'selectedLoadLimits',
+  name: '载重'
+}, {
+  k: 'truckLengths',
+  s: 'selectedTruckLengths',
+  name: '车长'
+}];
 
 export default class SearchFilter extends Component {
   static defaultProps = {
@@ -44,7 +56,6 @@ export default class SearchFilter extends Component {
 
   state = {
     qs: querystring.parse(location.search.substring(1)),
-    // truckTypes: [],
     selectedTruckTypes: [],
     selectedLoadLimits: [],
     selectedTruckLengths: [],
@@ -85,29 +96,10 @@ export default class SearchFilter extends Component {
         }));
       },
       error: () => {
-        this.refs.poptip.warn('获取车型、载重、车长失败, 请重试');
+        this.refs.poptip.warn('获取车型、载重、车长、用车方式失败, 请重试');
       }
     }, ['truckType'], ['searchLength'], ['loadLimit'], ['useType']);
   }
-
-  // renderTruckTypeList() {
-  //   if (this.state.truckTypes && this.state.truckTypes.length) {
-  //     return this.state.truckTypes.map((truckType) => {
-  //       let has = find(this.state.selectedTruckTypes, (selectedTruckType) => {
-  //         return selectedTruckType.id === truckType.id;
-  //       });
-  //
-  //       return (
-  //         <li key={`truck-type_${truckType.id}`} className={has ? 'on' : ''}>
-  //           <a href="javascript:void(0)" onTouchTap={this.handleSelectItem.bind(this, 'selectedTruckTypes', truckType)}>
-  //             <span>{truckType.name}</span>
-  //             <i className="icon icon-right"></i>
-  //           </a>
-  //         </li>
-  //       );
-  //     });
-  //   }
-  // }
 
   renderTagList(listField, selectedField) {
     let list = this.state[listField];
@@ -129,48 +121,6 @@ export default class SearchFilter extends Component {
       });
     }
   }
-
-  // renderLoadlimitList() {
-  //   let list = this.state.loadLimits;
-  //
-  //   if (list && list.length) {
-  //     return list.map((item) => {
-  //       let has = find(this.state.selectedLoadLimits, (loadLimit) => {
-  //         return loadLimit.id === item.id;
-  //       });
-  //
-  //       return (
-  //         <li key={`truck-type_${item.id}`} className={has ? 'on' : ''}>
-  //           <a href="javascript:void(0)" onTouchTap={this.handleSelectItem.bind(this, 'selectedLoadLimits', item)}>
-  //             <span>{item.name}</span>
-  //             <i className="icon icon-right"></i>
-  //           </a>
-  //         </li>
-  //       );
-  //     });
-  //   }
-  // }
-  //
-  // renderTruckLengthList() {
-  //   let list = this.state.truckLengths;
-  //
-  //   if (list && list.length) {
-  //     return list.map((item) => {
-  //       let has = find(this.state.selectedTruckLengths, (truckLength) => {
-  //         return truckLength.id === item.id;
-  //       });
-  //
-  //       return (
-  //         <li key={`truck-type_${item.id}`} className={has ? 'on' : ''}>
-  //           <a href="javascript:void(0)" onTouchTap={this.handleSelectItem.bind(this, 'selectedTruckLengths', item)}>
-  //             <span>{item.name}</span>
-  //             <i className="icon icon-right"></i>
-  //           </a>
-  //         </li>
-  //       );
-  //     });
-  //   }
-  // }
 
   handleSelectItem(field, item) {
     let selected = this.state[field];
@@ -221,6 +171,52 @@ export default class SearchFilter extends Component {
     localStorage.removeItem(`${this.props.pageType}${SEARCH_FILTER_SUFFIX}`);
   }
 
+  hasFilter(f) {
+    let filters = this.props.filters;
+
+    if (!filters|| !filters.length) {
+      return false;
+    }
+
+    return filters.indexOf(f) !== -1;
+  }
+
+  renderFilters() {
+    let list = [];
+
+    FILTERS.forEach((f, index) => {
+      if (this.hasFilter(f.k)) {
+        list.push((
+          <div key={`f_item_${index}`}>
+            <h2 className="subtitle">{f.name}</h2>
+            <ul className="tag-list">
+              {this.renderTagList(f.k, f.s)}
+            </ul>
+          </div>
+        ));
+      }
+    });
+
+    return list;
+  }
+
+  // <h2 className="subtitle">是否整车</h2>
+  // <ul className="tag-list">
+  //   {this.renderTagList('useTypes', 'selectedUseTypes')}
+  // </ul>
+  // <h2 className="subtitle">车型</h2>
+  // <ul className="tag-list">
+  //   {this.renderTagList('truckTypes', 'selectedTruckTypes')}
+  // </ul>
+  // <h2 className="subtitle">载重</h2>
+  // <ul className="tag-list">
+  //   {this.renderTagList('loadLimits', 'selectedLoadLimits')}
+  // </ul>
+  // <h2 className="subtitle">车长</h2>
+  // <ul className="tag-list">
+  //   {this.renderTagList('truckLengths', 'selectedTruckLengths')}
+  // </ul>
+  
   render() {
     let winH = $.height(window);
     let top = this.props.top;
@@ -253,22 +249,7 @@ export default class SearchFilter extends Component {
               iScroll={IScroll}
               options={this.props.options}>
               <div className="scroller">
-                <h2 className="subtitle">是否整车</h2>
-                <ul className="tag-list">
-                  {this.renderTagList('useTypes', 'selectedUseTypes')}
-                </ul>
-                <h2 className="subtitle">车型</h2>
-                <ul className="tag-list">
-                  {this.renderTagList('truckTypes', 'selectedTruckTypes')}
-                </ul>
-                <h2 className="subtitle">载重</h2>
-                <ul className="tag-list">
-                  {this.renderTagList('loadLimits', 'selectedLoadLimits')}
-                </ul>
-                <h2 className="subtitle">车长</h2>
-                <ul className="tag-list">
-                  {this.renderTagList('truckLengths', 'selectedTruckLengths')}
-                </ul>
+                {this.renderFilters()}
               </div>
             </ReactIScroll>
           </div>

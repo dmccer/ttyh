@@ -451,6 +451,7 @@ export default class SearchCondition extends Component {
           cancel={this.toggleSearchFilter.bind(this)}
           close={this.toggleSearchFilter.bind(this)}
           done={this.handleSearchFilterDone.bind(this)}
+          filters={props.filters}
         />
         <CitySelector
           ref="citySelector"

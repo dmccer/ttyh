@@ -222,6 +222,7 @@ export default class SearchPkgPage extends Component {
           ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
+          filters={['useTypes', 'truckTypes', 'loadLimits']}
           fixed={true}
         />
         {list}
