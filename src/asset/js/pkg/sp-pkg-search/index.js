@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import ReactDOM, {findDOMNode} from 'react-dom';
 import querystring from 'querystring';
 import assign from 'lodash/object/assign';
+import find from 'lodash/collection/find';
 import EventListener from 'fbjs/lib/EventListener';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -33,8 +34,8 @@ import {
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
 import {
-  PkgSearch
-} from '../model/';
+  MENUS
+} from '../../const/pkg';
 
 injectTapEventPlugin();
 
@@ -52,7 +53,15 @@ export default class SearchPkgPage extends Component {
   constructor() {
     super();
 
-    document.title = this.state.qs.title;
+    let mid = this.state.qs.mid;
+
+    let menu = find(MENUS, (m) => {
+      return m.id === parseInt(mid)
+    });
+
+    this.menu = menu;
+
+    document.title = menu.name;
   }
 
   handleSearchConditionInit(q) {
@@ -81,7 +90,9 @@ export default class SearchPkgPage extends Component {
   }
 
   query() {
-    this.ah.one(PkgSearch, {
+    let menu = this.menu;
+
+    this.ah.one(menu.query, {
       success: (res) => {
         let pkgs = this.state.pkgs;
 
@@ -222,7 +233,7 @@ export default class SearchPkgPage extends Component {
           ref="searchCondition"
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
-          filters={['useTypes', 'truckTypes', 'loadLimits']}
+          filters={this.menu.filters}
           fixed={true}
         />
         {list}

@@ -57,3 +57,33 @@ export var MaluationOfPkg = (params) => {
   let qs = querystring.stringify(params);
   return fetch(`/mvc/v2/commentCount?${qs}`, GET_OPT);
 }
+
+export var CommonPkgs = (params) => {
+  let qs = querystring.stringify(params);
+  return fetch(`/mvc/cargo?${qs}`, GET_OPT);
+}
+
+export var DangerousPkgs = (params) => {
+  let qs = querystring.stringify(params);
+  return fetch(`/mvc/dangerousCargo?${qs}`, GET_OPT);
+}
+
+export var LargePkgs = (params) => {
+  let qs = querystring.stringify(params);
+  return fetch(`/mvc/largeCargo?${qs}`, GET_OPT);
+}
+
+export var RefrigerationPkgs = (params) => {
+  let qs = querystring.stringify(params);
+  return fetch(`/mvc/reeferCargo?${qs}`, GET_OPT);
+}
+
+export var ReportTypeEnums = () => {
+  return fetch(`/mvc/praise_report/getPraiseType`, GET_OPT);
+}
+
+export var SubmitReport = (params) => {
+  return fetch(`/mvc/praise_report/add`, assign({
+    body: querystring.stringify(params)
+  }, POST_OPT));
+}

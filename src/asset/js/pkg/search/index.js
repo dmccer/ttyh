@@ -188,7 +188,14 @@ export default class SearchPkgPage extends Component {
 
   madeCall() {
     if (this.state.maluationItems && this.state.maluationItems.length) {
-      return this.refs.pkgMaluation.show();
+      this.setState({
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.thePkgIdOfMadeCall
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+
+      return ;
     }
 
     this.ah.one(OrderedEnumValue, (res) => {
@@ -202,7 +209,9 @@ export default class SearchPkgPage extends Component {
       });
 
       this.setState({
-        maluationItems: list
+        maluationItems: list,
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.thePkgIdOfMadeCall
       }, () => {
         this.refs.pkgMaluation.show();
       });
@@ -278,6 +287,7 @@ export default class SearchPkgPage extends Component {
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
           fixed={this.state.fixedCondition}
+          filters={['truckTypes', 'loadLimits', 'truckLengths']}
         />
         {list}
         <Loading ref="loading" />
@@ -298,6 +308,8 @@ export default class SearchPkgPage extends Component {
         />
         <PkgMaluationPanel
           ref="pkgMaluation"
+          tel={this.state.maluationTel}
+          targetId={this.state.maluationId}
           items={this.state.maluationItems}
           onSelected={this.handleSelectPkgMaluation.bind(this)}
         />
