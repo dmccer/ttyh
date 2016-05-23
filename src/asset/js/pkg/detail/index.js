@@ -126,7 +126,16 @@ export default class PkgDetailPage extends Component {
 
   madeCall() {
     if (this.state.maluationItems && this.state.maluationItems.length) {
-      return this.refs.pkgMaluation.show();
+      console.log(this.state.activeTel, this.state.qs.pid);
+
+      this.setState({
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.qs.pid
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+
+      return;
     }
 
     this.ah.one(OrderedEnumValue, (res) => {
@@ -140,6 +149,8 @@ export default class PkgDetailPage extends Component {
       });
 
       this.setState({
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.qs.pid,
         maluationItems: list
       }, () => {
         this.refs.pkgMaluation.show();
@@ -429,6 +440,8 @@ export default class PkgDetailPage extends Component {
         />
         <PkgMaluationPanel
           ref="pkgMaluation"
+          tel={this.state.maluationTel}
+          targetId={this.state.maluationId}
           items={this.state.maluationItems}
           onSelected={this.handleSelectPkgMaluation.bind(this)}
         />

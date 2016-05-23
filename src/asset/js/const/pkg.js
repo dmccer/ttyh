@@ -2,6 +2,12 @@ import PU_HUO_PNG from '../../img/app/puhuo@3x.png';
 import WEI_XIAN_PIN_PNG from '../../img/app/weixianpin@3x.png';
 import DA_JIAN_PNG from '../../img/app/dajian@3x.png';
 import LENG_CANGE_PNG from '../../img/app/lengcang@3x.png';
+import {
+  CommonPkgs,
+  DangerousPkgs,
+  LargePkgs,
+  RefrigerationPkgs
+} from '../pkg/model/';
 
 // 货源搜索图标菜单
 export const MENUS = [
@@ -10,21 +16,29 @@ export const MENUS = [
     name: '普货',
     icon: PU_HUO_PNG,
     url: './sp-pkg-search.html',
+    query: CommonPkgs,
+    filters: ['useTypes', 'truckTypes', 'loadLimits', 'truckLengths']
   }, {
     id: 2,
     name: '危险品',
     icon: WEI_XIAN_PIN_PNG,
-    url: './sp-pkg-search.html'
+    url: './sp-pkg-search.html',
+    query: DangerousPkgs,
+    filters: ['loadLimits', 'truckLengths']
   }, {
     id: 3,
     name: '大件',
     icon: DA_JIAN_PNG,
-    url: './sp-pkg-search.html'
+    url: './sp-pkg-search.html',
+    query: LargePkgs,
+    filters: ['useTypes', 'loadLimits', 'truckLengths']
   }, {
     id: 4,
     name: '冷藏',
     icon: LENG_CANGE_PNG,
-    url: './sp-pkg-search.html'
+    url: './sp-pkg-search.html',
+    query: RefrigerationPkgs,
+    filters: ['useTypes', 'loadLimits', 'truckLengths']
   }
 ];
 
