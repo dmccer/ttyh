@@ -217,8 +217,10 @@ export default class LoginPage extends React.Component {
   }
 
   redirect(qs) {
-    if (this.state.qs.repage) {
-      location.replace(`${this.state.qs.repage}?${qs}`);
+    let page = this.state.qs.repage;
+
+    if (page) {
+      location.replace(`${page}${page.indexOf('?') !== -1 ? '&' : '?'}${qs}`);
       return;
     }
 
