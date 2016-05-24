@@ -65,6 +65,8 @@ module.exports = {
 
     report: './src/asset/js/report/index.js',
 
+    clear: './src/asset/js/clear/index.js',
+
     ved: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/dev-server']
   },
 
@@ -121,6 +123,8 @@ module.exports = {
     createPage('公司认证结果', 'company-certify-result'),
     createPage('司机认证结果', 'trucker-certify-result'),
     // end 认证
+
+    createPage('清除数据', 'clear'),
 
     new webpack.optimize.CommonsChunkPlugin('ved', 'ved.js'),
     new webpack.optimize.CommonsChunkPlugin({

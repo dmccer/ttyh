@@ -62,7 +62,9 @@ module.exports = {
     'real-name-certify-result': './src/asset/js/account/real-name-certify/result/index.js',
     'trucker-certify-result': './src/asset/js/account/trucker-certify/result/index.js',
 
-    report: './src/asset/js/report/index.js'
+    report: './src/asset/js/report/index.js',
+
+    clear: './src/asset/js/clear/index.js'
   },
 
   plugins: [
@@ -116,6 +118,8 @@ module.exports = {
     createPage('司机认证', 'trucker-certify-result'),
     // end 认证
 
+    createPage('清除数据', 'clear'),
+    
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.ProvidePlugin({
       'Promise': 'promise',
