@@ -51,7 +51,6 @@ module.exports = {
 
     'truck-search': './src/asset/js/truck/search/index.js',
     'sp-truck-search': './src/asset/js/truck/sp-truck-search/index.js',
-    'search-filter': './src/asset/js/truck/filter/index.js',
     'truck-detail': './src/asset/js/truck/detail/index.js',
     'today-truck': './src/asset/js/truck/today-list/',
     'sp-route': './src/asset/js/truck/sp-route/',
@@ -99,8 +98,6 @@ module.exports = {
     createPage('专线查询', 'sp-route'),
     createPage('', 'sp-truck-search'),
     // end 货主
-
-    createPage('筛选', 'search-filter'),
 
     // start 车主
     createPage('找货', 'pkg-search'),

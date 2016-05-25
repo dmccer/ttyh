@@ -51,7 +51,6 @@ module.exports = {
     'my-truck': './src/asset/js/truck/my/index.js',
 
     'truck-search': './src/asset/js/truck/search/index.js',
-    'search-filter': './src/asset/js/truck/filter/index.js',
     'truck-detail': './src/asset/js/truck/detail/index.js',
     'today-truck': './src/asset/js/truck/today-list/',
 
@@ -95,8 +94,6 @@ module.exports = {
     createPage('推荐货源', 'today-pkg'),
     // end 货主
 
-    createPage('筛选', 'search-filter'),
-
     // start 车主
     createPage('找货', 'pkg-search'),
     createPage('发布车源', 'truck-pub'),
@@ -119,7 +116,7 @@ module.exports = {
     // end 认证
 
     createPage('清除数据', 'clear'),
-    
+
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.ProvidePlugin({
       'Promise': 'promise',

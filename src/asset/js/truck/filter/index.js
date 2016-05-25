@@ -216,7 +216,7 @@ export default class SearchFilter extends Component {
   // <ul className="tag-list">
   //   {this.renderTagList('truckLengths', 'selectedTruckLengths')}
   // </ul>
-  
+
   render() {
     let winH = $.height(window);
     let top = this.props.top;

@@ -14,7 +14,7 @@ import FixedHolder from '../fixed-holder/';
 import Loading from '../loading/';
 import AH from '../helper/ajax';
 import Validator from '../helper/validator';
-import {SubmitReport, ReportTypeEnums} from '../model/';
+import {SubmitReport, OrderedEnumValue} from '../model/';
 
 @FieldChangeEnhance
 export default class ReportPage extends Component {
@@ -37,8 +37,8 @@ export default class ReportPage extends Component {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
     Validator.config(this.refs.poptip);
 
-    this.ah.one(ReportTypeEnums, (res) => {
-      let list = res.packTypeMap;
+    this.ah.one(OrderedEnumValue, (res) => {
+      let list = res.reportTypeMap;
 
       list = list.map(item => {
         return {
@@ -50,7 +50,7 @@ export default class ReportPage extends Component {
       this.setState({
         reportTypes: list
       });
-    });
+    }, 'reportType');
   }
 
   showReportType() {
@@ -81,15 +81,17 @@ export default class ReportPage extends Component {
     this.ah.one(SubmitReport, (res) => {
       if (res.retcode === 0) {
         this.refs.poptip.success('提交成功');
+
+        history.back();
         return;
       }
 
       this.refs.poptip.warn(res.msg);
     }, {
-      uid: this.state.qs.tid,
-      tel: this.props.tel,
-      pr_type: this.state.reportType.id,
-      pr_content: this.props.reason
+      photeNo: this.props.tel,
+      type: this.state.reportType.id,
+      content: this.props.reason,
+      productId: this.state.qs.tid
     });
   }
 

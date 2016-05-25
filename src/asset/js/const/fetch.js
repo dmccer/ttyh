@@ -4,7 +4,7 @@ const COMMON_OPT = {
   credentials: 'same-origin'
 }
 const COMMON_HEADER = {
-  'Accept': 'application/json',
+  'Accept': 'application/json'
 }
 const FORM_POST_HEADER = {
   'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
