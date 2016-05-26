@@ -42,6 +42,7 @@ module.exports = {
     'today-pkg': './src/asset/js/pkg/today-list/',
     'pkg-detail': './src/asset/js/pkg/detail/index.js',
     'pkg-info-pub': './src/asset/js/pkg/pub/info/index.js',
+    'sp-pkg-search': './src/asset/js/pkg/sp-pkg-search/index.js',
 
     'truck-pub': './src/asset/js/truck/pub/index.js',
     'roadtrain': './src/asset/js/truck/roadtrain/index.js',
@@ -51,8 +52,11 @@ module.exports = {
     'my-truck': './src/asset/js/truck/my/index.js',
 
     'truck-search': './src/asset/js/truck/search/index.js',
+    'sp-truck-search': './src/asset/js/truck/sp-truck-search/index.js',
     'truck-detail': './src/asset/js/truck/detail/index.js',
     'today-truck': './src/asset/js/truck/today-list/',
+    'sp-route': './src/asset/js/truck/sp-route/',
+    'sp-com': './src/asset/js/sp-com/',
 
     'real-name-certify': './src/asset/js/account/real-name-certify/index.js',
     'trucker-certify': './src/asset/js/account/trucker-certify/index.js',
@@ -92,6 +96,8 @@ module.exports = {
     createPage('货源详情', 'pkg-detail'),
     createPage('我的货源', 'my-pkg'),
     createPage('推荐货源', 'today-pkg'),
+    createPage('专线查询', 'sp-route'),
+    createPage('', 'sp-truck-search'),
     // end 货主
 
     // start 车主
@@ -104,15 +110,17 @@ module.exports = {
     createPage('车源详情', 'truck-detail'),
     createPage('我的车源', 'my-truck'),
     createPage('推荐车源', 'today-truck'),
+    createPage('', 'sp-pkg-search'),
+    createPage('专线公司详情', 'sp-com'),
     // end 车主
 
     // start 认证
     createPage('实名认证', 'real-name-certify'),
     createPage('司机认证', 'trucker-certify'),
     createPage('公司认证', 'company-certify'),
-    createPage('实名认证', 'real-name-certify-result'),
-    createPage('公司认证', 'company-certify-result'),
-    createPage('司机认证', 'trucker-certify-result'),
+    createPage('实名认证结果', 'real-name-certify-result'),
+    createPage('公司认证结果', 'company-certify-result'),
+    createPage('司机认证结果', 'trucker-certify-result'),
     // end 认证
 
     createPage('清除数据', 'clear'),
@@ -134,7 +142,7 @@ module.exports = {
   watch: true,
   output: {
     path: path.resolve(__dirname, pkg.dest),
-    filename: '[name].js',
+    filename: '[name].[hash].js',
     chunkFilename: '[id].chunk.js'
   },
   resolve: {

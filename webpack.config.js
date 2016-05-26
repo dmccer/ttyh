@@ -54,6 +54,7 @@ module.exports = {
     'truck-detail': './src/asset/js/truck/detail/index.js',
     'today-truck': './src/asset/js/truck/today-list/',
     'sp-route': './src/asset/js/truck/sp-route/',
+    'sp-com': './src/asset/js/sp-com/',
 
     'real-name-certify': './src/asset/js/account/real-name-certify/index.js',
     'trucker-certify': './src/asset/js/account/trucker-certify/index.js',
@@ -97,6 +98,7 @@ module.exports = {
     createPage('推荐货源', 'today-pkg'),
     createPage('专线查询', 'sp-route'),
     createPage('', 'sp-truck-search'),
+    createPage('专线公司详情', 'sp-com'),
     // end 货主
 
     // start 车主
