@@ -14,6 +14,7 @@ import LoadMore from '../../load-more/';
 import SearchItem from '../search-item/';
 import Loading from '../../loading/';
 import Poptip from '../../poptip/';
+import PkgMaluationPanel from '../maluation/';
 import Confirm from '../../confirm/';
 import AH from '../../helper/ajax';
 import {
@@ -25,8 +26,10 @@ import {
 } from '../../const/certify';
 
 import {
-  TodayRecommendPkgs
+  TodayRecommendPkgs,
+  Maluation
 } from '../model/';
+import {OrderedEnumValue} from '../../model/';
 
 const PKG_SEARCH = 'pkg-search';
 
@@ -101,7 +104,7 @@ export default class TodayPkgListPage extends Component {
     });
   }
 
-  handleShowVerifyTip(tel) {
+  handleShowVerifyTip(pkg, tel) {
     this.setState({
       activeTel: tel
     }, () => {
@@ -109,6 +112,11 @@ export default class TodayPkgListPage extends Component {
 
       if (status === 1 || status === 0) {
         this.handleCancelVerify();
+
+        this.setState({
+          thePkgIdOfMadeCall: pkg.product.productID
+        });
+
         return;
       }
 
@@ -119,10 +127,80 @@ export default class TodayPkgListPage extends Component {
     });
   }
 
+  // handleShowVerifyTip(tel) {
+  //   this.setState({
+  //     activeTel: tel
+  //   }, () => {
+  //     let status = this.state.realNameVerifyStatus;
+  //
+  //     if (status === 1 || status === 0) {
+  //       this.handleCancelVerify();
+  //       return;
+  //     }
+  //
+  //     this.refs.verifyTip.show({
+  //       title: REAL_NAME_CERTIFY_TITLE,
+  //       msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
+  //     });
+  //   });
+  // }
+
   handleCancelVerify() {
     this.refs.telPanel.show({
       title: '拨打电话',
       msg: this.state.activeTel
+    });
+  }
+
+  madeCall() {
+    if (this.state.maluationItems && this.state.maluationItems.length) {
+      this.setState({
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.thePkgIdOfMadeCall
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+
+      return ;
+    }
+
+    this.ah.one(OrderedEnumValue, (res) => {
+      let list = res.productAppraise;
+
+      list = list.map((item) => {
+        return {
+          id: item.key,
+          name: item.value
+        };
+      });
+
+      this.setState({
+        maluationItems: list,
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.thePkgIdOfMadeCall
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+    }, 'productAppraise');
+  }
+
+  handleSelectPkgMaluation(maluation) {
+    this.ah.one(Maluation, (res) => {
+      this.setState({
+        thePkgIdOfMadeCall: null
+      });
+
+      if (res.retcode === 0) {
+        this.refs.poptip.success('感谢您的评价');
+        return;
+      }
+
+      this.refs.poptip.warn(res.msg);
+    }, {
+      businessId: this.state.thePkgIdOfMadeCall,
+      // 车源 1 | 货源 2
+      businessType: 2,
+      commentType: maluation.id
     });
   }
 
@@ -161,6 +239,14 @@ export default class TodayPkgListPage extends Component {
           rightLink={`tel:${this.state.activeTel}`}
           rightBtnText={'拨打'}
           leftBtnText={'取消'}
+          confirm={this.madeCall.bind(this)}
+        />
+        <PkgMaluationPanel
+          ref="pkgMaluation"
+          tel={this.state.maluationTel}
+          targetId={this.state.maluationId}
+          items={this.state.maluationItems}
+          onSelected={this.handleSelectPkgMaluation.bind(this)}
         />
       </div>
     );

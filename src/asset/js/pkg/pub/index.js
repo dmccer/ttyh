@@ -14,8 +14,9 @@ import querystring from 'querystring';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import find from 'lodash/collection/find';
-import $ from '../../helper/z';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
+import $ from '../../helper/z';
 import Poptip from '../../poptip/';
 import Loading from '../../loading/';
 import Log from '../../log/';
@@ -40,6 +41,8 @@ import {TIME_AREAS} from '../../const/time-area';
 
 const ALL = '全部';
 const TMP_DATA = JSON.parse(localStorage.getItem(PKG_DRAFT));
+
+injectTapEventPlugin();
 
 @FieldChangeEnhance
 export default class PkgPubPage extends React.Component {

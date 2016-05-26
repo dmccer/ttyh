@@ -148,6 +148,7 @@ export default class SearchPkgPage extends Component {
     }, {
       fromCity: this.state.fromCity,
       toCity: this.state.toCity,
+      useType: this.state.useTypeFlag,
       truckTypeFlags: this.state.truckTypeFlag,
       loadLimitFlags: this.state.loadLimitFlag,
       truckLengthFlags: this.state.truckLengthFlag,
@@ -287,7 +288,7 @@ export default class SearchPkgPage extends Component {
           pageType={PAGE_TYPE}
           init={this.handleSearchConditionInit.bind(this)}
           fixed={this.state.fixedCondition}
-          filters={['truckTypes', 'loadLimits', 'truckLengths']}
+          filters={['useTypes', 'truckTypes', 'loadLimits', 'truckLengths']}
         />
         {list}
         <Loading ref="loading" />
