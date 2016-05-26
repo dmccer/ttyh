@@ -31,7 +31,6 @@ import DT from '../helper/date';
 import FixedHolder from '../fixed-holder/';
 import SearchFilter from '../truck/filter/';
 import $ from '../helper/z';
-import {TIME_AREAS} from '../const/time-area';
 
 const SEARCH_FILTER_SUFFIX = '_search_filter';
 const ALL = '全部';
@@ -43,8 +42,7 @@ export default class SearchCondition extends Component {
 
   state = {
     qs: querystring.parse(location.search.substring(1)),
-    url: location.href.split('?')[0].split('#')[0],
-    timeAreas: []
+    url: location.href.split('?')[0].split('#')[0]
   };
 
   constructor() {
@@ -58,8 +56,7 @@ export default class SearchCondition extends Component {
     let r = assign({
       fromCity: qs.fromCity,
       toCity: qs.toCity,
-      entruckTime: qs.entruckTime,
-      timeArea: qs.timeArea
+      entruckTime: qs.entruckTime
     }, qs);
 
     // 获取本地筛选条件
@@ -80,7 +77,7 @@ export default class SearchCondition extends Component {
     }
 
     // 若本地无筛选条件，但查询参数有，则更新本地筛选条件
-    if (!filters && (qs.truckTypeFlag || qs.loadLimitFlag || qs.truckLengthFlag)) {
+    if (!filters && (qs.truckTypeFlag || qs.loadLimitFlag || qs.truckLengthFlag || qs.useTypeFlag)) {
       let format = (field) => {
         let m = (v) => {
           return { id: v };
@@ -90,6 +87,7 @@ export default class SearchCondition extends Component {
       }
 
       localStorage.setItem(`${props.pageType}${SEARCH_FILTER_SUFFIX}`, JSON.stringify({
+        selectedUseTypes: format('useTypeFlag'),
         selectedTruckTypes: format('truckTypeFlag'),
         selectedLoadLimits: format('loadLimitFlag'),
         selectedTruckLengths: format('truckLengthFlag')
@@ -102,9 +100,12 @@ export default class SearchCondition extends Component {
   freshable(filters) {
     let qs = this.state.qs;
 
-    return ($.trim(qs.truckTypeFlag) !== $.trim(filters.truckTypeFlag) ||
+    return (
+      $.trim(qs.truckTypeFlag) !== $.trim(filters.truckTypeFlag) ||
       $.trim(qs.loadLimitFlag) !== $.trim(filters.loadLimitFlag) ||
-      $.trim(qs.truckLengthFlag) !== $.trim(filters.truckLengthFlag));
+      $.trim(qs.truckLengthFlag) !== $.trim(filters.truckLengthFlag) ||
+      $.trim(qs.useTypeFlag) !== $.trim(filters.useTypeFlag)
+    );
   }
 
   transformFilters(filters) {
@@ -115,8 +116,10 @@ export default class SearchCondition extends Component {
     let truckTypeFlag = (filters.selectedTruckTypes || []).map(m).join(',');
     let loadLimitFlag = (filters.selectedLoadLimits || []).map(m).join(',');
     let truckLengthFlag = (filters.selectedTruckLengths || []).map(m).join(',');
+    let useTypeFlag = (filters.selectedUseTypes || []).map(m).join(',');
 
     return {
+      useTypeFlag: useTypeFlag,
       truckTypeFlag: truckTypeFlag,
       loadLimitFlag: loadLimitFlag,
       truckLengthFlag: truckLengthFlag
@@ -126,15 +129,13 @@ export default class SearchCondition extends Component {
   componentDidMount() {
     let {
       fromCity, toCity, truckTypeFlag,
-      loadLimitFlag, truckLengthFlag, entruckTime,
-      timeArea
+      loadLimitFlag, truckLengthFlag, entruckTime
     } = this.state;
 
     // 页面加载 SearchCondition, 初始化数据
     this.props.init({
       fromCity, toCity, truckTypeFlag,
-      loadLimitFlag, truckLengthFlag, entruckTime,
-      timeArea
+      loadLimitFlag, truckLengthFlag, entruckTime
     });
   }
 
@@ -263,33 +264,8 @@ export default class SearchCondition extends Component {
   }
 
   handleSelectDate(d) {
-    let r;
-
-    if (DT.isToday(d)) {
-      let h = new Date().getHours();
-      r = TIME_AREAS.map((timeArea, index) => {
-        return {
-          name: timeArea.name,
-          id: timeArea.id,
-          disabled: !timeArea.test(h)
-        };
-      });
-    } else {
-      r = assign([], TIME_AREAS);
-    }
-
-    this.setState({
-      entruckTime: DT.format(d),
-      timeAreas: r
-    }, () => {
-      this.refs.dateAreaSelector.show();
-    });
-  }
-
-  handleSelectTimeArea(v) {
     let qs = querystring.stringify(assign({}, this.state.qs, {
-      entruckTime: this.state.entruckTime,
-      timeArea: v.name
+      entruckTime: DT.format(d)
     }));
 
     // 更新 url querystring
@@ -298,8 +274,7 @@ export default class SearchCondition extends Component {
 
   handleSelectAllDate() {
     let d = {
-      entruckTime: null,
-      timeArea: null
+      entruckTime: null
     };
     this.setState(d, () => {
       let qs = querystring.stringify(assign({}, this.state.qs, d));
@@ -372,7 +347,9 @@ export default class SearchCondition extends Component {
   }
 
   filtersOn() {
-    return this.state.truckTypeFlag || this.state.truckLengthFlag || this.state.loadLimitFlag;
+    let st = this.state;
+
+    return st.truckTypeFlag || st.truckLengthFlag || st.loadLimitFlag || st.useTypeFlag;;
   }
 
   entruckTimeOn() {
@@ -392,9 +369,6 @@ export default class SearchCondition extends Component {
 
     let entruckTime = states.entruckTime;
     let entruckTimeObj = new Date(entruckTime);
-    let timeAreaSelectorTitle = entruckTime
-      ? `${entruckTime}${DT.isToday(entruckTimeObj) ? ' (今天)' : ''}`
-      : '';
     let entruckTimeStr = entruckTime ? DT.format(entruckTimeObj, 'MM-DD') : '可装车时间';
     let fixedHolder = this.props.fixed ? <FixedHolder height="41" /> : null;
 
@@ -465,11 +439,6 @@ export default class SearchCondition extends Component {
           onSelect={this.handleSelectDate.bind(this)}
           onSelectAll={this.handleSelectAllDate.bind(this)}
           onClose={this.handleCloseSelectDate.bind(this)} />
-        <Selector
-          ref="dateAreaSelector"
-          items={this.state.timeAreas}
-          title={timeAreaSelectorTitle}
-          select={this.handleSelectTimeArea.bind(this)} />
       </div>
     );
   }
