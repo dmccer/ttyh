@@ -283,7 +283,7 @@ export default class TruckDetailPage extends Component {
            <Avatar img={rtruckDetail.faceImgUrl} />
          </div>
          <div className="account-col">
-           <span>{rtruckDetail.userName}</span>
+           <span>{rtruckDetail.userName || '佚名'}</span>
            <AccountCertifyStatus
              type='trucker'
              realNameCertified={rtruckDetail.sfzVerify}

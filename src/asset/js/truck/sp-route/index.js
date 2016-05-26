@@ -15,6 +15,7 @@ import Loading from '../../loading/';
 import Poptip from '../../poptip/';
 import AH from '../../helper/ajax';
 import truckPNG from '../../../img/app/truck@3x.png';
+import DEFAULT_SP_ROUTE_COMPANY_PNG from '../../../img/app/sp-route-company@3x.png';
 
 import {SpRoutes} from '../model/';
 
@@ -86,22 +87,26 @@ export default class SpRoute extends Component {
     });
   }
 
+  toDetail(url) {
+    location.href = url;
+  }
+
   renderItems() {
     let spRoutes = this.state.spRoutes;
 
     if (spRoutes && spRoutes.length) {
       let list = spRoutes.map((spRoute, index) => {
         return (
-          <div className="cell" href={spRoute.introduceUrl} key={`sp-route-item_${index}`}>
+          <div className="cell" onClick={this.toDetail.bind(this, spRoute.introduceUrl || './sp-com.html')} key={`sp-route-item_${index}`}>
             <div className="cell-hd">
               <div className="spr-logo">
-                <img src={spRoute.imgUrl || 'http://imgsize.ph.126.net/?imgurl=http://img0.ph.126.net/jUGiLNtdMqLtFrGu8-fPXQ==/6631212901239917475.jpg_188x188x1.jpg'} />
+                <img src={spRoute.imgUrl || DEFAULT_SP_ROUTE_COMPANY_PNG} />
               </div>
             </div>
             <div className="cell-bd cell-primary">
               <div className="spr-info">
                 <h2>
-                  <i className="icon icon-wlcom s20"></i>
+                  <i className="icon icon-wlcom s15"></i>
                   <span>{spRoute.companyName}</span>
                 </h2>
                 <p className="spr-description">{spRoute.memo}</p>

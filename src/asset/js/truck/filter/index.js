@@ -125,6 +125,8 @@ export default class SearchFilter extends Component {
   handleSelectItem(field, item) {
     let selected = this.state[field];
 
+    console.log(field, item)
+
     let index = findIndex(selected , (s) => {
       return s.id === item.id
     });
@@ -147,6 +149,7 @@ export default class SearchFilter extends Component {
     let pageType = this.props.pageType;
 
     let d = {
+      selectedUseTypes: this.state.selectedUseTypes,
       selectedLoadLimits: this.state.selectedLoadLimits,
       selectedTruckTypes: this.state.selectedTruckTypes,
       selectedTruckLengths: this.state.selectedTruckLengths
@@ -163,6 +166,7 @@ export default class SearchFilter extends Component {
     e.stopPropagation();
 
     this.setState({
+      selectedUseTypes: [],
       selectedTruckTypes: [],
       selectedLoadLimits: [],
       selectedTruckLengths: []
@@ -199,23 +203,6 @@ export default class SearchFilter extends Component {
 
     return list;
   }
-
-  // <h2 className="subtitle">是否整车</h2>
-  // <ul className="tag-list">
-  //   {this.renderTagList('useTypes', 'selectedUseTypes')}
-  // </ul>
-  // <h2 className="subtitle">车型</h2>
-  // <ul className="tag-list">
-  //   {this.renderTagList('truckTypes', 'selectedTruckTypes')}
-  // </ul>
-  // <h2 className="subtitle">载重</h2>
-  // <ul className="tag-list">
-  //   {this.renderTagList('loadLimits', 'selectedLoadLimits')}
-  // </ul>
-  // <h2 className="subtitle">车长</h2>
-  // <ul className="tag-list">
-  //   {this.renderTagList('truckLengths', 'selectedTruckLengths')}
-  // </ul>
 
   render() {
     let winH = $.height(window);

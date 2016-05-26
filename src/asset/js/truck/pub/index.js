@@ -15,6 +15,7 @@ import querystring from 'querystring';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import find from 'lodash/collection/find';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import $ from '../../helper/z';
 import Log from '../../log/';
@@ -32,6 +33,8 @@ import {
 } from '../model/';
 
 import {OrderedEnumValue} from '../../model/';
+
+injectTapEventPlugin();
 
 const TRUCK_PUB = 'truck-pub';
 const DEFAULT_TRUCK = 'default-truck';
