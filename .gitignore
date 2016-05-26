@@ -1,5 +1,6 @@
 assets/
 menu.json
+online-menu.json
 
 # Numerous always-ignore extensions
 *.bak
