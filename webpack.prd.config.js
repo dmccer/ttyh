@@ -1,11 +1,13 @@
 var webpack = require('webpack');
 var path = require('path');
+var WebpackMd5Hash = require('webpack-md5-hash');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 var LessPluginAutoPrefix = require('less-plugin-autoprefix')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var node_modules = path.resolve(__dirname, 'node_modules');
 var pathToReact = path.resolve(node_modules, 'react/');
 var pkg = require('./package.json');
+
 
 function createPage(title, pageName) {
   return new HtmlWebpackPlugin({
@@ -125,6 +127,7 @@ module.exports = {
 
     createPage('清除数据', 'clear'),
 
+    // new WebpackMd5Hash(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.ProvidePlugin({
       'Promise': 'promise',
@@ -143,16 +146,16 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, pkg.dest),
     filename: '[name].js',
-    chunkFilename: '[id].chunk.js'
+    chunkFilename: '[id].ck.js'
   },
   resolve: {
     alias: {
       react: path.resolve(__dirname, './node_modules/react/'),
-      'react-dom': path.resolve(__dirname, './node_modules/react-dom/index.js'),
       fetch: path.resolve(__dirname, './node_modules/whatwg-fetch/')
     }
   },
   module: {
+    noParse: [/react.min.js/],
     preLoaders: [{
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,

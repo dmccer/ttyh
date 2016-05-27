@@ -87,7 +87,11 @@ export default class SpRoute extends Component {
     });
   }
 
-  toDetail(url) {
+  toDetail(url, e) {
+    if (e.target.tagName.toLowerCase() === 'a') {
+      return;
+    }
+
     location.href = url;
   }
 
@@ -97,7 +101,7 @@ export default class SpRoute extends Component {
     if (spRoutes && spRoutes.length) {
       let list = spRoutes.map((spRoute, index) => {
         return (
-          <div className="cell" onClick={this.toDetail.bind(this, spRoute.introduceUrl || './sp-com.html')} key={`sp-route-item_${index}`}>
+          <div className="cell" onTouchTap={this.toDetail.bind(this, spRoute.introduceUrl || './sp-com.html')} key={`sp-route-item_${index}`}>
             <div className="cell-hd">
               <div className="spr-logo">
                 <img src={spRoute.imgUrl || DEFAULT_SP_ROUTE_COMPANY_PNG} />

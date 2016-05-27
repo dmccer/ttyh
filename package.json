@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha test",
     "prestart": "cnpm install",
-    "start": "rm -rf ./assets; NODE_ENV=production node --max_old_space_size=4096 ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --profile --colors",
+    "start": "rm -rf ./assets; NODE_ENV=production node --max_old_space_size=4096 ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --display-modules --profile --colors",
     "dev": "cnpm run prestart; ./node_modules/.bin/imock -j mock -w dist & node --max_old_space_size=4096 ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "dest": "assets",
@@ -71,6 +71,7 @@
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",
-    "webpack-dev-server": "^1.14.0"
+    "webpack-dev-server": "^1.14.0",
+    "webpack-md5-hash": "0.0.5"
   }
 }

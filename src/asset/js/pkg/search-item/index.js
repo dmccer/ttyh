@@ -42,7 +42,7 @@ export default class SearchItem extends Component {
   render() {
     let props = this.props;
     let tel = JWeiXin.isWeixinBrowser() ? null : <p className="tel-text">电话联系: {props.product.provideUserMobileNo}</p>;
-    let telLink = JWeiXin.isWeixinBrowser() || true ? (
+    let telLink = JWeiXin.isWeixinBrowser() ? (
       <div className="tel">
         <a onClick={this.hanldleMakeCall.bind(this, props.product.provideUserMobileNo)} ref="tel" href={`tel:${props.product.provideUserMobileNo}`} className="icon icon-call s30"></a>
       </div>
@@ -53,7 +53,7 @@ export default class SearchItem extends Component {
         <div className="row">
           <div className="account">
             <Avatar img={props.provideUserImgUrl} />
-            <div className="nick-name">{props.providerUserName && props.providerUserName.substring(0, 4)}</div>
+            <div className="nick-name">{props.providerUserName && props.providerUserName.substring(0, 4) || '佚名'}</div>
             <div className="certified-tags">
               <AccountCertifyStatus
                 type='shipper'
