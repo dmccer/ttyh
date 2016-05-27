@@ -142,7 +142,7 @@ module.exports = {
   watch: true,
   output: {
     path: path.resolve(__dirname, pkg.dest),
-    filename: '[name].[hash].js',
+    filename: '[name].js',
     chunkFilename: '[id].chunk.js'
   },
   resolve: {

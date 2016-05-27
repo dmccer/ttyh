@@ -8,7 +8,6 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-// import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import EventListener from 'fbjs/lib/EventListener';
@@ -58,6 +57,10 @@ export default class CompanyCertifyPage extends Component {
     EventListener.listen(window, 'beforeunload', () => {
       localStorage.setItem(COMPANY_CERTIFY_DRAFT, JSON.stringify(this.getData()))
     });
+  }
+
+  writeDraft() {
+    localStorage.setItem(COMPANY_CERTIFY_DRAFT, JSON.stringify(this.getData()))
   }
 
   readFromLocal() {
@@ -160,6 +163,9 @@ export default class CompanyCertifyPage extends Component {
         isShowProgressTips: 1,
         success: (res) => {
           resolve(res.serverId);
+        },
+        error() {
+          reject();
         }
       });
     });
@@ -184,12 +190,7 @@ export default class CompanyCertifyPage extends Component {
 
     let data = this.getData();
 
-    this.uploadImage(data.bizCardPic)
-      .then(sid => {
-        data.bizCardPic = sid;
-
-        return this.uploadImage(data.shopFacePic);
-      })
+    this.uploadImage(data.shopFacePic)
       .then(sid => {
         data.shopFacePic = sid;
 
@@ -198,6 +199,18 @@ export default class CompanyCertifyPage extends Component {
       .then(sid => {
         data.bizLicensePic = sid;
 
+        if (data.bizCardPic) {
+          return this.uploadImage(data.bizCardPic);
+        }
+
+        return data;
+      })
+      .then(r => {
+        if (r === data) {
+          return r;
+        }
+
+        data.bizCardPic = r;
         return data;
       })
       .then(this.transformData)
@@ -248,7 +261,7 @@ export default class CompanyCertifyPage extends Component {
 
                 this.setState({
                   [field]: localIds[0]
-                });
+                }, this.writeDraft.bind(this));
               }
             });
           }
@@ -264,7 +277,7 @@ export default class CompanyCertifyPage extends Component {
 
                 this.setState({
                   [field]: localIds[0]
-                });
+                }, this.writeDraft.bind(this));
               }
             });
           }
@@ -340,7 +353,7 @@ export default class CompanyCertifyPage extends Component {
                 className="input"
                 placeholder="填写"
                 value={props.companyName}
-                onChange={props.handleStrChange.bind(this, 'companyName')}
+                onChange={props.handleStrChange.bind(this, 'companyName', this.writeDraft.bind(this))}
               />
             </div>
             <div className="cell-ft"></div>
@@ -357,7 +370,7 @@ export default class CompanyCertifyPage extends Component {
                 className="input"
                 placeholder="填写"
                 value={props.companyAddr}
-                onChange={props.handleStrChange.bind(this, 'companyAddr')}
+                onChange={props.handleStrChange.bind(this, 'companyAddr', this.writeDraft.bind(this))}
               />
             </div>
             <div className="cell-ft"></div>
@@ -374,7 +387,7 @@ export default class CompanyCertifyPage extends Component {
                 className="input"
                 placeholder="填写"
                 value={props.companyPos}
-                onChange={props.handleStrChange.bind(this, 'companyPos')}
+                onChange={props.handleStrChange.bind(this, 'companyPos', this.writeDraft.bind(this))}
               />
             </div>
             <div className="cell-ft"></div>

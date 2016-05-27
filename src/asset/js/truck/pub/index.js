@@ -234,7 +234,9 @@ export default class TruckPubPage extends React.Component {
       fromCities: fromCities,
       toCities: toCities,
       selectedTruckTag: this.state.selectedTruckTag,
-      memo: this.state.memo
+      memo: this.state.memo,
+      entruckTime: this.state.entruckTime,
+      timeArea: this.state.timeArea
     };
 
     this.setState(d);

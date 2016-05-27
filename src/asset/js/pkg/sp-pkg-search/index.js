@@ -26,6 +26,7 @@ import PkgMaluationPanel from '../maluation/';
 import AH from '../../helper/ajax';
 import $ from '../../helper/z';
 import {OrderedEnumValue} from '../../model/';
+import {Maluation} from '../model/';
 import {
   UserVerifyStatus
 } from '../../account/model/';
@@ -138,11 +139,15 @@ export default class SearchPkgPage extends Component {
     });
   }
 
-  handleShowVerifyTip(tel) {
+  handleShowVerifyTip(pkg, tel) {
     this.setState({
       activeTel: tel
     }, () => {
       let status = this.state.realNameVerifyStatus;
+
+      this.setState({
+        thePkgIdOfMadeCall: pkg.product.productID
+      });
 
       if (status === 1 || status === 0) {
         this.handleCancelVerify();
@@ -164,8 +169,19 @@ export default class SearchPkgPage extends Component {
   }
 
   madeCall() {
+    if (this.state.maluationItems && this.state.maluationItems.length) {
+      this.setState({
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.thePkgIdOfMadeCall
+      }, () => {
+        this.refs.pkgMaluation.show();
+      });
+
+      return ;
+    }
+
     this.ah.one(OrderedEnumValue, (res) => {
-      let list = res.maluationItems;
+      let list = res.productAppraise;
 
       list = list.map((item) => {
         return {
@@ -175,15 +191,33 @@ export default class SearchPkgPage extends Component {
       });
 
       this.setState({
-        maluationItems: list
+        maluationItems: list,
+        maluationTel: this.state.activeTel,
+        maluationId: this.state.thePkgIdOfMadeCall
       }, () => {
         this.refs.pkgMaluation.show();
       });
-    }, 'maluation');
+    }, 'productAppraise');
   }
 
   handleSelectPkgMaluation(maluation) {
-    console.log('maluation:', maluation);
+    this.ah.one(Maluation, (res) => {
+      this.setState({
+        thePkgIdOfMadeCall: null
+      });
+
+      if (res.retcode === 0) {
+        this.refs.poptip.success('感谢您的评价');
+        return;
+      }
+
+      this.refs.poptip.warn(res.msg);
+    }, {
+      businessId: this.state.thePkgIdOfMadeCall,
+      // 车源 1 | 货源 2
+      businessType: 2,
+      commentType: maluation.id
+    });
   }
 
   /**
@@ -255,6 +289,8 @@ export default class SearchPkgPage extends Component {
         />
         <PkgMaluationPanel
           ref="pkgMaluation"
+          tel={this.state.maluationTel}
+          targetId={this.state.maluationId}
           items={this.state.maluationItems}
           onSelected={this.handleSelectPkgMaluation.bind(this)}
         />

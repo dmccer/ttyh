@@ -110,13 +110,12 @@ export default class TodayPkgListPage extends Component {
     }, () => {
       let status = this.state.realNameVerifyStatus;
 
+      this.setState({
+        thePkgIdOfMadeCall: pkg.product.productID
+      });
+
       if (status === 1 || status === 0) {
         this.handleCancelVerify();
-
-        this.setState({
-          thePkgIdOfMadeCall: pkg.product.productID
-        });
-
         return;
       }
 
@@ -126,24 +125,6 @@ export default class TodayPkgListPage extends Component {
       });
     });
   }
-
-  // handleShowVerifyTip(tel) {
-  //   this.setState({
-  //     activeTel: tel
-  //   }, () => {
-  //     let status = this.state.realNameVerifyStatus;
-  //
-  //     if (status === 1 || status === 0) {
-  //       this.handleCancelVerify();
-  //       return;
-  //     }
-  //
-  //     this.refs.verifyTip.show({
-  //       title: REAL_NAME_CERTIFY_TITLE,
-  //       msg: REAL_NAME_CERTIFY_TIP_FOR_VIEW
-  //     });
-  //   });
-  // }
 
   handleCancelVerify() {
     this.refs.telPanel.show({

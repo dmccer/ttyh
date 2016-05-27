@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha test",
     "prestart": "cnpm install",
-    "start": "rm -rf ./assets; NODE_ENV=production ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --profile --colors",
-    "dev": "cnpm run prestart; ./node_modules/.bin/imock -j mock -w dist & ./node_modules/.bin/webpack-dev-server --hot --inline"
+    "start": "rm -rf ./assets; NODE_ENV=production node --max_old_space_size=4096 ./node_modules/.bin/webpack -p --config ./webpack.prd.config.js --progress --profile --colors",
+    "dev": "cnpm run prestart; ./node_modules/.bin/imock -j mock -w dist & node --max_old_space_size=4096 ./node_modules/.bin/webpack-dev-server --hot --inline"
   },
   "dest": "assets",
   "repository": {

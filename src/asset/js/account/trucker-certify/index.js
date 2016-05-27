@@ -8,7 +8,6 @@ import './index.less';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import querystring from 'querystring';
-// import Promise from 'promise';
 import cx from 'classnames';
 import assign from 'lodash/object/assign';
 import EventListener from 'fbjs/lib/EventListener';
@@ -58,6 +57,10 @@ export default class TruckerCertifyPage extends Component {
     EventListener.listen(window, 'beforeunload', () => {
       localStorage.setItem(TRUCKER_CERTIFY_DRAFT, JSON.stringify(this.getData()))
     });
+  }
+
+  writeDraft() {
+    localStorage.setItem(TRUCKER_CERTIFY_DRAFT, JSON.stringify(this.getData()))
   }
 
   componentDidMount() {
@@ -269,7 +272,7 @@ export default class TruckerCertifyPage extends Component {
 
                 this.setState({
                   [field]: localIds[0]
-                });
+                }, this.writeDraft.bind(this));
               }
             });
           }
@@ -285,7 +288,7 @@ export default class TruckerCertifyPage extends Component {
 
                 this.setState({
                   [field]: localIds[0]
-                });
+                }, this.writeDraft.bind(this));
               }
             });
           }
@@ -364,14 +367,14 @@ export default class TruckerCertifyPage extends Component {
                 className="input"
                 placeholder="填写"
                 value={props.licensePlate}
-                onChange={props.handleStrChange.bind(this, 'licensePlate')}
+                onChange={props.handleStrChange.bind(this, 'licensePlate', this.writeDraft.bind(this))}
               />
             </div>
             <div className="cell-ft"></div>
           </div>
           <div
             className="cell required"
-            onClick={props.handleSelectTruckType.bind(this)}>
+            onClick={props.handleSelectTruckType.bind(this, this.writeDraft.bind(this))}>
             <div className="cell_hd">
               <label className="label">车型</label>
             </div>
@@ -392,7 +395,7 @@ export default class TruckerCertifyPage extends Component {
                 className="input"
                 placeholder="填写"
                 value={props.loadLimit}
-                onChange={props.handleFloatChange.bind(this, 'loadLimit')}
+                onChange={props.handleFloatChange.bind(this, 'loadLimit', this.writeDraft.bind(this))}
               />
             </div>
             <div className="cell-ft">吨</div>

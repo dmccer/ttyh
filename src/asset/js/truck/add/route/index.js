@@ -9,12 +9,14 @@ import ReactDOM from 'react-dom';
 import cx from 'classnames';
 import querystring from 'querystring';
 import assign from 'lodash/object/assign';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import $ from '../../../helper/z';
 import CitySelector from '../../../city-selector/';
 
 import {PAGE_TYPE, SELECTED_COMMON_ROUTE} from '../../../const/truck';
 const ALL = '全部';
+injectTapEventPlugin();
 
 export default class SelectCommonRoutePage extends Component {
   state = {

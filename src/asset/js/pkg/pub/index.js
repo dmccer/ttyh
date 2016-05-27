@@ -244,6 +244,8 @@ export default class PkgPubPage extends React.Component {
     let props = this.props;
     let states = this.state;
 
+    let hasTruckLength = states.truckUseInfo && states.truckUseInfo.truckLength;
+
     return (
       Validator.test('required', '请选择装车日期', states.entruckTime) &&
       Validator.test('required', '请选择装车时间段', states.timeArea) &&
@@ -254,7 +256,7 @@ export default class PkgPubPage extends React.Component {
       Validator.test('required', '请选择货物包装', states.pkgInfo && states.pkgInfo.packManner.id) &&
       Validator.test('required', '请选择用车类型', states.truckUseInfo && states.truckUseInfo.truckUseType.id) &&
       (
-        Validator.test('required', '请选择用车车长或占用车位', states.truckUseInfo && states.truckUseInfo.truckLength && states.truckUseInfo.truckLength.id) ||
+        hasTruckLength && Validator.test('required', '请选择用车车长或占用车位', states.truckUseInfo.truckLength.id) ||
         Validator.test('required', '请选择用车车长或占用车位', states.truckUseInfo && states.truckUseInfo.stallSize)
       )
     );

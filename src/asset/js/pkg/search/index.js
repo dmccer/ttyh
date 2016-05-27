@@ -163,12 +163,12 @@ export default class SearchPkgPage extends Component {
     }, () => {
       let status = this.state.realNameVerifyStatus;
 
+      this.setState({
+        thePkgIdOfMadeCall: pkg.product.productID
+      });
+
       if (status === 1 || status === 0) {
         this.handleCancelVerify();
-
-        this.setState({
-          thePkgIdOfMadeCall: pkg.product.productID
-        });
 
         return;
       }
