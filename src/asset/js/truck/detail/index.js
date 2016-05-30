@@ -200,6 +200,14 @@ export default class TruckDetailPage extends Component {
    );
  }
 
+ // <h2 className="subtitle header">
+ //   <span>车源详情</span>
+ //   <span className="pub-time">
+ //     <i className="icon icon-clock"></i>
+ //     <MiniReadableTime time={rtruckDetail.orderByTime} />
+ //   </span>
+ // </h2>
+
  render() {
    let rtruck = this.state.rtruck;
    let rtruckDetail = rtruck.userWithLatLng;
@@ -225,19 +233,18 @@ export default class TruckDetailPage extends Component {
 
    return (
      <section className="pkg-detail-page">
-       <h2 className="subtitle header">
-         <span>车源详情</span>
+       <h2 className="subtitle">
+         <span>可装车时间</span>
          <span className="pub-time">
            <i className="icon icon-clock"></i>
            <MiniReadableTime time={rtruckDetail.orderByTime} />
          </span>
        </h2>
-       <h2 className="subtitle">可装车时间</h2>
        <div className="field-group">
          <div className="field">
            <label><i className="icon icon-calendar s20"></i></label>
            <div className="control">
-              <p className="input-holder on">2016-12-11 下午</p>
+              <p className="input-holder on">{rtruckDetail.loadProTime}</p>
            </div>
          </div>
        </div>

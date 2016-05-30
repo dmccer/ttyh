@@ -49,7 +49,7 @@ export default class SearchItem extends Component {
     ) : null;
 
     return (
-      <div className="pkg-item" onTouchTap={this.detail.bind(this)}>
+      <div className="pkg-item" onClick={this.detail.bind(this)}>
         <div className="row">
           <div className="account">
             <Avatar img={props.provideUserImgUrl} />

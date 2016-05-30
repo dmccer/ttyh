@@ -299,7 +299,7 @@ export default class PkgDetailPage extends Component {
       truckDesc = '暂无';
     } else {
       let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
-      let useType = product.useType != null && parseInt(product.useType) ? product.useTypeStr : null;
+      let useType = product.useType != null && parseInt(product.useType) ? product.useTypeStr : '';
       let stallSize = product.spaceNeeded != null && parseFloat(product.spaceNeeded) ? `占用${product.spaceNeeded}米` : null;
       truckDesc = `${useType} ${product.truckTypeStr || ''} ${truckLength} ${stallSize || ''}`;
     }
