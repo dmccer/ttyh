@@ -172,8 +172,8 @@ export default class PkgDetailPage extends Component {
       this.refs.poptip.warn(res.msg);
     }, {
       businessId: this.state.qs.pid,
-      // 车源 1 | 货源 2
-      businessType: 2,
+      // 车源 0 | 货源 1
+      businessType: 1,
       commentType: maluation.id
     });
   }
