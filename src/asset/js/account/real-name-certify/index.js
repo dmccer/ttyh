@@ -34,7 +34,8 @@ const ALL = '全部';
 @FieldChangeEnhance
 export default class RealNameCertifyPage extends Component {
   state = {
-    maxBizDescLength: 80
+    maxBizDescLength: 80,
+    qs: querystring.parse(location.search.substring(1))
   };
 
   constructor(props) {
@@ -201,7 +202,14 @@ export default class RealNameCertifyPage extends Component {
             this.refs.poptip.warn('成功提交实名认证');
 
             this.clearData();
+
             setTimeout(() => {
+              if (this.state.qs.ref) {
+                location.replace(this.state.qs.ref);
+
+                return;
+              }
+
               history.back();
 
               try {
