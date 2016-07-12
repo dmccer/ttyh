@@ -21,7 +21,10 @@ import Loading from '../../loading/';
 import Confirm from '../../confirm/';
 import FixedHolder from '../../fixed-holder/';
 import PkgMaluationPanel from '../maluation/';
-import JWeiXin from '../../jweixin/';
+import MiniReadableTime from '../../bbs/readable-time';
+import Detect from '../../helper/detect';
+import WXVerify from '../../helper/wx';
+import WX from '../../const/wx';
 import $ from '../../helper/z';
 import AH from '../../helper/ajax';
 import {OrderedEnumValue} from '../../model/';
@@ -33,7 +36,8 @@ import {
   REAL_NAME_CERTIFY_TIP_FOR_VIEW
 } from '../../const/certify';
 import {
-  PkgSearch,
+  PkgDetail,
+  // PkgSearch,
   FollowUser,
   Maluation,
   MaluationOfPkg
@@ -52,25 +56,70 @@ export default class PkgDetailPage extends Component {
     super();
   }
 
+  wxVerify() {
+    return new Promise((resolve, reject) => {
+      WXVerify({
+        url: WX.url,
+        appId: WX.appId,
+        jsApiList: [
+          'onMenuShareTimeline',
+          'onMenuShareAppMessage',
+          'onMenuShareQQ',
+          'onMenuShareQZone'
+        ]
+      }, (err) => {
+        if (err) {
+          this.refs.poptip.warn('微信验证失败');
+
+          reject();
+          return;
+        }
+
+        resolve();
+      });
+    });
+  }
+
   componentDidMount() {
     this.ah = new AH(this.refs.loading, this.refs.poptip);
 
-    this.ah.one(PkgSearch, {
-      success: (res) => {
-        this.setState({
-          pkg: res.data[0]
-        });
-      },
-      error: () => {
-        this.refs.poptip.warn('加载货源详情失败, 请重试');
-      }
-    }, {
-      productIDs: this.state.qs.pid
-    });
+    Promise
+      .all([this.wxVerify(), this.fetchPkg()])
+      .then(this.share.bind(this));
 
     this.fetchUserInfo();
-
     this.fetchMaluation();
+  }
+
+  share() {
+    const pkg = this.state.pkg;
+    const title = `${pkg.fromCity} - ${pkg.toCity}`;
+    const link = location.href;
+    const imgUrl = 'http://ttyhuo-img.b0.upaiyun.com/2016/02/23/01/33_18_upload_usericonimage_file54.png!small';
+    const desc = this.buildPkgDesc();
+
+    const params = { link, title, imgUrl, desc };
+
+    wx.onMenuShareTimeline(params);
+    wx.onMenuShareAppMessage(params);
+    wx.onMenuShareQQ(params);
+    wx.onMenuShareQZone(params);
+  }
+
+  fetchPkg() {
+    return new Promise((resolve, reject) => {
+      this.ah.one(PkgDetail, {
+        success: (res) => {
+          this.setState({
+            pkg: res.product
+          }, resolve);
+        },
+        error: () => {
+          this.refs.poptip.warn('加载货源详情失败, 请重试');
+          reject();
+        }
+      }, this.state.qs.pid);
+    });
   }
 
   fetchUserInfo() {
@@ -188,7 +237,7 @@ export default class PkgDetailPage extends Component {
         }
 
         let pkg = this.state.pkg;
-        pkg.alreadyFavorite = true;
+        pkg.alreadyFellow = true;
 
         this.setState({
           pkg: pkg
@@ -199,14 +248,13 @@ export default class PkgDetailPage extends Component {
       error: (err) => {
         this.refs.poptip.success('关注失败');
       }
-    }, this.state.pkg.product.provideUserID);
+    }, this.state.pkg.provideUserID);
   }
 
   renderFollowStatus() {
     let pkg = this.state.pkg;
-    let product = pkg.product;
 
-    if (pkg.alreadyFavorite) {
+    if (pkg.alreadyFellow) {
       return (
         <span
           className="followed">
@@ -275,36 +323,48 @@ export default class PkgDetailPage extends Component {
     );
   }
 
-  render() {
+  buildPkgDesc() {
     let pkg = this.state.pkg;
-    let product = pkg.product;
-
     let pkgDesc;
 
-    if (product.title == null &&
-      (parseFloat(product.loadLimit) === 0 || product.loadLimit == null)) {
+    if (pkg.title == null &&
+      (parseFloat(pkg.loadLimit) === 0 || pkg.loadLimit == null)) {
       pkgDesc = '暂无';
     } else {
-      let title = product.title && product.title || '';
-      let loadLimit = product.loadLimit != null && parseFloat(product.loadLimit) != 0 ? `${product.loadLimit}吨` : '';
-      let pack = product.packTypeStr + (product.productCount ? ` * ${product.productCount}` : '');
-      let productVolume = product.productVolume != null && parseFloat(product.productVolume) != 0 ? `${product.productVolume}方` : '';
+      let title = pkg.title && pkg.title || '';
+      let loadLimit = pkg.loadLimit != null && parseFloat(pkg.loadLimit) != 0 ? `${pkg.loadLimit}吨` : '';
+      let pack = pkg.packTypeStr + (pkg.productCount ? ` * ${pkg.productCount}` : '');
+      let productVolume = pkg.productVolume != null && parseFloat(pkg.productVolume) != 0 ? `${pkg.productVolume}方` : '';
       pkgDesc = `${title} ${loadLimit} ${productVolume} ${pack}`;
     }
 
+    return pkgDesc;
+  }
+
+  buildTruckDesc() {
+    let pkg = this.state.pkg;
     let truckDesc;
 
-    if ($.trim(product.truckTypeStr) == '' &&
-      (parseFloat(product.truckLength) === 0 || product.truckLength == null)) {
+    if ($.trim(pkg.truckTypeStr) == '' &&
+      (parseFloat(pkg.truckLength) === 0 || pkg.truckLength == null)) {
       truckDesc = '暂无';
     } else {
-      let truckLength = product.truckLength != null && parseFloat(product.truckLength) != 0 ? `${product.truckLength}米` : '';
-      let useType = product.useType != null && parseInt(product.useType) ? product.useTypeStr : '';
-      let stallSize = product.spaceNeeded != null && parseFloat(product.spaceNeeded) ? `占用${product.spaceNeeded}米` : null;
-      truckDesc = `${useType} ${product.truckTypeStr || ''} ${truckLength} ${stallSize || ''}`;
+      let truckLength = pkg.truckLength != null && parseFloat(pkg.truckLength) != 0 ? `${pkg.truckLength}米` : '';
+      let useType = pkg.useType != null && parseInt(pkg.useType) ? pkg.useTypeStr : '';
+      let stallSize = pkg.spaceNeeded != null && parseFloat(pkg.spaceNeeded) ? `占用${pkg.spaceNeeded}米` : null;
+      truckDesc = `${useType} ${pkg.truckTypeStr || ''} ${truckLength} ${stallSize || ''}`;
     }
 
-    let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {pkg.product.provideUserMobileNo}</span>
+    return truckDesc;
+  }
+
+  render() {
+    let pkg = this.state.pkg;
+
+    let pkgDesc = this.buildPkgDesc();
+    let truckDesc = this.buildTruckDesc();
+
+    let tel = Detect.isWeiXin() ? <span>电话联系</span> : <span>电话联系: {pkg.provideUserMobileNo}</span>
 
     return (
       <section className="pkg-detail-page">
@@ -312,14 +372,14 @@ export default class PkgDetailPage extends Component {
           <span>装车日期</span>
           <span className="pub-time">
             <i className="icon icon-clock"></i>
-            {pkg.createTime}发布
+            <MiniReadableTime time={new Date(pkg.createTime)} />发布
           </span>
         </h2>
         <div className="field-group">
           <div className="field">
             <label><i className="icon icon-calendar s20"></i></label>
             <div className="control">
-              <span className="input-holder on">{pkg.product.loadProTime}</span>
+              <span className="input-holder on">{pkg.loadProTime}</span>
             </div>
           </div>
         </div>
@@ -328,25 +388,25 @@ export default class PkgDetailPage extends Component {
           <div className="field">
             <label><i className="icon icon-start-point on s20"></i></label>
             <div className="control">
-              <span className="input-holder on">{pkg.product.fromCity}</span>
+              <span className="input-holder on">{pkg.fromCity}</span>
             </div>
           </div>
-          <div className={cx('field', pkg.product.fromAddr != '' ? '' : 'hide')}>
+          <div className={cx('field', pkg.fromAddr != '' ? '' : 'hide')}>
             <label><i className="icon s20"></i></label>
             <div className="control">
-              <span className="input-holder on">{pkg.product.fromAddr}</span>
+              <span className="input-holder on">{pkg.fromAddr}</span>
             </div>
           </div>
           <div className="field">
             <label><i className="icon icon-end-point on s20"></i></label>
             <div className="control">
-              <span className="input-holder on">{pkg.product.toCity}</span>
+              <span className="input-holder on">{pkg.toCity}</span>
             </div>
           </div>
-          <div className={cx('field', pkg.product.toAddr != '' ? '' : 'hide')}>
+          <div className={cx('field', pkg.toAddr != '' ? '' : 'hide')}>
             <label><i className="icon s20"></i></label>
             <div className="control">
-              <span className="input-holder on">{pkg.product.toAddr}</span>
+              <span className="input-holder on">{pkg.toAddr}</span>
             </div>
           </div>
         </div>
@@ -369,21 +429,21 @@ export default class PkgDetailPage extends Component {
               <span className="input-holder on">{truckDesc}</span>
             </div>
           </div>
-          <div className={cx('field', pkg.product.loadingTypeStr ? '' : 'hide')}>
+          <div className={cx('field', pkg.loadingTypeStr ? '' : 'hide')}>
             <label><i className="icon s20"></i></label>
             <div className="control">
               <span className="input-holder">
                 <i className="inner-label">装货方式</i>
-                <b className="inner-val">{pkg.product.loadingTypeStr}</b>
+                <b className="inner-val">{pkg.loadingTypeStr}</b>
               </span>
             </div>
           </div>
-          <div className={cx('field', pkg.product.payTypeStr ? '' : 'hide')}>
+          <div className={cx('field', pkg.payTypeStr ? '' : 'hide')}>
             <label><i className="icon s20"></i></label>
             <div className="control">
               <span className="input-holder on">
                 <i className="inner-label">运费结算方式</i>
-                <b className="inner-val">{pkg.product.payTypeStr}</b>
+                <b className="inner-val">{pkg.payTypeStr}</b>
               </span>
             </div>
           </div>
@@ -393,7 +453,7 @@ export default class PkgDetailPage extends Component {
           <div className="field memo-field">
             <label><i className="icon icon-memo s20"></i></label>
             <div className="control">
-              {this.renderMemo(pkg.product.memo)}
+              {this.renderMemo(pkg.memo)}
             </div>
           </div>
         </div>
@@ -406,8 +466,8 @@ export default class PkgDetailPage extends Component {
             <span>{pkg.providerUserName}</span>
             <AccountCertifyStatus
               type='shipper'
-              realNameCertified={pkg.provideUserSfzVerify}
-              companyCertified={pkg.provideUserCompanyVerify}
+              realNameCertified={pkg.userVerifyStatus == 1}
+              companyCertified={pkg.companyVerifyStatus == 1}
             />
           </div>
           <div className="follow-status-col">
@@ -416,8 +476,8 @@ export default class PkgDetailPage extends Component {
         </div>
         <FixedHolder height="50" />
         <a
-          onClick={this.handleShowVerifyTip.bind(this, pkg.product.provideUserMobileNo)}
-          href={`tel:${pkg.product.provideUserMobileNo}`}
+          onClick={this.handleShowVerifyTip.bind(this, pkg.provideUserMobileNo)}
+          href={`tel:${pkg.provideUserMobileNo}`}
           className={cx('call-btn', pkg.isMyProduct ? 'hide' : '')}>
           <i className="icon icon-call"></i>
           {tel}

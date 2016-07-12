@@ -87,3 +87,11 @@ export var SubmitReport = (params) => {
     body: querystring.stringify(params)
   }, POST_OPT));
 }
+
+export var PkgDetail = (id) => {
+  let qs = querystring.stringify({
+    id: id
+  });
+
+  return fetch(`/mvc/wx/getSingleProduct?${qs}`, GET_OPT);
+}
