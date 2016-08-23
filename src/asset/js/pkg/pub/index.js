@@ -645,6 +645,8 @@ export default class PkgPubPage extends React.Component {
         <CitySelector
           ref="citySelector"
           prefix={PAGE_TYPE}
+          addrLevel="city"
+          cancable={false}
           onSelectProvince={this.handleSelectProvince.bind(this)}
           onSelectCity={this.handleSelectCity.bind(this)}
           onSelectArea={this.handleSelectArea.bind(this)}

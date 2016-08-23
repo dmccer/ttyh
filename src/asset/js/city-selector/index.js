@@ -36,6 +36,7 @@ export default class CitySelector extends React.Component {
       // click: true,
       scrollbars: true
     },
+    cancable: true,
     onSelectHistory: () => {},
     onSelectArea: () => {},
     onSelectCity: () => {},
@@ -314,6 +315,10 @@ export default class CitySelector extends React.Component {
       return;
     }
 
+    if (!this.props.cancable) {
+      return;
+    }
+
     this.close();
 
     let province = this.state.province;
@@ -406,12 +411,16 @@ export default class CitySelector extends React.Component {
       return rowList;
     }
 
+    const { addrLevel } = this.props;
+
     let children = (list.child || []).map((item, index) => {
+      const disabledAll = addrLevel && addrLevel === field && index === 0;
+
       return (
         <div
           className="item"
           key={`${field}_${item}`}
-          onTouchTap={this[`select_${field}`].bind(this, item, index)}
+          onTouchTap={disabledAll ? () => {} : this[`select_${field}`].bind(this, item, index)}
         >{item}</div>
       );
     });
