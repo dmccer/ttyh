@@ -463,7 +463,7 @@ export default class PkgDetailPage extends Component {
             <Avatar img={pkg.provideUserImgUrl} />
           </div>
           <div className="account-col">
-            <span>{pkg.providerUserName}</span>
+            <span>{pkg.provideUserName}</span>
             <AccountCertifyStatus
               type='shipper'
               realNameCertified={pkg.userVerifyStatus == 1}
