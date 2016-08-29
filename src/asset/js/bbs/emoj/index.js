@@ -68,6 +68,7 @@ export default class Emoj extends React.Component {
     }
 
     let r = [];
+    let c = m.length;
 
     m.forEach((s, i) => {
       let si = text.indexOf(s);
@@ -75,6 +76,10 @@ export default class Emoj extends React.Component {
       if (si === 0) {
         text = text.substring(s.length);
         r.push(<br key={`emoj-text-item_${++Emoj.count}`} />);
+
+        if (i + 1 === c) {
+          r.push(<span key={`emoj-text-item_${++Emoj.count}`}>{text}</span>);
+        }
         return;
       }
 
