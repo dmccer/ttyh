@@ -154,7 +154,7 @@ export default class PkgDetailPage extends Component {
     }, () => {
       let status = this.state.realNameVerifyStatus;
 
-      if (status === 1 || status === 0) {
+      if (status === 1 || status === 0 || this.state.qs.from) {
         this.handleCancelVerify();
         return;
       }
@@ -474,14 +474,26 @@ export default class PkgDetailPage extends Component {
             {this.renderFollowStatus()}
           </div>
         </div>
-        <FixedHolder height="50" />
-        <a
-          onClick={this.handleShowVerifyTip.bind(this, pkg.provideUserMobileNo)}
-          href={`tel:${pkg.provideUserMobileNo}`}
-          className={cx('call-btn', pkg.isMyProduct ? 'hide' : '')}>
-          <i className="icon icon-call"></i>
-          {tel}
-        </a>
+        <FixedHolder height={this.state.qs.from === 'app' ? 130 : 50} />
+        <div className="footer-acts">
+          <a
+            onClick={this.handleShowVerifyTip.bind(this, pkg.provideUserMobileNo)}
+            href={`tel:${pkg.provideUserMobileNo}`}
+            className={cx('call-btn', pkg.isMyProduct ? 'hide' : '')}>
+            <i className="icon icon-call"></i>
+            {tel}
+          </a>
+          {
+            this.state.qs.from === 'app' ? (
+              <a
+                href="http://a.app.qq.com/o/simple.jsp?pkgname=cn.ttyhuo"
+                className="download">
+                <img src={require('../../../img/app/download@3x.png')} className="download-img" />
+              </a>
+            ) : null
+          }
+        </div>
+
         <Loading ref="loading" />
         <Poptip ref="poptip" />
         <Confirm
