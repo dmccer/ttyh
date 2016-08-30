@@ -229,7 +229,7 @@ export default class TruckDetailPage extends Component {
      truckDesc = `${rtruckDetail.truckTypeStr} ${loadLimit} ${truckLength}`;
    }
 
-   let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {rtruckDetail.mobileNo}</span>
+   let tel = JWeiXin.isWeixinBrowser() ? <span>电话联系</span> : <span>电话联系: {rtruckDetail.dirverPoneNo}</span>
 
    return (
      <section className="pkg-detail-page">
@@ -304,8 +304,8 @@ export default class TruckDetailPage extends Component {
        <FixedHolder height={this.state.qs.from === 'app' ? 130 : 50} />
        <div className="footer-acts">
          <a
-          onClick={this.handleShowVerifyTip.bind(this, rtruckDetail.mobileNo)}
-          href={`tel:${rtruckDetail.mobileNo}`}
+          onClick={this.handleShowVerifyTip.bind(this, rtruckDetail.dirverPoneNo)}
+          href={`tel:${rtruckDetail.dirverPoneNo}`}
           className={cx('call-btn', rtruck.isMyRoute ? 'hide' : '')}>
            <i className="icon icon-call"></i>
            {tel}
