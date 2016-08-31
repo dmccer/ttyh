@@ -174,9 +174,11 @@ export default class PkgDetailPage extends Component {
   }
 
   madeCall() {
-    if (this.state.maluationItems && this.state.maluationItems.length) {
-      console.log(this.state.activeTel, this.state.qs.pid);
+    if (this.state.qs.from === 'app') {
+      return;
+    }
 
+    if (this.state.maluationItems && this.state.maluationItems.length) {
       this.setState({
         maluationTel: this.state.activeTel,
         maluationId: this.state.qs.pid
