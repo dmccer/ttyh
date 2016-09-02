@@ -8,7 +8,7 @@ import {POST_OPT, GET_OPT} from '../../const/fetch';
  * @return {Promise}
  */
 export var SendVerifyCode = (tel) => {
-  return fetch('/mvc/loginJsonNew', assign({
+  return fetch('/mvc/v3/loginJsonNew', assign({
     body: querystring.stringify({
       accountNo: tel
     })
@@ -16,8 +16,8 @@ export var SendVerifyCode = (tel) => {
 }
 
 const LOGIN_URL = {
-  1: '/mvc/login_confirmJsonNew',
-  2: '/mvc/registerJsonNew'
+  1: '/mvc/v3/login_confirmJsonNew',
+  2: '/mvc/v3/registerJsonNew'
 };
 /**
  * 登录
