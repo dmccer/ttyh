@@ -93,7 +93,7 @@ export default class TruckDetailPage extends Component {
    }, () => {
      let status = this.state.realNameVerifyStatus;
 
-     if (status === 1 || status === 0 || this.state.qs.from) {
+     if (status === 1 || status === 0 || (this.state.qs.from === 'app' || this.state.qs.from === 'groupmessage')) {
        this.handleCancelVerify();
        return;
      }
@@ -301,7 +301,7 @@ export default class TruckDetailPage extends Component {
            {this.renderFollowStatus()}
          </div>
        </div>
-       <FixedHolder height={this.state.qs.from === 'app' ? 130 : 50} />
+       <FixedHolder height={(this.state.qs.from === 'app' || this.state.qs.from === 'groupmessage') ? 130 : 50} />
        <div className="footer-acts">
          <a
           onClick={this.handleShowVerifyTip.bind(this, rtruckDetail.dirverPoneNo)}
@@ -310,7 +310,7 @@ export default class TruckDetailPage extends Component {
            <i className="icon icon-call"></i>
            {tel}
          </a>
-         {this.state.qs.from === 'app' ? (
+         {(this.state.qs.from === 'app' || this.state.qs.from === 'groupmessage') ? (
            <a
              href="http://a.app.qq.com/o/simple.jsp?pkgname=cn.ttyhuo"
              className="download">

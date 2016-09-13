@@ -153,8 +153,9 @@ export default class PkgDetailPage extends Component {
       activeTel: tel
     }, () => {
       let status = this.state.realNameVerifyStatus;
+      let from = this.state.qs.from;
 
-      if (status === 1 || status === 0 || this.state.qs.from) {
+      if (status === 1 || status === 0 || (from === 'app' || from === 'groupmessage')) {
         this.handleCancelVerify();
         return;
       }
@@ -174,7 +175,8 @@ export default class PkgDetailPage extends Component {
   }
 
   madeCall() {
-    if (this.state.qs.from === 'app') {
+    let from = this.state.qs.from;
+    if (from === 'app' || from === 'groupmessage') {
       return;
     }
 
@@ -476,7 +478,7 @@ export default class PkgDetailPage extends Component {
             {this.renderFollowStatus()}
           </div>
         </div>
-        <FixedHolder height={this.state.qs.from === 'app' ? 130 : 50} />
+        <FixedHolder height={(this.state.qs.from === 'app' || this.state.qs.from === 'groupmessage') ? 130 : 50} />
         <div className="footer-acts">
           <a
             onClick={this.handleShowVerifyTip.bind(this, pkg.provideUserMobileNo)}
@@ -486,7 +488,7 @@ export default class PkgDetailPage extends Component {
             {tel}
           </a>
           {
-            this.state.qs.from === 'app' ? (
+            (this.state.qs.from === 'app' || this.state.qs.from === 'groupmessage') ? (
               <a
                 href="http://a.app.qq.com/o/simple.jsp?pkgname=cn.ttyhuo"
                 className="download">
